@@ -1,0 +1,30 @@
+file path=python/test_sample.py lang=python bytes=535 lines=39 final_newline=true status=clean snapshot=snap-cdb30cee7b4492f5
+scope 0 kind=file parent=- name=- range=0..535 header=-
+scope 1 kind=function parent=0 name=test_plain range=112..138 header=-
+scope 2 kind=function parent=0 name=test_parametrized range=141..229 header=-
+scope 3 kind=class parent=0 name=TestGroup range=232..331 header=-
+scope 4 kind=method parent=3 name=test_method range=253..288 header=-
+scope 5 kind=method parent=3 name=helper_method range=294..331 header=-
+scope 6 kind=class parent=0 name=HelperGroup range=334..393 header=-
+scope 7 kind=method parent=6 name=test_looking range=357..393 header=-
+scope 8 kind=class parent=0 name=LegacyCase range=396..498 header=-
+scope 9 kind=method parent=8 name=test_legacy range=428..463 header=-
+scope 10 kind=method parent=8 name=setUp range=469..498 header=-
+scope 11 kind=function parent=0 name=helper_not_a_test range=501..534 header=-
+decl 0 kind=function name=test_plain scope=0 flags=[] range=112..138 name_range=116..126 body=134..138 tests=[function_name_convention:test_ prefix]
+decl 1 kind=function name=test_parametrized scope=0 flags=[] range=141..229 name_range=187..204 body=217..229 tests=[function_name_convention:test_ prefix,decorator:@pytest.mark.parametrize("value"\, [1\, 2])]
+decl 2 kind=class name=TestGroup scope=0 flags=[] range=232..331 name_range=238..247 body=253..331 tests=[]
+decl 3 kind=method name=test_method scope=3 flags=[] range=253..288 name_range=257..268 body=284..288 tests=[function_name_convention:test_ prefix]
+decl 4 kind=method name=helper_method scope=3 flags=[] range=294..331 name_range=298..311 body=327..331 tests=[]
+decl 5 kind=class name=HelperGroup scope=0 flags=[] range=334..393 name_range=340..351 body=357..393 tests=[]
+decl 6 kind=method name=test_looking scope=6 flags=[] range=357..393 name_range=361..373 body=389..393 tests=[function_name_convention:test_ prefix]
+decl 7 kind=class name=LegacyCase scope=0 flags=[] range=396..498 name_range=402..412 body=428..498 tests=[class_base_syntax:TestCase]
+decl 8 kind=method name=test_legacy scope=8 flags=[] range=428..463 name_range=432..443 body=459..463 tests=[function_name_convention:test_ prefix]
+decl 9 kind=method name=setUp scope=8 flags=[] range=469..498 name_range=473..478 body=494..498 tests=[]
+decl 10 kind=function name=helper_not_a_test scope=0 flags=[] range=501..534 name_range=505..522 body=530..534 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=65..78 items=[{target=pytest alias=- wildcard=false cat=normal}]
+import 1 form=single module=unittest module_range=85..93 relative=- scope=0 range=80..109 items=[{target=TestCase alias=- wildcard=false cat=normal}]
+ref 0 kind=decorator written=pytest.mark.parametrize scope=0 decl=- range=142..165
+ref 1 kind=base_class written=TestCase scope=0 decl=7 range=413..421
+call 0 form=member_selector callee=pytest.mark.parametrize scope=0 expr=142..182 callee_range=142..165 type_args=- dyn=false nullsafe=false
+file_test kind=file_name_convention detail=test_*.py prefix range=0..0

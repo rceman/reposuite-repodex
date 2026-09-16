@@ -1,0 +1,15 @@
+file path=rust/calls.rs lang=rust bytes=352 lines=15 final_newline=true status=clean snapshot=snap-6b6e75240ccee0d4
+scope 0 kind=file parent=- name=- range=0..352 header=-
+scope 1 kind=function parent=0 name=callees range=39..351 header=-
+scope 2 kind=closure parent=1 name=- range=264..268 header=-
+decl 0 kind=function name=callees scope=0 flags=[] range=39..351 name_range=42..49 body=52..351 tests=[]
+call 0 form=plain_name callee=plain scope=1 expr=58..69 callee_range=58..63 type_args=- dyn=false nullsafe=false
+call 1 form=qualified_path callee=module::path::qualified scope=1 expr=75..101 callee_range=75..98 type_args=- dyn=false nullsafe=false
+call 2 form=member_selector callee=value.method scope=1 expr=107..122 callee_range=107..119 type_args=- dyn=false nullsafe=false
+call 3 form=qualified_path callee=Vec::new scope=1 expr=128..138 callee_range=128..136 type_args=- dyn=false nullsafe=false
+call 4 form=plain_name callee=generic_call::<u32> scope=1 expr=144..166 callee_range=144..163 type_args=<u32> dyn=false nullsafe=false
+call 5 form=plain_name callee=TupleStruct scope=1 expr=184..198 callee_range=184..195 type_args=- dyn=false nullsafe=false
+call 6 form=plain_name callee=closure scope=1 expr=274..283 callee_range=274..281 type_args=- dyn=false nullsafe=false
+call 7 form=indirect callee=(make_callable()) scope=1 expr=289..309 callee_range=289..306 type_args=- dyn=false nullsafe=false
+call 8 form=plain_name callee=make_callable scope=1 expr=290..305 callee_range=290..303 type_args=- dyn=false nullsafe=false
+call 9 form=macro_invocation callee=println scope=1 expr=315..348 callee_range=315..322 type_args=- dyn=false nullsafe=false

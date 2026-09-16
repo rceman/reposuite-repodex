@@ -1,0 +1,45 @@
+file path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
+scope 0 kind=file parent=- name=- range=0..1195 header=-
+scope 1 kind=namespace parent=0 name=App\\Service range=7..29 header=-
+scope 2 kind=interface parent=1 name=HandlerInterface range=191..305 header=191..218
+scope 3 kind=trait parent=1 name=Loggable range=307..384 header=307..322
+scope 4 kind=method parent=3 name=log range=328..382 header=-
+scope 5 kind=class parent=1 name=BaseService range=386..767 header=386..441
+scope 6 kind=method parent=5 name=__construct range=588..704 header=-
+scope 7 kind=class parent=1 name=Service range=769..998 header=769..809
+scope 8 kind=method parent=7 name=make range=815..910 header=-
+scope 9 kind=method parent=7 name=handle range=916..996 header=-
+scope 10 kind=enum parent=1 name=Status range=1000..1157 header=1000..1020
+scope 11 kind=method parent=10 name=label range=1083..1155 header=-
+scope 12 kind=function parent=1 name=helperFunction range=1159..1194 header=-
+decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=7..29 name_range=17..28 body=- tests=[]
+decl 1 kind=interface name=HandlerInterface scope=1 flags=[] range=191..305 name_range=201..217 body=218..305 tests=[]
+decl 2 kind=constant name=VERSION scope=2 flags=[] range=237..250 name_range=237..244 body=- tests=[]
+decl 3 kind=method name=handle scope=2 flags=[] range=257..303 name_range=273..279 body=- tests=[]
+decl 4 kind=trait name=Loggable scope=1 flags=[] range=307..384 name_range=313..321 body=322..384 tests=[]
+decl 5 kind=method name=log scope=3 flags=[] range=328..382 name_range=344..347 body=375..382 tests=[]
+decl 6 kind=class name=BaseService scope=1 flags=[abstract] range=386..767 name_range=401..412 body=441..767 tests=[]
+decl 7 kind=constant name=DEFAULT_NAME scope=5 flags=[] range=479..500 name_range=479..491 body=- tests=[]
+decl 8 kind=property name=cacheKey scope=5 flags=[static] range=531..547 name_range=532..540 body=- tests=[]
+decl 9 kind=property name=version scope=5 flags=[readonly] range=573..581 name_range=574..581 body=- tests=[]
+decl 10 kind=method name=__construct scope=5 flags=[constructor] range=588..704 name_range=604..615 body=669..704 tests=[]
+decl 11 kind=property name=name scope=5 flags=[promoted] range=616..636 name_range=632..636 body=- tests=[]
+decl 12 kind=property name=limit scope=5 flags=[promoted] range=638..663 name_range=653..658 body=- tests=[]
+decl 13 kind=method name=handle scope=5 flags=[abstract] range=710..765 name_range=735..741 body=- tests=[]
+decl 14 kind=class name=Service scope=1 flags=[final] range=769..998 name_range=781..788 body=809..998 tests=[]
+decl 15 kind=method name=make scope=7 flags=[static] range=815..910 name_range=838..842 body=869..910 tests=[]
+decl 16 kind=method name=handle scope=7 flags=[] range=916..996 name_range=932..938 body=966..996 tests=[]
+decl 17 kind=enum name=Status scope=1 flags=[] range=1000..1157 name_range=1005..1011 body=1020..1157 tests=[]
+decl 18 kind=variant name=Active scope=10 flags=[] range=1026..1049 name_range=1031..1037 body=- tests=[]
+decl 19 kind=variant name=Closed scope=10 flags=[] range=1054..1077 name_range=1059..1065 body=- tests=[]
+decl 20 kind=method name=label scope=10 flags=[] range=1083..1155 name_range=1099..1104 body=1119..1155 tests=[]
+decl 21 kind=function name=helperFunction scope=1 flags=[] range=1159..1194 name_range=1168..1182 body=1191..1194 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=1 range=31..57 items=[{target=App\\Contracts\\Handler alias=- wildcard=false cat=normal}]
+import 1 form=single module=- module_range=- relative=- scope=1 range=58..88 items=[{target=App\\Support\\Logger alias=Log wildcard=false cat=normal}]
+import 2 form=grouped module=App\\Support module_range=93..104 relative=- scope=1 range=89..125 items=[{target=Cache alias=- wildcard=false cat=normal},{target=Clock alias=C wildcard=false cat=normal}]
+import 3 form=single module=- module_range=- relative=- scope=1 range=126..158 items=[{target=App\\Support\\helper alias=- wildcard=false cat=function}]
+import 4 form=single module=- module_range=- relative=- scope=1 range=159..189 items=[{target=App\\Support\\VERSION alias=- wildcard=false cat=constant}]
+ref 0 kind=implemented_interface written=HandlerInterface scope=1 decl=6 range=424..440
+ref 1 kind=trait_composition written=Loggable scope=5 decl=- range=451..459
+ref 2 kind=base_class written=BaseService scope=1 decl=14 range=797..808
+call 0 form=explicit_construction callee=static scope=8 expr=886..903 callee_range=890..896 type_args=- dyn=false nullsafe=false

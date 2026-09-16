@@ -1,0 +1,22 @@
+file path=go/sample_test.go lang=go bytes=489 lines=33 final_newline=true status=clean snapshot=snap-3e12eafd4f998cb0
+scope 0 kind=file parent=- name=- range=0..489 header=-
+scope 1 kind=function parent=0 name=TestSomething range=35..269 header=-
+scope 2 kind=closure parent=1 name=- range=193..263 header=-
+scope 3 kind=function parent=0 name=TestHelperOnly range=271..307 header=-
+scope 4 kind=function parent=0 name=Test_lowercase_after_prefix range=309..358 header=-
+scope 5 kind=function parent=0 name=BenchmarkSomething range=360..400 header=-
+scope 6 kind=function parent=0 name=helperTakingT range=402..437 header=-
+scope 7 kind=function parent=0 name=Testify range=439..456 header=-
+scope 8 kind=function parent=0 name=helperPlain range=458..488 header=-
+decl 0 kind=package name=fixture scope=0 flags=[] range=0..15 name_range=8..15 body=- tests=[]
+decl 1 kind=function name=TestSomething scope=0 flags=[] range=35..269 name_range=40..53 body=68..269 tests=[function_name_convention:Test prefix,signature_shape:single *testing.T parameter]
+decl 2 kind=function name=TestHelperOnly scope=0 flags=[] range=271..307 name_range=276..290 body=305..307 tests=[function_name_convention:Test prefix,signature_shape:single *testing.T parameter]
+decl 3 kind=function name=Test_lowercase_after_prefix scope=0 flags=[] range=309..358 name_range=314..341 body=356..358 tests=[function_name_convention:Test prefix,signature_shape:single *testing.T parameter]
+decl 4 kind=function name=BenchmarkSomething scope=0 flags=[] range=360..400 name_range=365..383 body=398..400 tests=[function_name_convention:Benchmark prefix,signature_shape:single *testing.B parameter]
+decl 5 kind=function name=helperTakingT scope=0 flags=[] range=402..437 name_range=407..420 body=435..437 tests=[signature_shape:single *testing.T parameter]
+decl 6 kind=function name=Testify scope=0 flags=[] range=439..456 name_range=444..451 body=454..456 tests=[]
+decl 7 kind=function name=helperPlain scope=0 flags=[] range=458..488 name_range=463..474 body=486..488 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=17..33 items=[{target=testing alias=- wildcard=false cat=normal}]
+call 0 form=member_selector callee=t.Run scope=1 expr=178..264 callee_range=178..183 type_args=- dyn=false nullsafe=false
+call 1 form=member_selector callee=t.Fatal scope=2 expr=239..254 callee_range=239..246 type_args=- dyn=false nullsafe=false
+file_test kind=file_name_convention detail=_test.go suffix range=0..0

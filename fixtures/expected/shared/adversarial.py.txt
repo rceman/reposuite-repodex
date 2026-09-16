@@ -1,0 +1,31 @@
+file path=shared/adversarial.py lang=python bytes=838 lines=62 final_newline=true status=clean snapshot=snap-859f3e7d168d4c60
+scope 0 kind=file parent=- name=- range=0..838 header=-
+scope 1 kind=function parent=0 name=name range=186..210 header=-
+scope 2 kind=class parent=0 name=Duplicate range=213..266 header=-
+scope 3 kind=method parent=2 name=name range=234..266 header=-
+scope 4 kind=class parent=0 name=Other range=269..318 header=-
+scope 5 kind=method parent=4 name=name range=286..318 header=-
+scope 6 kind=function parent=0 name=outer range=339..535 header=-
+scope 7 kind=function parent=6 name=level_two range=356..513 header=-
+scope 8 kind=function parent=7 name=level_three range=381..485 header=-
+scope 9 kind=function parent=8 name=level_four range=412..454 header=-
+scope 10 kind=function parent=0 name=semantically_invalid range=616..675 header=-
+scope 11 kind=function parent=0 name=generated_0001 range=708..738 header=-
+scope 12 kind=function parent=0 name=generated_0002 range=741..771 header=-
+scope 13 kind=function parent=0 name=generated_0003 range=774..804 header=-
+scope 14 kind=function parent=0 name=generated_0004 range=807..837 header=-
+decl 0 kind=function name=name scope=0 flags=[] range=186..210 name_range=190..194 body=202..210 tests=[]
+decl 1 kind=class name=Duplicate scope=0 flags=[] range=213..266 name_range=219..228 body=234..266 tests=[]
+decl 2 kind=method name=name scope=2 flags=[] range=234..266 name_range=238..242 body=258..266 tests=[]
+decl 3 kind=class name=Other scope=0 flags=[] range=269..318 name_range=275..280 body=286..318 tests=[]
+decl 4 kind=method name=name scope=4 flags=[] range=286..318 name_range=290..294 body=310..318 tests=[]
+decl 5 kind=function name=outer scope=0 flags=[] range=339..535 name_range=343..348 body=356..535 tests=[]
+decl 6 kind=function name=level_two scope=6 flags=[] range=356..513 name_range=360..369 body=381..513 tests=[]
+decl 7 kind=function name=level_three scope=7 flags=[] range=381..485 name_range=385..396 body=412..485 tests=[]
+decl 8 kind=function name=level_four scope=8 flags=[] range=412..454 name_range=416..426 body=446..454 tests=[]
+decl 9 kind=function name=semantically_invalid scope=0 flags=[] range=616..675 name_range=620..640 body=648..675 tests=[]
+decl 10 kind=function name=generated_0001 scope=0 flags=[] range=708..738 name_range=712..726 body=734..738 tests=[]
+decl 11 kind=function name=generated_0002 scope=0 flags=[] range=741..771 name_range=745..759 body=767..771 tests=[]
+decl 12 kind=function name=generated_0003 scope=0 flags=[] range=774..804 name_range=778..792 body=800..804 tests=[]
+decl 13 kind=function name=generated_0004 scope=0 flags=[] range=807..837 name_range=811..825 body=833..837 tests=[]
+call 0 form=plain_name callee=Missing scope=10 expr=655..675 callee_range=655..662 type_args=- dyn=false nullsafe=false

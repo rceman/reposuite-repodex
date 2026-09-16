@@ -1,0 +1,23 @@
+file path=python/boundaries.py lang=python bytes=771 lines=42 final_newline=true status=clean snapshot=snap-d92d077b9b989350
+scope 0 kind=file parent=- name=- range=0..771 header=-
+scope 1 kind=function parent=0 name=boundaries range=128..422 header=-
+scope 2 kind=function parent=1 name=inner range=191..247 header=-
+scope 3 kind=class parent=0 name=AliasedCase range=425..501 header=-
+scope 4 kind=method parent=3 name=test_aliased range=465..501 header=-
+scope 5 kind=class parent=0 name=MonkeyTarget range=504..558 header=-
+scope 6 kind=method parent=5 name=method range=528..558 header=-
+scope 7 kind=lambda parent=0 name=- range=583..600 header=-
+decl 0 kind=variable name=UPPERCASE_NAME scope=0 flags=[] range=107..125 name_range=107..121 body=- tests=[]
+decl 1 kind=function name=boundaries scope=0 flags=[] range=128..422 name_range=132..142 body=150..422 tests=[]
+decl 2 kind=function name=inner scope=1 flags=[] range=191..247 name_range=195..200 body=212..247 tests=[]
+decl 3 kind=class name=AliasedCase scope=0 flags=[] range=425..501 name_range=431..442 body=465..501 tests=[]
+decl 4 kind=method name=test_aliased scope=3 flags=[] range=465..501 name_range=469..481 body=497..501 tests=[function_name_convention:test_ prefix]
+decl 5 kind=class name=MonkeyTarget scope=0 flags=[] range=504..558 name_range=510..522 body=528..558 tests=[]
+decl 6 kind=method name=method scope=5 flags=[] range=528..558 name_range=532..538 body=554..558 tests=[]
+decl 7 kind=variable name=original scope=0 flags=[] range=601..631 name_range=601..609 body=- tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=40..56 items=[{target=importlib alias=- wildcard=false cat=normal}]
+import 1 form=single module=unittest module_range=62..70 relative=- scope=0 range=57..105 items=[{target=TestCase alias=AliasedTestCase wildcard=false cat=normal}]
+ref 0 kind=base_class written=AliasedTestCase scope=0 decl=3 range=443..458
+call 0 form=member_selector callee=importlib.import_module scope=1 expr=346..375 callee_range=346..369 type_args=- dyn=false nullsafe=false
+call 1 form=plain_name callee=getattr scope=1 expr=380..403 callee_range=380..387 type_args=- dyn=false nullsafe=false
+call 2 form=indirect callee=getattr(module, "path") scope=1 expr=380..405 callee_range=380..403 type_args=- dyn=false nullsafe=false

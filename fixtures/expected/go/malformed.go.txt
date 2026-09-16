@@ -1,0 +1,13 @@
+file path=go/malformed.go lang=go bytes=174 lines=12 final_newline=true status=recovered snapshot=snap-7c82827e062c8dd4
+scope 0 kind=file parent=- name=- range=0..174 header=-
+scope 1 kind=function parent=0 name=validBefore range=86..107 header=-
+scope 2 kind=function parent=0 name=broken range=109..133 header=-
+scope 3 kind=function parent=0 name=validAfter range=135..155 header=-
+decl 0 kind=package name=fixture scope=0 flags=[] range=69..84 name_range=77..84 body=- tests=[]
+decl 1 kind=function name=validBefore scope=0 flags=[] range=86..107 name_range=91..102 body=105..107 tests=[]
+decl 2 kind=function name=broken scope=0 flags=[] range=109..133 name_range=114..120 body=122..133 tests=[]
+decl 3 kind=function name=validAfter scope=0 flags=[] range=135..155 name_range=140..150 body=153..155 tests=[]
+recovery range=121..121
+recovery range=157..173
+diag error missing_syntax [121..121 (5:12..5:12)] tree-sitter inserted a MISSING ) token
+diag error syntax_error [157..173 (11:0..11:16)] tree-sitter recovered from an ERROR node covering 16 byte(s)

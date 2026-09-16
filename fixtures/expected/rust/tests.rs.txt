@@ -1,0 +1,12 @@
+file path=rust/tests.rs lang=rust bytes=245 lines=17 final_newline=true status=clean snapshot=snap-080657dc7edf79b7
+scope 0 kind=file parent=- name=- range=0..245 header=-
+scope 1 kind=function parent=0 name=test_something range=42..64 header=-
+scope 2 kind=function parent=0 name=test_panics range=100..119 header=-
+scope 3 kind=function parent=0 name=not_a_test_by_attribute range=134..165 header=-
+scope 4 kind=function parent=0 name=test_named_without_attribute range=167..203 header=-
+scope 5 kind=function parent=0 name=test_async range=220..244 header=-
+decl 0 kind=function name=test_something scope=0 flags=[] range=42..64 name_range=45..59 body=62..64 tests=[attribute:#[test]]
+decl 1 kind=function name=test_panics scope=0 flags=[] range=100..119 name_range=103..114 body=117..119 tests=[attribute:#[test]]
+decl 2 kind=function name=not_a_test_by_attribute scope=0 flags=[] range=134..165 name_range=137..160 body=163..165 tests=[]
+decl 3 kind=function name=test_named_without_attribute scope=0 flags=[] range=167..203 name_range=170..198 body=201..203 tests=[]
+decl 4 kind=function name=test_async scope=0 flags=[async] range=220..244 name_range=229..239 body=242..244 tests=[attribute:#[tokio::test]]

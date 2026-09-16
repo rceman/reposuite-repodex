@@ -1,0 +1,37 @@
+file path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
+scope 0 kind=file parent=- name=- range=0..728 header=-
+scope 1 kind=module parent=0 name=inline range=57..146 header=57..68
+scope 2 kind=module parent=1 name=nested range=74..121 header=74..89
+scope 3 kind=function parent=2 name=deep range=99..115 header=-
+scope 4 kind=struct parent=0 name=Config range=163..222 header=163..181
+scope 5 kind=enum parent=0 name=State range=224..296 header=224..239
+scope 6 kind=trait parent=0 name=Handler range=298..431 header=298..316
+scope 7 kind=method parent=6 name=label range=364..429 header=-
+scope 8 kind=function parent=0 name=free_function range=556..609 header=-
+scope 9 kind=function parent=0 name=outer range=611..727 header=-
+scope 10 kind=function parent=9 name=nested_function range=628..651 header=-
+scope 11 kind=closure parent=9 name=- range=671..685 header=-
+decl 0 kind=module name=inline scope=0 flags=[] range=57..146 name_range=61..67 body=68..146 tests=[]
+decl 1 kind=module name=nested scope=1 flags=[] range=74..121 name_range=82..88 body=89..121 tests=[]
+decl 2 kind=function name=deep scope=2 flags=[] range=99..115 name_range=106..110 body=113..115 tests=[]
+decl 3 kind=struct name=Inner scope=1 flags=[] range=127..144 name_range=138..143 body=- tests=[]
+decl 4 kind=module name=external scope=0 flags=[] range=148..161 name_range=152..160 body=- tests=[]
+decl 5 kind=struct name=Config scope=0 flags=[] range=163..222 name_range=174..180 body=181..222 tests=[]
+decl 6 kind=field name=name scope=4 flags=[] range=187..203 name_range=191..195 body=- tests=[]
+decl 7 kind=field name=count scope=4 flags=[] range=209..219 name_range=209..214 body=- tests=[]
+decl 8 kind=enum name=State scope=0 flags=[] range=224..296 name_range=233..238 body=239..296 tests=[]
+decl 9 kind=variant name=Idle scope=5 flags=[] range=245..249 name_range=245..249 body=- tests=[]
+decl 10 kind=variant name=Running scope=5 flags=[] range=255..267 name_range=255..262 body=- tests=[]
+decl 11 kind=variant name=Failed scope=5 flags=[] range=273..293 name_range=273..279 body=- tests=[]
+decl 12 kind=trait name=Handler scope=0 flags=[] range=298..431 name_range=308..315 body=316..431 tests=[]
+decl 13 kind=method name=handle scope=6 flags=[receiver] range=322..358 name_range=325..331 body=- tests=[]
+decl 14 kind=method name=label scope=6 flags=[receiver,default] range=364..429 name_range=367..372 body=390..429 tests=[]
+decl 15 kind=type_alias name=Outcome scope=0 flags=[] range=433..486 name_range=442..449 body=- tests=[]
+decl 16 kind=constant name=MAX_ITEMS scope=0 flags=[] range=488..520 name_range=498..507 body=- tests=[]
+decl 17 kind=constant name=COUNTER scope=0 flags=[static,mutable] range=522..554 name_range=537..544 body=- tests=[]
+decl 18 kind=function name=free_function scope=0 flags=[] range=556..609 name_range=563..576 body=596..609 tests=[]
+decl 19 kind=function name=outer scope=0 flags=[] range=611..727 name_range=614..619 body=622..727 tests=[]
+decl 20 kind=function name=nested_function scope=9 flags=[] range=628..651 name_range=631..646 body=649..651 tests=[]
+call 0 form=qualified_path callee=String::from scope=7 expr=400..423 callee_range=400..412 type_args=- dyn=false nullsafe=false
+call 1 form=plain_name callee=nested_function scope=9 expr=691..708 callee_range=691..706 type_args=- dyn=false nullsafe=false
+call 2 form=plain_name callee=closure scope=9 expr=714..724 callee_range=714..721 type_args=- dyn=false nullsafe=false

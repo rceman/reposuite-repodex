@@ -1,0 +1,8 @@
+file path=rust/imports.rs lang=rust bytes=219 lines=8 final_newline=true status=clean snapshot=snap-7c795bbf16c43a28
+scope 0 kind=file parent=- name=- range=0..219 header=-
+import 0 form=single module=- module_range=- relative=- scope=0 range=37..67 items=[{target=std::collections::HashMap alias=- wildcard=false cat=normal}]
+import 1 form=grouped module=std::collections module_range=72..88 relative=- scope=0 range=68..117 items=[{target=HashSet alias=- wildcard=false cat=normal},{target=BTreeMap alias=Map wildcard=false cat=normal}]
+import 2 form=grouped module=std::io module_range=122..129 relative=- scope=0 range=118..154 items=[{target=self alias=- wildcard=false cat=normal},{target=Read alias=Reader wildcard=false cat=normal}]
+import 3 form=single module=- module_range=- relative=- scope=0 range=155..174 items=[{target=super::sibling alias=- wildcard=false cat=normal}]
+import 4 form=wildcard module=crate::root module_range=179..190 relative=- scope=0 range=175..194 items=[{target=* alias=- wildcard=true cat=normal}]
+import 5 form=single module=- module_range=- relative=- scope=0 range=195..218 items=[{target=self::local::Thing alias=- wildcard=false cat=normal}]

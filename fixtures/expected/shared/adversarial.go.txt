@@ -1,0 +1,43 @@
+file path=shared/adversarial.go lang=go bytes=991 lines=56 final_newline=true status=clean snapshot=snap-efada90fb0e316e9
+scope 0 kind=file parent=- name=- range=0..991 header=-
+scope 1 kind=struct parent=0 name=Duplicate range=208..226 header=208..218
+scope 2 kind=method parent=0 name=Name range=228..281 header=-
+scope 3 kind=struct parent=0 name=other range=288..302 header=288..294
+scope 4 kind=method parent=0 name=Name range=304..352 header=-
+scope 5 kind=function parent=0 name=Name range=354..395 header=-
+scope 6 kind=function parent=0 name=deepNesting range=443..610 header=-
+scope 7 kind=closure parent=6 name=- range=475..598 header=-
+scope 8 kind=closure parent=7 name=- range=496..584 header=-
+scope 9 kind=closure parent=8 name=- range=518..568 header=-
+scope 10 kind=closure parent=9 name=- range=541..550 header=-
+scope 11 kind=function parent=0 name=semanticallyInvalid range=691..767 header=-
+scope 12 kind=function parent=0 name=generated0001 range=799..822 header=-
+scope 13 kind=function parent=0 name=generated0002 range=823..846 header=-
+scope 14 kind=function parent=0 name=generated0003 range=847..870 header=-
+scope 15 kind=function parent=0 name=generated0004 range=871..894 header=-
+scope 16 kind=function parent=0 name=generated0005 range=895..918 header=-
+scope 17 kind=function parent=0 name=generated0006 range=919..942 header=-
+scope 18 kind=function parent=0 name=generated0007 range=943..966 header=-
+scope 19 kind=function parent=0 name=generated0008 range=967..990 header=-
+decl 0 kind=package name=adversarial scope=0 flags=[] range=139..158 name_range=147..158 body=- tests=[]
+decl 1 kind=struct name=Duplicate scope=0 flags=[] range=208..226 name_range=208..217 body=218..226 tests=[]
+decl 2 kind=method name=Name scope=0 flags=[receiver] range=228..281 name_range=247..251 body=261..281 tests=[]
+decl 3 kind=struct name=other scope=0 flags=[] range=288..302 name_range=288..293 body=294..302 tests=[]
+decl 4 kind=method name=Name scope=0 flags=[receiver] range=304..352 name_range=319..323 body=333..352 tests=[]
+decl 5 kind=function name=Name scope=0 flags=[] range=354..395 name_range=359..363 body=373..395 tests=[]
+decl 6 kind=function name=deepNesting scope=0 flags=[] range=443..610 name_range=448..459 body=462..610 tests=[]
+decl 7 kind=function name=semanticallyInvalid scope=0 flags=[] range=691..767 name_range=696..715 body=726..767 tests=[]
+decl 8 kind=function name=generated0001 scope=0 flags=[] range=799..822 name_range=804..817 body=820..822 tests=[]
+decl 9 kind=function name=generated0002 scope=0 flags=[] range=823..846 name_range=828..841 body=844..846 tests=[]
+decl 10 kind=function name=generated0003 scope=0 flags=[] range=847..870 name_range=852..865 body=868..870 tests=[]
+decl 11 kind=function name=generated0004 scope=0 flags=[] range=871..894 name_range=876..889 body=892..894 tests=[]
+decl 12 kind=function name=generated0005 scope=0 flags=[] range=895..918 name_range=900..913 body=916..918 tests=[]
+decl 13 kind=function name=generated0006 scope=0 flags=[] range=919..942 name_range=924..937 body=940..942 tests=[]
+decl 14 kind=function name=generated0007 scope=0 flags=[] range=943..966 name_range=948..961 body=964..966 tests=[]
+decl 15 kind=function name=generated0008 scope=0 flags=[] range=967..990 name_range=972..985 body=988..990 tests=[]
+ref 0 kind=receiver_type written=Duplicate scope=0 decl=2 range=236..245
+ref 1 kind=receiver_type written=other scope=0 decl=4 range=312..317
+call 0 form=plain_name callee=level4 scope=9 expr=555..563 callee_range=555..561 type_args=- dyn=false nullsafe=false
+call 1 form=plain_name callee=level3 scope=8 expr=572..580 callee_range=572..578 type_args=- dyn=false nullsafe=false
+call 2 form=plain_name callee=level2 scope=7 expr=587..595 callee_range=587..593 type_args=- dyn=false nullsafe=false
+call 3 form=plain_name callee=level1 scope=6 expr=600..608 callee_range=600..606 type_args=- dyn=false nullsafe=false

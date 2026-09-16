@@ -1,0 +1,16 @@
+file path=go/calls.go lang=go bytes=307 lines=18 final_newline=true status=clean snapshot=snap-fe4c1f59b11f365a
+scope 0 kind=file parent=- name=- range=0..307 header=-
+scope 1 kind=function parent=0 name=helper range=52..95 header=-
+scope 2 kind=function parent=0 name=calls range=97..306 header=-
+decl 0 kind=package name=fixture scope=0 flags=[] range=35..50 name_range=43..50 body=- tests=[]
+decl 1 kind=function name=helper scope=0 flags=[] range=52..95 name_range=57..63 body=78..95 tests=[]
+decl 2 kind=function name=calls scope=0 flags=[] range=97..306 name_range=102..107 body=121..306 tests=[]
+call 0 form=plain_name callee=helper scope=2 expr=124..136 callee_range=124..130 type_args=- dyn=false nullsafe=false
+call 1 form=member_selector callee=obj.Method scope=2 expr=138..154 callee_range=138..148 type_args=- dyn=false nullsafe=false
+call 2 form=plain_name callee=Map scope=2 expr=156..190 callee_range=156..159 type_args=[int, string] dyn=false nullsafe=false
+call 3 form=indirect callee=handlers[0] scope=2 expr=192..209 callee_range=192..203 type_args=- dyn=false nullsafe=false
+call 4 form=plain_name callee=getHandler scope=2 expr=211..223 callee_range=211..221 type_args=- dyn=false nullsafe=false
+call 5 form=indirect callee=getHandler() scope=2 expr=211..229 callee_range=211..223 type_args=- dyn=false nullsafe=false
+call 6 form=plain_name callee=helper scope=2 expr=234..246 callee_range=234..240 type_args=- dyn=false nullsafe=false
+call 7 form=plain_name callee=helper scope=2 expr=254..266 callee_range=254..260 type_args=- dyn=false nullsafe=false
+call 8 form=plain_name callee=int64 scope=2 expr=281..289 callee_range=281..286 type_args=- dyn=false nullsafe=false

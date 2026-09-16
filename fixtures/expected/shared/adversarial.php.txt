@@ -1,0 +1,39 @@
+file path=shared/adversarial.php lang=php bytes=1220 lines=81 final_newline=true status=clean snapshot=snap-2268b3be3e314d29
+scope 0 kind=file parent=- name=- range=0..1220 header=-
+scope 1 kind=namespace parent=0 name=App\\Adversarial range=148..174 header=-
+scope 2 kind=class parent=1 name=Duplicate range=219..310 header=219..235
+scope 3 kind=method parent=2 name=name range=241..308 header=-
+scope 4 kind=class parent=1 name=Other range=312..398 header=312..324
+scope 5 kind=method parent=4 name=name range=330..396 header=-
+scope 6 kind=trait parent=1 name=Naming range=400..487 header=400..413
+scope 7 kind=method parent=6 name=name range=419..485 header=-
+scope 8 kind=function parent=1 name=name range=489..539 header=-
+scope 9 kind=function parent=1 name=deepNesting range=587..891 header=-
+scope 10 kind=closure parent=9 name=- range=632..873 header=-
+scope 11 kind=closure parent=10 name=- range=664..847 header=-
+scope 12 kind=closure parent=11 name=- range=700..813 header=-
+scope 13 kind=closure parent=12 name=- range=740..771 header=-
+scope 14 kind=function parent=1 name=semanticallyInvalid range=972..1045 header=-
+scope 15 kind=function parent=1 name=generated0001 range=1077..1111 header=-
+scope 16 kind=function parent=1 name=generated0002 range=1113..1147 header=-
+scope 17 kind=function parent=1 name=generated0003 range=1149..1183 header=-
+scope 18 kind=function parent=1 name=generated0004 range=1185..1219 header=-
+decl 0 kind=namespace name=App\\Adversarial scope=0 flags=[] range=148..174 name_range=158..173 body=- tests=[]
+decl 1 kind=class name=Duplicate scope=1 flags=[] range=219..310 name_range=225..234 body=235..310 tests=[]
+decl 2 kind=method name=name scope=2 flags=[] range=241..308 name_range=257..261 body=276..308 tests=[]
+decl 3 kind=class name=Other scope=1 flags=[] range=312..398 name_range=318..323 body=324..398 tests=[]
+decl 4 kind=method name=name scope=4 flags=[] range=330..396 name_range=346..350 body=365..396 tests=[]
+decl 5 kind=trait name=Naming scope=1 flags=[] range=400..487 name_range=406..412 body=413..487 tests=[]
+decl 6 kind=method name=name scope=6 flags=[] range=419..485 name_range=435..439 body=454..485 tests=[]
+decl 7 kind=function name=name scope=1 flags=[] range=489..539 name_range=498..502 body=513..539 tests=[]
+decl 8 kind=function name=deepNesting scope=1 flags=[] range=587..891 name_range=596..607 body=616..891 tests=[]
+decl 9 kind=function name=semanticallyInvalid scope=1 flags=[] range=972..1045 name_range=981..1000 body=1012..1045 tests=[]
+decl 10 kind=function name=generated0001 scope=1 flags=[] range=1077..1111 name_range=1086..1099 body=1108..1111 tests=[]
+decl 11 kind=function name=generated0002 scope=1 flags=[] range=1113..1147 name_range=1122..1135 body=1144..1147 tests=[]
+decl 12 kind=function name=generated0003 scope=1 flags=[] range=1149..1183 name_range=1158..1171 body=1180..1183 tests=[]
+decl 13 kind=function name=generated0004 scope=1 flags=[] range=1185..1219 name_range=1194..1207 body=1216..1219 tests=[]
+call 0 form=indirect callee=$level4 scope=12 expr=789..798 callee_range=789..796 type_args=- dyn=true nullsafe=false
+call 1 form=indirect callee=$level3 scope=11 expr=827..836 callee_range=827..834 type_args=- dyn=true nullsafe=false
+call 2 form=indirect callee=$level2 scope=10 expr=857..866 callee_range=857..864 type_args=- dyn=true nullsafe=false
+call 3 form=indirect callee=$level1 scope=9 expr=879..888 callee_range=879..886 type_args=- dyn=true nullsafe=false
+call 4 form=explicit_construction callee=AlsoMissing scope=14 expr=1025..1042 callee_range=1029..1040 type_args=- dyn=false nullsafe=false

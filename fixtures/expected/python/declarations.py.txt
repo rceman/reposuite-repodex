@@ -1,0 +1,45 @@
+file path=python/declarations.py lang=python bytes=836 lines=50 final_newline=true status=clean snapshot=snap-0007baa311352641
+scope 0 kind=file parent=- name=- range=0..836 header=-
+scope 1 kind=class parent=0 name=Base range=319..556 header=-
+scope 2 kind=method parent=1 name=__init__ range=390..459 header=-
+scope 3 kind=method parent=1 name=fetch range=465..520 header=-
+scope 4 kind=method parent=1 name=helper range=526..556 header=-
+scope 5 kind=class parent=0 name=Child range=559..626 header=-
+scope 6 kind=method parent=5 name=method range=596..626 header=-
+scope 7 kind=function parent=0 name=top_async range=629..666 header=-
+scope 8 kind=function parent=0 name=top range=669..835 header=-
+scope 9 kind=function parent=8 name=nested range=735..761 header=-
+scope 10 kind=class parent=8 name=Nested range=767..793 header=-
+scope 11 kind=lambda parent=8 name=- range=805..820 header=-
+decl 0 kind=variable name=MODULE_X scope=0 flags=[] range=240..252 name_range=240..248 body=- tests=[]
+decl 1 kind=variable name=MODULE_Y scope=0 flags=[] range=253..270 name_range=253..261 body=- tests=[]
+decl 2 kind=constant name=MODULE_Z scope=0 flags=[] range=271..290 name_range=271..279 body=- tests=[]
+decl 3 kind=variable name=MODULE_A scope=0 flags=[] range=291..316 name_range=291..299 body=- tests=[]
+decl 4 kind=variable name=MODULE_B scope=0 flags=[] range=291..316 name_range=301..309 body=- tests=[]
+decl 5 kind=class name=Base scope=0 flags=[] range=319..556 name_range=360..364 body=370..556 tests=[]
+decl 6 kind=field name=class_attr scope=1 flags=[] range=370..384 name_range=370..380 body=- tests=[]
+decl 7 kind=method name=__init__ scope=1 flags=[] range=390..459 name_range=394..402 body=441..459 tests=[]
+decl 8 kind=method name=fetch scope=1 flags=[async] range=465..520 name_range=475..480 body=496..520 tests=[]
+decl 9 kind=method name=helper scope=1 flags=[] range=526..556 name_range=530..536 body=552..556 tests=[]
+decl 10 kind=class name=Child scope=0 flags=[] range=559..626 name_range=565..570 body=596..626 tests=[]
+decl 11 kind=method name=method scope=5 flags=[] range=596..626 name_range=600..606 body=622..626 tests=[]
+decl 12 kind=function name=top_async scope=0 flags=[async] range=629..666 name_range=639..648 body=662..666 tests=[]
+decl 13 kind=function name=top scope=0 flags=[] range=669..835 name_range=673..676 body=735..835 tests=[]
+decl 14 kind=function name=nested scope=8 flags=[] range=735..761 name_range=739..745 body=757..761 tests=[]
+decl 15 kind=class name=Nested scope=8 flags=[] range=767..793 name_range=773..779 body=789..793 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=61..70 items=[{target=os alias=- wildcard=false cat=normal}]
+import 1 form=grouped module=- module_range=- relative=- scope=0 range=71..85 items=[{target=os alias=- wildcard=false cat=normal},{target=sys alias=- wildcard=false cat=normal}]
+import 2 form=single module=- module_range=- relative=- scope=0 range=86..104 items=[{target=numpy alias=np wildcard=false cat=normal}]
+import 3 form=single module=- module_range=- relative=1 scope=0 range=105..126 items=[{target=sibling alias=- wildcard=false cat=normal}]
+import 4 form=single module=pkg module_range=134..137 relative=2 scope=0 range=127..150 items=[{target=thing alias=- wildcard=false cat=normal}]
+import 5 form=grouped module=pkg.sub module_range=156..163 relative=- scope=0 range=151..195 items=[{target=first alias=- wildcard=false cat=normal},{target=second alias=renamed wildcard=false cat=normal}]
+import 6 form=wildcard module=pkg module_range=201..204 relative=- scope=0 range=196..213 items=[{target=* alias=- wildcard=true cat=normal}]
+import 7 form=single module=typing module_range=219..225 relative=- scope=0 range=214..238 items=[{target=Final alias=- wildcard=false cat=normal}]
+ref 0 kind=decorator written=decorator scope=0 decl=- range=320..329
+ref 1 kind=decorator written=decorator_with_args scope=0 decl=- range=331..350
+ref 2 kind=base_class written=Base scope=0 decl=10 range=571..575
+ref 3 kind=base_class written=mixins.Other scope=0 decl=10 range=577..589
+call 0 form=plain_name callee=decorator_with_args scope=0 expr=331..353 callee_range=331..350 type_args=- dyn=false nullsafe=false
+call 1 form=plain_name callee=default_value scope=1 expr=415..430 callee_range=415..428 type_args=- dyn=false nullsafe=false
+call 2 form=plain_name callee=get_value scope=3 expr=509..520 callee_range=509..518 type_args=- dyn=false nullsafe=false
+call 3 form=plain_name callee=default_for_top scope=0 expr=682..699 callee_range=682..697 type_args=- dyn=false nullsafe=false

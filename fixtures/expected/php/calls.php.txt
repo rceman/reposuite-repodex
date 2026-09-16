@@ -1,0 +1,28 @@
+file path=php/calls.php lang=php bytes=716 lines=37 final_newline=true status=clean snapshot=snap-191a0d2d762221eb
+scope 0 kind=file parent=- name=- range=0..716 header=-
+scope 1 kind=namespace parent=0 name=App\\Calls range=7..27 header=-
+scope 2 kind=class parent=1 name=Widget range=29..195 header=29..42
+scope 3 kind=method parent=2 name=create range=48..124 header=-
+scope 4 kind=method parent=2 name=render range=130..193 header=-
+scope 5 kind=function parent=1 name=calls range=197..715 header=-
+scope 6 kind=closure parent=5 name=- range=500..567 header=-
+scope 7 kind=arrow_function parent=5 name=- range=582..607 header=-
+decl 0 kind=namespace name=App\\Calls scope=0 flags=[] range=7..27 name_range=17..26 body=- tests=[]
+decl 1 kind=class name=Widget scope=1 flags=[] range=29..195 name_range=35..41 body=42..195 tests=[]
+decl 2 kind=method name=create scope=2 flags=[static] range=48..124 name_range=71..77 body=90..124 tests=[]
+decl 3 kind=method name=render scope=2 flags=[] range=130..193 name_range=146..152 body=167..193 tests=[]
+decl 4 kind=function name=calls scope=1 flags=[] range=197..715 name_range=206..211 body=235..715 tests=[]
+ref 0 kind=first_class_callable written=strlen scope=5 decl=- range=472..478
+ref 1 kind=closure_capture written=$firstClass scope=6 decl=- range=523..534
+ref 2 kind=first_class_callable written=strlen scope=5 decl=- range=690..696
+call 0 form=explicit_construction callee=self scope=3 expr=107..117 callee_range=111..115 type_args=- dyn=false nullsafe=false
+call 1 form=plain_name callee=plainCall scope=5 expr=241..256 callee_range=241..250 type_args=- dyn=false nullsafe=false
+call 2 form=member_selector callee=$widget?->render scope=5 expr=262..280 callee_range=262..278 type_args=- dyn=false nullsafe=true
+call 3 form=member_selector callee=$widget->render scope=5 expr=286..303 callee_range=286..301 type_args=- dyn=false nullsafe=false
+call 4 form=static_scoped callee=Widget::create scope=5 expr=309..325 callee_range=309..323 type_args=- dyn=false nullsafe=false
+call 5 form=static_scoped callee=\\App\\Calls\\Widget::create scope=5 expr=331..358 callee_range=331..356 type_args=- dyn=false nullsafe=false
+call 6 form=indirect callee=$callable scope=5 expr=390..406 callee_range=390..399 type_args=- dyn=true nullsafe=false
+call 7 form=member_selector callee=$widget->{$name} scope=5 expr=434..452 callee_range=434..450 type_args=- dyn=true nullsafe=false
+call 8 form=explicit_construction callee=Widget scope=5 expr=624..636 callee_range=628..634 type_args=- dyn=false nullsafe=false
+call 9 form=plain_name callee=helperWithDefault scope=5 expr=655..674 callee_range=655..672 type_args=- dyn=false nullsafe=false
+call 10 form=indirect callee=strlen(...) scope=5 expr=690..712 callee_range=690..701 type_args=- dyn=true nullsafe=false

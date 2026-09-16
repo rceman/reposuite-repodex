@@ -1,0 +1,10 @@
+# Rust build output
+/target
+
+# Benchmark artifacts written by repodex-bench when it is pointed at the
+# repository instead of the runtime root.
+/benchmarks/
+
+# Editor and OS noise
+*.swp
+.DS_Store

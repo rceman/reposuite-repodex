@@ -1,0 +1,25 @@
+file path=php/boundaries.php lang=php bytes=571 lines=45 final_newline=true status=clean snapshot=snap-006d949c1eddcd04
+scope 0 kind=file parent=- name=- range=0..571 header=-
+scope 1 kind=namespace parent=0 name=App\\Boundaries range=20..45 header=-
+scope 2 kind=trait parent=1 name=First range=112..174 header=112..124
+scope 3 kind=method parent=2 name=shared range=130..172 header=-
+scope 4 kind=trait parent=1 name=Second range=176..239 header=176..189
+scope 5 kind=method parent=4 name=shared range=195..237 header=-
+scope 6 kind=class parent=1 name=Combined range=241..472 header=241..256
+scope 7 kind=method parent=6 name=dynamic range=373..470 header=-
+scope 8 kind=namespace parent=0 name=App\\Boundaries\\Second range=482..514 header=-
+scope 9 kind=function parent=8 name=inSecondRegion range=516..551 header=-
+decl 0 kind=namespace name=App\\Boundaries scope=0 flags=[] range=20..45 name_range=30..44 body=- tests=[]
+decl 1 kind=trait name=First scope=1 flags=[] range=112..174 name_range=118..123 body=124..174 tests=[]
+decl 2 kind=method name=shared scope=2 flags=[] range=130..172 name_range=146..152 body=165..172 tests=[]
+decl 3 kind=trait name=Second scope=1 flags=[] range=176..239 name_range=182..188 body=189..239 tests=[]
+decl 4 kind=method name=shared scope=4 flags=[] range=195..237 name_range=211..217 body=230..237 tests=[]
+decl 5 kind=class name=Combined scope=1 flags=[] range=241..472 name_range=247..255 body=256..472 tests=[]
+decl 6 kind=method name=dynamic scope=6 flags=[] range=373..470 name_range=389..396 body=409..470 tests=[]
+decl 7 kind=namespace name=App\\Boundaries\\Second scope=0 flags=[] range=482..514 name_range=492..513 body=- tests=[]
+decl 8 kind=function name=inSecondRegion scope=8 flags=[] range=516..551 name_range=525..539 body=548..551 tests=[]
+ref 0 kind=include_target written=__DIR__ . '/included.php' scope=1 decl=- range=55..80
+ref 1 kind=include_target written='required.php' scope=1 decl=- range=95..109
+ref 2 kind=trait_composition written=First scope=6 decl=- range=266..271
+ref 3 kind=trait_composition written=Second scope=6 decl=- range=273..279
+call 0 form=member_selector callee=$this->$method scope=7 expr=447..463 callee_range=447..461 type_args=- dyn=true nullsafe=false

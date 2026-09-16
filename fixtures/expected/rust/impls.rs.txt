@@ -1,0 +1,32 @@
+file path=rust/impls.rs lang=rust bytes=627 lines=40 final_newline=true status=clean snapshot=snap-a6fcf61097a5c4ae
+scope 0 kind=file parent=- name=- range=0..627 header=-
+scope 1 kind=trait parent=0 name=Describe range=106..220 header=106..121
+scope 2 kind=method parent=1 name=kind range=162..218 header=-
+scope 3 kind=impl parent=0 name=- range=222..342 header=222..234
+scope 4 kind=method parent=3 name=new range=240..279 header=-
+scope 5 kind=method parent=3 name=name range=285..340 header=-
+scope 6 kind=impl parent=0 name=- range=344..419 header=344..356
+scope 7 kind=method parent=6 name=name range=362..417 header=-
+scope 8 kind=impl parent=0 name=- range=421..524 header=421..446
+scope 9 kind=method parent=8 name=describe range=452..522 header=-
+scope 10 kind=impl parent=0 name=- range=526..626 header=526..551
+scope 11 kind=method parent=10 name=describe range=557..624 header=-
+decl 0 kind=struct name=Widget scope=0 flags=[] range=75..89 name_range=82..88 body=- tests=[]
+decl 1 kind=struct name=Gadget scope=0 flags=[] range=90..104 name_range=97..103 body=- tests=[]
+decl 2 kind=trait name=Describe scope=0 flags=[] range=106..220 name_range=112..120 body=121..220 tests=[]
+decl 3 kind=method name=describe scope=1 flags=[receiver] range=127..156 name_range=130..138 body=- tests=[]
+decl 4 kind=method name=kind scope=1 flags=[receiver,default] range=162..218 name_range=165..169 body=193..218 tests=[]
+decl 5 kind=method name=new scope=3 flags=[] range=240..279 name_range=243..246 body=257..279 tests=[]
+decl 6 kind=method name=name scope=3 flags=[receiver] range=285..340 name_range=288..292 body=316..340 tests=[]
+decl 7 kind=method name=name scope=6 flags=[receiver] range=362..417 name_range=365..369 body=393..417 tests=[]
+decl 8 kind=method name=describe scope=8 flags=[receiver] range=452..522 name_range=455..463 body=481..522 tests=[]
+decl 9 kind=method name=describe scope=10 flags=[receiver] range=557..624 name_range=560..568 body=586..624 tests=[]
+ref 0 kind=impl_target written=Widget scope=3 decl=- range=227..233
+ref 1 kind=impl_target written=Gadget scope=6 decl=- range=349..355
+ref 2 kind=impl_trait written=Describe scope=8 decl=- range=426..434
+ref 3 kind=impl_target written=Widget scope=8 decl=- range=439..445
+ref 4 kind=impl_trait written=Describe scope=10 decl=- range=531..539
+ref 5 kind=impl_target written=Gadget scope=10 decl=- range=544..550
+call 0 form=qualified_path callee=String::from scope=9 expr=491..516 callee_range=491..503 type_args=- dyn=false nullsafe=false
+call 1 form=member_selector callee=self.name scope=9 expr=504..515 callee_range=504..513 type_args=- dyn=false nullsafe=false
+call 2 form=qualified_path callee=String::from scope=11 expr=596..618 callee_range=596..608 type_args=- dyn=false nullsafe=false

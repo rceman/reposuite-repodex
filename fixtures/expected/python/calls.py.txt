@@ -1,0 +1,15 @@
+file path=python/calls.py lang=python bytes=315 lines=13 final_newline=true status=clean snapshot=snap-fd3edcbaeb20c0ba
+scope 0 kind=file parent=- name=- range=0..315 header=-
+scope 1 kind=function parent=0 name=calls range=44..314 header=-
+decl 0 kind=function name=calls scope=0 flags=[] range=44..314 name_range=48..53 body=61..314 tests=[]
+call 0 form=plain_name callee=plain scope=1 expr=61..72 callee_range=61..66 type_args=- dyn=false nullsafe=false
+call 1 form=member_selector callee=obj.attribute_call scope=1 expr=77..98 callee_range=77..95 type_args=- dyn=false nullsafe=false
+call 2 form=member_selector callee=obj.chained scope=1 expr=103..116 callee_range=103..114 type_args=- dyn=false nullsafe=false
+call 3 form=member_selector callee=obj.chained().call scope=1 expr=103..124 callee_range=103..121 type_args=- dyn=false nullsafe=false
+call 4 form=plain_name callee=get_callable scope=1 expr=140..154 callee_range=140..152 type_args=- dyn=false nullsafe=false
+call 5 form=plain_name callee=indirect scope=1 expr=159..170 callee_range=159..167 type_args=- dyn=false nullsafe=false
+call 6 form=plain_name callee=getattr scope=1 expr=175..197 callee_range=175..182 type_args=- dyn=false nullsafe=false
+call 7 form=indirect callee=getattr(obj, "method") scope=1 expr=175..200 callee_range=175..197 type_args=- dyn=false nullsafe=false
+call 8 form=plain_name callee=render scope=1 expr=219..228 callee_range=219..225 type_args=- dyn=false nullsafe=false
+call 9 form=plain_name callee=transform scope=1 expr=245..257 callee_range=245..254 type_args=- dyn=false nullsafe=false
+call 10 form=plain_name callee=len scope=1 expr=303..314 callee_range=303..306 type_args=- dyn=false nullsafe=false
