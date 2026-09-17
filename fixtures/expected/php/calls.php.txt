@@ -1,17 +1,21 @@
-file schema=1 path=php/calls.php lang=php bytes=716 lines=37 final_newline=true status=clean snapshot=snap-191a0d2d762221eb
-scope 0 kind=file parent=- name=- range=0..716 (0:0..37:0) header=- lang=php
+file schema=1 path=php/calls.php lang=php bytes=1375 lines=54 final_newline=true status=clean snapshot=snap-07d20d30dcea260b
+scope 0 kind=file parent=- name=- range=0..1375 (0:0..54:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Calls range=7..27 (2:0..2:20) header=- lang=php
 scope 2 kind=class parent=1 name=Widget range=29..195 (4:0..15:1) header=29..42 (4:0..5:0) lang=php
 scope 3 kind=method parent=2 name=create range=48..124 (6:4..9:5) header=- lang=php
 scope 4 kind=method parent=2 name=render range=130..193 (11:4..14:5) header=- lang=php
-scope 5 kind=function parent=1 name=calls range=197..715 (17:0..36:1) header=- lang=php
+scope 5 kind=function parent=1 name=calls range=197..1374 (17:0..53:1) header=- lang=php
 scope 6 kind=closure parent=5 name=- range=500..567 (29:15..31:5) header=- lang=php
 scope 7 kind=arrow_function parent=5 name=- range=582..607 (32:13..32:38) header=- lang=php
-decl 0 kind=namespace name=App\\Calls scope=0 flags=[] range=7..27 (2:0..2:20) name_range=17..26 (2:10..2:19) body=- lang=php path=php/calls.php snapshot=snap-191a0d2d762221eb tests=[]
-decl 1 kind=class name=Widget scope=1 flags=[] range=29..195 (4:0..15:1) name_range=35..41 (4:6..4:12) body=42..195 (5:0..15:1) lang=php path=php/calls.php snapshot=snap-191a0d2d762221eb tests=[]
-decl 2 kind=method name=create scope=2 flags=[static] range=48..124 (6:4..9:5) name_range=71..77 (6:27..6:33) body=90..124 (7:4..9:5) lang=php path=php/calls.php snapshot=snap-191a0d2d762221eb tests=[]
-decl 3 kind=method name=render scope=2 flags=[] range=130..193 (11:4..14:5) name_range=146..152 (11:20..11:26) body=167..193 (12:4..14:5) lang=php path=php/calls.php snapshot=snap-191a0d2d762221eb tests=[]
-decl 4 kind=function name=calls scope=1 flags=[] range=197..715 (17:0..36:1) name_range=206..211 (17:9..17:14) body=235..715 (18:0..36:1) lang=php path=php/calls.php snapshot=snap-191a0d2d762221eb tests=[]
+scope 8 kind=method parent=5 name=count range=980..1050 (40:8..43:9) header=- lang=php
+scope 9 kind=method parent=5 name=count range=1295..1365 (48:8..51:9) header=- lang=php
+decl 0 kind=namespace name=App\\Calls scope=0 flags=[] range=7..27 (2:0..2:20) name_range=17..26 (2:10..2:19) body=- lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 1 kind=class name=Widget scope=1 flags=[] range=29..195 (4:0..15:1) name_range=35..41 (4:6..4:12) body=42..195 (5:0..15:1) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 2 kind=method name=create scope=2 flags=[static] range=48..124 (6:4..9:5) name_range=71..77 (6:27..6:33) body=90..124 (7:4..9:5) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 3 kind=method name=render scope=2 flags=[] range=130..193 (11:4..14:5) name_range=146..152 (11:20..11:26) body=167..193 (12:4..14:5) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 4 kind=function name=calls scope=1 flags=[] range=197..1374 (17:0..53:1) name_range=206..211 (17:9..17:14) body=235..1374 (18:0..53:1) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 5 kind=method name=count scope=5 flags=[] range=980..1050 (40:8..43:9) name_range=996..1001 (40:24..40:29) body=1017..1050 (41:8..43:9) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
+decl 6 kind=method name=count scope=5 flags=[] range=1295..1365 (48:8..51:9) name_range=1311..1316 (48:24..48:29) body=1332..1365 (49:8..51:9) lang=php path=php/calls.php snapshot=snap-07d20d30dcea260b tests=[]
 ref 0 kind=first_class_callable written=strlen scope=5 decl=- range=472..478 (28:18..28:24)
 ref 1 kind=closure_capture written=$firstClass scope=6 decl=- range=523..534 (29:38..29:49)
 ref 2 kind=first_class_callable written=strlen scope=5 decl=- range=690..696 (35:14..35:20)
@@ -26,3 +30,5 @@ call 7 form=member_selector callee=$widget->{$name} scope=5 expr=434..452 (27:4.
 call 8 form=explicit_construction callee=Widget scope=5 expr=624..636 (33:15..33:27) callee_range=628..634 (33:19..33:25) type_args=- type_args_range=- dyn=false nullsafe=false
 call 9 form=plain_name callee=helperWithDefault scope=5 expr=655..674 (34:17..34:36) callee_range=655..672 (34:17..34:34) type_args=- type_args_range=- dyn=false nullsafe=false
 call 10 form=indirect callee=strlen(...) scope=5 expr=690..712 (35:14..35:36) callee_range=690..701 (35:14..35:25) type_args=- type_args_range=- dyn=true nullsafe=false
+call 11 form=explicit_construction callee=class scope=5 expr=936..1056 (39:17..44:5) callee_range=940..945 (39:21..39:26) type_args=- type_args_range=- dyn=true nullsafe=false
+call 12 form=explicit_construction callee=class scope=5 expr=1236..1371 (47:18..52:5) callee_range=1255..1260 (47:37..47:42) type_args=- type_args_range=- dyn=true nullsafe=false

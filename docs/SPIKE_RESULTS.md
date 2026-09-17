@@ -4,7 +4,29 @@ Observed results only. Nothing in this document is extrapolated, and nothing
 compares RepoDex against another implementation.
 
 ```text
-status: FOUNDATION_SPIKE_COMPLETE
+TASK 1 status:                  FOUNDATION_SPIKE_COMPLETE
+TASK 2 validation status:       VALIDATION_COMPLETE
+TASK 2 architecture verdict:    CONDITIONAL_GO
+TASK 1 commit validated:        4a6e8e3fe88be068932279b3bf896c731c812859
+```
+
+**TASK 2 validates the TASK 1 foundation.** Sections 1–12 below are the TASK 1
+baseline results. The TASK 2 validation campaign — corpus manifest, per-language
+parsing/recovery, extraction audit, range validation, determinism, incremental
+correctness, performance, memory and retention, open findings, decision and
+TASK 3 readiness — is in **Part II** at the end of this document. The findings
+log with stable IDs is `docs/TASK2_FINDINGS.md`; the itemized TASK 2 final report
+is `docs/TASK2_FINAL_REPORT.md`; the pre-registered plan is
+`docs/TASK2_VALIDATION_PLAN.md`.
+
+TASK 2 changed one production file (`src/parser/php.rs`, finding F003). The
+boundary is unchanged:
+
+```text
+source bytes
+→ Tree-sitter
+→ language adapter
+→ normalized unresolved syntax facts
 ```
 
 This document describes the **corrected** TASK 1 snapshot. Two independent
@@ -906,10 +928,13 @@ a_query_error_is_not_reported_as_a_match_limit_exhaustion
             ever produced; both assertions were negative assertions about a
             diagnostic that cannot occur
   now       renamed `a_match_limit_exhaustion_is_reported_only_as_a_match_limit_exhaustion`
-            and rewritten to assert a real contrast: the same tree is `Recovered`
-            through the production scanner and `Incomplete` with exactly one
-            recovery-failure diagnostic through a scanner whose limit is low
-            enough to abandon captures.
+            and rewritten to assert a real contrast: the same tree does not
+            report a truncation through the production scanner (the control
+            asserts `not Incomplete`, not `Recovered`) and is `Incomplete` with
+            exactly one recovery-failure diagnostic through a scanner whose
+            limit is low enough to abandon captures. `Recovered` on the
+            production scanner is pinned separately by
+            `the_production_recovery_query_cannot_exhaust_the_pool`.
   root cause
             `RecoveryError::Query` is not produced by any code path. A query that
             fails to compile is rejected by `with_query_source` while an adapter
@@ -1019,3 +1044,629 @@ such comparison was performed.
   measured, and the incremental edit is asserted to be valid for the language.
   A stage can therefore not silently become an error-recovery measurement, which
   is exactly what happened in the first run at nested depth 600 for Python.
+
+---
+
+# Part II — TASK 2 Validation
+
+## 13. Executive summary
+
+TASK 2 validated the TASK 1 foundation commit
+`4a6e8e3fe88be068932279b3bf896c731c812859` against a pinned, manifest-backed
+corpus of 2.42M LOC across four languages, and against a synthetic performance
+matrix.
+
+The foundation holds. Across 19,165 visited files there were **zero parser
+failures, zero extraction failures and zero read failures**; among the 11,054
+files that parsed, the recovery rate was **0.163%** (18 files), and every
+recovery was a known grammar limitation or an intentional malformed fixture.
+Determinism, incremental equivalence and source-range exactness all held on real
+repositories.
+
+One genuine defect was found and fixed: **F003**, a systematic PHP
+anonymous-class callee-range corruption affecting 569 facts in 182 files. It was
+fixed, regression-tested, and re-verified to zero across the corpus.
+
+Two Rust grammar boundaries were quantified and documented (**F001**, **F002**);
+neither is an adapter defect and neither is fixable inside the syntax-only
+boundary.
+
+The verdict is **CONDITIONAL_GO** (§35). No unresolved BLOCKER or HIGH finding
+remains.
+
+## 14. TASK 1 commit validated
+
+```text
+4a6e8e3fe88be068932279b3bf896c731c812859
+Gate Unix-only tests and correct overstated TASK 1 claims
+```
+
+The mandatory TASK 1 verification was rerun on this exact commit before any
+TASK 2 benchmark or audit: all five gates passed (155 tests at that point), and
+every TASK 1 capability was present. Only after that were the two non-blocking
+documentation cleanups applied (see `docs/TASK2_FINAL_REPORT.md`).
+
+## 15. Validation status
+
+```text
+VALIDATION_COMPLETE
+```
+
+Every mandatory evidence class required by `task2.md` was produced and recorded.
+What was *not* measured is listed explicitly in the TASK 2 final report; nothing in this document
+infers a result that was not observed.
+
+## 16. Architecture recommendation
+
+```text
+CONDITIONAL_GO
+```
+
+See §35 for the exact evidence behind this verdict.
+
+## 17. Environment
+
+From `environment.json` in the run directory:
+
+```text
+platform:        Linux (WSL2), x86_64 — not native Windows
+distro:          Ubuntu 24.04.1 LTS
+kernel:          6.18.33.2-microsoft-standard-WSL2
+cpu:             Intel(R) Core(TM) i9-9900K @ 3.60GHz, 8 logical CPUs
+ram:             15,603 MiB
+rustc:           1.93.1 (01f6ddf75 2026-02-11)
+cargo:           1.93.1 (083ac5135 2025-12-15)
+tree-sitter:     0.27.0
+tree-sitter-rust: 0.24.2   tree-sitter-go: 0.25.0
+tree-sitter-python: 0.25.0 tree-sitter-php: 0.24.2
+build profile:   release for benchmarks/scans, debug for tests
+scanner threads: 1 (single-threaded scans)
+file-size limit: 8,388,608 bytes (8 MiB), overridable
+ignore policy:   root-scoped .gitignore only (optional); global git ignore,
+                 global excludes, parent-directory ignores outside the root and
+                 developer-specific git config are NOT consulted
+```
+
+Ignore policy was verified empirically: files matched by a global gitignore
+outside the root were still visited, and only a root `.gitignore` (with
+`--no-gitignore` off) affected the scan.
+
+## 18. Corpus manifest
+
+Committed manifest: `benchmarks/corpora.json`
+(`schema: reposuite-repodex/task2-corpora/1`). It pins repository URL, revision,
+license, source scope, exclusions and observed size per corpus. Local checkout
+paths are supplied externally through environment variables and are **not**
+committed.
+
+Public corpora (pinned shallow clones):
+
+```text
+rust    BurntSushi/ripgrep    clap-rs/clap       serde-rs/serde     tokio-rs/tokio
+go      gin-gonic/gin         spf13/cobra        gohugoio/hugo
+python  pallets/flask         psf/requests       django/django
+php     laravel/framework     composer/composer  symfony/console
+```
+
+User-owned corpora (revisions pinned, paths external):
+
+```text
+local:repodex             go     old Go RepoDex implementation
+local:gpt-tunnel-gateway  go     user-owned Go service
+local:vps_desk            python user-owned Python tool
+local:reposuite-repodex   rust   RepoDex self-scan
+```
+
+Per-language observed volume, all above the 150k LOC requirement:
+
+```text
+language  files  bytes       LOC
+rust      1,510  12,052,157   381,770
+go        2,094  12,630,410   421,647
+python    4,110  31,159,438   866,844
+php       4,095  24,699,053   752,336
+total    11,809  80,541,058  2,422,597
+```
+
+Baseline scan aggregate (single-threaded, one pass over every corpus):
+
+```text
+language  visited  supported  clean  recovered  unsupported
+go          4,047      2,140   2,140          0        1,907
+php         5,047      4,053   4,052          1          994
+python      7,874      3,341   3,341          0        4,533
+rust        2,197      1,520   1,503         17          677
+total      19,165     11,054  11,036         18        8,111
+```
+
+```text
+parser failures:    0
+extraction failures: 0
+read failures:      0
+recovery among parsed files: 18 / 11,054 = 0.163%
+processing coverage:        11,054 / 19,165 = 57.7%
+```
+
+Facts produced across the corpus:
+
+```text
+declarations: 180,109   imports: 41,508   references: 38,794
+calls:        696,545   test candidates: 44,754
+processed bytes: ~68 MiB
+```
+
+The 18 recoveries are 17 Rust files (13 from F001 in clap `tests/**`, plus 4
+intentional `malformed.rs` fixture runs) and 1 PHP file. No recovery is
+unexplained.
+
+## 19. Extraction audit methodology
+
+Audit regions were **frozen before any RepoDex output was inspected**. Two files
+per language were selected by a rule that uses only line counts and path names,
+never RepoDex predictions:
+
+```text
+per language: the largest corpus by supported files; the sorted supported-file
+list; drop paths under config|locale|migrations|fixtures|testdata|vendor|
+node_modules|third_party|generated; then take the first two files at or above a
+line-count threshold.
+```
+
+The frozen selection is recorded in `audit/frozen-regions.json`. Two checks were
+run per region:
+
+```text
+precision  every fact RepoDex emits must have a range whose bytes exist in the
+           source and whose recorded (row, column) is the true position
+recall     occurrences enumerated independently by regex/text search must not
+           include anything RepoDex failed to predict (a lower bound on recall)
+```
+
+For each region the audit recorded the number of predicted declarations,
+imports and calls, the number of range mismatches, and the number of
+independently-found occurrences that RepoDex did **not** predict
+(`not_predicted`). Results are in `audit/extraction-audit.json`.
+
+## 20. Extraction audit results
+
+```text
+language  file                        status  decl(pred/mismatch/indep)  import  call(pred/mismatch)  test  not_predicted
+rust      tokio benches/copy.rs       clean   31 / 0 / 25                7 / 7   81 / 0             0/0   0
+rust      tokio rt_multi_threaded.rs  clean   19 / 0 / 19                7 / 7  126 / 0             0/0   0
+go        gpt-tunnel main.go          clean   26 / 0 / 20                1 / 1  113 / 0             0/0   0
+go        gpt-tunnel ..._test.go     clean   18 / 0 /  2                1 / 1  102 / 0             1/0   0
+python    django apps/config.py       clean   13 / 0 / 11                7 / 7   55 / 0             0/0   0
+python    django __init__.py          clean   36 / 0 / 27               11 /11   89 / 0             0/0   0
+php       laravel Gate.php            clean   54 / 0 / 43               14 /15  167 / 0             0/0   0
+php       laravel AuthManager.php     clean   25 / 0 / 19                7 / 8   45 / 0             0/0   0
+```
+
+`not_predicted` is empty in every region: the independent enumeration found
+nothing RepoDex missed, so there is no observed false negative in the audit
+sample. `range_mismatch` is 0 for every declaration and every call.
+
+`indep_found < predicted` for declarations is expected and is not a recall
+failure: the independent check is a deliberately conservative lower bound (it
+recognises fewer declaration forms than the adapter). What matters is that it
+never found something the adapter missed.
+
+Two apparent discrepancies were investigated and both were artifacts of the
+independent check, not adapter defects:
+
+* PHP `Gate.php` — the independent check counted 15 `use` lines, RepoDex 14.
+  The 15th was a trait composition inside the class body
+  (`use HandlesAuthorization;`), which is not a namespace import. RepoDex was
+  correct. Recorded as **F004**.
+* Go — a helper `_test.go` file with no `func Test…` was flagged by a
+  filename-only check. RepoDex emitted a filename-convention test candidate,
+  which is the documented behaviour. Recorded as **F005**.
+
+A manual call-recall check was also done on a hand-read window of each language:
+in the Rust window, hand enumeration found 14 calls where RepoDex reported 13.
+The missing call was nested inside a macro argument and is the **F002** grammar
+boundary, not an oversight.
+
+## 21. Rust
+
+**Parsing / recovery.** 2,197 visited, 1,520 supported, 1,503 clean, 17
+recovered, 0 parser failures. All 17 recoveries are explained: 13 are **F001**
+(a primitive-type name used as a macro name, in clap `tests/**`) and 4 are the
+intentional `malformed.rs` fixture runs. Recovery rate 1.1% of supported files,
+entirely from one known grammar limitation.
+
+**Extraction audit.** `tokio benches/copy.rs` and `rt_multi_threaded.rs`: 0 range
+mismatches, 0 `not_predicted`. 19,309 macro-invocation calls were recorded
+corpus-wide; 12,199 macro invocations had argument text that looked like a call
+— an upper bound on the **F002** boundary.
+
+**Ranges.** 80 files / 10,733 ranges / 0 bad.
+
+**Determinism.** Tokio was not in the three-run set; determinism was confirmed on
+django, laravel and hugo (§29) and across checkout roots for flask and cobra.
+Tokio's digest was stable across the 5 end-to-end runs used for timing.
+
+**Performance.** See §26 and §27.
+
+**Incremental.** Covered by the shared real-file incremental test (§30) and the
+synthetic matrix (§26).
+
+**Memory.** Tokio/Rust end-to-end peak RSS 30,132 KiB (29.4 MiB); retention A/B/C
+in §33.
+
+**Limitations.** **F001** and **F002**.
+
+## 22. Go
+
+**Parsing / recovery.** 4,047 visited, 2,140 supported, 2,140 clean, 0
+recovered, 0 parser failures. Go is the only language with a zero recovery rate
+on the corpus.
+
+**Extraction audit.** `gpt-tunnel main.go` and a `_test.go` file: 0 range
+mismatches, 0 `not_predicted`. The Go test candidate in the `_test.go` file is
+filename-convention evidence (**F005**).
+
+**Ranges.** 80 files / 15,993 ranges / 0 bad; 4 files contain multibyte content.
+
+**Determinism.** Hugo digest identical across 3 runs (§29); cobra identical
+across two different checkout roots.
+
+**Performance.** Hugo (Go, 912 files, 230,409 LOC): median 2,266.8 ms,
+402.3 files/s, 2.62 MiB/s, 101.6 kLOC/s.
+
+**Memory.** Hugo end-to-end peak RSS 32,480 KiB (31.7 MiB); retention A/B/C in
+§33.
+
+**Limitations.** None observed in the audit sample.
+
+## 23. Python
+
+**Parsing / recovery.** 7,874 visited, 3,341 supported, 3,341 clean, 0
+recovered, 0 parser failures.
+
+**Extraction audit.** `django apps/config.py` and `__init__.py`: 0 range
+mismatches, 0 `not_predicted`.
+
+**Ranges.** 80 files / 2,326 ranges / 0 bad; 7 files contain multibyte content —
+the most of any language in the sample.
+
+**Determinism.** Django: 2,932 files, 297,050 facts, digest
+`fnv1a64:0b54ce97af0cf2fb`, identical across 3 full canonical runs (§29).
+
+**Performance.** Django (2,932 files, 526,612 LOC): median 6,098.7 ms,
+480.8 files/s, 3.03 MiB/s, 86.3 kLOC/s.
+
+**Memory.** Django end-to-end peak RSS 104,876 KiB (102.4 MiB); retention A/B/C
+in §33.
+
+**Limitations.** None observed. The 4,533 unsupported Python files are mostly
+non-`.py` content in the checkouts (templates, data, vendored trees), not
+parser failures.
+
+## 24. PHP
+
+**Parsing / recovery.** 5,047 visited, 4,053 supported, 4,052 clean, 1
+recovered, 0 parser failures. The single recovery is a malformed file.
+
+**Extraction audit.** `laravel Gate.php` and `AuthManager.php`: 0 range
+mismatches, 0 `not_predicted`. The `Gate.php` import count difference is **F004**
+(a trait composition, not an import).
+
+**Ranges.** 80 files / 7,006 ranges / 0 bad; 1 file contains multibyte content.
+
+**Determinism.** Laravel: 3,086 files, digest `fnv1a64:205500ee5ee155a7`,
+identical across 3 full canonical runs (§29).
+
+**Performance.** Laravel (3,086 files, 562,801 LOC): median 5,021.3 ms,
+614.6 files/s, 3.38 MiB/s, 112.1 kLOC/s — the fastest language by kLOC/s.
+
+**Memory.** Laravel end-to-end peak RSS 123,920 KiB (121.0 MiB) — the highest of
+the four, consistent with the largest per-file ASTs; retention A/B/C in §33.
+
+**Limitations fixed / found.** **F003**, the anonymous-class callee-range bug,
+was found in this language and fixed.
+
+### F003 — the PHP anonymous-class range fix
+
+Before the fix, every PHP anonymous-class construction used
+`callee_written = "class"` with a `callee_range` covering the whole
+`anonymous_class` node (e.g. `146..900` for a five-byte name). Corpus-wide:
+
+```text
+                      pre-fix   post-fix
+PHP files scanned      4,095     4,095
+anonymous-class facts    569       569
+incorrect callee ranges  569         0
+affected files           182         0
+```
+
+The first correction (range the `class` keyword) reduced the count to 9; the
+remaining 9 were attributed anonymous classes (`new #[Queue('x')] class ...`),
+where the node begins at `#[`. Locating the `class` direct child fixed those
+too. Regression test:
+`tests/php_adapter.rs::anonymous_class_construction_ranges_only_the_keyword`,
+covering both a plain and an attributed anonymous class. See
+`docs/TASK2_FINDINGS.md` F003 and `diagnostics/F003-php-anonymous-class.txt`.
+
+## 25. Cross-language comparison
+
+```text
+language  visited  supported  clean  recovered  recovery%  parse-failures
+go          4,047      2,140   2,140          0      0.00%  0
+php         5,047      4,053   4,052          1      0.02%  0
+python      7,874      3,341   3,341          0      0.00%  0
+rust        2,197      1,520   1,503         17      1.12%  0
+```
+
+```text
+language  kLOC/s  MiB/s  peak RSS (end-to-end)  ranges checked  bad ranges
+php        112.1   3.38   121.0 MiB              7,006           0
+go         101.6   2.62    31.7 MiB             15,993           0
+python      86.3   3.03   102.4 MiB              2,326           0
+rust        83.1   2.50    29.4 MiB             10,733           0
+```
+
+Rust is the slowest by kLOC/s and has the only material recovery rate, both
+attributable to Rust's macro-heavy corpus and the F001/F002 grammar boundaries.
+Go has the lowest memory footprint; PHP and Python peak higher, tracking their
+larger per-file ASTs.
+
+## 26. Stage performance analysis (synthetic matrix)
+
+Synthetic artifacts:
+`~/reposuite/repodex/benchmarks/task2-validation-20260917T101413Z-synthetic/`
+(`results.txt`, `results.json`). The matrix separates discovery/read, parser
+initialisation, raw parse, normalized extraction, and the combined stages, so a
+slow stage can be attributed rather than averaged away.
+
+Representative full parse + extraction:
+
+```text
+rust  100 KiB   ~22.4 ms
+rust    1 MiB  ~255.6 ms
+php     4 MiB  ~1,331.9 ms
+```
+
+The stage split shows that extraction is a substantial share of the combined
+cost, not a rounding error — which is why the incremental end-to-end gain in
+§31 is far smaller than the parse-only gain.
+
+The default 8 MiB file-size guard behaved correctly in the matrix: an over-limit
+file was rejected under the default limit and processed when the limit was
+raised. §32 confirms this on real files at the exact boundary.
+
+## 27. Real repository full-scan results
+
+Five fresh processes per corpus, single-threaded, release build. Combined
+campaign: **8,838 files, 55.2 MiB, 1,764,320 LOC, 824,781 facts.**
+
+```text
+corpus                  lang    files     LOC     median ms  files/s  MiB/s  kLOC/s
+public:laravel/framework php    3,086   562,801    5,021.3   614.6    3.38   112.1
+public:django/django     python 2,932   526,612    6,098.7   480.8    3.03    86.3
+public:gohugoio/hugo     go       912   230,409    2,266.8   402.3    2.62   101.6
+public:tokio-rs/tokio    rust     799   183,416    2,206.4   362.1    2.50    83.1
+public:composer/composer php      589   133,843    2,086.2   282.3    2.19    64.2
+public:clap-rs/clap      rust     338    84,668      925.5   365.2    2.68    91.5
+public:gin-gonic/gin     go        99    24,226      296.6   333.8    2.23    81.7
+public:pallets/flask     python    83    18,345      176.6   470.1    3.18   103.9
+```
+
+Five single repositories exceed 150k LOC (laravel, django, hugo, tokio, and the
+local `vps_desk` Python tool at 309,855 LOC), so the single-repository size
+requirement is met without a synthetic collection.
+
+## 28. Throughput denominators
+
+Throughput is reported against **supported files that were actually processed**,
+not against visited files. Every corpus above is a single language, so the
+denominator is the number of files of that language in the checkout. MiB/s uses
+processed source bytes, not file-system allocation. kLOC/s uses the same LOC
+counts as the corpus manifest. Synthetic sources are regular and repetitive and
+are likely friendlier than real code to both the parser and the extractor, so the
+synthetic figures in §26 are an optimistic bound, not a target.
+
+## 29. Determinism validation
+
+Three full canonical scans each, comparing both the top-level canonical digest
+and the complete fact signature:
+
+```text
+corpus                files   digest                    runs  distinct digests  distinct signatures
+django/django         2,932   fnv1a64:0b54ce97af0cf2fb    3        1                 1
+laravel/framework     3,086   fnv1a64:205500ee5ee155a7    3        1                 1
+gohugoio/hugo           912   fnv1a64:9d4beccaf8bbfafc    3        1                 1
+```
+
+The same contents scanned from two different checkout roots produced identical
+digests and identical complete fact signatures:
+
+```text
+pallets/flask   rootA = rootB = fnv1a64:3ee14e1e50449c3c
+spf13/cobra     rootA = rootB = fnv1a64:8c7d031ead80281c
+```
+
+Canonical output is therefore independent of run and of checkout path. Evidence:
+`diagnostics/determinism.txt`.
+
+## 30. Real-file incremental correctness
+
+`tests/task2_real_incremental.rs` drives the incremental API over real corpus
+files: **12 real files, 8 comparisons each** (single edits of several kinds plus
+a multi-step edit sequence), asserting that the incremental result is equivalent
+to an independent fresh parse+extract of the edited bytes. All comparisons were
+equivalent. The test has an explicit skip path when `REPODEX_TASK2_CORPUS_DIR`
+is unset, so the default suite passes without the corpus; the skip path itself
+was exercised and passes.
+
+## 31. Incremental performance
+
+Incremental parsing reuses the previous tree, but extraction re-processes the
+whole file, so the end-to-end gain is bounded:
+
+```text
+stage                            rust 100 KiB    php 1 MiB
+fresh parse                          12.845 ms    215.740 ms
+incremental parse only                0.675 ms      6.783 ms   (~19×, ~32×)
+fresh parse + extraction             22.431 ms    414.228 ms
+incremental parse + extraction       10.745 ms    156.137 ms   (~2.1×, ~2.7×)
+```
+
+Recorded as **F007**: TASK 3 must not assume a large end-to-end incremental
+speedup while extraction remains whole-file.
+
+## 32. Large / deep workload results
+
+Evidence: `diagnostics/large-deep.txt`.
+
+```text
+exactly 8 MiB (8,388,608 bytes), default guard:  accepted, status recovered
+  (a valid over-limit-free file is processed at the exact limit)
+
+8,388,609 bytes (one over), default guard:      status unsupported, exit 1,
+  diagnostic: file_too_large — "larger than the configured maximum of 8388608
+  bytes (the read was truncated after 8388609 bytes)"; bounded read (0 bytes
+  retained); no panic
+
+8,388,609 bytes, --max-file-size 16777216:      processed, status recovered
+
+deep nesting: 500 nested `if true {` levels,
+  1,003 lines, 1,006,026 bytes:                 status clean, no stack overflow,
+  no panic; 1 declaration recovered at scope (file)
+```
+
+The file-size guard refuses clearly and never panics; raising the limit is an
+explicit operator action.
+
+## 33. Process memory and retention A/B/C
+
+Peak RSS of the end-to-end scan processes (`/usr/bin/time -v`, `Maximum resident
+set size`):
+
+```text
+tokio/rust     30,132 KiB   29.4 MiB
+hugo/go        32,480 KiB   31.7 MiB
+django/python 104,876 KiB  102.4 MiB
+laravel/php   123,920 KiB  121.0 MiB
+```
+
+The retention experiment (`examples/retention.rs`) parses and extracts a whole
+corpus in three variants that differ only in what is kept alive after each
+file's facts are produced:
+
+```text
+A  release the tree and the source buffer
+B  retain the trees, release the source buffers
+C  retain the trees and the source buffers
+```
+
+Each variant runs in its own process; peak RSS is the kernel high-water mark
+(`VmHWM`). Evidence: `memory/retention-abc.txt`.
+
+```text
+corpus   variant  files  bytes       facts    retained trees  sources  peak RSS
+tokio    A          874  5,793,899   62,373        0            0       10.4 MiB
+tokio    B          874  5,793,899   62,373      799            0      164.0 MiB
+tokio    C          874  5,793,899   62,373      799          799      169.6 MiB
+hugo     A        2,568  6,236,812   73,233        0            0        9.2 MiB
+hugo     B        2,568  6,236,812   73,233      912            0      158.6 MiB
+hugo     C        2,568  6,236,812   73,233      912          912      164.5 MiB
+django   A        7,091 19,402,248  278,589        0            0       20.8 MiB
+django   B        7,091 19,402,248  278,589    2,932            0      518.2 MiB
+django   C        7,091 19,402,248  278,589    2,932        2,932      536.8 MiB
+laravel  A        3,411 17,817,062  266,600        0            0       36.2 MiB
+laravel  B        3,411 17,817,062  266,600    3,095            0      650.5 MiB
+laravel  C        3,411 17,817,062  266,600    3,095        3,095      667.5 MiB
+```
+
+Two conclusions:
+
+1. **Fact counts are identical across A, B and C** in every language, so
+   retention changes memory only, never output.
+2. **Retaining trees dominates memory** (~15–18× over variant A); additionally
+   retaining sources adds roughly the size of those buffers (~5–19 MiB). The
+   B→C delta matches the source byte count in every case.
+
+Recorded as **F006**: a TASK 3 repository map that retains a tree per file will
+not scale. Trees must be released after extraction, or a bounded retention
+window used.
+
+## 34. Open findings
+
+Full log with stable IDs: `docs/TASK2_FINDINGS.md`.
+
+```text
+F001  GRAMMAR / MEDIUM    Rust rejects a primitive-type name as a macro name — grammar
+                          limitation, correctly reported as recovery
+F002  EXTRACTION / MEDIUM Calls nested in Rust macro arguments are not extracted —
+                          grammar-inherent recall boundary, documented policy
+F003  RANGE / HIGH        PHP anonymous-class callee range — FIXED, regression-tested
+F004  EXTRACTION / INFO   PHP trait `use` is not an import — not a defect
+F005  EXTRACTION / INFO   Go `_test.go` filename evidence — not a defect
+F006  MEMORY / INFO       Tree retention dominates memory — TASK 3 input
+F007  PERFORMANCE / INFO  Incremental extraction is whole-file — TASK 3 input
+F008  MODEL / MEDIUM      RecoveryError::Query declared but not producible — carried
+                          from TASK 1
+```
+
+No unresolved BLOCKER or HIGH finding remains.
+
+## 35. Decision
+
+```text
+architecture_recommendation: CONDITIONAL_GO
+```
+
+The evidence:
+
+* The boundary held: syntax-shaped facts only, no semantic resolution, no
+  cross-file resolution, no repository map, no LSP, no compiler integration.
+* Real parsing is broadly reliable: 0 parser failures, 0 extraction failures,
+  0.163% recovery among parsed files, all recoveries explained.
+* All four adapters are substantive (extraction audit: 0 range mismatches, 0
+  independently-found misses in every region).
+* Canonical output is deterministic across runs and checkout roots.
+* Incremental and fresh extraction agree on real files.
+* Source ranges are exact on 320 real files and 26 CRLF conversions, including
+  multibyte content.
+* One genuine defect (F003) was found, fixed, regression-tested and re-verified.
+
+The conditionality is the two quantified Rust grammar boundaries (**F001**,
+**F002**) and the two TASK 3 design inputs (**F006** tree retention, **F007**
+whole-file extraction). None is a foundation blocker; each constrains how TASK 3
+may be built. This is why the verdict is `CONDITIONAL_GO` rather than `GO`.
+
+## 36. TASK 3 readiness
+
+TASK 3 can proceed, under the constraints recorded above:
+
+```text
+* do not retain a tree per file for the whole repository (F006)
+* do not assume incremental extraction is cheap (F007)
+* keep Rust macro recall boundaries visible rather than silently absent (F001, F002)
+* keep recovery and grammar limitations explicit in any new layer
+```
+
+The smallest useful TASK 3 is a **bounded, non-retaining repository pass** that
+consumes the existing normalized syntax facts and produces a per-file,
+deterministic index — no semantic resolution, no resolved call graph, no
+retained trees — so that the next layer is built on validated, deterministic
+facts rather than on unresolved assumptions.
+
+## 37. Reproducibility
+
+```text
+RepoDex SHA validated:   4a6e8e3fe88be068932279b3bf896c731c812859
+corpus manifest:         benchmarks/corpora.json (pinned revisions, no local paths)
+range-validation script: scripts/task2_range_validation.py
+retention harness:       examples/retention.rs
+validation plan:         docs/TASK2_VALIDATION_PLAN.md
+                         (plan sha256 recorded in the run directory)
+run directory:           ~/reposuite/repodex/benchmarks/<run-id>/
+  environment.json  corpora.json  raw-results.jsonl  end-to-end.json
+  verification.txt  memory/  diagnostics/  audit/
+```
+
+Corpus roots are supplied externally through environment variables; no
+machine-specific absolute path is committed. The synthetic and end-to-end
+numbers in this document were produced after the F003 fix, so no pre-change
+performance is reported as post-change evidence.

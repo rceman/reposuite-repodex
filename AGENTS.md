@@ -133,6 +133,26 @@ cargo run --release --bin repodex-bench -- --language all --size all
 sources are deterministic, live in a temporary directory and are removed on exit.
 Record observed numbers in `docs/SPIKE_RESULTS.md`; never invent them.
 
+## TASK 2 validation tooling
+
+```bash
+# source-range validation over a real corpus (no machine-specific path committed)
+python3 scripts/task2_range_validation.py \
+    --binary ./target/release/reposuite-repodex \
+    --root "$CORPUS" --language rust --limit 80
+
+# tree/source retention A/B/C memory experiment (Linux; peak 0 elsewhere)
+cargo run --release --example retention -- "$CORPUS" A
+
+# real-file incremental equivalence; skips cleanly when the corpus is absent
+REPODEX_TASK2_CORPUS_DIR="$CORPUS" cargo test --locked --test task2_real_incremental
+```
+
+The pinned corpus manifest is `benchmarks/corpora.json`; local checkout paths are
+supplied externally through environment variables and are never committed. Raw
+benchmark output stays under `~/reposuite/repodex/benchmarks/<run-id>/` and is
+not committed.
+
 ## Project rules
 
 * Facts stay unresolved and source-grounded. No resolved symbols, no resolved

@@ -823,15 +823,27 @@ fn emit_construction(builder: &mut FactBuilder<'_>, node: Node) {
         return;
     };
     let dynamic = !matches!(target.kind(), "name" | "qualified_name" | "relative_name");
-    let written = if target.kind() == "anonymous_class" {
-        "class".to_string()
+    // An anonymous class has no name, so the written callee is the `class`
+    // keyword alone. The `anonymous_class` node spans everything from any
+    // leading attribute list through the whole `class ... { ... }` body, so its
+    // range would make a five-byte callee claim the entire declaration. The
+    // range must cover exactly the keyword token.
+    let (written, callee_range) = if target.kind() == "anonymous_class" {
+        let mut cursor = target.walk();
+        let Some(keyword) = target
+            .children(&mut cursor)
+            .find(|child| child.kind() == "class")
+        else {
+            return;
+        };
+        ("class".to_string(), builder.range(keyword))
     } else {
-        builder.text(target).to_string()
+        (builder.text(target).to_string(), builder.range(target))
     };
     builder.push_call(
         CallLikeForm::ExplicitConstruction,
         written,
-        builder.range(target),
+        callee_range,
         builder.range(node),
         None,
         dynamic,

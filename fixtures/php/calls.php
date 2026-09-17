@@ -34,4 +34,21 @@ function calls(?Widget $widget): void
     $created = new Widget();
     $defaulted = helperWithDefault();
     $nested = strlen(...)($callable);
+    // An anonymous class has no name. The callee is the `class` keyword alone,
+    // and its range must cover exactly those five bytes even though the
+    // `anonymous_class` node spans the whole body.
+    $anonymous = new class() implements \Countable {
+        public function count(): int
+        {
+            return 0;
+        }
+    };
+    // An attribute list precedes `class`, so the `anonymous_class` node starts
+    // at `#[`, not at the keyword. The callee range must still be the keyword.
+    $attributed = new #[Marker('x')] class() implements \Countable {
+        public function count(): int
+        {
+            return 1;
+        }
+    };
 }

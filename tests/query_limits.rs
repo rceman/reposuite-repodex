@@ -226,8 +226,17 @@ fn a_query_that_cannot_compile_is_rejected() {
 /// error.
 ///
 /// The contrast is real, not vacuous: the same source through the same
-/// orchestration path is `Recovered` with the production scanner and
-/// `Incomplete` with a scanner whose limit is low enough to abandon captures.
+/// orchestration path does not report a truncation with the production scanner
+/// and does report one, as `Incomplete`, with a scanner whose limit is low
+/// enough to abandon captures.
+///
+/// The control below asserts `not Incomplete` and `no match-limit diagnostic`.
+/// It does not assert `Recovered`: over this nested source the production
+/// scanner happens to recover, but the claim this test needs is only that it
+/// does not report a truncated scan. The test that pins `Recovered` on the
+/// production scanner is
+/// `the_production_recovery_query_cannot_exhaust_the_pool`.
+///
 /// (The `RecoveryError::Query` variant is not produced by any code path today —
 /// see its documentation — so no assertion here claims to exercise it.)
 #[test]
@@ -236,7 +245,9 @@ fn a_match_limit_exhaustion_is_reported_only_as_a_match_limit_exhaustion() {
     let (registry, tree) = parse(LanguageId::Rust, &source);
     let ts_language = registry.adapter(LanguageId::Rust).ts_language();
 
-    // Control: the production scanner over the same tree only recovers.
+    // Control: the production scanner over the same tree must not report a
+    // truncated scan. The assertions below establish "not Incomplete" and "no
+    // match-limit diagnostic"; they do not establish "Recovered".
     let adapter = registry.adapter(LanguageId::Rust);
     let mut builder = FactBuilder::new("nested.rs", LanguageId::Rust, source.as_bytes());
     let file_range: SourceRange = range_from_offsets(source.as_bytes(), 0, source.len() as u32);

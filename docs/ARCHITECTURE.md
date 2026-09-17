@@ -64,6 +64,14 @@ RepoDex therefore never:
 * expands macros or evaluates `cfg`/build tags;
 * claims that a test runner would collect a candidate test.
 
+Two consequences of the macro policy are measured and documented as TASK 2
+findings F001 and F002: Tree-sitter-rust represents macro arguments as flat
+token trees with no expression subtree, so calls written *inside* a macro's
+arguments are not extracted (F002), and a primitive-type name used as a macro
+name (`str!`, `u32!`, …) is rejected by the grammar and reported as a recovered
+parse rather than silently accepted (F001). RepoDex reports both explicitly and
+never hides them behind a clean status.
+
 ### PHP callable and construction syntax
 
 These three PHP forms are different constructs and RepoDex keeps them apart:
@@ -300,6 +308,16 @@ line-start table with binary-search lookup. The first implementation scanned the
 source for every derived range, which made extraction quadratic in file size;
 `tests/ranges.rs` pins `LineIndex` against an independent reference
 implementation so the optimisation cannot change what a range means.
+
+TASK 2 validated ranges on real files: 320 corpus files (36,058 ranges) and 26
+LF→CRLF conversions (1,388 ranges), including multibyte content, all source-exact
+with zero bad ranges. That validation found one genuine defect, **F003**: PHP
+anonymous-class construction used `callee_written = "class"` but a `callee_range`
+covering the whole `anonymous_class` node (569 facts in 182 files). It is fixed
+by narrowing the callee range to the `class` keyword — robust to attributed
+anonymous classes, whose node begins at `#[` — and pinned by
+`tests/php_adapter.rs::anonymous_class_construction_ranges_only_the_keyword`.
+See `docs/TASK2_FINDINGS.md`.
 
 ## Determinism
 

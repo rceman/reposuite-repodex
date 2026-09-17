@@ -107,6 +107,22 @@ attribute semantics                 not extracted; only `test` attributes are
 negative/async trait impls          impl scope and refs only, as written
 ```
 
+Two measured consequences of the macro policy (TASK 2 findings F001, F002):
+
+```text
+calls inside macro arguments        NOT extracted. tree-sitter-rust represents
+                                    macro arguments as a `token_tree` of flat
+                                    tokens with no expression subtree, so
+                                    `assert!(f())` records `assert!` but not `f`.
+                                    Corpus-wide upper bound: 12,199 of 19,309
+                                    macro invocations had call-like argument text.
+primitive type as a macro name      REJECTED by the grammar. `str![]`, `u32![]`,
+                                    `bool![]`, `char![]`, `usize![]`, `f64![]`,
+                                    `i8![]` produce an ERROR node, while `foo![]`
+                                    and `vec![]` parse cleanly. The file is
+                                    reported as recovered, never as clean.
+```
+
 ### Recovery
 
 ```text
@@ -153,8 +169,10 @@ test evidence  function_name_convention (Test/Benchmark prefix rules),
     as a call-like occurrence, with the `type_conversion` form label and the
     exact range of its written type arguments. RepoDex does not decide which
     reading is correct.
-  * `Generic[int, string](value)` parses as `call_expression` with
-    `type_arguments`, and is reported as call-like with the `plain_name` form.
+  * `Generic[int, string](value)` still has one call argument, so the grammar
+    still calls it a `type_conversion_expression` and it is reported as
+    call-like with the `type_conversion` form and `[int, string]` as its
+    type arguments. The number of *type* arguments is not the discriminator.
   * `pkg.Generic[int](value)` and `obj.Generic[int](value)` parse as
     `type_conversion_expression` and are reported as call-like with the
     `type_conversion` form.
@@ -311,6 +329,14 @@ test evidence  function_name_convention (test prefix), attribute (#[Test])
   `member_selector`.
 * `new self()`, `new static()` and `new Widget()` are all
   `explicit_construction` with the written callee text.
+* An anonymous class construction (`new class ... { ... }`) is
+  `explicit_construction` with `callee_written = "class"` and a `callee_range`
+  covering exactly the five-byte `class` keyword, while `expression_range` covers
+  the whole construction including the body. This is true for attributed
+  anonymous classes too (`new #[Queue('x')] class extends ...`), whose
+  `anonymous_class` node begins at `#[`. Before TASK 2 the callee range covered
+  the whole class node; that was finding **F003** and is now fixed and pinned by
+  `tests/php_adapter.rs::anonymous_class_construction_ranges_only_the_keyword`.
 * Trait adaptations (`insteadof`, `as`) parse cleanly; the adaptation clause
   itself produces no facts, and the composed trait names produce
   `trait_composition` references.

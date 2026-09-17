@@ -1,0 +1,334 @@
+{
+  "schema": "reposuite-repodex/task2-corpora/1",
+  "task1_commit_validated": "4a6e8e3fe88be068932279b3bf896c731c812859",
+  "note": "Local absolute paths are supplied externally via environment variables and are not canonical configuration.",
+  "corpora": [
+    {
+      "id": "public:BurntSushi/ripgrep",
+      "kind": "public",
+      "language": "rust",
+      "repository_url": "https://github.com/BurntSushi/ripgrep.git",
+      "pinned_revision": "3fce3b5bb0236da2df6d99672afb8a719642eca7",
+      "license": "MIT",
+      "source_scope": "whole checkout; rust files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 110,
+        "bytes": 1902104,
+        "loc": 56386
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:clap-rs/clap",
+      "kind": "public",
+      "language": "rust",
+      "repository_url": "https://github.com/clap-rs/clap.git",
+      "pinned_revision": "2cb76fdf385396f86f37af49784504da560b6e47",
+      "license": "Apache-2.0",
+      "source_scope": "whole checkout; rust files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 337,
+        "bytes": 2595314,
+        "loc": 84668
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:serde-rs/serde",
+      "kind": "public",
+      "language": "rust",
+      "repository_url": "https://github.com/serde-rs/serde.git",
+      "pinned_revision": "a874a1b1bb1cc16cf5ee3b1b7b527af5705742bb",
+      "license": "Apache-2.0",
+      "source_scope": "whole checkout; rust files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 208,
+        "bytes": 1246220,
+        "loc": 42623
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:tokio-rs/tokio",
+      "kind": "public",
+      "language": "rust",
+      "repository_url": "https://github.com/tokio-rs/tokio.git",
+      "pinned_revision": "17fd9801fb121d809b44f28c3a787b96c443926e",
+      "license": "MIT",
+      "source_scope": "whole checkout; rust files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 799,
+        "bytes": 5793899,
+        "loc": 183416
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:gin-gonic/gin",
+      "kind": "public",
+      "language": "go",
+      "repository_url": "https://github.com/gin-gonic/gin.git",
+      "pinned_revision": "5c6a15f8f9566612076bd209e623861bf92a6283",
+      "license": "MIT",
+      "source_scope": "whole checkout; go files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 99,
+        "bytes": 694082,
+        "loc": 24226
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:spf13/cobra",
+      "kind": "public",
+      "language": "go",
+      "repository_url": "https://github.com/spf13/cobra.git",
+      "pinned_revision": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+      "license": "Apache-2.0",
+      "source_scope": "whole checkout; go files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 36,
+        "bytes": 512600,
+        "loc": 16765
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:gohugoio/hugo",
+      "kind": "public",
+      "language": "go",
+      "repository_url": "https://github.com/gohugoio/hugo.git",
+      "pinned_revision": "ec57bb7d348989513b919c7ea9ff08fed0bec327",
+      "license": "Apache-2.0",
+      "source_scope": "whole checkout; go files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 912,
+        "bytes": 6236812,
+        "loc": 230409
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:pallets/flask",
+      "kind": "public",
+      "language": "python",
+      "repository_url": "https://github.com/pallets/flask.git",
+      "pinned_revision": "d73fa1cdcbd8b1465c151db8924ba58b1dd14e35",
+      "license": "MIT",
+      "source_scope": "whole checkout; python files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 83,
+        "bytes": 589437,
+        "loc": 18345
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:psf/requests",
+      "kind": "public",
+      "language": "python",
+      "repository_url": "https://github.com/psf/requests.git",
+      "pinned_revision": "dae7ef63b4df6eded86637f251fc4e3a06c3b479",
+      "license": "Apache-2.0",
+      "source_scope": "whole checkout; python files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 37,
+        "bytes": 407127,
+        "loc": 12032
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:django/django",
+      "kind": "public",
+      "language": "python",
+      "repository_url": "https://github.com/django/django.git",
+      "pinned_revision": "8cbdd4a814397f81adf0129288f32b615bd1f94f",
+      "license": "MIT",
+      "source_scope": "whole checkout; python files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 2932,
+        "bytes": 19402248,
+        "loc": 526612
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:laravel/framework",
+      "kind": "public",
+      "language": "php",
+      "repository_url": "https://github.com/laravel/framework.git",
+      "pinned_revision": "59991e451171afe5d6164599d5d2def5461d33a0",
+      "license": "MIT",
+      "source_scope": "whole checkout; php files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 3095,
+        "bytes": 17817062,
+        "loc": 562801
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:composer/composer",
+      "kind": "public",
+      "language": "php",
+      "repository_url": "https://github.com/composer/composer.git",
+      "pinned_revision": "85ae0251528d5f155548868e637ef6c68ed5be6b",
+      "license": "MIT",
+      "source_scope": "whole checkout; php files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 622,
+        "bytes": 4904238,
+        "loc": 133843
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "public:symfony/console",
+      "kind": "public",
+      "language": "php",
+      "repository_url": "https://github.com/symfony/console.git",
+      "pinned_revision": "de53cc95f326bea88098c0d1be4443011d2cab3c",
+      "license": "MIT",
+      "source_scope": "whole checkout; php files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "observed": {
+        "language_files": 378,
+        "bytes": 1977753,
+        "loc": 55692
+      },
+      "notes": "shallow clone at pinned revision; reproduce with git fetch --depth 1 origin <sha> && git checkout <sha>"
+    },
+    {
+      "id": "local:repodex",
+      "kind": "user-owned",
+      "language": "go",
+      "repository_url": "local",
+      "pinned_revision": "e6dff2d826ab9c28fec07acba76a20eee4626fc1",
+      "license": "user-owned",
+      "source_scope": "go files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "dirty (1 entries)",
+      "local_path_env": "REPODEX_CORPUS_<ID>",
+      "observed": {
+        "language_files": 175,
+        "bytes": 821575,
+        "loc": 32066
+      },
+      "notes": "old Go RepoDex implementation"
+    },
+    {
+      "id": "local:reposuite-repodex",
+      "kind": "user-owned",
+      "language": "rust",
+      "repository_url": "local",
+      "pinned_revision": "4a6e8e3fe88be068932279b3bf896c731c812859",
+      "license": "user-owned",
+      "source_scope": "rust files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "dirty (4 entries)",
+      "local_path_env": "REPODEX_CORPUS_<ID>",
+      "observed": {
+        "language_files": 56,
+        "bytes": 514620,
+        "loc": 14677
+      },
+      "notes": "RepoDex self-scan"
+    },
+    {
+      "id": "local:gpt-tunnel-gateway",
+      "kind": "user-owned",
+      "language": "go",
+      "repository_url": "local",
+      "pinned_revision": "2067e104f9b423c641f229cbd8313a64876dfe32",
+      "license": "user-owned",
+      "source_scope": "go files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "local_path_env": "REPODEX_CORPUS_<ID>",
+      "observed": {
+        "language_files": 872,
+        "bytes": 4365341,
+        "loc": 118181
+      },
+      "notes": "user-owned Go service"
+    },
+    {
+      "id": "local:vps_desk",
+      "kind": "user-owned",
+      "language": "python",
+      "repository_url": "local",
+      "pinned_revision": "2083c428ad8adfaee4af3ad5755734e7cd92091d",
+      "license": "user-owned",
+      "source_scope": "python files only",
+      "exclusions": [
+        "VCS metadata"
+      ],
+      "dirty_state": "clean",
+      "local_path_env": "REPODEX_CORPUS_<ID>",
+      "observed": {
+        "language_files": 1058,
+        "bytes": 10760626,
+        "loc": 309855
+      },
+      "notes": "user-owned Python tool"
+    }
+  ]
+}

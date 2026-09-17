@@ -2,8 +2,10 @@
 /target
 
 # Benchmark artifacts written by repodex-bench when it is pointed at the
-# repository instead of the runtime root.
-/benchmarks/
+# repository instead of the runtime root. The pinned corpus manifest is small,
+# stable and canonical, so it stays tracked.
+/benchmarks/*
+!/benchmarks/corpora.json
 
 # Editor and OS noise
 *.swp

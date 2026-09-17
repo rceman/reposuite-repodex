@@ -3,10 +3,12 @@
 mod support;
 
 use repodex::{
-    CallLikeForm, DeclarationFlag, DeclarationKind, ImportCategory, ReferenceKind, ScopeKind,
+    CallLikeForm, DeclarationFlag, DeclarationKind, ImportCategory, LanguageId, ReferenceKind,
+    ScopeKind,
 };
 use support::{
-    analyze_fixture, call_summary, declaration_summary, reference_summary, slice, test_evidence,
+    analyze_fixture, analyze_source, call_summary, declaration_summary, fixture, reference_summary,
+    slice, test_evidence,
 };
 
 #[test]
@@ -156,6 +158,8 @@ fn call_forms_cover_required_shapes() {
             "explicit_construction Widget dyn=false nullsafe=false",
             "plain_name helperWithDefault dyn=false nullsafe=false",
             "indirect strlen(...) dyn=true nullsafe=false",
+            "explicit_construction class dyn=true nullsafe=false",
+            "explicit_construction class dyn=true nullsafe=false",
         ]
     );
     let nullsafe = analysis
@@ -171,8 +175,50 @@ fn call_forms_cover_required_shapes() {
             .iter()
             .filter(|call| call.dynamic_callee)
             .count(),
-        3
+        5
     );
+}
+
+/// An anonymous class has no name, so the written callee is the `class` keyword
+/// alone. The `anonymous_class` node spans from any leading attribute list
+/// through the whole `class ... { ... }` body, so a callee range taken from
+/// that node would make a five-byte name claim the entire declaration. The
+/// range must cover exactly the keyword, with and without attributes.
+#[test]
+fn anonymous_class_construction_ranges_only_the_keyword() {
+    let source = std::fs::read(fixture("php/calls.php")).expect("fixture must be readable");
+    let analysis = analyze_source(LanguageId::Php, "calls.php", &source);
+    let anonymous: Vec<_> = analysis
+        .calls
+        .iter()
+        .filter(|call| call.callee_written == "class")
+        .collect();
+    // One plain and one attributed anonymous class, so neither path can regress
+    // unnoticed.
+    assert_eq!(
+        anonymous.len(),
+        2,
+        "the fixture builds two anonymous classes"
+    );
+    for call in anonymous {
+        assert_eq!(call.form, CallLikeForm::ExplicitConstruction);
+        let start = call.callee_range.byte_start as usize;
+        let end = call.callee_range.byte_end as usize;
+        assert_eq!(
+            end - start,
+            "class".len(),
+            "the callee range must be exactly the keyword"
+        );
+        assert_eq!(&source[start..end], b"class");
+        // The expression really does span the class body, so the two ranges are
+        // genuinely different and this test is not vacuous.
+        let expr_start = call.expression_range.byte_start as usize;
+        let expr_end = call.expression_range.byte_end as usize;
+        assert!(
+            expr_end - expr_start > 40,
+            "the construction expression must span the anonymous class body"
+        );
+    }
 }
 
 #[test]

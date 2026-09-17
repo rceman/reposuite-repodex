@@ -9,8 +9,8 @@ information.
 
 ## What this repository currently is
 
-This repository is the **TASK 1 foundation spike**. It establishes one pipeline
-and stops there:
+This repository is the **TASK 1 foundation spike**, validated by **TASK 2**. It
+establishes one pipeline and stops there:
 
 ```text
 repository files
@@ -19,6 +19,21 @@ repository files
     -> language-specific extraction
     -> normalized unresolved syntax facts
 ```
+
+```text
+TASK 1 status:               FOUNDATION_SPIKE_COMPLETE
+TASK 1 commit validated:     4a6e8e3fe88be068932279b3bf896c731c812859
+TASK 2 validation status:    VALIDATION_COMPLETE
+TASK 2 architecture verdict: CONDITIONAL_GO
+```
+
+TASK 2 validated the foundation against 2.42M LOC across Go, PHP, Python and
+Rust: zero parser, extraction and read failures; 0.163% recovery among parsed
+files; source-exact ranges; deterministic canonical output; and incremental
+equivalence on real files. It found and fixed one genuine defect (a PHP
+anonymous-class source-range bug, F003) and quantified two Rust grammar
+boundaries (F001, F002). See `docs/TASK2_FINAL_REPORT.md`,
+`docs/TASK2_FINDINGS.md` and `docs/SPIKE_RESULTS.md` Part II.
 
 Everything downstream of that is deliberately absent:
 
@@ -263,6 +278,12 @@ missing/unreadable file -> per-file failure diagnostic
   graphs or runtime claims.
 * Macros are not expanded, `cfg` and build tags are not evaluated, so
   macro-generated declarations do not exist in the model.
+* Calls written inside Rust macro arguments are not extracted, because
+  Tree-sitter-rust represents macro arguments as flat token trees with no
+  expression subtree (TASK 2 finding F002).
+* Tree-sitter-rust rejects a primitive-type name used as a macro name (`str!`,
+  `u32!`, …); such files are reported as recovered, not silently accepted
+  (TASK 2 finding F001).
 * Go conversions and generic instantiations are reported exactly as the grammar
   shapes them; see `docs/LANGUAGE_SPIKE.md`.
 * A recovered parse keeps neighboring declarations, but recovery may consume
@@ -275,7 +296,10 @@ missing/unreadable file -> per-file failure diagnostic
 ## Documentation
 
 ```text
-docs/ARCHITECTURE.md    layers, model, ranges, determinism, what Tree-sitter does not give
-docs/LANGUAGE_SPIKE.md  per-language grammar, strategy, quirks and unsupported constructs
-docs/SPIKE_RESULTS.md   observed results only, plus NOT MEASURED YET markers
+docs/ARCHITECTURE.md        layers, model, ranges, determinism, what Tree-sitter does not give
+docs/LANGUAGE_SPIKE.md      per-language grammar, strategy, quirks and unsupported constructs
+docs/SPIKE_RESULTS.md       observed results only; TASK 1 baseline (sections 1-12) and TASK 2 validation (Part II)
+docs/TASK2_VALIDATION_PLAN.md  the pre-registered TASK 2 validation plan
+docs/TASK2_FINDINGS.md      TASK 2 findings log with stable IDs (F001..F008)
+docs/TASK2_FINAL_REPORT.md  the itemized TASK 2 final report
 ```
