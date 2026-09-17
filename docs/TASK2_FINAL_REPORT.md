@@ -46,6 +46,12 @@ Validate TASK 1 foundation and fix the PHP anonymous-class range
 
 26d2bb9e2a40dbcfe4c910c68795b71c955885a4
 Complete the TASK 2 extraction-quality audit and reissue GO
+
+cfdbfe945fe491f4c2acee4be4483555f836932c
+Record the audit-completion commit SHA in the final report
+
+4021a3a1b46f9f286dfbb10eae12a3e391f416c1
+Close the TASK 2 validation-evidence gaps at occurrence level
 ```
 
 ## 5. Corpora evaluated
@@ -843,3 +849,8 @@ macro boundaries, F009 documentation, F008 unproduced model variant, F006/F007
 TASK 3 design inputs) are MEDIUM/INFO and constrain TASK 3, not the foundation.
 
 **TASK 3**: may proceed. TASK 3 was not started in this pass.
+
+**Commit**: `4021a3a1b46f9f286dfbb10eae12a3e391f416c1` — "Close the TASK 2
+validation-evidence gaps at occurrence level". Created on top of
+`cfdbfe945fe491f4c2acee4be4483555f836932c`; no prior commit was amended; not
+pushed.
