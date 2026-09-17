@@ -349,6 +349,117 @@ fn crlf_sensitive_edit_stays_equivalent() {
     }
 }
 
+/// Go requires the same CRLF coverage as Rust. The point of the case is that an
+/// edit whose new text contains `\r\n` must produce a tree and a normalized
+/// analysis identical to a fresh parse of the same bytes: the row/column points
+/// of every node shift, so a comparator that ignored points would not notice a
+/// divergence.
+#[test]
+fn go_crlf_sensitive_edit_stays_equivalent() {
+    let crlf_source = GO_SOURCE.replace('\n', "\r\n");
+    assert!(crlf_source.contains("\r\n"));
+    let mut harness = Harness::new(LanguageId::Go);
+    let helper = crlf_source.find("func helper").expect("helper");
+    let test_helper = crlf_source.find("func TestHelper").expect("TestHelper");
+    // Edits are applied in descending offset order, so every offset computed
+    // against the original source stays valid for the whole sequence.
+    let edits = vec![
+        // Append a CRLF-terminated declaration at EOF.
+        TextEdit::insert(
+            crlf_source.len(),
+            "\r\nfunc tail() int {\r\n\treturn 1\r\n}\r\n",
+        ),
+        // Replace one CRLF with a bare LF, so the file ends up with mixed line
+        // endings. Row/column points shift for everything after this point.
+        TextEdit::replace(test_helper - 2, test_helper, "\n"),
+        // Same-length identifier rename.
+        TextEdit::replace(helper + 5, helper + 11, "helprr"),
+        // Insert a CRLF-terminated comment before the function.
+        TextEdit::insert(helper, "// inserted\r\n"),
+    ];
+    let outcomes = harness.run_sequence("sample.go", &crlf_source, &edits);
+    assert_eq!(outcomes.len(), 4);
+    for (index, outcome) in outcomes.iter().enumerate() {
+        assert_equivalent(&format!("go crlf edit {index}"), outcome);
+        // The comparator must actually be looking at points, not only bytes.
+        assert!(
+            outcome.tree_structure_equal,
+            "go crlf edit {index}: trees must agree on kinds, bytes, points, \
+             namedness, field names and recovery state"
+        );
+    }
+    // The final state is a real Go file with the appended function, and it is
+    // clean: none of the edits damaged the syntax.
+    let final_analysis = &outcomes[3].incremental;
+    assert!(final_analysis
+        .declarations
+        .iter()
+        .any(|declaration| declaration.name == "tail"));
+    assert!(final_analysis
+        .declarations
+        .iter()
+        .any(|declaration| declaration.name == "helprr"));
+    assert_eq!(final_analysis.status, repodex::AnalysisStatus::Clean);
+    assert!(final_analysis.recovery_regions.is_empty());
+}
+
+/// Go requires the same introduce-error → repair coverage as Rust. The damaged
+/// and repaired states are asserted explicitly; this is not just an arbitrary
+/// multi-edit chain.
+#[test]
+fn go_introducing_and_repairing_a_syntax_error_converges() {
+    let start = GO_SOURCE.find("func helper").expect("helper");
+    let mut harness = Harness::new(LanguageId::Go);
+    // `func helper(input int) int {` -> drop the opening brace, leaving the
+    // function header without a body.
+    let brace = GO_SOURCE[start..].find('{').expect("brace") + start;
+    let edits = vec![
+        TextEdit::replace(brace, brace + 1, ""),
+        TextEdit::insert(brace, "{"),
+    ];
+    let outcomes = harness.run_sequence("sample.go", GO_SOURCE, &edits);
+    assert_eq!(outcomes.len(), 2);
+
+    // Damaged state.
+    assert_equivalent("go break", &outcomes[0]);
+    assert_eq!(
+        outcomes[0].incremental.status,
+        repodex::AnalysisStatus::Recovered,
+        "removing the body brace must produce a recovered parse"
+    );
+    assert!(
+        !outcomes[0].incremental.recovery_regions.is_empty(),
+        "the damaged step must report at least one recovery region"
+    );
+    assert!(
+        outcomes[0].incremental.error_count() > 0,
+        "the damaged step must report at least one error diagnostic"
+    );
+
+    // Repaired state.
+    assert_equivalent("go repair", &outcomes[1]);
+    assert_eq!(
+        outcomes[1].incremental.status,
+        repodex::AnalysisStatus::Clean,
+        "restoring the brace must return to a clean parse"
+    );
+    assert!(
+        outcomes[1].incremental.recovery_regions.is_empty(),
+        "the repaired step must report no recovery regions"
+    );
+    assert_eq!(outcomes[1].incremental.error_count(), 0);
+
+    // The repaired analysis reproduces a fresh parse of the same bytes exactly,
+    // and `helper` is a declaration again.
+    let analyzer = Analyzer::new(AnalyzerConfig::default()).expect("analyzer");
+    let fresh = analyzer.analyze_bytes("sample.go", LanguageId::Go, GO_SOURCE.as_bytes());
+    assert!(outcomes[1].incremental.same_facts(&fresh));
+    assert!(fresh
+        .declarations
+        .iter()
+        .any(|declaration| declaration.name == "helper"));
+}
+
 #[test]
 fn python_incremental_case() {
     let mut harness = Harness::new(LanguageId::Python);

@@ -1,19 +1,19 @@
-file path=php/tests.php lang=php bytes=404 lines=29 final_newline=true status=clean snapshot=snap-637da2bdd5a67d0d
-scope 0 kind=file parent=- name=- range=0..404 header=-
-scope 1 kind=namespace parent=0 name=App\\Tests range=7..27 header=-
-scope 2 kind=class parent=1 name=ServiceTest range=101..322 header=101..142
-scope 3 kind=method parent=2 name=testSomething range=148..197 header=-
-scope 4 kind=method parent=2 name=annotatedMethod range=203..266 header=-
-scope 5 kind=method parent=2 name=helperMethod range=272..320 header=-
-scope 6 kind=class parent=1 name=HelperClass range=324..403 header=324..348
-scope 7 kind=method parent=6 name=testLooking range=354..401 header=-
-decl 0 kind=namespace name=App\\Tests scope=0 flags=[] range=7..27 name_range=17..26 body=- tests=[]
-decl 1 kind=class name=ServiceTest scope=1 flags=[final] range=101..322 name_range=113..124 body=142..322 tests=[]
-decl 2 kind=method name=testSomething scope=2 flags=[] range=148..197 name_range=164..177 body=190..197 tests=[function_name_convention:test prefix]
-decl 3 kind=method name=annotatedMethod scope=2 flags=[] range=203..266 name_range=231..246 body=259..266 tests=[attribute:#[Test]]
-decl 4 kind=method name=helperMethod scope=2 flags=[] range=272..320 name_range=288..300 body=313..320 tests=[]
-decl 5 kind=class name=HelperClass scope=1 flags=[final] range=324..403 name_range=336..347 body=348..403 tests=[]
-decl 6 kind=method name=testLooking scope=6 flags=[] range=354..401 name_range=370..381 body=394..401 tests=[function_name_convention:test prefix]
-import 0 form=single module=- module_range=- relative=- scope=1 range=29..67 items=[{target=PHPUnit\\Framework\\Attributes\\Test alias=- wildcard=false cat=normal}]
-import 1 form=single module=- module_range=- relative=- scope=1 range=68..99 items=[{target=PHPUnit\\Framework\\TestCase alias=- wildcard=false cat=normal}]
-ref 0 kind=base_class written=TestCase scope=1 decl=1 range=133..141
+file schema=1 path=php/tests.php lang=php bytes=404 lines=29 final_newline=true status=clean snapshot=snap-637da2bdd5a67d0d
+scope 0 kind=file parent=- name=- range=0..404 (0:0..29:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Tests range=7..27 (2:0..2:20) header=- lang=php
+scope 2 kind=class parent=1 name=ServiceTest range=101..322 (7:0..21:1) header=101..142 (7:0..8:0) lang=php
+scope 3 kind=method parent=2 name=testSomething range=148..197 (9:4..11:5) header=- lang=php
+scope 4 kind=method parent=2 name=annotatedMethod range=203..266 (13:4..16:5) header=- lang=php
+scope 5 kind=method parent=2 name=helperMethod range=272..320 (18:4..20:5) header=- lang=php
+scope 6 kind=class parent=1 name=HelperClass range=324..403 (23:0..28:1) header=324..348 (23:0..24:0) lang=php
+scope 7 kind=method parent=6 name=testLooking range=354..401 (25:4..27:5) header=- lang=php
+decl 0 kind=namespace name=App\\Tests scope=0 flags=[] range=7..27 (2:0..2:20) name_range=17..26 (2:10..2:19) body=- lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[]
+decl 1 kind=class name=ServiceTest scope=1 flags=[final] range=101..322 (7:0..21:1) name_range=113..124 (7:12..7:23) body=142..322 (8:0..21:1) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[]
+decl 2 kind=method name=testSomething scope=2 flags=[] range=148..197 (9:4..11:5) name_range=164..177 (9:20..9:33) body=190..197 (10:4..11:5) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[function_name_convention:test prefix:164..177 (9:20..9:33)]
+decl 3 kind=method name=annotatedMethod scope=2 flags=[] range=203..266 (13:4..16:5) name_range=231..246 (14:20..14:35) body=259..266 (15:4..16:5) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[attribute:#[Test]:205..209 (13:6..13:10)]
+decl 4 kind=method name=helperMethod scope=2 flags=[] range=272..320 (18:4..20:5) name_range=288..300 (18:20..18:32) body=313..320 (19:4..20:5) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[]
+decl 5 kind=class name=HelperClass scope=1 flags=[final] range=324..403 (23:0..28:1) name_range=336..347 (23:12..23:23) body=348..403 (24:0..28:1) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[]
+decl 6 kind=method name=testLooking scope=6 flags=[] range=354..401 (25:4..27:5) name_range=370..381 (25:20..25:31) body=394..401 (26:4..27:5) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d tests=[function_name_convention:test prefix:370..381 (25:20..25:31)]
+import 0 form=single module=- module_range=- relative=- scope=1 range=29..67 (4:0..4:38) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d text=use PHPUnit\\Framework\\Attributes\\Test; items=[{target=PHPUnit\\Framework\\Attributes\\Test target_range=33..66 (4:4..4:37) alias=- alias_range=- wildcard=false cat=normal range=33..66 (4:4..4:37)}]
+import 1 form=single module=- module_range=- relative=- scope=1 range=68..99 (5:0..5:31) lang=php path=php/tests.php snapshot=snap-637da2bdd5a67d0d text=use PHPUnit\\Framework\\TestCase; items=[{target=PHPUnit\\Framework\\TestCase target_range=72..98 (5:4..5:30) alias=- alias_range=- wildcard=false cat=normal range=72..98 (5:4..5:30)}]
+ref 0 kind=base_class written=TestCase scope=1 decl=1 range=133..141 (7:32..7:40)

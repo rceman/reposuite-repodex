@@ -7,10 +7,13 @@
 //! * build tags are never evaluated;
 //! * selectors are never resolved and promoted methods are never inferred;
 //! * `t.Run` is never treated as proof of test ownership;
-//! * `T(x)` is not classified as a call. Tree-sitter's Go grammar already
-//!   splits that shape into `type_conversion_expression` (one argument) and
-//!   `call_expression` (otherwise), so RepoDex reports what the grammar says
-//!   and documents the ambiguity instead of guessing.
+//! * `T(x)` is never classified as a call *or* as a conversion. Tree-sitter's
+//!   Go grammar splits the shape by argument count: `T(x)` and `Generic[int](x)`
+//!   with a single argument become `type_conversion_expression`, while two or
+//!   more arguments become `call_expression`. Because `Generic[int](x)` is
+//!   simultaneously a valid generic invocation and a valid conversion, both
+//!   shapes are reported as `CallLikeOccurrence`s and neither is resolved.
+//!   `T(x)` keeps the grammar's own `type_conversion` form label.
 
 use tree_sitter::{Language, Node, Tree};
 
@@ -101,8 +104,63 @@ fn visit(builder: &mut FactBuilder<'_>, node: Node) {
             emit_call(builder, node);
             visit_children(builder, node);
         }
+        // `T(x)` and `Generic[int](x)` with a single argument. The grammar calls
+        // this a conversion, but the identical syntax is a generic invocation.
+        // Dropping it would lose a real possible call, so it is recorded with
+        // the grammar's own form label and never resolved either way.
+        "type_conversion_expression" => {
+            emit_type_conversion(builder, node);
+            visit_children(builder, node);
+        }
         _ => visit_children(builder, node),
     }
+}
+
+/// Record a `type_conversion_expression` as an unresolved call-shaped
+/// occurrence.
+///
+/// The callee is a type expression (`int64`, `Generic[int]`, `pkg.Generic[int]`,
+/// `obj.Generic[int]`). RepoDex reports the written form, the type arguments
+/// when the syntax has them, and the `type_conversion` form label. It does not
+/// claim the expression is a conversion and does not claim it is a call.
+fn emit_type_conversion(builder: &mut FactBuilder<'_>, node: Node) {
+    let mut cursor = node.walk();
+    // The callee is the type expression before the argument list. The grammar
+    // does not give it a field name on this node.
+    let callee = node
+        .children(&mut cursor)
+        .find(|child| child.is_named() && child.kind() != "argument_list");
+    let Some(callee) = callee else {
+        return;
+    };
+    let type_arguments = type_arguments_of(builder, callee);
+    builder.push_call(
+        CallLikeForm::TypeConversion,
+        builder.text(callee),
+        builder.range(callee),
+        builder.range(node),
+        type_arguments,
+        false,
+        false,
+    );
+}
+
+/// Written type arguments of a type expression, when the syntax carries them.
+///
+/// `generic_type` (`Generic[int]`, `pkg.Generic[int]`) carries a
+/// `type_arguments` field. A plain `type_identifier` (`int64`) carries none.
+fn type_arguments_of(
+    builder: &FactBuilder<'_>,
+    callee: Node,
+) -> Option<(String, crate::model::SourceRange)> {
+    callee
+        .child_by_field_name("type_arguments")
+        .map(|arguments| {
+            (
+                builder.text(arguments).to_string(),
+                builder.range(arguments),
+            )
+        })
 }
 
 fn visit_children(builder: &mut FactBuilder<'_>, node: Node) {

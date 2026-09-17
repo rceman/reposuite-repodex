@@ -119,10 +119,19 @@ fn parse_json_contains_machine_readable_facts_only() {
     let json: serde_json::Value = serde_json::from_str(&stdout_of(&output)).expect("json only");
     let facts = json["canonical_facts"].as_array().expect("facts");
     assert!(facts.len() > 10);
-    assert!(facts[0]
-        .as_str()
-        .expect("line")
-        .starts_with("file path=test_sample.py"));
+    // The canonical export is the complete normalized rendering, so it opens
+    // with the file header and carries the full schema and path.
+    let header = facts[0].as_str().expect("line");
+    assert!(header.starts_with("file schema="), "{header}");
+    assert!(header.contains("path=test_sample.py"), "{header}");
+    // Nested ranges are rendered with their coordinates, not only their bytes.
+    assert!(
+        facts
+            .iter()
+            .filter_map(|line| line.as_str())
+            .any(|line| line.contains("target_range=") && line.contains("(")),
+        "the canonical export must render nested ranges"
+    );
 }
 
 #[test]
@@ -334,4 +343,89 @@ fn max_file_size_override_is_honoured() {
     ]);
     assert_eq!(code_of(&output), 0);
     assert!(stdout_of(&output).contains("status:     clean"));
+}
+
+/// Set a directory unreadable, returning whether the platform actually denied
+/// access to this process.
+fn deny_read(path: &std::path::Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    if std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o000)).is_err() {
+        return false;
+    }
+    std::fs::read_dir(path).is_err()
+}
+
+fn restore_read(path: &std::path::Path) {
+    use std::os::unix::fs::PermissionsExt;
+    let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o755));
+}
+
+/// A scan that could not visit part of the tree must say so, in the text output,
+/// in the JSON output and in the exit code.
+///
+/// A scan that quietly drops a subtree makes every count derived from it
+/// untrustworthy, so "the scan is complete" has to be a checkable claim.
+#[test]
+fn a_scan_that_cannot_visit_a_directory_reports_it_and_fails() {
+    let temp = TempDir::new("cli-traversal");
+    temp.write("keep.rs", b"fn keep() {}\n");
+    let locked = temp.path().join("locked");
+    std::fs::create_dir_all(&locked).expect("create locked");
+    std::fs::write(locked.join("hidden.rs"), b"fn hidden() {}\n").expect("write hidden");
+
+    if !deny_read(&locked) {
+        restore_read(&locked);
+        eprintln!(
+            "skipping traversal-failure assertion: this environment cannot make a \
+             directory unreadable"
+        );
+        return;
+    }
+
+    let text = run(&["scan", temp.path().to_str().expect("path")]);
+    let json_output = run(&["scan", temp.path().to_str().expect("path"), "--json"]);
+    restore_read(&locked);
+
+    // Text output: the failure is named and the scan is called incomplete.
+    let stdout = stdout_of(&text);
+    assert!(
+        stdout.contains("SCAN INCOMPLETE"),
+        "the text output must not claim complete coverage:\n{stdout}"
+    );
+    assert!(stdout.contains("traversal failures: 1"), "{stdout}");
+    assert!(stdout.contains("locked"), "{stdout}");
+    // The accessible file was still analyzed.
+    assert!(stdout.contains("clean:         1"), "{stdout}");
+
+    // Exit code: an incomplete scan is an analysis failure, not success.
+    assert_eq!(code_of(&text), 1, "{}", stderr_of(&text));
+    assert_eq!(code_of(&json_output), 1, "{}", stderr_of(&json_output));
+
+    // JSON output: machine-readable completeness, not just prose.
+    let json: serde_json::Value =
+        serde_json::from_str(&stdout_of(&json_output)).expect("json only");
+    assert_eq!(json["scan_complete"], false);
+    // The counter and the detail array are separate keys: a field named the same
+    // as a flattened counter would produce a duplicate JSON key.
+    assert_eq!(json["traversal_failures"], 1);
+    let failures = json["traversal_failure_details"]
+        .as_array()
+        .expect("traversal_failure_details array");
+    assert_eq!(failures.len(), 1);
+    assert_eq!(failures[0]["path"], "locked");
+    assert_eq!(failures[0]["kind"], "directory");
+    assert!(!failures[0]["message"].as_str().expect("message").is_empty());
+
+    // A complete scan reports so, and exits 0.
+    let clean = TempDir::new("cli-traversal-clean");
+    clean.write("a.rs", b"fn a() {}\n");
+    let complete = run(&["scan", clean.path().to_str().expect("path"), "--json"]);
+    assert_eq!(code_of(&complete), 0, "{}", stderr_of(&complete));
+    let json: serde_json::Value = serde_json::from_str(&stdout_of(&complete)).expect("json only");
+    assert_eq!(json["scan_complete"], true);
+    assert_eq!(json["traversal_failures"], 0);
+    assert!(json["traversal_failure_details"]
+        .as_array()
+        .expect("details array")
+        .is_empty());
 }

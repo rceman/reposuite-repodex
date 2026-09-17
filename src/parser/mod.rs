@@ -17,6 +17,7 @@ pub mod recovery;
 pub mod rust;
 
 pub use builder::{DeclarationDraft, FactBuilder};
+pub use recovery::{RecoveryError, RecoveryScanner};
 
 use std::cell::RefCell;
 use std::fmt;
@@ -28,8 +29,6 @@ use crate::model::{
     range_from_offsets, AnalysisStatus, Diagnostic, DiagnosticKind, FileAnalysis, LanguageId,
     ScopeKind, SourceRange,
 };
-
-use recovery::RecoveryScanner;
 
 /// Static description of the grammar an adapter is built on.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -362,13 +361,36 @@ pub fn extract_from_tree(
     adapter.extract(&mut builder, tree);
     builder.pop_scope();
 
-    if let Err(error) = adapter.recovery().scan(tree, &mut builder) {
+    apply_recovery(adapter.recovery(), language, tree, &mut builder);
+    builder.finish()
+}
+
+/// Run a recovery scan and fold its outcome into the builder.
+///
+/// This is the single place where a recovery result becomes status and
+/// diagnostics, so the match-limit path cannot be handled differently by
+/// different callers. [`extract_from_tree`] passes the adapter's own scanner;
+/// the match-limit regression test passes a scanner with a deliberately low
+/// limit through the same function.
+pub fn apply_recovery(
+    scanner: &RecoveryScanner,
+    language: LanguageId,
+    tree: &Tree,
+    builder: &mut FactBuilder<'_>,
+) {
+    if let Err(error) = scanner.scan(tree, builder) {
+        let kind = match error {
+            RecoveryError::MatchLimitExceeded { .. } => {
+                builder.mark_incomplete();
+                DiagnosticKind::QueryMatchLimitExceeded
+            }
+            RecoveryError::Query(_) => DiagnosticKind::QueryError,
+        };
         builder.push_diagnostic(Diagnostic::error(
-            DiagnosticKind::QueryError,
+            kind,
             format!("recovery query failed for {}: {error}", language.as_str()),
         ));
     }
-    builder.finish()
 }
 
 fn file_scope_range(source: &[u8]) -> SourceRange {

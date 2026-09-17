@@ -220,13 +220,46 @@ fn generic_instantiation_shapes_follow_the_grammar() {
     assert_eq!(
         calls,
         vec![
+            // `Generic[int](value)` — one argument, so the grammar calls it a
+            // type conversion. It is also exactly how a generic function is
+            // invoked with one argument, so it must be preserved rather than
+            // dropped.
+            (
+                "Generic[int]".to_string(),
+                CallLikeForm::TypeConversion,
+                Some("[int]".to_string())
+            ),
+            // `Generic[int, string](value)` — still one argument, so still a
+            // `type_conversion_expression`. The type-argument count is not the
+            // discriminator; the argument count is.
+            (
+                "Generic[int, string]".to_string(),
+                CallLikeForm::TypeConversion,
+                Some("[int, string]".to_string())
+            ),
+            // Two arguments: the grammar picks `call_expression`, and the callee
+            // is an `index_expression`, so the form is indirect.
             ("Generic[int]".to_string(), CallLikeForm::Indirect, None),
             (
                 "Generic".to_string(),
                 CallLikeForm::PlainName,
                 Some("[int, string]".to_string())
             ),
+            // `int64(value)` is an identifier call to the grammar. It is just as
+            // ambiguous as the generic form and is reported, not resolved.
             ("int64".to_string(), CallLikeForm::PlainName, None),
+            // `pkg.Generic[int](value)` and `obj.Generic[int](value)`: qualified
+            // and selector-shaped type expressions, same ambiguity.
+            (
+                "pkg.Generic[int]".to_string(),
+                CallLikeForm::TypeConversion,
+                Some("[int]".to_string())
+            ),
+            (
+                "obj.Generic[int]".to_string(),
+                CallLikeForm::TypeConversion,
+                Some("[int]".to_string())
+            ),
             ("d.Method".to_string(), CallLikeForm::MemberSelector, None),
             (
                 "d.Base.Method".to_string(),
@@ -235,17 +268,50 @@ fn generic_instantiation_shapes_follow_the_grammar() {
             ),
         ]
     );
-    // `Generic[int](value)` with a single call argument is a
-    // `type_conversion_expression`, so it is not reported as call-like. The
-    // fixture documents this; the assertion pins the behaviour.
+    // Every generic-looking occurrence is present: none is silently dropped
+    // because the grammar chose `type_conversion_expression`.
+    let generic = analysis
+        .calls
+        .iter()
+        .filter(|call| call.callee_written.contains("Generic"))
+        .collect::<Vec<_>>();
+    assert_eq!(generic.len(), 6, "no generic occurrence may be lost");
     assert_eq!(
-        analysis
-            .calls
+        generic
             .iter()
-            .filter(|call| call.callee_written.starts_with("Generic"))
+            .filter(|call| call.form == CallLikeForm::TypeConversion)
             .count(),
-        2
+        4
     );
+    // The conversion-shaped occurrences carry real source ranges.
+    for call in generic {
+        assert!(
+            call.callee_range.byte_len() > 0,
+            "{:?}",
+            call.callee_written
+        );
+        assert!(
+            call.callee_range.byte_start >= call.expression_range.byte_start
+                && call.callee_range.byte_end <= call.expression_range.byte_end,
+            "the callee must sit inside the whole expression for {}",
+            call.callee_written
+        );
+        // Type arguments and their range always travel together: either the
+        // syntax carries them and both are present, or it does not and both are
+        // absent.
+        match (&call.type_arguments, &call.type_arguments_range) {
+            (Some(written), Some(range)) => {
+                assert!(range.byte_len() > 0, "{written}");
+                assert!(
+                    range.byte_start >= call.expression_range.byte_start
+                        && range.byte_end <= call.expression_range.byte_end,
+                    "type arguments must sit inside the whole expression for {written}"
+                );
+            }
+            (None, None) => {}
+            other => panic!("type arguments and their range must agree: {other:?}"),
+        }
+    }
 }
 
 #[test]

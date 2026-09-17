@@ -389,6 +389,11 @@ pub enum CallLikeForm {
     StaticScoped,
     /// The callee is an arbitrary expression, not a written name/path/selector.
     Indirect,
+    /// Go `T(x)` / `Generic[int](x)`. Tree-sitter's Go grammar classifies this
+    /// shape as a type conversion, but the same syntax is exactly how a generic
+    /// function is invoked with one argument. RepoDex records the occurrence
+    /// and never decides which of the two it is.
+    TypeConversion,
     /// PHP `new Foo(...)`.
     ExplicitConstruction,
     /// Rust `macro!(...)`. Macros are never expanded.
@@ -403,6 +408,7 @@ impl CallLikeForm {
             CallLikeForm::MemberSelector => "member_selector",
             CallLikeForm::StaticScoped => "static_scoped",
             CallLikeForm::Indirect => "indirect",
+            CallLikeForm::TypeConversion => "type_conversion",
             CallLikeForm::ExplicitConstruction => "explicit_construction",
             CallLikeForm::MacroInvocation => "macro_invocation",
         }

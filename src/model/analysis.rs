@@ -47,6 +47,10 @@ pub enum AnalysisStatus {
     Clean,
     /// Parsed, but the tree contains recovery artifacts (`ERROR`/`MISSING`).
     Recovered,
+    /// Parsed, but at least one analysis step could not run to completion, so
+    /// the facts are known to be partial. Today this means a Tree-sitter query
+    /// hit its match limit and captures were abandoned.
+    Incomplete,
     /// Not analyzed because the input is unsupported (encoding, size, language).
     Unsupported,
     /// Not analyzed because the input could not be read.
@@ -58,6 +62,7 @@ impl AnalysisStatus {
         match self {
             AnalysisStatus::Clean => "clean",
             AnalysisStatus::Recovered => "recovered",
+            AnalysisStatus::Incomplete => "incomplete",
             AnalysisStatus::Unsupported => "unsupported",
             AnalysisStatus::Failed => "failed",
         }
@@ -109,6 +114,90 @@ impl FileAnalysis {
             file_test_evidence: Vec::new(),
             recovery_regions: Vec::new(),
         }
+    }
+
+    /// Put every collection into its canonical order and re-index the facts
+    /// whose ids are positions.
+    ///
+    /// This is the single implementation of deterministic normalization. It is
+    /// called once, by the builder that produced the analysis, so any
+    /// `FileAnalysis` that exists in this crate is already normalized.
+    pub fn normalize(&mut self) {
+        // References and call-like occurrences are collected by independent
+        // mechanisms, so sort them into canonical order and re-index.
+        self.references.sort_by(|left, right| {
+            (
+                left.range.byte_start,
+                left.range.byte_end,
+                left.kind,
+                left.written.as_str(),
+            )
+                .cmp(&(
+                    right.range.byte_start,
+                    right.range.byte_end,
+                    right.kind,
+                    right.written.as_str(),
+                ))
+        });
+        for (index, reference) in self.references.iter_mut().enumerate() {
+            reference.reference_id = index as u32;
+        }
+        self.calls.sort_by(|left, right| {
+            (
+                left.expression_range.byte_start,
+                left.expression_range.byte_end,
+                left.form,
+                left.callee_written.as_str(),
+            )
+                .cmp(&(
+                    right.expression_range.byte_start,
+                    right.expression_range.byte_end,
+                    right.form,
+                    right.callee_written.as_str(),
+                ))
+        });
+        for (index, call) in self.calls.iter_mut().enumerate() {
+            call.call_id = index as u32;
+        }
+        self.diagnostics.sort_by(|left, right| {
+            let left_start = left.range.map(|range| range.byte_start).unwrap_or(u32::MAX);
+            let right_start = right
+                .range
+                .map(|range| range.byte_start)
+                .unwrap_or(u32::MAX);
+            (left_start, left.kind, left.message.as_str()).cmp(&(
+                right_start,
+                right.kind,
+                right.message.as_str(),
+            ))
+        });
+        self.file_test_evidence.sort_by(|left, right| {
+            (left.range.byte_start, left.kind, left.detail.as_str()).cmp(&(
+                right.range.byte_start,
+                right.kind,
+                right.detail.as_str(),
+            ))
+        });
+        self.recovery_regions
+            .sort_by_key(|range| (range.byte_start, range.byte_end));
+        self.recovery_regions.dedup();
+    }
+
+    /// A normalized clone.
+    pub fn normalized(&self) -> Self {
+        let mut clone = self.clone();
+        clone.normalize();
+        clone
+    }
+
+    /// Authoritative fact equality.
+    ///
+    /// Compares **every** normalized field of the analysis, including the
+    /// row/column coordinates, the ranges nested inside import items and
+    /// type arguments, and the ranges carried by test evidence. Determinism and
+    /// incremental-equivalence claims rest on this, not on the canonical text.
+    pub fn same_facts(&self, other: &Self) -> bool {
+        self == other
     }
 
     pub fn declaration_count(&self) -> usize {
@@ -216,14 +305,20 @@ impl FileAnalysis {
     }
 
     /// Canonical, deterministic rendering of every normalized fact in this
-    /// analysis. Two analyses with the same canonical text carry the same facts.
+    /// analysis.
     ///
-    /// The rendering intentionally uses byte offsets only; row/column
-    /// correctness is asserted separately by range tests.
+    /// This is a *complete* rendering: every field that
+    /// [`FileAnalysis::same_facts`] compares appears here, including row/column
+    /// coordinates, import item ranges, type-argument ranges and test-evidence
+    /// ranges. The digest and incremental-equivalence machinery rely on that,
+    /// and `tests/canonical_completeness.rs` enforces it field by field.
+    ///
+    /// Two analyses with the same canonical text carry the same facts.
     pub fn canonical_lines(&self) -> Vec<String> {
         let mut lines = Vec::new();
         lines.push(format!(
-            "file path={} lang={} bytes={} lines={} final_newline={} status={} snapshot={}",
+            "file schema={} path={} lang={} bytes={} lines={} final_newline={} status={} snapshot={}",
+            self.schema_version,
             escape_field(&self.file.relative_path),
             self.file.language.as_str(),
             self.file.byte_len,
@@ -234,7 +329,7 @@ impl FileAnalysis {
         ));
         for scope in &self.scopes {
             lines.push(format!(
-                "scope {} kind={} parent={} name={} range={} header={}",
+                "scope {} kind={} parent={} name={} range={} header={} lang={}",
                 scope.scope_id,
                 scope.kind.as_str(),
                 scope
@@ -242,29 +337,34 @@ impl FileAnalysis {
                     .map(|id| id.to_string())
                     .unwrap_or_else(|| "-".to_string()),
                 escape_field(scope.name.as_deref().unwrap_or("-")),
-                render_range(&scope.range),
+                scope.range.render(),
                 scope
                     .header_range
                     .as_ref()
-                    .map(render_range)
+                    .map(SourceRange::render)
                     .unwrap_or_else(|| "-".to_string()),
+                scope.language.as_str(),
             ));
         }
         for declaration in &self.declarations {
             lines.push(format!(
-                "decl {} kind={} name={} scope={} flags=[{}] range={} name_range={} body={} tests=[{}]",
+                "decl {} kind={} name={} scope={} flags=[{}] range={} name_range={} body={} \
+                 lang={} path={} snapshot={} tests=[{}]",
                 declaration.declaration_id,
                 declaration.kind.as_str(),
                 escape_field(&declaration.name),
                 declaration.scope_id,
                 render_flags(declaration),
-                render_range(&declaration.range),
-                render_range(&declaration.name_range),
+                declaration.range.render(),
+                declaration.name_range.render(),
                 declaration
                     .body_range
                     .as_ref()
-                    .map(render_range)
+                    .map(SourceRange::render)
                     .unwrap_or_else(|| "-".to_string()),
+                declaration.language.as_str(),
+                escape_field(&declaration.relative_path),
+                declaration.snapshot_id,
                 render_tests(&declaration.test_evidence),
             ));
         }
@@ -274,31 +374,42 @@ impl FileAnalysis {
                 .iter()
                 .map(|item| {
                     format!(
-                        "{{target={} alias={} wildcard={} cat={}}}",
+                        "{{target={} target_range={} alias={} alias_range={} wildcard={} cat={} range={}}}",
                         escape_list_item(&item.target),
+                        item.target_range.render(),
                         escape_list_item(item.alias.as_deref().unwrap_or("-")),
+                        item.alias_range
+                            .as_ref()
+                            .map(SourceRange::render)
+                            .unwrap_or_else(|| "-".to_string()),
                         item.wildcard,
                         item.category.as_str(),
+                        item.range.render(),
                     )
                 })
                 .collect::<Vec<_>>()
                 .join(",");
             lines.push(format!(
-                "import {} form={} module={} module_range={} relative={} scope={} range={} items=[{}]",
+                "import {} form={} module={} module_range={} relative={} scope={} range={} \
+                 lang={} path={} snapshot={} text={} items=[{}]",
                 import.import_id,
                 import.form.as_str(),
                 escape_list_item(import.module.as_deref().unwrap_or("-")),
                 import
                     .module_range
                     .as_ref()
-                    .map(render_range)
+                    .map(SourceRange::render)
                     .unwrap_or_else(|| "-".to_string()),
                 import
                     .relative_levels
                     .map(|levels| levels.to_string())
                     .unwrap_or_else(|| "-".to_string()),
                 import.scope_id,
-                render_range(&import.statement_range),
+                import.statement_range.render(),
+                import.language.as_str(),
+                escape_field(&import.relative_path),
+                import.snapshot_id,
+                escape_field(&import.statement_text),
                 items,
             ));
         }
@@ -313,19 +424,24 @@ impl FileAnalysis {
                     .declaration_id
                     .map(|id| id.to_string())
                     .unwrap_or_else(|| "-".to_string()),
-                render_range(&reference.range),
+                reference.range.render(),
             ));
         }
         for call in &self.calls {
             lines.push(format!(
-                "call {} form={} callee={} scope={} expr={} callee_range={} type_args={} dyn={} nullsafe={}",
+                "call {} form={} callee={} scope={} expr={} callee_range={} type_args={} \
+                 type_args_range={} dyn={} nullsafe={}",
                 call.call_id,
                 call.form.as_str(),
                 escape_field(&call.callee_written),
                 call.scope_id,
-                render_range(&call.expression_range),
-                render_range(&call.callee_range),
+                call.expression_range.render(),
+                call.callee_range.render(),
                 escape_field(call.type_arguments.as_deref().unwrap_or("-")),
+                call.type_arguments_range
+                    .as_ref()
+                    .map(SourceRange::render)
+                    .unwrap_or_else(|| "-".to_string()),
                 call.dynamic_callee,
                 call.nullsafe,
             ));
@@ -335,11 +451,11 @@ impl FileAnalysis {
                 "file_test kind={} detail={} range={}",
                 evidence.kind.as_str(),
                 escape_field(&evidence.detail),
-                render_range(&evidence.range)
+                evidence.range.render()
             ));
         }
         for region in &self.recovery_regions {
-            lines.push(format!("recovery range={}", render_range(region)));
+            lines.push(format!("recovery range={}", region.render()));
         }
         for diagnostic in &self.diagnostics {
             lines.push(format!("diag {}", escape_field(&diagnostic.render())));
@@ -380,10 +496,6 @@ fn escape_list_item(value: &str) -> String {
     escape_field(value).replace(',', "\\,")
 }
 
-fn render_range(range: &SourceRange) -> String {
-    format!("{}..{}", range.byte_start, range.byte_end)
-}
-
 fn render_flags(declaration: &Declaration) -> String {
     declaration
         .flags
@@ -396,7 +508,14 @@ fn render_flags(declaration: &Declaration) -> String {
 fn render_tests(evidence: &[TestEvidence]) -> String {
     evidence
         .iter()
-        .map(|item| format!("{}:{}", item.kind.as_str(), escape_list_item(&item.detail)))
+        .map(|item| {
+            format!(
+                "{}:{}:{}",
+                item.kind.as_str(),
+                escape_list_item(&item.detail),
+                item.range.render()
+            )
+        })
         .collect::<Vec<_>>()
         .join(",")
 }

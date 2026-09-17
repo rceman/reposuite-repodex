@@ -1,20 +1,20 @@
-file path=rust/malformed.rs lang=rust bytes=589 lines=23 final_newline=true status=recovered snapshot=snap-3c081209804feee6
-scope 0 kind=file parent=- name=- range=0..589 header=-
-scope 1 kind=function parent=0 name=valid_before range=462..482 header=-
-scope 2 kind=struct parent=0 name=Broken range=484..514 header=484..498
-scope 3 kind=function parent=0 name=valid_after range=516..535 header=-
-scope 4 kind=function parent=0 name=incomplete range=537..571 header=-
-scope 5 kind=impl parent=0 name=- range=573..588 header=-
-decl 0 kind=function name=valid_before scope=0 flags=[] range=462..482 name_range=465..477 body=480..482 tests=[]
-decl 1 kind=struct name=Broken scope=0 flags=[] range=484..514 name_range=491..497 body=498..514 tests=[]
-decl 2 kind=field name=field scope=2 flags=[] range=504..510 name_range=504..509 body=- tests=[]
-decl 3 kind=function name=valid_after scope=0 flags=[] range=516..535 name_range=519..530 body=533..535 tests=[]
-decl 4 kind=function name=incomplete scope=0 flags=[] range=537..571 name_range=540..550 body=569..571 tests=[]
-ref 0 kind=impl_target written=Incomplete scope=5 decl=- range=578..588
-recovery range=510..510
-recovery range=553..555
-recovery range=568..568
-recovery range=588..588
+file schema=1 path=rust/malformed.rs lang=rust bytes=589 lines=23 final_newline=true status=recovered snapshot=snap-3c081209804feee6
+scope 0 kind=file parent=- name=- range=0..589 (0:0..23:0) header=- lang=rust
+scope 1 kind=function parent=0 name=valid_before range=462..482 (10:0..10:20) header=- lang=rust
+scope 2 kind=struct parent=0 name=Broken range=484..514 (12:0..14:1) header=484..498 (12:0..12:14) lang=rust
+scope 3 kind=function parent=0 name=valid_after range=516..535 (16:0..16:19) header=- lang=rust
+scope 4 kind=function parent=0 name=incomplete range=537..571 (18:0..20:18) header=- lang=rust
+scope 5 kind=impl parent=0 name=- range=573..588 (22:0..22:15) header=- lang=rust
+decl 0 kind=function name=valid_before scope=0 flags=[] range=462..482 (10:0..10:20) name_range=465..477 (10:3..10:15) body=480..482 (10:18..10:20) lang=rust path=rust/malformed.rs snapshot=snap-3c081209804feee6 tests=[]
+decl 1 kind=struct name=Broken scope=0 flags=[] range=484..514 (12:0..14:1) name_range=491..497 (12:7..12:13) body=498..514 (12:14..14:1) lang=rust path=rust/malformed.rs snapshot=snap-3c081209804feee6 tests=[]
+decl 2 kind=field name=field scope=2 flags=[] range=504..510 (13:4..13:10) name_range=504..509 (13:4..13:9) body=- lang=rust path=rust/malformed.rs snapshot=snap-3c081209804feee6 tests=[]
+decl 3 kind=function name=valid_after scope=0 flags=[] range=516..535 (16:0..16:19) name_range=519..530 (16:3..16:14) body=533..535 (16:17..16:19) lang=rust path=rust/malformed.rs snapshot=snap-3c081209804feee6 tests=[]
+decl 4 kind=function name=incomplete scope=0 flags=[] range=537..571 (18:0..20:18) name_range=540..550 (18:3..18:13) body=569..571 (20:16..20:18) lang=rust path=rust/malformed.rs snapshot=snap-3c081209804feee6 tests=[]
+ref 0 kind=impl_target written=Incomplete scope=5 decl=- range=578..588 (22:5..22:15)
+recovery range=510..510 (13:10..13:10)
+recovery range=553..555 (20:0..20:2)
+recovery range=568..568 (20:15..20:15)
+recovery range=588..588 (22:15..22:15)
 diag error missing_syntax [510..510 (13:10..13:10)] tree-sitter inserted a MISSING type_identifier token
 diag error syntax_error [553..555 (20:0..20:2)] tree-sitter recovered from an ERROR node covering 2 byte(s)
 diag error missing_syntax [568..568 (20:15..20:15)] tree-sitter inserted a MISSING ) token

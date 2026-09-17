@@ -1,42 +1,42 @@
-file path=rust/boundaries.rs lang=rust bytes=1555 lines=83 final_newline=true status=clean snapshot=snap-2f43cbac1d7934ad
-scope 0 kind=file parent=- name=- range=0..1555 header=-
-scope 1 kind=struct parent=0 name=Wrapper range=126..200 header=126..179
-scope 2 kind=impl parent=0 name=- range=202..350 header=202..244
-scope 3 kind=method parent=2 name=process range=250..348 header=-
-scope 4 kind=function parent=0 name=dangerous range=352..380 header=-
-scope 5 kind=function parent=0 name=constant_fn range=382..425 header=-
-scope 6 kind=function parent=0 name=raw_identifiers range=427..557 header=-
-scope 7 kind=function parent=0 name=cfg_gated range=585..606 header=-
-scope 8 kind=function parent=0 name=construction range=608..735 header=-
-scope 9 kind=union parent=0 name=Number range=800..854 header=800..817
-scope 10 kind=extern_block parent=0 name=- range=980..1034 header=980..991
-scope 11 kind=impl parent=0 name=- range=1103..1173 header=1103..1115
-scope 12 kind=function parent=0 name=generic_parameter range=1314..1377 header=-
-scope 13 kind=function parent=0 name=dynamic_object range=1379..1469 header=-
-scope 14 kind=function parent=0 name=impl_trait_return range=1471..1554 header=-
-decl 0 kind=macro name=define_thing scope=0 flags=[] range=81..124 name_range=94..106 body=- tests=[]
-decl 1 kind=struct name=Wrapper scope=0 flags=[] range=126..200 name_range=137..144 body=179..200 tests=[]
-decl 2 kind=field name=inner scope=1 flags=[] range=185..197 name_range=185..190 body=- tests=[]
-decl 3 kind=method name=process scope=2 flags=[async,receiver] range=250..348 name_range=263..270 body=327..348 tests=[]
-decl 4 kind=function name=dangerous scope=0 flags=[unsafe] range=352..380 name_range=366..375 body=378..380 tests=[]
-decl 5 kind=function name=constant_fn scope=0 flags=[const] range=382..425 name_range=395..406 body=416..425 tests=[]
-decl 6 kind=function name=raw_identifiers scope=0 flags=[] range=427..557 name_range=434..449 body=452..557 tests=[]
-decl 7 kind=function name=cfg_gated scope=0 flags=[] range=585..606 name_range=592..601 body=604..606 tests=[]
-decl 8 kind=function name=construction scope=0 flags=[] range=608..735 name_range=615..627 body=630..735 tests=[]
-decl 9 kind=union name=Number scope=0 flags=[] range=800..854 name_range=810..816 body=817..854 tests=[]
-decl 10 kind=field name=integer scope=9 flags=[] range=823..835 name_range=823..830 body=- tests=[]
-decl 11 kind=field name=float scope=9 flags=[] range=841..851 name_range=841..846 body=- tests=[]
-decl 12 kind=function name=puts scope=10 flags=[] range=997..1032 name_range=1000..1004 body=- tests=[]
-decl 13 kind=constant name=LIMIT scope=11 flags=[] range=1121..1146 name_range=1131..1136 body=- tests=[]
-decl 14 kind=type_alias name=Word scope=11 flags=[] range=1151..1171 name_range=1160..1164 body=- tests=[]
-decl 15 kind=function name=generic_parameter scope=0 flags=[] range=1314..1377 name_range=1321..1338 body=1364..1377 tests=[]
-decl 16 kind=function name=dynamic_object scope=0 flags=[] range=1379..1469 name_range=1386..1400 body=1441..1469 tests=[]
-decl 17 kind=function name=impl_trait_return scope=0 flags=[] range=1471..1554 name_range=1478..1495 body=1527..1554 tests=[]
-import 0 form=single module=- module_range=- relative=- scope=0 range=58..79 items=[{target=core::fmt::Debug alias=- wildcard=false cat=normal}]
-ref 0 kind=impl_target written=Wrapper<'a, T> scope=2 decl=- range=229..243
-ref 1 kind=impl_target written=Number scope=11 decl=- range=1108..1114
-call 0 form=macro_invocation callee=define_thing scope=6 expr=499..514 callee_range=499..511 type_args=- dyn=false nullsafe=false
-call 1 form=macro_invocation callee=println scope=6 expr=520..554 callee_range=520..527 type_args=- dyn=false nullsafe=false
-call 2 form=plain_name callee=Some scope=8 expr=692..699 callee_range=692..696 type_args=- dyn=false nullsafe=false
-call 3 form=macro_invocation callee=format scope=13 expr=1447..1467 callee_range=1447..1453 type_args=- dyn=false nullsafe=false
-call 4 form=qualified_path callee=core::iter::empty scope=14 expr=1533..1552 callee_range=1533..1550 type_args=- dyn=false nullsafe=false
+file schema=1 path=rust/boundaries.rs lang=rust bytes=1555 lines=83 final_newline=true status=clean snapshot=snap-2f43cbac1d7934ad
+scope 0 kind=file parent=- name=- range=0..1555 (0:0..83:0) header=- lang=rust
+scope 1 kind=struct parent=0 name=Wrapper range=126..200 (10:0..15:1) header=126..179 (10:0..13:0) lang=rust
+scope 2 kind=impl parent=0 name=- range=202..350 (17:0..24:1) header=202..244 (17:0..17:42) lang=rust
+scope 3 kind=method parent=2 name=process range=250..348 (18:4..23:5) header=- lang=rust
+scope 4 kind=function parent=0 name=dangerous range=352..380 (26:0..26:28) header=- lang=rust
+scope 5 kind=function parent=0 name=constant_fn range=382..425 (28:0..30:1) header=- lang=rust
+scope 6 kind=function parent=0 name=raw_identifiers range=427..557 (32:0..37:1) header=- lang=rust
+scope 7 kind=function parent=0 name=cfg_gated range=585..606 (40:0..40:21) header=- lang=rust
+scope 8 kind=function parent=0 name=construction range=608..735 (42:0..46:1) header=- lang=rust
+scope 9 kind=union parent=0 name=Number range=800..854 (50:0..53:1) header=800..817 (50:0..50:17) lang=rust
+scope 10 kind=extern_block parent=0 name=- range=980..1034 (58:0..60:1) header=980..991 (58:0..58:11) lang=rust
+scope 11 kind=impl parent=0 name=- range=1103..1173 (64:0..67:1) header=1103..1115 (64:0..64:12) lang=rust
+scope 12 kind=function parent=0 name=generic_parameter range=1314..1377 (72:0..74:1) header=- lang=rust
+scope 13 kind=function parent=0 name=dynamic_object range=1379..1469 (76:0..78:1) header=- lang=rust
+scope 14 kind=function parent=0 name=impl_trait_return range=1471..1554 (80:0..82:1) header=- lang=rust
+decl 0 kind=macro name=define_thing scope=0 flags=[] range=81..124 (6:0..8:1) name_range=94..106 (6:13..6:25) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 1 kind=struct name=Wrapper scope=0 flags=[] range=126..200 (10:0..15:1) name_range=137..144 (10:11..10:18) body=179..200 (13:0..15:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 2 kind=field name=inner scope=1 flags=[] range=185..197 (14:4..14:16) name_range=185..190 (14:4..14:9) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 3 kind=method name=process scope=2 flags=[async,receiver] range=250..348 (18:4..23:5) name_range=263..270 (18:17..18:24) body=327..348 (21:4..23:5) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 4 kind=function name=dangerous scope=0 flags=[unsafe] range=352..380 (26:0..26:28) name_range=366..375 (26:14..26:23) body=378..380 (26:26..26:28) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 5 kind=function name=constant_fn scope=0 flags=[const] range=382..425 (28:0..30:1) name_range=395..406 (28:13..28:24) body=416..425 (28:34..30:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 6 kind=function name=raw_identifiers scope=0 flags=[] range=427..557 (32:0..37:1) name_range=434..449 (32:7..32:22) body=452..557 (32:25..37:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 7 kind=function name=cfg_gated scope=0 flags=[] range=585..606 (40:0..40:21) name_range=592..601 (40:7..40:16) body=604..606 (40:19..40:21) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 8 kind=function name=construction scope=0 flags=[] range=608..735 (42:0..46:1) name_range=615..627 (42:7..42:19) body=630..735 (42:22..46:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 9 kind=union name=Number scope=0 flags=[] range=800..854 (50:0..53:1) name_range=810..816 (50:10..50:16) body=817..854 (50:17..53:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 10 kind=field name=integer scope=9 flags=[] range=823..835 (51:4..51:16) name_range=823..830 (51:4..51:11) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 11 kind=field name=float scope=9 flags=[] range=841..851 (52:4..52:14) name_range=841..846 (52:4..52:9) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 12 kind=function name=puts scope=10 flags=[] range=997..1032 (59:4..59:39) name_range=1000..1004 (59:7..59:11) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 13 kind=constant name=LIMIT scope=11 flags=[] range=1121..1146 (65:4..65:29) name_range=1131..1136 (65:14..65:19) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 14 kind=type_alias name=Word scope=11 flags=[] range=1151..1171 (66:4..66:24) name_range=1160..1164 (66:13..66:17) body=- lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 15 kind=function name=generic_parameter scope=0 flags=[] range=1314..1377 (72:0..74:1) name_range=1321..1338 (72:7..72:24) body=1364..1377 (72:50..74:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 16 kind=function name=dynamic_object scope=0 flags=[] range=1379..1469 (76:0..78:1) name_range=1386..1400 (76:7..76:21) body=1441..1469 (76:62..78:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+decl 17 kind=function name=impl_trait_return scope=0 flags=[] range=1471..1554 (80:0..82:1) name_range=1478..1495 (80:7..80:24) body=1527..1554 (80:56..82:1) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=58..79 (4:0..4:21) lang=rust path=rust/boundaries.rs snapshot=snap-2f43cbac1d7934ad text=use core::fmt::Debug; items=[{target=core::fmt::Debug target_range=62..78 (4:4..4:20) alias=- alias_range=- wildcard=false cat=normal range=62..78 (4:4..4:20)}]
+ref 0 kind=impl_target written=Wrapper<'a, T> scope=2 decl=- range=229..243 (17:27..17:41)
+ref 1 kind=impl_target written=Number scope=11 decl=- range=1108..1114 (64:5..64:11)
+call 0 form=macro_invocation callee=define_thing scope=6 expr=499..514 (35:4..35:19) callee_range=499..511 (35:4..35:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=macro_invocation callee=println scope=6 expr=520..554 (36:4..36:38) callee_range=520..527 (36:4..36:11) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=Some scope=8 expr=692..699 (44:19..44:26) callee_range=692..696 (44:19..44:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=macro_invocation callee=format scope=13 expr=1447..1467 (77:4..77:24) callee_range=1447..1453 (77:4..77:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=qualified_path callee=core::iter::empty scope=14 expr=1533..1552 (81:4..81:23) callee_range=1533..1550 (81:4..81:21) type_args=- type_args_range=- dyn=false nullsafe=false

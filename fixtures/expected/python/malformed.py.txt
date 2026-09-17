@@ -1,12 +1,12 @@
-file path=python/malformed.py lang=python bytes=181 lines=16 final_newline=true status=recovered snapshot=snap-f9627feb05f71e76
-scope 0 kind=file parent=- name=- range=0..181 header=-
-scope 1 kind=function parent=0 name=valid_before range=78..106 header=-
-scope 2 kind=function parent=0 name=broken range=109..130 header=-
-scope 3 kind=function parent=0 name=valid_after range=133..160 header=-
-decl 0 kind=function name=valid_before scope=0 flags=[] range=78..106 name_range=82..94 body=102..106 tests=[]
-decl 1 kind=function name=broken scope=0 flags=[] range=109..130 name_range=113..119 body=126..130 tests=[]
-decl 2 kind=function name=valid_after scope=0 flags=[] range=133..160 name_range=137..148 body=156..160 tests=[]
-recovery range=120..120
-recovery range=163..180
+file schema=1 path=python/malformed.py lang=python bytes=181 lines=16 final_newline=true status=recovered snapshot=snap-f9627feb05f71e76
+scope 0 kind=file parent=- name=- range=0..181 (0:0..16:0) header=- lang=python
+scope 1 kind=function parent=0 name=valid_before range=78..106 (3:0..4:8) header=- lang=python
+scope 2 kind=function parent=0 name=broken range=109..130 (7:0..8:8) header=- lang=python
+scope 3 kind=function parent=0 name=valid_after range=133..160 (11:0..12:8) header=- lang=python
+decl 0 kind=function name=valid_before scope=0 flags=[] range=78..106 (3:0..4:8) name_range=82..94 (3:4..3:16) body=102..106 (4:4..4:8) lang=python path=python/malformed.py snapshot=snap-f9627feb05f71e76 tests=[]
+decl 1 kind=function name=broken scope=0 flags=[] range=109..130 (7:0..8:8) name_range=113..119 (7:4..7:10) body=126..130 (8:4..8:8) lang=python path=python/malformed.py snapshot=snap-f9627feb05f71e76 tests=[]
+decl 2 kind=function name=valid_after scope=0 flags=[] range=133..160 (11:0..12:8) name_range=137..148 (11:4..11:15) body=156..160 (12:4..12:8) lang=python path=python/malformed.py snapshot=snap-f9627feb05f71e76 tests=[]
+recovery range=120..120 (7:11..7:11)
+recovery range=163..180 (15:0..15:17)
 diag error missing_syntax [120..120 (7:11..7:11)] tree-sitter inserted a MISSING ) token
 diag error syntax_error [163..180 (15:0..15:17)] tree-sitter recovered from an ERROR node covering 17 byte(s)

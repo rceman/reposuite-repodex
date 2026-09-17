@@ -51,7 +51,7 @@ pub enum FileOutcome {
     Recovered,
     /// Supported language, but the input was unsupported (encoding or size).
     Skipped,
-    /// Reading or parsing failed.
+    /// Reading, parsing or extraction failed.
     Failed,
     /// Extension is not one of the supported languages.
     Unsupported,
@@ -65,6 +65,39 @@ impl FileOutcome {
             FileOutcome::Skipped => "skipped",
             FileOutcome::Failed => "failed",
             FileOutcome::Unsupported => "unsupported",
+        }
+    }
+}
+
+/// A path the walk could not descend into or stat.
+///
+/// Traversal failures are never discarded: an unreadable subtree means the scan
+/// did not see everything under the root, so coverage metrics and any
+/// conclusion drawn from them would be wrong.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TraversalFailure {
+    /// Path the walk was working on, relative to the scan root when it lies
+    /// inside the root.
+    pub relative_path: String,
+    /// Whether the failure concerned a directory (an undescended subtree) or an
+    /// entry the walk could not stat.
+    pub kind: TraversalFailureKind,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TraversalFailureKind {
+    /// The walk could not read a directory, so its subtree was never visited.
+    Directory,
+    /// The walk produced an entry but could not determine its file type.
+    Entry,
+}
+
+impl TraversalFailureKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TraversalFailureKind::Directory => "directory",
+            TraversalFailureKind::Entry => "entry",
         }
     }
 }
@@ -109,6 +142,9 @@ pub struct ScanReport {
     pub bytes_processed: u64,
     /// Sum of the byte lengths of every visited file, including skipped ones.
     pub bytes_visited: u64,
+    /// Paths the walk could not descend into or stat. Non-empty means the scan
+    /// did not see everything under the root.
+    pub traversal_failures: Vec<TraversalFailure>,
     pub files: Vec<FileReport>,
 }
 
@@ -134,6 +170,36 @@ impl ScanReport {
 
     pub fn skipped_files(&self) -> u64 {
         self.size_limit_skips + self.encoding_skips
+    }
+
+    /// Number of paths the walk could not enter or stat.
+    pub fn traversal_failures(&self) -> u64 {
+        self.traversal_failures.len() as u64
+    }
+
+    /// True when the scan did not cover the whole subtree under the root.
+    ///
+    /// Callers must not present counts from an incomplete scan as coverage.
+    pub fn is_complete(&self) -> bool {
+        self.traversal_failures.is_empty()
+    }
+
+    /// Diagnostics describing every traversal failure, for machine output.
+    pub fn traversal_diagnostics(&self) -> Vec<Diagnostic> {
+        self.traversal_failures
+            .iter()
+            .map(|failure| {
+                Diagnostic::error(
+                    DiagnosticKind::TraversalFailure,
+                    format!(
+                        "could not traverse {} `{}`: {}",
+                        failure.kind.as_str(),
+                        failure.relative_path,
+                        failure.message
+                    ),
+                )
+            })
+            .collect()
     }
 }
 
@@ -164,7 +230,7 @@ impl<'a> Scanner<'a> {
             ));
         }
         let mut report = ScanReport::default();
-        let entries = self.collect(root)?;
+        let entries = self.collect(root, &mut report)?;
         for path in entries {
             let language = path
                 .extension()
@@ -199,11 +265,19 @@ impl<'a> Scanner<'a> {
                 .as_str()
                 .cmp(right.relative_path.as_str())
         });
+        report
+            .traversal_failures
+            .sort_by(|left, right| left.relative_path.cmp(&right.relative_path));
         Ok(report)
     }
 
     /// Discover candidate files in a deterministic order.
-    fn collect(&self, root: &Path) -> std::io::Result<Vec<PathBuf>> {
+    ///
+    /// A path the walk cannot enter or stat is recorded in
+    /// `report.traversal_failures` instead of being dropped. The walk still
+    /// continues: one unreadable directory must not stop the rest of the scan,
+    /// but it must also not disappear.
+    fn collect(&self, root: &Path, report: &mut ScanReport) -> std::io::Result<Vec<PathBuf>> {
         let mut builder = WalkBuilder::new(root);
         builder
             .standard_filters(false)
@@ -228,12 +302,37 @@ impl<'a> Scanner<'a> {
         for entry in builder.build() {
             let entry = match entry {
                 Ok(entry) => entry,
-                // A directory that cannot be read must not abort the scan.
-                Err(_) => continue,
+                Err(error) => {
+                    // The `ignore` crate tags walk errors with the path it was
+                    // working on. When it does not, the failure is still
+                    // recorded against the root rather than discarded.
+                    let path = error_path(&error)
+                        .map(|path| path.to_path_buf())
+                        .unwrap_or_else(|| root.to_path_buf());
+                    let kind = if path == root || path.is_dir() {
+                        TraversalFailureKind::Directory
+                    } else {
+                        TraversalFailureKind::Entry
+                    };
+                    report.traversal_failures.push(TraversalFailure {
+                        relative_path: display_path(root, &path),
+                        kind,
+                        message: error.to_string(),
+                    });
+                    continue;
+                }
             };
             let file_type = match entry.file_type() {
                 Some(file_type) => file_type,
-                None => continue,
+                None => {
+                    let path = entry.path();
+                    report.traversal_failures.push(TraversalFailure {
+                        relative_path: display_path(root, path),
+                        kind: TraversalFailureKind::Entry,
+                        message: "the walk could not determine this entry's file type".to_string(),
+                    });
+                    continue;
+                }
             };
             if !file_type.is_file() {
                 continue;
@@ -245,12 +344,39 @@ impl<'a> Scanner<'a> {
     }
 }
 
+/// Path as recorded in traversal failures: root-relative when it lies inside
+/// the root, absolute otherwise, always with `/` separators.
+fn display_path(root: &Path, path: &Path) -> String {
+    if path.starts_with(root) {
+        relative_path(root, path)
+    } else {
+        crate::paths::normalize_separators(path)
+    }
+}
+
+/// Path a walk error was tagged with, if the walker recorded one.
+///
+/// The `ignore` crate nests the path inside `WithPath` wrappers and may wrap
+/// several errors in `Partial`. There is no accessor for it, so the variants are
+/// matched directly.
+fn error_path(error: &ignore::Error) -> Option<&Path> {
+    match error {
+        ignore::Error::WithPath { path, .. } => Some(path),
+        ignore::Error::WithDepth { err, .. } => error_path(err),
+        ignore::Error::WithLineNumber { err, .. } => error_path(err),
+        ignore::Error::Partial(errors) => errors.iter().find_map(error_path),
+        _ => None,
+    }
+}
+
 fn outcome_of(analysis: &FileAnalysis) -> FileOutcome {
     match analysis.status {
         AnalysisStatus::Clean => FileOutcome::Clean,
         AnalysisStatus::Recovered => FileOutcome::Recovered,
         AnalysisStatus::Unsupported => FileOutcome::Skipped,
-        AnalysisStatus::Failed => FileOutcome::Failed,
+        // A partial analysis is not a usable analysis, so it is reported as a
+        // failure rather than quietly alongside the complete ones.
+        AnalysisStatus::Incomplete | AnalysisStatus::Failed => FileOutcome::Failed,
     }
 }
 
@@ -263,7 +389,9 @@ fn accumulate(report: &mut ScanReport, analysis: &FileAnalysis) {
                 report.read_failures += 1
             }
             DiagnosticKind::GrammarLoadError => report.parser_failures += 1,
-            DiagnosticKind::QueryError => report.extraction_failures += 1,
+            DiagnosticKind::QueryError | DiagnosticKind::QueryMatchLimitExceeded => {
+                report.extraction_failures += 1
+            }
             _ => {}
         }
     }

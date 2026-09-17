@@ -101,18 +101,27 @@ reports:
 visited / supported / unsupported files
 parsed clean / parsed with recovery / trees returned
 skipped (size limit, encoding) / read / parser / extraction failures
+traversal failures, and whether the scan covered the whole tree
 declarations, imports, references, call-like occurrences, test candidates
 recovery rate among parsed files
 bytes processed and visited, elapsed time
 ```
 
-Scanning this repository itself:
+A directory the walk cannot enter or an entry it cannot stat is reported, never
+silently dropped. The scan continues with the rest of the tree, but it does not
+claim complete coverage: the text output prints `SCAN INCOMPLETE`, the JSON
+output carries a `traversal_failure_details` array, a `traversal_failures`
+count and `scan_complete: false`, and the
+exit code is the analysis-failure code.
+
+Scanning this repository itself (counts change as the repository grows):
 
 ```text
-visited 102, supported 62, unsupported 40
-parsed clean 58, parsed with recovery 4 (the malformed fixtures)
-1232 declarations, 145 imports, 94 references, 4289 call-like, 143 test candidates
-407109 bytes in 94 ms
+visited 105, supported 65, unsupported 40
+parsed clean 61, parsed with recovery 4 (the malformed fixtures)
+traversal failures 0 (scan covered the whole tree)
+1355 declarations, 159 imports, 100 references, 5219 call-like, 169 test candidates
+508195 bytes in 115 ms
 ```
 
 Files are sorted deterministically. `.git/`, `target/`, `vendor/`,
@@ -125,8 +134,9 @@ JSON goes to stdout, logs go to stderr.
 ### Exit codes
 
 ```text
-0  completed without recovery or analysis failures
-1  completed, but at least one file needed recovery or failed
+0  completed without recovery, analysis failures or traversal failures
+1  completed, but at least one file needed recovery or failed, or part of the
+   tree could not be visited
 2  invocation or setup failure
 ```
 
@@ -151,9 +161,16 @@ tests/recovery.rs            ERROR/MISSING policy
 tests/shared_fixtures.rs     encodings, line endings, adversarial source
 tests/determinism.rs         byte-identical repeated analysis
 tests/incremental.rs         incremental vs full parse equivalence
-tests/scanner.rs             discovery, pruning, per-file failures
+tests/scanner.rs             discovery, pruning, per-file failures,
+                             traversal-failure reporting
 tests/paths.rs               runtime path resolution
 tests/cli.rs                 command behaviour and exit codes
+tests/canonical_completeness.rs
+                             every normalized field is visible to the
+                             canonical text and to structural equality
+tests/tree_comparator.rs     every property the tree digest compares, and
+                             that the digest separates trees that differ
+tests/query_limits.rs        query match-limit exhaustion is reported
 ```
 
 `fixtures/expected/**` holds the complete canonical fact set of every fixture.
@@ -187,6 +204,13 @@ input is committed.
 Sizes: `100KiB`, `1MiB`, `4MiB`, `over-8MiB`, `nested`. Use
 `--size standard` for the first three, or `--output <dir>` / `--run-id <id>` to
 control the artifact location.
+
+`results.json` carries one machine-readable row per measurement, with the run id,
+language, size, stage, input and processed bytes, file count, duration,
+throughput, fact counts and the row's note. Every stage name describes exactly
+what its timer covers. The harness asserts that every generated source, at every
+size, parses clean and that the incremental edit is valid for the language, so a
+measurement cannot silently become an error-recovery measurement.
 
 See `docs/SPIKE_RESULTS.md` for the measurements that were actually taken and an
 explicit list of what was not measured.

@@ -1,45 +1,45 @@
-file path=python/declarations.py lang=python bytes=836 lines=50 final_newline=true status=clean snapshot=snap-0007baa311352641
-scope 0 kind=file parent=- name=- range=0..836 header=-
-scope 1 kind=class parent=0 name=Base range=319..556 header=-
-scope 2 kind=method parent=1 name=__init__ range=390..459 header=-
-scope 3 kind=method parent=1 name=fetch range=465..520 header=-
-scope 4 kind=method parent=1 name=helper range=526..556 header=-
-scope 5 kind=class parent=0 name=Child range=559..626 header=-
-scope 6 kind=method parent=5 name=method range=596..626 header=-
-scope 7 kind=function parent=0 name=top_async range=629..666 header=-
-scope 8 kind=function parent=0 name=top range=669..835 header=-
-scope 9 kind=function parent=8 name=nested range=735..761 header=-
-scope 10 kind=class parent=8 name=Nested range=767..793 header=-
-scope 11 kind=lambda parent=8 name=- range=805..820 header=-
-decl 0 kind=variable name=MODULE_X scope=0 flags=[] range=240..252 name_range=240..248 body=- tests=[]
-decl 1 kind=variable name=MODULE_Y scope=0 flags=[] range=253..270 name_range=253..261 body=- tests=[]
-decl 2 kind=constant name=MODULE_Z scope=0 flags=[] range=271..290 name_range=271..279 body=- tests=[]
-decl 3 kind=variable name=MODULE_A scope=0 flags=[] range=291..316 name_range=291..299 body=- tests=[]
-decl 4 kind=variable name=MODULE_B scope=0 flags=[] range=291..316 name_range=301..309 body=- tests=[]
-decl 5 kind=class name=Base scope=0 flags=[] range=319..556 name_range=360..364 body=370..556 tests=[]
-decl 6 kind=field name=class_attr scope=1 flags=[] range=370..384 name_range=370..380 body=- tests=[]
-decl 7 kind=method name=__init__ scope=1 flags=[] range=390..459 name_range=394..402 body=441..459 tests=[]
-decl 8 kind=method name=fetch scope=1 flags=[async] range=465..520 name_range=475..480 body=496..520 tests=[]
-decl 9 kind=method name=helper scope=1 flags=[] range=526..556 name_range=530..536 body=552..556 tests=[]
-decl 10 kind=class name=Child scope=0 flags=[] range=559..626 name_range=565..570 body=596..626 tests=[]
-decl 11 kind=method name=method scope=5 flags=[] range=596..626 name_range=600..606 body=622..626 tests=[]
-decl 12 kind=function name=top_async scope=0 flags=[async] range=629..666 name_range=639..648 body=662..666 tests=[]
-decl 13 kind=function name=top scope=0 flags=[] range=669..835 name_range=673..676 body=735..835 tests=[]
-decl 14 kind=function name=nested scope=8 flags=[] range=735..761 name_range=739..745 body=757..761 tests=[]
-decl 15 kind=class name=Nested scope=8 flags=[] range=767..793 name_range=773..779 body=789..793 tests=[]
-import 0 form=single module=- module_range=- relative=- scope=0 range=61..70 items=[{target=os alias=- wildcard=false cat=normal}]
-import 1 form=grouped module=- module_range=- relative=- scope=0 range=71..85 items=[{target=os alias=- wildcard=false cat=normal},{target=sys alias=- wildcard=false cat=normal}]
-import 2 form=single module=- module_range=- relative=- scope=0 range=86..104 items=[{target=numpy alias=np wildcard=false cat=normal}]
-import 3 form=single module=- module_range=- relative=1 scope=0 range=105..126 items=[{target=sibling alias=- wildcard=false cat=normal}]
-import 4 form=single module=pkg module_range=134..137 relative=2 scope=0 range=127..150 items=[{target=thing alias=- wildcard=false cat=normal}]
-import 5 form=grouped module=pkg.sub module_range=156..163 relative=- scope=0 range=151..195 items=[{target=first alias=- wildcard=false cat=normal},{target=second alias=renamed wildcard=false cat=normal}]
-import 6 form=wildcard module=pkg module_range=201..204 relative=- scope=0 range=196..213 items=[{target=* alias=- wildcard=true cat=normal}]
-import 7 form=single module=typing module_range=219..225 relative=- scope=0 range=214..238 items=[{target=Final alias=- wildcard=false cat=normal}]
-ref 0 kind=decorator written=decorator scope=0 decl=- range=320..329
-ref 1 kind=decorator written=decorator_with_args scope=0 decl=- range=331..350
-ref 2 kind=base_class written=Base scope=0 decl=10 range=571..575
-ref 3 kind=base_class written=mixins.Other scope=0 decl=10 range=577..589
-call 0 form=plain_name callee=decorator_with_args scope=0 expr=331..353 callee_range=331..350 type_args=- dyn=false nullsafe=false
-call 1 form=plain_name callee=default_value scope=1 expr=415..430 callee_range=415..428 type_args=- dyn=false nullsafe=false
-call 2 form=plain_name callee=get_value scope=3 expr=509..520 callee_range=509..518 type_args=- dyn=false nullsafe=false
-call 3 form=plain_name callee=default_for_top scope=0 expr=682..699 callee_range=682..697 type_args=- dyn=false nullsafe=false
+file schema=1 path=python/declarations.py lang=python bytes=836 lines=50 final_newline=true status=clean snapshot=snap-0007baa311352641
+scope 0 kind=file parent=- name=- range=0..836 (0:0..50:0) header=- lang=python
+scope 1 kind=class parent=0 name=Base range=319..556 (17:0..29:12) header=- lang=python
+scope 2 kind=method parent=1 name=__init__ range=390..459 (22:4..23:26) header=- lang=python
+scope 3 kind=method parent=1 name=fetch range=465..520 (25:4..26:32) header=- lang=python
+scope 4 kind=method parent=1 name=helper range=526..556 (28:4..29:12) header=- lang=python
+scope 5 kind=class parent=0 name=Child range=559..626 (32:0..34:12) header=- lang=python
+scope 6 kind=method parent=5 name=method range=596..626 (33:4..34:12) header=- lang=python
+scope 7 kind=function parent=0 name=top_async range=629..666 (37:0..38:8) header=- lang=python
+scope 8 kind=function parent=0 name=top range=669..835 (41:0..49:14) header=- lang=python
+scope 9 kind=function parent=8 name=nested range=735..761 (42:4..43:12) header=- lang=python
+scope 10 kind=class parent=8 name=Nested range=767..793 (45:4..46:12) header=- lang=python
+scope 11 kind=lambda parent=8 name=- range=805..820 (48:10..48:25) header=- lang=python
+decl 0 kind=variable name=MODULE_X scope=0 flags=[] range=240..252 (11:0..11:12) name_range=240..248 (11:0..11:8) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 1 kind=variable name=MODULE_Y scope=0 flags=[] range=253..270 (12:0..12:17) name_range=253..261 (12:0..12:8) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 2 kind=constant name=MODULE_Z scope=0 flags=[] range=271..290 (13:0..13:19) name_range=271..279 (13:0..13:8) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 3 kind=variable name=MODULE_A scope=0 flags=[] range=291..316 (14:0..14:25) name_range=291..299 (14:0..14:8) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 4 kind=variable name=MODULE_B scope=0 flags=[] range=291..316 (14:0..14:25) name_range=301..309 (14:10..14:18) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 5 kind=class name=Base scope=0 flags=[] range=319..556 (17:0..29:12) name_range=360..364 (19:6..19:10) body=370..556 (20:4..29:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 6 kind=field name=class_attr scope=1 flags=[] range=370..384 (20:4..20:18) name_range=370..380 (20:4..20:14) body=- lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 7 kind=method name=__init__ scope=1 flags=[] range=390..459 (22:4..23:26) name_range=394..402 (22:8..22:16) body=441..459 (23:8..23:26) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 8 kind=method name=fetch scope=1 flags=[async] range=465..520 (25:4..26:32) name_range=475..480 (25:14..25:19) body=496..520 (26:8..26:32) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 9 kind=method name=helper scope=1 flags=[] range=526..556 (28:4..29:12) name_range=530..536 (28:8..28:14) body=552..556 (29:8..29:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 10 kind=class name=Child scope=0 flags=[] range=559..626 (32:0..34:12) name_range=565..570 (32:6..32:11) body=596..626 (33:4..34:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 11 kind=method name=method scope=5 flags=[] range=596..626 (33:4..34:12) name_range=600..606 (33:8..33:14) body=622..626 (34:8..34:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 12 kind=function name=top_async scope=0 flags=[async] range=629..666 (37:0..38:8) name_range=639..648 (37:10..37:19) body=662..666 (38:4..38:8) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 13 kind=function name=top scope=0 flags=[] range=669..835 (41:0..49:14) name_range=673..676 (41:4..41:7) body=735..835 (42:4..49:14) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 14 kind=function name=nested scope=8 flags=[] range=735..761 (42:4..43:12) name_range=739..745 (42:8..42:14) body=757..761 (43:8..43:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+decl 15 kind=class name=Nested scope=8 flags=[] range=767..793 (45:4..46:12) name_range=773..779 (45:10..45:16) body=789..793 (46:8..46:12) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=61..70 (2:0..2:9) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=import os items=[{target=os target_range=68..70 (2:7..2:9) alias=- alias_range=- wildcard=false cat=normal range=68..70 (2:7..2:9)}]
+import 1 form=grouped module=- module_range=- relative=- scope=0 range=71..85 (3:0..3:14) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=import os, sys items=[{target=os target_range=78..80 (3:7..3:9) alias=- alias_range=- wildcard=false cat=normal range=78..80 (3:7..3:9)},{target=sys target_range=82..85 (3:11..3:14) alias=- alias_range=- wildcard=false cat=normal range=82..85 (3:11..3:14)}]
+import 2 form=single module=- module_range=- relative=- scope=0 range=86..104 (4:0..4:18) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=import numpy as np items=[{target=numpy target_range=93..98 (4:7..4:12) alias=np alias_range=102..104 (4:16..4:18) wildcard=false cat=normal range=93..104 (4:7..4:18)}]
+import 3 form=single module=- module_range=- relative=1 scope=0 range=105..126 (5:0..5:21) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=from . import sibling items=[{target=sibling target_range=119..126 (5:14..5:21) alias=- alias_range=- wildcard=false cat=normal range=119..126 (5:14..5:21)}]
+import 4 form=single module=pkg module_range=134..137 (6:7..6:10) relative=2 scope=0 range=127..150 (6:0..6:23) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=from ..pkg import thing items=[{target=thing target_range=145..150 (6:18..6:23) alias=- alias_range=- wildcard=false cat=normal range=145..150 (6:18..6:23)}]
+import 5 form=grouped module=pkg.sub module_range=156..163 (7:5..7:12) relative=- scope=0 range=151..195 (7:0..7:44) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=from pkg.sub import first, second as renamed items=[{target=first target_range=171..176 (7:20..7:25) alias=- alias_range=- wildcard=false cat=normal range=171..176 (7:20..7:25)},{target=second target_range=178..184 (7:27..7:33) alias=renamed alias_range=188..195 (7:37..7:44) wildcard=false cat=normal range=178..195 (7:27..7:44)}]
+import 6 form=wildcard module=pkg module_range=201..204 (8:5..8:8) relative=- scope=0 range=196..213 (8:0..8:17) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=from pkg import * items=[{target=* target_range=212..213 (8:16..8:17) alias=- alias_range=- wildcard=true cat=normal range=212..213 (8:16..8:17)}]
+import 7 form=single module=typing module_range=219..225 (9:5..9:11) relative=- scope=0 range=214..238 (9:0..9:24) lang=python path=python/declarations.py snapshot=snap-0007baa311352641 text=from typing import Final items=[{target=Final target_range=233..238 (9:19..9:24) alias=- alias_range=- wildcard=false cat=normal range=233..238 (9:19..9:24)}]
+ref 0 kind=decorator written=decorator scope=0 decl=- range=320..329 (17:1..17:10)
+ref 1 kind=decorator written=decorator_with_args scope=0 decl=- range=331..350 (18:1..18:20)
+ref 2 kind=base_class written=Base scope=0 decl=10 range=571..575 (32:12..32:16)
+ref 3 kind=base_class written=mixins.Other scope=0 decl=10 range=577..589 (32:18..32:30)
+call 0 form=plain_name callee=decorator_with_args scope=0 expr=331..353 (18:1..18:23) callee_range=331..350 (18:1..18:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=default_value scope=1 expr=415..430 (22:29..22:44) callee_range=415..428 (22:29..22:42) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=get_value scope=3 expr=509..520 (26:21..26:32) callee_range=509..518 (26:21..26:30) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=default_for_top scope=0 expr=682..699 (41:13..41:30) callee_range=682..697 (41:13..41:28) type_args=- type_args_range=- dyn=false nullsafe=false

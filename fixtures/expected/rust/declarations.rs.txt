@@ -1,37 +1,37 @@
-file path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
-scope 0 kind=file parent=- name=- range=0..728 header=-
-scope 1 kind=module parent=0 name=inline range=57..146 header=57..68
-scope 2 kind=module parent=1 name=nested range=74..121 header=74..89
-scope 3 kind=function parent=2 name=deep range=99..115 header=-
-scope 4 kind=struct parent=0 name=Config range=163..222 header=163..181
-scope 5 kind=enum parent=0 name=State range=224..296 header=224..239
-scope 6 kind=trait parent=0 name=Handler range=298..431 header=298..316
-scope 7 kind=method parent=6 name=label range=364..429 header=-
-scope 8 kind=function parent=0 name=free_function range=556..609 header=-
-scope 9 kind=function parent=0 name=outer range=611..727 header=-
-scope 10 kind=function parent=9 name=nested_function range=628..651 header=-
-scope 11 kind=closure parent=9 name=- range=671..685 header=-
-decl 0 kind=module name=inline scope=0 flags=[] range=57..146 name_range=61..67 body=68..146 tests=[]
-decl 1 kind=module name=nested scope=1 flags=[] range=74..121 name_range=82..88 body=89..121 tests=[]
-decl 2 kind=function name=deep scope=2 flags=[] range=99..115 name_range=106..110 body=113..115 tests=[]
-decl 3 kind=struct name=Inner scope=1 flags=[] range=127..144 name_range=138..143 body=- tests=[]
-decl 4 kind=module name=external scope=0 flags=[] range=148..161 name_range=152..160 body=- tests=[]
-decl 5 kind=struct name=Config scope=0 flags=[] range=163..222 name_range=174..180 body=181..222 tests=[]
-decl 6 kind=field name=name scope=4 flags=[] range=187..203 name_range=191..195 body=- tests=[]
-decl 7 kind=field name=count scope=4 flags=[] range=209..219 name_range=209..214 body=- tests=[]
-decl 8 kind=enum name=State scope=0 flags=[] range=224..296 name_range=233..238 body=239..296 tests=[]
-decl 9 kind=variant name=Idle scope=5 flags=[] range=245..249 name_range=245..249 body=- tests=[]
-decl 10 kind=variant name=Running scope=5 flags=[] range=255..267 name_range=255..262 body=- tests=[]
-decl 11 kind=variant name=Failed scope=5 flags=[] range=273..293 name_range=273..279 body=- tests=[]
-decl 12 kind=trait name=Handler scope=0 flags=[] range=298..431 name_range=308..315 body=316..431 tests=[]
-decl 13 kind=method name=handle scope=6 flags=[receiver] range=322..358 name_range=325..331 body=- tests=[]
-decl 14 kind=method name=label scope=6 flags=[receiver,default] range=364..429 name_range=367..372 body=390..429 tests=[]
-decl 15 kind=type_alias name=Outcome scope=0 flags=[] range=433..486 name_range=442..449 body=- tests=[]
-decl 16 kind=constant name=MAX_ITEMS scope=0 flags=[] range=488..520 name_range=498..507 body=- tests=[]
-decl 17 kind=constant name=COUNTER scope=0 flags=[static,mutable] range=522..554 name_range=537..544 body=- tests=[]
-decl 18 kind=function name=free_function scope=0 flags=[] range=556..609 name_range=563..576 body=596..609 tests=[]
-decl 19 kind=function name=outer scope=0 flags=[] range=611..727 name_range=614..619 body=622..727 tests=[]
-decl 20 kind=function name=nested_function scope=9 flags=[] range=628..651 name_range=631..646 body=649..651 tests=[]
-call 0 form=qualified_path callee=String::from scope=7 expr=400..423 callee_range=400..412 type_args=- dyn=false nullsafe=false
-call 1 form=plain_name callee=nested_function scope=9 expr=691..708 callee_range=691..706 type_args=- dyn=false nullsafe=false
-call 2 form=plain_name callee=closure scope=9 expr=714..724 callee_range=714..721 type_args=- dyn=false nullsafe=false
+file schema=1 path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
+scope 0 kind=file parent=- name=- range=0..728 (0:0..48:0) header=- lang=rust
+scope 1 kind=module parent=0 name=inline range=57..146 (2:0..8:1) header=57..68 (2:0..2:11) lang=rust
+scope 2 kind=module parent=1 name=nested range=74..121 (3:4..5:5) header=74..89 (3:4..3:19) lang=rust
+scope 3 kind=function parent=2 name=deep range=99..115 (4:8..4:24) header=- lang=rust
+scope 4 kind=struct parent=0 name=Config range=163..222 (12:0..15:1) header=163..181 (12:0..12:18) lang=rust
+scope 5 kind=enum parent=0 name=State range=224..296 (17:0..21:1) header=224..239 (17:0..17:15) lang=rust
+scope 6 kind=trait parent=0 name=Handler range=298..431 (23:0..29:1) header=298..316 (23:0..23:18) lang=rust
+scope 7 kind=method parent=6 name=label range=364..429 (26:4..28:5) header=- lang=rust
+scope 8 kind=function parent=0 name=free_function range=556..609 (37:0..39:1) header=- lang=rust
+scope 9 kind=function parent=0 name=outer range=611..727 (41:0..47:1) header=- lang=rust
+scope 10 kind=function parent=9 name=nested_function range=628..651 (42:4..42:27) header=- lang=rust
+scope 11 kind=closure parent=9 name=- range=671..685 (44:18..44:32) header=- lang=rust
+decl 0 kind=module name=inline scope=0 flags=[] range=57..146 (2:0..8:1) name_range=61..67 (2:4..2:10) body=68..146 (2:11..8:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 1 kind=module name=nested scope=1 flags=[] range=74..121 (3:4..5:5) name_range=82..88 (3:12..3:18) body=89..121 (3:19..5:5) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 2 kind=function name=deep scope=2 flags=[] range=99..115 (4:8..4:24) name_range=106..110 (4:15..4:19) body=113..115 (4:22..4:24) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 3 kind=struct name=Inner scope=1 flags=[] range=127..144 (7:4..7:21) name_range=138..143 (7:15..7:20) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 4 kind=module name=external scope=0 flags=[] range=148..161 (10:0..10:13) name_range=152..160 (10:4..10:12) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 5 kind=struct name=Config scope=0 flags=[] range=163..222 (12:0..15:1) name_range=174..180 (12:11..12:17) body=181..222 (12:18..15:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 6 kind=field name=name scope=4 flags=[] range=187..203 (13:4..13:20) name_range=191..195 (13:8..13:12) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 7 kind=field name=count scope=4 flags=[] range=209..219 (14:4..14:14) name_range=209..214 (14:4..14:9) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 8 kind=enum name=State scope=0 flags=[] range=224..296 (17:0..21:1) name_range=233..238 (17:9..17:14) body=239..296 (17:15..21:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 9 kind=variant name=Idle scope=5 flags=[] range=245..249 (18:4..18:8) name_range=245..249 (18:4..18:8) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 10 kind=variant name=Running scope=5 flags=[] range=255..267 (19:4..19:16) name_range=255..262 (19:4..19:11) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 11 kind=variant name=Failed scope=5 flags=[] range=273..293 (20:4..20:24) name_range=273..279 (20:4..20:10) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 12 kind=trait name=Handler scope=0 flags=[] range=298..431 (23:0..29:1) name_range=308..315 (23:10..23:17) body=316..431 (23:18..29:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 13 kind=method name=handle scope=6 flags=[receiver] range=322..358 (24:4..24:40) name_range=325..331 (24:7..24:13) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 14 kind=method name=label scope=6 flags=[receiver,default] range=364..429 (26:4..28:5) name_range=367..372 (26:7..26:12) body=390..429 (26:30..28:5) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 15 kind=type_alias name=Outcome scope=0 flags=[] range=433..486 (31:0..31:53) name_range=442..449 (31:9..31:16) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 16 kind=constant name=MAX_ITEMS scope=0 flags=[] range=488..520 (33:0..33:32) name_range=498..507 (33:10..33:19) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 17 kind=constant name=COUNTER scope=0 flags=[static,mutable] range=522..554 (35:0..35:32) name_range=537..544 (35:15..35:22) body=- lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 18 kind=function name=free_function scope=0 flags=[] range=556..609 (37:0..39:1) name_range=563..576 (37:7..37:20) body=596..609 (37:40..39:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 19 kind=function name=outer scope=0 flags=[] range=611..727 (41:0..47:1) name_range=614..619 (41:3..41:8) body=622..727 (41:11..47:1) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+decl 20 kind=function name=nested_function scope=9 flags=[] range=628..651 (42:4..42:27) name_range=631..646 (42:7..42:22) body=649..651 (42:25..42:27) lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d tests=[]
+call 0 form=qualified_path callee=String::from scope=7 expr=400..423 (27:8..27:31) callee_range=400..412 (27:8..27:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=nested_function scope=9 expr=691..708 (45:4..45:21) callee_range=691..706 (45:4..45:19) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=closure scope=9 expr=714..724 (46:4..46:14) callee_range=714..721 (46:4..46:11) type_args=- type_args_range=- dyn=false nullsafe=false

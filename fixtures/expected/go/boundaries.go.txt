@@ -1,24 +1,28 @@
-file path=go/boundaries.go lang=go bytes=1057 lines=46 final_newline=true status=clean snapshot=snap-357edc64eb32793e
-scope 0 kind=file parent=- name=- range=0..1057 header=-
-scope 1 kind=interface parent=0 name=Handler range=81..111 header=81..89
-scope 2 kind=struct parent=0 name=Base range=118..131 header=118..123
-scope 3 kind=struct parent=0 name=Derived range=138..171 header=138..146
-scope 4 kind=method parent=0 name=Method range=173..198 header=-
-scope 5 kind=function parent=0 name=genericShapes range=640..904 header=-
-scope 6 kind=function parent=0 name=methodExpression range=906..1056 header=-
-decl 0 kind=package name=fixture scope=0 flags=[] range=59..74 name_range=67..74 body=- tests=[]
-decl 1 kind=interface name=Handler scope=0 flags=[] range=81..111 name_range=81..88 body=89..111 tests=[]
-decl 2 kind=method name=Serve scope=1 flags=[] range=102..109 name_range=102..107 body=- tests=[]
-decl 3 kind=struct name=Base scope=0 flags=[] range=118..131 name_range=118..122 body=123..131 tests=[]
-decl 4 kind=struct name=Derived scope=0 flags=[] range=138..171 name_range=138..145 body=146..171 tests=[]
-decl 5 kind=method name=Method scope=0 flags=[receiver] range=173..198 name_range=187..193 body=196..198 tests=[]
-decl 6 kind=function name=genericShapes scope=0 flags=[] range=640..904 name_range=645..658 body=677..904 tests=[]
-decl 7 kind=function name=methodExpression scope=0 flags=[] range=906..1056 name_range=911..927 body=930..1056 tests=[]
-ref 0 kind=embedded_type written=Base scope=3 decl=- range=156..160
-ref 1 kind=embedded_type written=Handler scope=3 decl=- range=162..169
-ref 2 kind=receiver_type written=Base scope=0 decl=5 range=181..185
-call 0 form=indirect callee=Generic[int] scope=5 expr=728..754 callee_range=728..740 type_args=- dyn=false nullsafe=false
-call 1 form=plain_name callee=Generic scope=5 expr=771..805 callee_range=771..778 type_args=[int, string] dyn=false nullsafe=false
-call 2 form=plain_name callee=int64 scope=5 expr=825..837 callee_range=825..830 type_args=- dyn=false nullsafe=false
-call 3 form=member_selector callee=d.Method scope=6 expr=973..983 callee_range=973..981 type_args=- dyn=false nullsafe=false
-call 4 form=member_selector callee=d.Base.Method scope=6 expr=985..1000 callee_range=985..998 type_args=- dyn=false nullsafe=false
+file schema=1 path=go/boundaries.go lang=go bytes=1607 lines=57 final_newline=true status=clean snapshot=snap-166ba57d4275ce96
+scope 0 kind=file parent=- name=- range=0..1607 (0:0..57:0) header=- lang=go
+scope 1 kind=interface parent=0 name=Handler range=81..111 (5:5..7:1) header=81..89 (5:5..5:13) lang=go
+scope 2 kind=struct parent=0 name=Base range=118..131 (9:5..9:18) header=118..123 (9:5..9:10) lang=go
+scope 3 kind=struct parent=0 name=Derived range=138..171 (11:5..14:1) header=138..146 (11:5..11:13) lang=go
+scope 4 kind=method parent=0 name=Method range=173..198 (16:0..16:25) header=- lang=go
+scope 5 kind=function parent=0 name=genericShapes range=1018..1454 (32:0..42:1) header=- lang=go
+scope 6 kind=function parent=0 name=methodExpression range=1456..1606 (44:0..56:1) header=- lang=go
+decl 0 kind=package name=fixture scope=0 flags=[] range=59..74 (3:0..3:15) name_range=67..74 (3:8..3:15) body=- lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 1 kind=interface name=Handler scope=0 flags=[] range=81..111 (5:5..7:1) name_range=81..88 (5:5..5:12) body=89..111 (5:13..7:1) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 2 kind=method name=Serve scope=1 flags=[] range=102..109 (6:1..6:8) name_range=102..107 (6:1..6:6) body=- lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 3 kind=struct name=Base scope=0 flags=[] range=118..131 (9:5..9:18) name_range=118..122 (9:5..9:9) body=123..131 (9:10..9:18) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 4 kind=struct name=Derived scope=0 flags=[] range=138..171 (11:5..14:1) name_range=138..145 (11:5..11:12) body=146..171 (11:13..14:1) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 5 kind=method name=Method scope=0 flags=[receiver] range=173..198 (16:0..16:25) name_range=187..193 (16:14..16:20) body=196..198 (16:23..16:25) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 6 kind=function name=genericShapes scope=0 flags=[] range=1018..1454 (32:0..42:1) name_range=1023..1036 (32:5..32:18) body=1055..1454 (32:37..42:1) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+decl 7 kind=function name=methodExpression scope=0 flags=[] range=1456..1606 (44:0..56:1) name_range=1461..1477 (44:5..44:21) body=1480..1606 (44:24..56:1) lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96 tests=[]
+ref 0 kind=embedded_type written=Base scope=3 decl=- range=156..160 (12:1..12:5)
+ref 1 kind=embedded_type written=Handler scope=3 decl=- range=162..169 (13:1..13:8)
+ref 2 kind=receiver_type written=Base scope=0 decl=5 range=181..185 (16:8..16:12)
+call 0 form=type_conversion callee=Generic[int] scope=5 expr=1071..1090 (33:14..33:33) callee_range=1071..1083 (33:14..33:26) type_args=[int] type_args_range=1078..1083 (33:21..33:26) dyn=false nullsafe=false
+call 1 form=type_conversion callee=Generic[int, string] scope=5 expr=1113..1140 (34:22..34:49) callee_range=1113..1133 (34:22..34:42) type_args=[int, string] type_args_range=1120..1133 (34:29..34:42) dyn=false nullsafe=false
+call 2 form=indirect callee=Generic[int] scope=5 expr=1156..1182 (35:15..35:41) callee_range=1156..1168 (35:15..35:27) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=Generic scope=5 expr=1199..1233 (36:16..36:50) callee_range=1199..1206 (36:16..36:23) type_args=[int, string] type_args_range=1206..1219 (36:23..36:36) dyn=false nullsafe=false
+call 4 form=plain_name callee=int64 scope=5 expr=1253..1265 (37:19..37:31) callee_range=1253..1258 (37:19..37:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=type_conversion callee=pkg.Generic[int] scope=5 expr=1280..1303 (38:14..38:37) callee_range=1280..1296 (38:14..38:30) type_args=[int] type_args_range=1291..1296 (38:25..38:30) dyn=false nullsafe=false
+call 6 form=type_conversion callee=obj.Generic[int] scope=5 expr=1315..1338 (39:11..39:34) callee_range=1315..1331 (39:11..39:27) type_args=[int] type_args_range=1326..1331 (39:22..39:27) dyn=false nullsafe=false
+call 7 form=member_selector callee=d.Method scope=6 expr=1523..1533 (48:1..48:11) callee_range=1523..1531 (48:1..48:9) type_args=- type_args_range=- dyn=false nullsafe=false
+call 8 form=member_selector callee=d.Base.Method scope=6 expr=1535..1550 (49:1..49:16) callee_range=1535..1548 (49:1..49:14) type_args=- type_args_range=- dyn=false nullsafe=false

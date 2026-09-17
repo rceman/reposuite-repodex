@@ -21,6 +21,7 @@ use repodex::model::{AnalysisStatus, LanguageId};
 use repodex::parser::{extract_from_tree, Analyzer, AnalyzerConfig, ParserRegistry};
 use repodex::paths::RepoDexPaths;
 use repodex::scanner::{ScanOptions, Scanner};
+use serde::Serialize;
 use tree_sitter::Parser;
 
 const SIZES: [(&str, usize); 5] = [
@@ -30,7 +31,12 @@ const SIZES: [(&str, usize); 5] = [
     ("over-8MiB", 8 * 1024 * 1024 + 4096),
     // Deeply nested source. The depth is bounded by the generator so the
     // grammar and the extraction stack are exercised without unbounded input.
-    ("nested", 600),
+    //
+    // The depth is 500 because `tree-sitter-python` fails on deeper nesting: at
+    // 513 nested indentation levels it emits a single ERROR node covering the
+    // whole file. 500 is the deepest depth that every supported grammar parses
+    // clean, which is what this benchmark needs. See `docs/LANGUAGE_SPIKE.md`.
+    ("nested", 500),
 ];
 
 fn main() {
@@ -93,15 +99,14 @@ fn main() {
     lines.push(format!(
         "default max file size: {DEFAULT_MAX_FILE_SIZE} bytes"
     ));
-    lines.push(format!(
-        "rustc: {}",
-        option(&args, "--rustc").unwrap_or_else(|| "see `rustc --version`".to_string())
-    ));
+    let rustc = option(&args, "--rustc").unwrap_or_else(|| "see `rustc --version`".to_string());
+    lines.push(format!("rustc: {rustc}"));
     lines.push(String::new());
     lines.push(header());
 
     let analyzer = Analyzer::new(AnalyzerConfig::default()).expect("analyzer");
     let registry = ParserRegistry::new().expect("registry");
+    let mut all_rows: Vec<Row> = Vec::new();
 
     for language in &languages {
         for size_name in &selected_sizes {
@@ -122,6 +127,7 @@ fn main() {
             );
             for row in rows {
                 lines.push(row.render());
+                all_rows.push(row);
             }
         }
     }
@@ -132,7 +138,14 @@ fn main() {
         eprintln!("cannot write {}: {error}", report_path.display());
         std::process::exit(1);
     }
-    let json = render_json(&run_id, &run_dir, &languages, &selected_sizes);
+    let json = render_json(
+        &run_id,
+        &run_dir,
+        &rustc,
+        &languages,
+        &selected_sizes,
+        &all_rows,
+    );
     let json_path = run_dir.join("results.json");
     if let Err(error) = std::fs::write(&json_path, &json) {
         eprintln!("cannot write {}: {error}", json_path.display());
@@ -359,13 +372,14 @@ fn measure(
         "extraction only, tree already parsed",
     ));
 
-    // 5. Parse + extraction.
+    // 5. Full parse + extraction: parse the unedited source and extract from
+    //    that tree. The timer covers both, so the label is literally true.
     let start = Instant::now();
     let parsed = parser.parse(source, None).expect("parse");
     analysis = extract_from_tree(adapter, file_name, source.as_bytes(), &parsed);
     let combined = start.elapsed();
     rows.push(row(
-        "parse + extraction",
+        "full parse + extraction",
         language,
         size,
         source.len() as u64,
@@ -374,27 +388,42 @@ fn measure(
         combined,
         analysis.declarations.len() as u64,
         analysis.calls.len() as u64,
-        "single file, warm parser",
+        "parse and extraction both inside the timer",
     ));
 
-    // 6. Incremental parse: append a comment, reuse the old tree.
-    let edited = format!("{source}\n// incremental tail\n");
-    let mut edited_tree = parsed.clone();
-    edited_tree.edit(&tree_sitter::InputEdit {
+    // 6. Incremental parse only: append a language-correct comment, reuse the
+    //    old tree. The `edit()` call is setup and is deliberately *outside* the
+    //    timer, so this stage measures Tree-sitter's incremental parse and
+    //    nothing else. Stage 7 measures the edit as well.
+    let edited = append_incremental_tail(language, source);
+    assert_ne!(
+        edited, source,
+        "the incremental edit must actually change the source"
+    );
+    let edit = tree_sitter::InputEdit {
         start_byte: source.len(),
         old_end_byte: source.len(),
         new_end_byte: edited.len(),
         start_position: point_of(source, source.len()),
         old_end_position: point_of(source, source.len()),
         new_end_position: point_of(&edited, edited.len()),
-    });
+    };
+    let mut edited_tree = parsed.clone();
+    edited_tree.edit(&edit);
     let start = Instant::now();
     let incremental_tree = parser
         .parse(edited.as_bytes(), Some(&edited_tree))
         .expect("incremental parse");
     let incremental = start.elapsed();
+    // The parse-only stage must still produce a usable tree: a broken edit would
+    // otherwise show up only in the combined stage.
+    assert!(
+        !incremental_tree.root_node().has_error(),
+        "the incremental parse-only stage must produce an error-free tree for {}",
+        language.as_str()
+    );
     rows.push(row(
-        "incremental parse",
+        "incremental parse only",
         language,
         size,
         edited.len() as u64,
@@ -403,12 +432,19 @@ fn measure(
         incremental,
         0,
         0,
-        "append at EOF reusing the old tree",
+        "parse only; the tree edit was prepared outside the timer",
     ));
 
-    // 7. Incremental parse + full-file re-extraction, which is the TASK 1
-    //    policy: after an incremental parse, re-extract the whole file.
+    // 7. Incremental parse + extraction, which is the TASK 1 policy: after an
+    //    incremental parse, re-extract the whole file. The timer starts before
+    //    the tree edit and ends after extraction, so it covers the whole
+    //    incremental path rather than only its last step.
     let start = Instant::now();
+    let mut edited_tree = parsed.clone();
+    edited_tree.edit(&edit);
+    let incremental_tree = parser
+        .parse(edited.as_bytes(), Some(&edited_tree))
+        .expect("incremental parse");
     let re_extracted = extract_from_tree(adapter, file_name, edited.as_bytes(), &incremental_tree);
     let incremental_combined = start.elapsed();
     rows.push(row(
@@ -421,8 +457,49 @@ fn measure(
         incremental_combined,
         re_extracted.declarations.len() as u64,
         re_extracted.calls.len() as u64,
-        "whole-file re-extraction after incremental parse",
+        "tree edit, incremental parse and whole-file re-extraction all inside the timer",
     ));
+
+    // The edit must be valid for this language: if the appended tail were a
+    // comment in the wrong syntax, the edited source would be damaged and the
+    // incremental measurement would be measuring recovery instead.
+    assert_eq!(
+        re_extracted.status,
+        AnalysisStatus::Clean,
+        "the incremental tail must not damage {} source",
+        language.as_str()
+    );
+    assert!(
+        !incremental_tree.root_node().has_error(),
+        "the incrementally parsed tree must be error-free for {}",
+        language.as_str()
+    );
+    assert_eq!(
+        re_extracted.recovery_regions.len(),
+        0,
+        "the incremental tail must not introduce recovery regions for {}",
+        language.as_str()
+    );
+    // The incrementally parsed tree and a fresh parse of the same bytes must
+    // agree structurally, so the measurement is of a real incremental parse and
+    // not of a divergent tree.
+    let fresh = parser.parse(edited.as_bytes(), None).expect("fresh parse");
+    assert_eq!(
+        repodex::incremental::tree_structure_digest(
+            incremental_tree.root_node(),
+            edited.as_bytes()
+        ),
+        repodex::incremental::tree_structure_digest(fresh.root_node(), edited.as_bytes()),
+        "the incremental tree must match a fresh parse for {}",
+        language.as_str()
+    );
+    // And the extraction must agree too.
+    let fresh_analysis = extract_from_tree(adapter, file_name, edited.as_bytes(), &fresh);
+    assert!(
+        re_extracted.same_facts(&fresh_analysis),
+        "incremental extraction must match full extraction for {}",
+        language.as_str()
+    );
 
     // 8. The default maximum file size path: skipped or accepted.
     if source.len() as u64 > DEFAULT_MAX_FILE_SIZE {
@@ -503,6 +580,25 @@ fn raw_iterations(bytes: usize) -> u32 {
     by_size as u32
 }
 
+/// The incremental benchmark edit: append one comment line at EOF.
+///
+/// The comment syntax must be valid for the language, otherwise the "edit" is
+/// really syntax damage and the incremental stage measures error recovery
+/// instead of incremental parsing. Python needs `#`; Rust, Go and PHP all use
+/// `//`, and the generated PHP source never closes its `<?php` tag, so a `//`
+/// line at EOF is a real PHP comment.
+///
+/// `measure` asserts afterwards that the edited source parses clean, so a wrong
+/// comment syntax here fails the run rather than quietly changing what the
+/// stage measures.
+fn append_incremental_tail(language: LanguageId, source: &str) -> String {
+    let comment = match language {
+        LanguageId::Python => "# incremental tail",
+        LanguageId::Rust | LanguageId::Go | LanguageId::Php => "// incremental tail",
+    };
+    format!("{source}\n{comment}\n")
+}
+
 fn point_of(text: &str, byte: usize) -> tree_sitter::Point {
     let prefix = &text[..byte];
     let row = prefix.bytes().filter(|byte| *byte == b'\n').count();
@@ -513,24 +609,89 @@ fn point_of(text: &str, byte: usize) -> tree_sitter::Point {
     tree_sitter::Point { row, column }
 }
 
-fn render_json(run_id: &str, run_dir: &Path, languages: &[LanguageId], sizes: &[&str]) -> String {
-    let languages = languages
-        .iter()
-        .map(|language| format!("\"{}\"", language.as_str()))
-        .collect::<Vec<_>>()
-        .join(",");
-    let sizes = sizes
-        .iter()
-        .map(|size| format!("\"{size}\""))
-        .collect::<Vec<_>>()
-        .join(",");
-    format!(
-        "{{\n  \"run_id\": \"{run_id}\",\n  \"output_directory\": \"{}\",\n  \
-         \"languages\": [{languages}],\n  \"sizes\": [{sizes}],\n  \
-         \"results\": \"results.txt\",\n  \
-         \"note\": \"measurements only; no comparison against another implementation\"\n}}\n",
-        run_dir.display()
-    )
+/// One machine-readable measurement.
+///
+/// Every field a reader needs to interpret or re-derive the number is present:
+/// what ran, on what, how much of it, for how long, and what came out.
+#[derive(Serialize)]
+struct JsonRow {
+    run_id: String,
+    language: &'static str,
+    size: &'static str,
+    stage: &'static str,
+    input_bytes: u64,
+    processed_bytes: u64,
+    files: u64,
+    duration_ms: f64,
+    /// `None` when the stage processed no bytes, so no rate is meaningful.
+    throughput_mib_s: Option<f64>,
+    declarations: u64,
+    calls: u64,
+    note: &'static str,
+}
+
+impl JsonRow {
+    fn from_row(run_id: &str, row: &Row) -> Self {
+        let seconds = row.duration.as_secs_f64();
+        let throughput = if seconds > 0.0 && row.processed_bytes > 0 {
+            Some(row.processed_bytes as f64 / (1024.0 * 1024.0) / seconds)
+        } else {
+            None
+        };
+        Self {
+            run_id: run_id.to_string(),
+            language: row.language.as_str(),
+            size: row.size,
+            stage: row.stage,
+            input_bytes: row.bytes,
+            processed_bytes: row.processed_bytes,
+            files: row.files,
+            duration_ms: seconds * 1000.0,
+            throughput_mib_s: throughput,
+            declarations: row.declarations,
+            calls: row.calls,
+            note: row.note,
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct JsonReport {
+    schema_version: u32,
+    run_id: String,
+    output_directory: String,
+    rustc: String,
+    default_max_file_size: u64,
+    languages: Vec<&'static str>,
+    sizes: Vec<String>,
+    rows: Vec<JsonRow>,
+}
+
+/// Machine-readable results: metadata plus one row per measurement.
+fn render_json(
+    run_id: &str,
+    run_dir: &Path,
+    rustc: &str,
+    languages: &[LanguageId],
+    sizes: &[&str],
+    rows: &[Row],
+) -> String {
+    let report = JsonReport {
+        schema_version: 1,
+        run_id: run_id.to_string(),
+        output_directory: run_dir.display().to_string(),
+        rustc: rustc.to_string(),
+        default_max_file_size: DEFAULT_MAX_FILE_SIZE,
+        languages: languages.iter().map(|language| language.as_str()).collect(),
+        sizes: sizes.iter().map(|size| (*size).to_string()).collect(),
+        rows: rows
+            .iter()
+            .map(|row| JsonRow::from_row(run_id, row))
+            .collect(),
+    };
+    let mut text = serde_json::to_string_pretty(&report).expect("serialize benchmark results");
+    text.push('\n');
+    text
 }
 
 /// Deterministic synthetic source with real extractable constructs.
@@ -681,5 +842,355 @@ impl TempDir {
 impl Drop for TempDir {
     fn drop(&mut self) {
         let _ = std::fs::remove_dir_all(&self.path);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn analyzer() -> Analyzer {
+        Analyzer::new(AnalyzerConfig::default()).expect("analyzer")
+    }
+
+    fn analyze(language: LanguageId, source: &str) -> repodex::FileAnalysis {
+        analyzer().analyze_bytes(
+            &format!("synthetic.{}", language.primary_extension()),
+            language,
+            source.as_bytes(),
+        )
+    }
+
+    /// Analyze without the default size limit, so the `over-8MiB` size can be
+    /// checked for syntactic cleanliness rather than for size rejection.
+    fn analyze_ignoring_size(language: LanguageId, source: &str) -> repodex::FileAnalysis {
+        let analyzer = Analyzer::new(AnalyzerConfig {
+            max_file_size: source.len() as u64 + 1,
+        })
+        .expect("analyzer");
+        analyzer.analyze_bytes(
+            &format!("synthetic.{}", language.primary_extension()),
+            language,
+            source.as_bytes(),
+        )
+    }
+
+    /// The generated synthetic source must be clean for every language and size,
+    /// otherwise every measurement is really a measurement of error recovery.
+    ///
+    /// The `nested` size is 600 containers deep, and extraction recurses per
+    /// container. A test thread gets a much smaller stack than the main thread,
+    /// so the check runs on a thread with an explicit stack: the harness itself
+    /// runs on the main thread, where the same depth is fine.
+    #[test]
+    fn every_generated_source_is_syntactically_clean() {
+        std::thread::Builder::new()
+            .stack_size(64 * 1024 * 1024)
+            .spawn(|| {
+                for language in LanguageId::ALL {
+                    for (size_name, target) in SIZES {
+                        let source = generate(language, size_name, target);
+                        // The `over-8MiB` size is larger than the default limit
+                        // by design, so cleanliness is checked with the limit
+                        // raised.
+                        let analysis = analyze_ignoring_size(language, &source);
+                        assert_eq!(
+                            analysis.status,
+                            AnalysisStatus::Clean,
+                            "generated {} source at {size_name} must be clean",
+                            language.as_str()
+                        );
+                        assert!(
+                            analysis.recovery_regions.is_empty(),
+                            "generated {} source at {size_name} must have no recovery regions",
+                            language.as_str()
+                        );
+                        assert!(
+                            !analysis.declarations.is_empty(),
+                            "generated {} source at {size_name} must declare something",
+                            language.as_str()
+                        );
+                    }
+                }
+            })
+            .expect("spawn")
+            .join()
+            .expect("the generated corpus must be clean");
+    }
+
+    /// The incremental edit must be a valid comment in every language.
+    ///
+    /// A Python source with `//` appended is syntax damage, so the incremental
+    /// stage would silently become an error-recovery measurement. This is the
+    /// regression test for that.
+    #[test]
+    fn the_incremental_tail_is_valid_for_every_language() {
+        for language in LanguageId::ALL {
+            let source = generate(language, "100KiB", 100 * 1024);
+            let edited = append_incremental_tail(language, &source);
+
+            // The edit is an append, so the original bytes are untouched.
+            assert!(edited.starts_with(&source));
+            assert!(edited.len() > source.len());
+            assert!(edited.ends_with("incremental tail\n"));
+
+            let analysis = analyze(language, &edited);
+            assert_eq!(
+                analysis.status,
+                AnalysisStatus::Clean,
+                "the incremental tail must not damage {} source",
+                language.as_str()
+            );
+            assert!(
+                analysis.recovery_regions.is_empty(),
+                "the incremental tail must not introduce recovery regions for {}",
+                language.as_str()
+            );
+
+            // A comment adds no facts, so the fact set is unchanged.
+            let before = analyze(language, &source);
+            assert_eq!(
+                analysis.declarations.len(),
+                before.declarations.len(),
+                "the tail must not add or remove declarations for {}",
+                language.as_str()
+            );
+            assert_eq!(analysis.calls.len(), before.calls.len());
+            assert_eq!(analysis.imports.len(), before.imports.len());
+        }
+    }
+
+    /// `tree-sitter-python` has a real depth limit, and the benchmark's nested
+    /// size must stay below it.
+    ///
+    /// At 513 nested indentation levels `tree-sitter-python` emits one ERROR
+    /// node covering the whole file, so a deeper benchmark would be measuring
+    /// error recovery while claiming to measure nested parsing. The exact
+    /// boundary is a property of the pinned grammar, so this test pins only the
+    /// two facts the harness depends on: the benchmark depth is clean, and a
+    /// clearly deeper depth is not.
+    #[test]
+    fn the_nested_benchmark_depth_is_within_every_grammar_limit() {
+        let depth = SIZES
+            .iter()
+            .find(|(name, _)| *name == "nested")
+            .expect("the nested size")
+            .1;
+        assert!(depth <= 512, "the benchmark depth must be inside the limit");
+
+        let source = generate(LanguageId::Python, "nested", depth);
+        let analysis = analyze_ignoring_size(LanguageId::Python, &source);
+        assert_eq!(
+            analysis.status,
+            AnalysisStatus::Clean,
+            "the nested benchmark depth must parse clean in Python"
+        );
+
+        // A depth well past the limit must still fail, so the guard cannot be
+        // satisfied by a grammar that simply accepts anything.
+        let deeper = generate_nested(LanguageId::Python, 600);
+        let deeper_analysis = analyze_ignoring_size(LanguageId::Python, &deeper);
+        assert_ne!(
+            deeper_analysis.status,
+            AnalysisStatus::Clean,
+            "tree-sitter-python is expected to fail on very deep indentation; if this              now succeeds, the documented limit and the benchmark depth can be raised"
+        );
+    }
+
+    /// The comment syntax must be the language's own.
+    #[test]
+    fn the_incremental_tail_uses_the_language_comment_syntax() {
+        let python = append_incremental_tail(LanguageId::Python, "x = 1\n");
+        assert!(python.contains("# incremental tail"), "{python}");
+        assert!(
+            !python.contains("// incremental tail"),
+            "Python has no `//` comment: {python}"
+        );
+
+        for language in [LanguageId::Rust, LanguageId::Go, LanguageId::Php] {
+            let edited = append_incremental_tail(language, "x\n");
+            assert!(
+                edited.contains("// incremental tail"),
+                "{} uses `//`: {edited}",
+                language.as_str()
+            );
+        }
+    }
+
+    /// The stage labels must describe what the timer covers, and the combined
+    /// incremental stage must actually include the parse.
+    #[test]
+    fn the_incremental_stage_covers_the_parse_and_the_extraction() {
+        let work = TempDir::new("bench-stages");
+        let source = generate(LanguageId::Rust, "1MiB", 1024 * 1024);
+        let path = work.write("stage.rs", source.as_bytes());
+        let registry = ParserRegistry::new().expect("registry");
+        let rows = measure(
+            &analyzer(),
+            &registry,
+            LanguageId::Rust,
+            "1MiB",
+            "stage.rs",
+            &path,
+            &source,
+        );
+
+        let find = |stage: &str| {
+            rows.iter()
+                .find(|row| row.stage == stage)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "missing stage `{stage}`; stages present: {:?}",
+                        rows.iter().map(|row| row.stage).collect::<Vec<_>>()
+                    )
+                })
+        };
+
+        let parse_only = find("incremental parse only");
+        let combined = find("incremental parse + extraction");
+        let full = find("full parse + extraction");
+
+        // The parse-only stage reports no facts, because it does not extract.
+        assert_eq!(parse_only.declarations, 0);
+        assert_eq!(parse_only.calls, 0);
+
+        // The combined stage reports the facts of the edited source, so
+        // extraction happened inside the stage.
+        assert!(combined.declarations > 0);
+        assert!(combined.calls > 0);
+
+        // Both stages measured the edited source, and it is the edited length.
+        let edited = append_incremental_tail(LanguageId::Rust, &source);
+        assert_eq!(parse_only.bytes, edited.len() as u64);
+        assert_eq!(combined.bytes, edited.len() as u64);
+        assert_eq!(full.bytes, source.len() as u64);
+
+        // The combined timer must contain the parse, so on this input it cannot
+        // be faster than the parse alone. The margin is wide (the parse is
+        // roughly half the combined cost) so this cannot flake.
+        let parse_ms = parse_only.duration.as_secs_f64() * 1000.0;
+        let combined_ms = combined.duration.as_secs_f64() * 1000.0;
+        assert!(
+            combined_ms > parse_ms,
+            "the incremental parse + extraction stage ({combined_ms:.3} ms) must not be \
+             faster than the parse alone ({parse_ms:.3} ms); the timer no longer covers \
+             the parse"
+        );
+    }
+
+    /// The JSON artifact must carry the measurements, not just a pointer to them.
+    #[test]
+    fn the_json_report_contains_one_row_per_measurement() {
+        let rows = vec![
+            row(
+                "raw parse",
+                LanguageId::Go,
+                "100KiB",
+                1024,
+                1024,
+                1,
+                Duration::from_millis(5),
+                0,
+                0,
+                "test row",
+            ),
+            row(
+                "incremental parse + extraction",
+                LanguageId::Go,
+                "100KiB",
+                2048,
+                2048,
+                1,
+                Duration::from_millis(10),
+                7,
+                9,
+                "test row two",
+            ),
+        ];
+        let json = render_json(
+            "test-run",
+            Path::new("/tmp/test-run"),
+            "rustc test",
+            &[LanguageId::Go],
+            &["100KiB"],
+            &rows,
+        );
+        let parsed: serde_json::Value = serde_json::from_str(&json).expect("valid JSON");
+
+        assert_eq!(parsed["run_id"], "test-run");
+        assert_eq!(parsed["schema_version"], 1);
+        assert_eq!(parsed["rustc"], "rustc test");
+        assert_eq!(parsed["default_max_file_size"], DEFAULT_MAX_FILE_SIZE);
+        assert_eq!(parsed["languages"][0], "go");
+        assert_eq!(parsed["sizes"][0], "100KiB");
+
+        let rows = parsed["rows"].as_array().expect("rows array");
+        assert_eq!(rows.len(), 2, "one row per measurement");
+        let first = &rows[0];
+        for key in [
+            "run_id",
+            "language",
+            "size",
+            "stage",
+            "input_bytes",
+            "processed_bytes",
+            "files",
+            "duration_ms",
+            "throughput_mib_s",
+            "declarations",
+            "calls",
+            "note",
+        ] {
+            assert!(!first[key].is_null(), "row is missing `{key}`: {first}");
+        }
+        assert_eq!(first["run_id"], "test-run");
+        assert_eq!(first["language"], "go");
+        assert_eq!(first["stage"], "raw parse");
+        assert_eq!(first["input_bytes"], 1024);
+        assert_eq!(first["files"], 1);
+        assert_eq!(first["note"], "test row");
+        // The second row carries the fact counts and a throughput, so a reader
+        // can re-derive the number without the text report.
+        assert_eq!(rows[1]["declarations"], 7);
+        assert_eq!(rows[1]["calls"], 9);
+        assert!((rows[1]["duration_ms"].as_f64().expect("number") - 10.0).abs() < 1e-6);
+        // 2048 bytes in 10 ms is 2048 / 1048576 / 0.01 MiB/s.
+        let expected = 2048.0 / (1024.0 * 1024.0) / 0.01;
+        assert!(
+            (rows[1]["throughput_mib_s"].as_f64().expect("number") - expected).abs() < 1e-6,
+            "{}",
+            rows[1]["throughput_mib_s"]
+        );
+    }
+
+    /// A stage that processed no bytes must not claim a throughput.
+    #[test]
+    fn a_stage_without_processed_bytes_reports_no_throughput() {
+        let rows = vec![row(
+            "over default max size",
+            LanguageId::Rust,
+            "over-8MiB",
+            9000,
+            0,
+            1,
+            Duration::from_millis(1),
+            0,
+            0,
+            "rejected",
+        )];
+        let json = render_json(
+            "test-run",
+            Path::new("/tmp/test-run"),
+            "rustc test",
+            &[LanguageId::Rust],
+            &["over-8MiB"],
+            &rows,
+        );
+        let parsed: serde_json::Value = serde_json::from_str(&json).expect("valid JSON");
+        assert!(
+            parsed["rows"][0]["throughput_mib_s"].is_null(),
+            "no bytes processed means no rate: {}",
+            parsed["rows"][0]
+        );
     }
 }

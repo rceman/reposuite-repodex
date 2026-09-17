@@ -377,6 +377,10 @@ struct ScanOutput {
     root: String,
     #[serde(flatten)]
     report: ScanCounters,
+    /// The individual failures behind `traversal_failures`. Named differently
+    /// from the counter on purpose: the counters are flattened into this object,
+    /// so a field with the same name would produce a duplicate JSON key.
+    traversal_failure_details: Vec<TraversalFailureEntry>,
     files: Vec<FileEntry>,
     #[serde(skip_serializing_if = "Option::is_none")]
     canonical: Option<CanonicalExport>,
@@ -416,8 +420,20 @@ struct ScanCounters {
     test_candidates: u64,
     bytes_processed: u64,
     bytes_visited: u64,
+    /// Paths the walk could not enter or stat. Non-zero means the scan did not
+    /// cover the whole subtree under the root.
+    traversal_failures: u64,
+    scan_complete: bool,
     recovery_rate_among_parsed: Option<f64>,
     elapsed_ms: f64,
+}
+
+/// One traversal failure, in machine-readable form.
+#[derive(Serialize)]
+struct TraversalFailureEntry {
+    path: String,
+    kind: &'static str,
+    message: String,
 }
 
 #[derive(Serialize)]
@@ -478,6 +494,8 @@ fn command_scan(args: &[String]) -> Result<u8, String> {
         test_candidates: report.test_candidates,
         bytes_processed: report.bytes_processed,
         bytes_visited: report.bytes_visited,
+        traversal_failures: report.traversal_failures(),
+        scan_complete: report.is_complete(),
         recovery_rate_among_parsed: report.recovery_rate_among_parsed(),
         elapsed_ms,
     };
@@ -541,11 +559,22 @@ fn command_scan(args: &[String]) -> Result<u8, String> {
         None
     };
 
+    let traversal_failure_details = report
+        .traversal_failures
+        .iter()
+        .map(|failure| TraversalFailureEntry {
+            path: failure.relative_path.clone(),
+            kind: failure.kind.as_str(),
+            message: failure.message.clone(),
+        })
+        .collect::<Vec<_>>();
+
     let output = ScanOutput {
         schema_version: SCHEMA_VERSION,
         command: "scan",
         root: root.display().to_string(),
         report: counters,
+        traversal_failure_details,
         files,
         canonical: canonical_export,
     };
@@ -556,7 +585,10 @@ fn command_scan(args: &[String]) -> Result<u8, String> {
         print_scan_text(&output);
     }
     Ok(
-        if output.report.failed_files > 0 || output.report.extraction_failures > 0 {
+        if output.report.failed_files > 0
+            || output.report.extraction_failures > 0
+            || output.report.traversal_failures > 0
+        {
             EXIT_ANALYSIS_FAILURES
         } else {
             EXIT_OK
@@ -584,6 +616,17 @@ fn print_scan_text(output: &ScanOutput) {
         "  read failures: {}   parser failures: {}   extraction failures: {}",
         report.read_failures, report.parser_failures, report.extraction_failures
     );
+    if output.traversal_failure_details.is_empty() {
+        println!("  traversal failures: 0 (scan covered the whole tree)");
+    } else {
+        println!(
+            "  traversal failures: {} (SCAN INCOMPLETE: part of the tree was not visited)",
+            output.traversal_failure_details.len()
+        );
+        for failure in &output.traversal_failure_details {
+            println!("    {} {}: {}", failure.kind, failure.path, failure.message);
+        }
+    }
     match report.recovery_rate_among_parsed {
         Some(rate) => println!("  recovery rate among parsed: {:.2}%", rate * 100.0),
         None => println!("  recovery rate among parsed: N/A (no trees returned)"),
@@ -625,8 +668,10 @@ fn language_for_path(path: &Path) -> Result<LanguageId, String> {
 fn exit_code_for_status(status: AnalysisStatus) -> u8 {
     match status {
         AnalysisStatus::Clean => EXIT_OK,
-        AnalysisStatus::Recovered => EXIT_ANALYSIS_FAILURES,
-        AnalysisStatus::Unsupported | AnalysisStatus::Failed => EXIT_ANALYSIS_FAILURES,
+        AnalysisStatus::Recovered
+        | AnalysisStatus::Incomplete
+        | AnalysisStatus::Unsupported
+        | AnalysisStatus::Failed => EXIT_ANALYSIS_FAILURES,
     }
 }
 

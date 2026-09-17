@@ -1,31 +1,31 @@
-file path=shared/adversarial.py lang=python bytes=838 lines=62 final_newline=true status=clean snapshot=snap-859f3e7d168d4c60
-scope 0 kind=file parent=- name=- range=0..838 header=-
-scope 1 kind=function parent=0 name=name range=186..210 header=-
-scope 2 kind=class parent=0 name=Duplicate range=213..266 header=-
-scope 3 kind=method parent=2 name=name range=234..266 header=-
-scope 4 kind=class parent=0 name=Other range=269..318 header=-
-scope 5 kind=method parent=4 name=name range=286..318 header=-
-scope 6 kind=function parent=0 name=outer range=339..535 header=-
-scope 7 kind=function parent=6 name=level_two range=356..513 header=-
-scope 8 kind=function parent=7 name=level_three range=381..485 header=-
-scope 9 kind=function parent=8 name=level_four range=412..454 header=-
-scope 10 kind=function parent=0 name=semantically_invalid range=616..675 header=-
-scope 11 kind=function parent=0 name=generated_0001 range=708..738 header=-
-scope 12 kind=function parent=0 name=generated_0002 range=741..771 header=-
-scope 13 kind=function parent=0 name=generated_0003 range=774..804 header=-
-scope 14 kind=function parent=0 name=generated_0004 range=807..837 header=-
-decl 0 kind=function name=name scope=0 flags=[] range=186..210 name_range=190..194 body=202..210 tests=[]
-decl 1 kind=class name=Duplicate scope=0 flags=[] range=213..266 name_range=219..228 body=234..266 tests=[]
-decl 2 kind=method name=name scope=2 flags=[] range=234..266 name_range=238..242 body=258..266 tests=[]
-decl 3 kind=class name=Other scope=0 flags=[] range=269..318 name_range=275..280 body=286..318 tests=[]
-decl 4 kind=method name=name scope=4 flags=[] range=286..318 name_range=290..294 body=310..318 tests=[]
-decl 5 kind=function name=outer scope=0 flags=[] range=339..535 name_range=343..348 body=356..535 tests=[]
-decl 6 kind=function name=level_two scope=6 flags=[] range=356..513 name_range=360..369 body=381..513 tests=[]
-decl 7 kind=function name=level_three scope=7 flags=[] range=381..485 name_range=385..396 body=412..485 tests=[]
-decl 8 kind=function name=level_four scope=8 flags=[] range=412..454 name_range=416..426 body=446..454 tests=[]
-decl 9 kind=function name=semantically_invalid scope=0 flags=[] range=616..675 name_range=620..640 body=648..675 tests=[]
-decl 10 kind=function name=generated_0001 scope=0 flags=[] range=708..738 name_range=712..726 body=734..738 tests=[]
-decl 11 kind=function name=generated_0002 scope=0 flags=[] range=741..771 name_range=745..759 body=767..771 tests=[]
-decl 12 kind=function name=generated_0003 scope=0 flags=[] range=774..804 name_range=778..792 body=800..804 tests=[]
-decl 13 kind=function name=generated_0004 scope=0 flags=[] range=807..837 name_range=811..825 body=833..837 tests=[]
-call 0 form=plain_name callee=Missing scope=10 expr=655..675 callee_range=655..662 type_args=- dyn=false nullsafe=false
+file schema=1 path=shared/adversarial.py lang=python bytes=838 lines=62 final_newline=true status=clean snapshot=snap-859f3e7d168d4c60
+scope 0 kind=file parent=- name=- range=0..838 (0:0..62:0) header=- lang=python
+scope 1 kind=function parent=0 name=name range=186..210 (8:0..9:12) header=- lang=python
+scope 2 kind=class parent=0 name=Duplicate range=213..266 (12:0..14:16) header=- lang=python
+scope 3 kind=method parent=2 name=name range=234..266 (13:4..14:16) header=- lang=python
+scope 4 kind=class parent=0 name=Other range=269..318 (17:0..19:16) header=- lang=python
+scope 5 kind=method parent=4 name=name range=286..318 (18:4..19:16) header=- lang=python
+scope 6 kind=function parent=0 name=outer range=339..535 (25:0..35:20) header=- lang=python
+scope 7 kind=function parent=6 name=level_two range=356..513 (26:4..33:26) header=- lang=python
+scope 8 kind=function parent=7 name=level_three range=381..485 (27:8..31:29) header=- lang=python
+scope 9 kind=function parent=8 name=level_four range=412..454 (28:12..29:24) header=- lang=python
+scope 10 kind=function parent=0 name=semantically_invalid range=616..675 (41:0..42:31) header=- lang=python
+scope 11 kind=function parent=0 name=generated_0001 range=708..738 (48:0..49:8) header=- lang=python
+scope 12 kind=function parent=0 name=generated_0002 range=741..771 (52:0..53:8) header=- lang=python
+scope 13 kind=function parent=0 name=generated_0003 range=774..804 (56:0..57:8) header=- lang=python
+scope 14 kind=function parent=0 name=generated_0004 range=807..837 (60:0..61:8) header=- lang=python
+decl 0 kind=function name=name scope=0 flags=[] range=186..210 (8:0..9:12) name_range=190..194 (8:4..8:8) body=202..210 (9:4..9:12) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 1 kind=class name=Duplicate scope=0 flags=[] range=213..266 (12:0..14:16) name_range=219..228 (12:6..12:15) body=234..266 (13:4..14:16) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 2 kind=method name=name scope=2 flags=[] range=234..266 (13:4..14:16) name_range=238..242 (13:8..13:12) body=258..266 (14:8..14:16) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 3 kind=class name=Other scope=0 flags=[] range=269..318 (17:0..19:16) name_range=275..280 (17:6..17:11) body=286..318 (18:4..19:16) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 4 kind=method name=name scope=4 flags=[] range=286..318 (18:4..19:16) name_range=290..294 (18:8..18:12) body=310..318 (19:8..19:16) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 5 kind=function name=outer scope=0 flags=[] range=339..535 (25:0..35:20) name_range=343..348 (25:4..25:9) body=356..535 (26:4..35:20) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 6 kind=function name=level_two scope=6 flags=[] range=356..513 (26:4..33:26) name_range=360..369 (26:8..26:17) body=381..513 (27:8..33:26) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 7 kind=function name=level_three scope=7 flags=[] range=381..485 (27:8..31:29) name_range=385..396 (27:12..27:23) body=412..485 (28:12..31:29) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 8 kind=function name=level_four scope=8 flags=[] range=412..454 (28:12..29:24) name_range=416..426 (28:16..28:26) body=446..454 (29:16..29:24) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 9 kind=function name=semantically_invalid scope=0 flags=[] range=616..675 (41:0..42:31) name_range=620..640 (41:4..41:24) body=648..675 (42:4..42:31) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 10 kind=function name=generated_0001 scope=0 flags=[] range=708..738 (48:0..49:8) name_range=712..726 (48:4..48:18) body=734..738 (49:4..49:8) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 11 kind=function name=generated_0002 scope=0 flags=[] range=741..771 (52:0..53:8) name_range=745..759 (52:4..52:18) body=767..771 (53:4..53:8) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 12 kind=function name=generated_0003 scope=0 flags=[] range=774..804 (56:0..57:8) name_range=778..792 (56:4..56:18) body=800..804 (57:4..57:8) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+decl 13 kind=function name=generated_0004 scope=0 flags=[] range=807..837 (60:0..61:8) name_range=811..825 (60:4..60:18) body=833..837 (61:4..61:8) lang=python path=shared/adversarial.py snapshot=snap-859f3e7d168d4c60 tests=[]
+call 0 form=plain_name callee=Missing scope=10 expr=655..675 (42:11..42:31) callee_range=655..662 (42:11..42:18) type_args=- type_args_range=- dyn=false nullsafe=false

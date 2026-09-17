@@ -1,45 +1,45 @@
-file path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
-scope 0 kind=file parent=- name=- range=0..850 header=-
-scope 1 kind=struct parent=0 name=Box range=338..368 header=338..349
-scope 2 kind=struct parent=0 name=Pair range=375..449 header=375..401
-scope 3 kind=interface parent=0 name=Reader range=456..513 header=456..463
-scope 4 kind=function parent=0 name=Free range=627..672 header=-
-scope 5 kind=method parent=0 name=Value range=674..726 header=-
-scope 6 kind=method parent=0 name=Set range=728..753 header=-
-scope 7 kind=function parent=0 name=outer range=755..849 header=-
-scope 8 kind=closure parent=7 name=- range=780..789 header=-
-scope 9 kind=closure parent=7 name=- range=801..845 header=-
-scope 10 kind=closure parent=9 name=- range=822..831 header=-
-decl 0 kind=package name=fixture scope=0 flags=[] range=53..68 name_range=61..68 body=- tests=[]
-decl 1 kind=named_type name=UserID scope=0 flags=[] range=194..207 name_range=194..200 body=- tests=[]
-decl 2 kind=type_alias name=Alias scope=0 flags=[] range=214..228 name_range=214..219 body=- tests=[]
-decl 3 kind=struct name=Box scope=0 flags=[] range=338..368 name_range=338..341 body=349..368 tests=[]
-decl 4 kind=field name=Value scope=1 flags=[] range=359..366 name_range=359..364 body=- tests=[]
-decl 5 kind=struct name=Pair scope=0 flags=[] range=375..449 name_range=375..379 body=401..449 tests=[]
-decl 6 kind=field name=Key scope=2 flags=[] range=411..418 name_range=411..414 body=- tests=[]
-decl 7 kind=field name=Value scope=2 flags=[] range=420..427 name_range=420..425 body=- tests=[]
-decl 8 kind=interface name=Reader scope=0 flags=[] range=456..513 name_range=456..462 body=463..513 tests=[]
-decl 9 kind=method name=Read scope=3 flags=[] range=476..503 name_range=476..480 body=- tests=[]
-decl 10 kind=constant name=StatusA scope=0 flags=[] range=524..538 name_range=524..531 body=- tests=[]
-decl 11 kind=constant name=StatusB scope=0 flags=[] range=540..547 name_range=540..547 body=- tests=[]
-decl 12 kind=constant name=StatusC scope=0 flags=[] range=549..572 name_range=549..556 body=- tests=[]
-decl 13 kind=constant name=StatusD scope=0 flags=[] range=549..572 name_range=558..565 body=- tests=[]
-decl 14 kind=constant name=Single scope=0 flags=[] range=582..592 name_range=582..588 body=- tests=[]
-decl 15 kind=variable name=Global scope=0 flags=[] range=598..608 name_range=598..604 body=- tests=[]
-decl 16 kind=variable name=X scope=0 flags=[] range=614..625 name_range=614..615 body=- tests=[]
-decl 17 kind=variable name=Y scope=0 flags=[] range=614..625 name_range=617..618 body=- tests=[]
-decl 18 kind=function name=Free scope=0 flags=[] range=627..672 name_range=632..636 body=655..672 tests=[]
-decl 19 kind=method name=Value scope=0 flags=[receiver] range=674..726 name_range=690..695 body=705..726 tests=[]
-decl 20 kind=method name=Set scope=0 flags=[receiver] range=728..753 name_range=745..748 body=751..753 tests=[]
-decl 21 kind=function name=outer scope=0 flags=[] range=755..849 name_range=760..765 body=768..849 tests=[]
-import 0 form=grouped module=- module_range=- relative=- scope=0 range=70..158 items=[{target=fmt alias=- wildcard=false cat=normal},{target=example.com/alias alias=alias wildcard=false cat=normal},{target=example.com/blank alias=_ wildcard=false cat=blank},{target=example.com/dot alias=. wildcard=false cat=dot}]
-import 1 form=single module=- module_range=- relative=- scope=0 range=160..187 items=[{target=example.com/single alias=- wildcard=false cat=normal}]
-ref 0 kind=embedded_type written=Embedded scope=2 decl=- range=429..437
-ref 1 kind=embedded_type written=Pointer scope=2 decl=- range=440..447
-ref 2 kind=embedded_type written=Closer scope=3 decl=- range=505..511
-ref 3 kind=receiver_type written=UserID scope=0 decl=19 range=682..688
-ref 4 kind=receiver_type written=*UserID scope=0 decl=20 range=736..743
-call 0 form=plain_name callee=string scope=5 expr=715..724 callee_range=715..721 type_args=- dyn=false nullsafe=false
-call 1 form=plain_name callee=inner scope=7 expr=791..798 callee_range=791..796 type_args=- dyn=false nullsafe=false
-call 2 form=indirect callee=func() {\n\t\tnested := func() {}\n\t\tnested()\n\t} scope=7 expr=801..847 callee_range=801..845 type_args=- dyn=false nullsafe=false
-call 3 form=plain_name callee=nested scope=9 expr=834..842 callee_range=834..840 type_args=- dyn=false nullsafe=false
+file schema=1 path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
+scope 0 kind=file parent=- name=- range=0..850 (0:0..65:0) header=- lang=go
+scope 1 kind=struct parent=0 name=Box range=338..368 (18:5..20:1) header=338..349 (18:5..18:16) lang=go
+scope 2 kind=struct parent=0 name=Pair range=375..449 (22:5..27:1) header=375..401 (22:5..22:31) lang=go
+scope 3 kind=interface parent=0 name=Reader range=456..513 (29:5..32:1) header=456..463 (29:5..29:12) lang=go
+scope 4 kind=function parent=0 name=Free range=627..672 (46:0..48:1) header=- lang=go
+scope 5 kind=method parent=0 name=Value range=674..726 (50:0..52:1) header=- lang=go
+scope 6 kind=method parent=0 name=Set range=728..753 (54:0..54:25) header=- lang=go
+scope 7 kind=function parent=0 name=outer range=755..849 (56:0..64:1) header=- lang=go
+scope 8 kind=closure parent=7 name=- range=780..789 (57:10..57:19) header=- lang=go
+scope 9 kind=closure parent=7 name=- range=801..845 (60:1..63:2) header=- lang=go
+scope 10 kind=closure parent=9 name=- range=822..831 (61:12..61:21) header=- lang=go
+decl 0 kind=package name=fixture scope=0 flags=[] range=53..68 (1:0..1:15) name_range=61..68 (1:8..1:15) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 1 kind=named_type name=UserID scope=0 flags=[] range=194..207 (12:5..12:18) name_range=194..200 (12:5..12:11) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 2 kind=type_alias name=Alias scope=0 flags=[] range=214..228 (14:5..14:19) name_range=214..219 (14:5..14:10) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 3 kind=struct name=Box scope=0 flags=[] range=338..368 (18:5..20:1) name_range=338..341 (18:5..18:8) body=349..368 (18:16..20:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 4 kind=field name=Value scope=1 flags=[] range=359..366 (19:1..19:8) name_range=359..364 (19:1..19:6) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 5 kind=struct name=Pair scope=0 flags=[] range=375..449 (22:5..27:1) name_range=375..379 (22:5..22:9) body=401..449 (22:31..27:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 6 kind=field name=Key scope=2 flags=[] range=411..418 (23:1..23:8) name_range=411..414 (23:1..23:4) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 7 kind=field name=Value scope=2 flags=[] range=420..427 (24:1..24:8) name_range=420..425 (24:1..24:6) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 8 kind=interface name=Reader scope=0 flags=[] range=456..513 (29:5..32:1) name_range=456..462 (29:5..29:11) body=463..513 (29:12..32:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 9 kind=method name=Read scope=3 flags=[] range=476..503 (30:1..30:28) name_range=476..480 (30:1..30:5) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 10 kind=constant name=StatusA scope=0 flags=[] range=524..538 (35:1..35:15) name_range=524..531 (35:1..35:8) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 11 kind=constant name=StatusB scope=0 flags=[] range=540..547 (36:1..36:8) name_range=540..547 (36:1..36:8) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 12 kind=constant name=StatusC scope=0 flags=[] range=549..572 (37:1..37:24) name_range=549..556 (37:1..37:8) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 13 kind=constant name=StatusD scope=0 flags=[] range=549..572 (37:1..37:24) name_range=558..565 (37:10..37:17) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 14 kind=constant name=Single scope=0 flags=[] range=582..592 (40:6..40:16) name_range=582..588 (40:6..40:12) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 15 kind=variable name=Global scope=0 flags=[] range=598..608 (42:4..42:14) name_range=598..604 (42:4..42:10) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 16 kind=variable name=X scope=0 flags=[] range=614..625 (44:4..44:15) name_range=614..615 (44:4..44:5) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 17 kind=variable name=Y scope=0 flags=[] range=614..625 (44:4..44:15) name_range=617..618 (44:7..44:8) body=- lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 18 kind=function name=Free scope=0 flags=[] range=627..672 (46:0..48:1) name_range=632..636 (46:5..46:9) body=655..672 (46:28..48:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 19 kind=method name=Value scope=0 flags=[receiver] range=674..726 (50:0..52:1) name_range=690..695 (50:16..50:21) body=705..726 (50:31..52:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 20 kind=method name=Set scope=0 flags=[receiver] range=728..753 (54:0..54:25) name_range=745..748 (54:17..54:20) body=751..753 (54:23..54:25) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+decl 21 kind=function name=outer scope=0 flags=[] range=755..849 (56:0..64:1) name_range=760..765 (56:5..56:10) body=768..849 (56:13..64:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 tests=[]
+import 0 form=grouped module=- module_range=- relative=- scope=0 range=70..158 (3:0..8:1) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 text=import (\n\t"fmt"\n\talias "example.com/alias"\n\t_ "example.com/blank"\n\t. "example.com/dot"\n) items=[{target=fmt target_range=80..85 (4:1..4:6) alias=- alias_range=- wildcard=false cat=normal range=80..85 (4:1..4:6)},{target=example.com/alias target_range=93..112 (5:7..5:26) alias=alias alias_range=87..92 (5:1..5:6) wildcard=false cat=normal range=87..112 (5:1..5:26)},{target=example.com/blank target_range=116..135 (6:3..6:22) alias=_ alias_range=114..115 (6:1..6:2) wildcard=false cat=blank range=114..135 (6:1..6:22)},{target=example.com/dot target_range=139..156 (7:3..7:20) alias=. alias_range=137..138 (7:1..7:2) wildcard=false cat=dot range=137..156 (7:1..7:20)}]
+import 1 form=single module=- module_range=- relative=- scope=0 range=160..187 (10:0..10:27) lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316 text=import "example.com/single" items=[{target=example.com/single target_range=167..187 (10:7..10:27) alias=- alias_range=- wildcard=false cat=normal range=167..187 (10:7..10:27)}]
+ref 0 kind=embedded_type written=Embedded scope=2 decl=- range=429..437 (25:1..25:9)
+ref 1 kind=embedded_type written=Pointer scope=2 decl=- range=440..447 (26:2..26:9)
+ref 2 kind=embedded_type written=Closer scope=3 decl=- range=505..511 (31:1..31:7)
+ref 3 kind=receiver_type written=UserID scope=0 decl=19 range=682..688 (50:8..50:14)
+ref 4 kind=receiver_type written=*UserID scope=0 decl=20 range=736..743 (54:8..54:15)
+call 0 form=plain_name callee=string scope=5 expr=715..724 (51:8..51:17) callee_range=715..721 (51:8..51:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=inner scope=7 expr=791..798 (58:1..58:8) callee_range=791..796 (58:1..58:6) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=indirect callee=func() {\n\t\tnested := func() {}\n\t\tnested()\n\t} scope=7 expr=801..847 (60:1..63:4) callee_range=801..845 (60:1..63:2) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=nested scope=9 expr=834..842 (62:2..62:10) callee_range=834..840 (62:2..62:8) type_args=- type_args_range=- dyn=false nullsafe=false

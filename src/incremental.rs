@@ -180,8 +180,9 @@ pub fn run_sequence(
             })
             .collect::<Vec<_>>();
 
-        let structure_incremental = tree_structure_digest(incremental_tree.root_node());
-        let structure_full = tree_structure_digest(full_tree.root_node());
+        let structure_incremental =
+            tree_structure_digest(incremental_tree.root_node(), edited_source.as_bytes());
+        let structure_full = tree_structure_digest(full_tree.root_node(), edited_source.as_bytes());
         let tree_structure_equal = structure_incremental == structure_full;
 
         let incremental = extract_from_tree(
@@ -192,7 +193,12 @@ pub fn run_sequence(
         );
         let full = extract_from_tree(adapter, relative_path, edited_source.as_bytes(), &full_tree);
 
-        let facts_equal = incremental.canonical_text() == full.canonical_text();
+        // Authoritative comparison: every normalized field of both analyses,
+        // not a rendering. `canonical_text` is checked as well, because the
+        // digests are derived from it and it must agree with structural
+        // equality.
+        let facts_equal =
+            incremental.same_facts(&full) && incremental.canonical_text() == full.canonical_text();
         let diagnostics_equal = render_diagnostics(&incremental) == render_diagnostics(&full);
         let recovery_equal = incremental.recovery_regions == full.recovery_regions
             && incremental.status == full.status;
@@ -231,16 +237,43 @@ pub fn run_sequence(
     Ok(outcomes)
 }
 
-/// Structural digest of a tree: node kind, range, namedness and recovery flags
-/// for every node, in traversal order. Stronger than S-expression equality
-/// because it also compares ranges and ERROR/MISSING state.
-pub fn tree_structure_digest(root: tree_sitter::Node<'_>) -> String {
+/// Structural digest of a tree.
+///
+/// For every node, in traversal order, the digest records:
+///
+/// * node kind (which distinguishes named nodes from anonymous tokens, since
+///   an anonymous node's kind is its literal text);
+/// * namedness, compared explicitly so the distinction is never inferred;
+/// * the byte range and the row/column point range;
+/// * `ERROR` / `MISSING` / has-error state;
+/// * the field name the node occupies in its parent, when it has one;
+/// * the child count, and then every child recursively in order;
+/// * for leaf nodes only, the source text of the node.
+///
+/// The leaf text matters because a named leaf's kind is its *category*, not its
+/// value: `f` and `g` are both `identifier`. Without the text, two trees that
+/// differ only in the spelling of an identifier would digest identically.
+/// Text is recorded for leaves only, so the digest stays proportional to the
+/// token count rather than to the whole subtree text.
+///
+/// Tree-sitter's internal node ids and symbols are deliberately not compared:
+/// they are ephemeral and carry no meaning across two parses.
+///
+/// This is stronger than S-expression equality, which compares neither ranges
+/// nor points nor field names.
+pub fn tree_structure_digest(root: tree_sitter::Node<'_>, source: &[u8]) -> String {
     let mut out = String::new();
-    append_structure(root, 0, &mut out);
+    append_structure(root, source, None, 0, &mut out);
     out
 }
 
-fn append_structure(node: tree_sitter::Node<'_>, depth: usize, out: &mut String) {
+fn append_structure(
+    node: tree_sitter::Node<'_>,
+    source: &[u8],
+    field_name: Option<&str>,
+    depth: usize,
+    out: &mut String,
+) {
     use std::fmt::Write;
     let flags = match (node.is_error(), node.is_missing(), node.has_error()) {
         (true, _, _) => "E",
@@ -248,18 +281,49 @@ fn append_structure(node: tree_sitter::Node<'_>, depth: usize, out: &mut String)
         (_, _, true) => "e",
         _ => "-",
     };
+    let start = node.start_position();
+    let end = node.end_position();
+    let named = if node.is_named() { "named" } else { "anon" };
+    let text = if node.child_count() == 0 {
+        // A leaf whose bytes are not valid UTF-8 is rendered as its byte
+        // length, so the digest stays injective without panicking.
+        match std::str::from_utf8(&source[node.start_byte()..node.end_byte()]) {
+            Ok(text) => format!(" text={text:?}"),
+            Err(_) => format!(" text_bytes={}", node.end_byte() - node.start_byte()),
+        }
+    } else {
+        String::new()
+    };
     let _ = writeln!(
         out,
-        "{depth}:{}:{}..{}:{}:{}",
+        "depth={depth} kind={} {named} bytes={}..{} points={}:{}..{}:{} state={flags} \
+         field={} children={}{text}",
         node.kind(),
         node.start_byte(),
         node.end_byte(),
-        flags,
+        start.row,
+        start.column,
+        end.row,
+        end.column,
+        field_name.unwrap_or("-"),
         node.child_count()
     );
+    // Field names come from the cursor, and `node.children(&mut cursor)` holds
+    // the cursor for the whole iteration, so walk the cursor directly and
+    // collect first.
     let mut cursor = node.walk();
-    for child in node.children(&mut cursor) {
-        append_structure(child, depth + 1, out);
+    let mut children = Vec::with_capacity(node.child_count() as usize);
+    if cursor.goto_first_child() {
+        loop {
+            children.push((cursor.node(), cursor.field_name().map(str::to_string)));
+            if !cursor.goto_next_sibling() {
+                break;
+            }
+        }
+    }
+    drop(cursor);
+    for (child, field) in children {
+        append_structure(child, source, field.as_deref(), depth + 1, out);
     }
 }
 

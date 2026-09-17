@@ -1,16 +1,16 @@
-file path=php/malformed.php lang=php bytes=191 lines=19 final_newline=true status=recovered snapshot=snap-b14047293965a5e9
-scope 0 kind=file parent=- name=- range=0..191 header=-
-scope 1 kind=namespace parent=0 name=App\\Malformed range=7..31 header=-
-scope 2 kind=function parent=1 name=validBefore range=33..65 header=-
-scope 3 kind=class parent=1 name=Broken range=67..135 header=67..80
-scope 4 kind=method parent=3 name=broken range=86..133 header=-
-scope 5 kind=function parent=1 name=validAfter range=137..168 header=-
-decl 0 kind=namespace name=App\\Malformed scope=0 flags=[] range=7..31 name_range=17..30 body=- tests=[]
-decl 1 kind=function name=validBefore scope=1 flags=[] range=33..65 name_range=42..53 body=62..65 tests=[]
-decl 2 kind=class name=Broken scope=1 flags=[] range=67..135 name_range=73..79 body=80..135 tests=[]
-decl 3 kind=method name=broken scope=3 flags=[] range=86..133 name_range=102..108 body=110..133 tests=[]
-decl 4 kind=function name=validAfter scope=1 flags=[] range=137..168 name_range=146..156 body=165..168 tests=[]
-recovery range=109..109
-recovery range=170..190
+file schema=1 path=php/malformed.php lang=php bytes=191 lines=19 final_newline=true status=recovered snapshot=snap-b14047293965a5e9
+scope 0 kind=file parent=- name=- range=0..191 (0:0..19:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Malformed range=7..31 (2:0..2:24) header=- lang=php
+scope 2 kind=function parent=1 name=validBefore range=33..65 (4:0..6:1) header=- lang=php
+scope 3 kind=class parent=1 name=Broken range=67..135 (8:0..12:1) header=67..80 (8:0..8:13) lang=php
+scope 4 kind=method parent=3 name=broken range=86..133 (9:4..11:5) header=- lang=php
+scope 5 kind=function parent=1 name=validAfter range=137..168 (14:0..16:1) header=- lang=php
+decl 0 kind=namespace name=App\\Malformed scope=0 flags=[] range=7..31 (2:0..2:24) name_range=17..30 (2:10..2:23) body=- lang=php path=php/malformed.php snapshot=snap-b14047293965a5e9 tests=[]
+decl 1 kind=function name=validBefore scope=1 flags=[] range=33..65 (4:0..6:1) name_range=42..53 (4:9..4:20) body=62..65 (5:0..6:1) lang=php path=php/malformed.php snapshot=snap-b14047293965a5e9 tests=[]
+decl 2 kind=class name=Broken scope=1 flags=[] range=67..135 (8:0..12:1) name_range=73..79 (8:6..8:12) body=80..135 (8:13..12:1) lang=php path=php/malformed.php snapshot=snap-b14047293965a5e9 tests=[]
+decl 3 kind=method name=broken scope=3 flags=[] range=86..133 (9:4..11:5) name_range=102..108 (9:20..9:26) body=110..133 (9:28..11:5) lang=php path=php/malformed.php snapshot=snap-b14047293965a5e9 tests=[]
+decl 4 kind=function name=validAfter scope=1 flags=[] range=137..168 (14:0..16:1) name_range=146..156 (14:9..14:19) body=165..168 (15:0..16:1) lang=php path=php/malformed.php snapshot=snap-b14047293965a5e9 tests=[]
+recovery range=109..109 (9:27..9:27)
+recovery range=170..190 (18:0..18:20)
 diag error missing_syntax [109..109 (9:27..9:27)] tree-sitter inserted a MISSING ) token
 diag error syntax_error [170..190 (18:0..18:20)] tree-sitter recovered from an ERROR node covering 20 byte(s)

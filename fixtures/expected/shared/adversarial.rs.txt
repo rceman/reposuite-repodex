@@ -1,42 +1,42 @@
-file path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
-scope 0 kind=file parent=- name=- range=0..973 header=-
-scope 1 kind=function parent=0 name=multibyte_after_utf8 range=142..170 header=-
-scope 2 kind=impl parent=0 name=- range=234..296 header=234..249
-scope 3 kind=method parent=2 name=name range=255..294 header=-
-scope 4 kind=module parent=0 name=nested range=298..355 header=298..309
-scope 5 kind=function parent=4 name=name range=315..353 header=-
-scope 6 kind=module parent=0 name=level_one range=375..545 header=375..389
-scope 7 kind=module parent=6 name=level_two range=395..543 header=395..413
-scope 8 kind=module parent=7 name=level_three range=423..537 header=423..443
-scope 9 kind=module parent=8 name=level_four range=457..527 header=457..476
-scope 10 kind=function parent=9 name=deepest range=494..513 header=-
-scope 11 kind=function parent=0 name=semantically_invalid range=626..725 header=-
-scope 12 kind=function parent=0 name=generated_0001 range=757..783 header=-
-scope 13 kind=function parent=0 name=generated_0002 range=784..810 header=-
-scope 14 kind=function parent=0 name=generated_0003 range=811..837 header=-
-scope 15 kind=function parent=0 name=generated_0004 range=838..864 header=-
-scope 16 kind=function parent=0 name=generated_0005 range=865..891 header=-
-scope 17 kind=function parent=0 name=generated_0006 range=892..918 header=-
-scope 18 kind=function parent=0 name=generated_0007 range=919..945 header=-
-scope 19 kind=function parent=0 name=generated_0008 range=946..972 header=-
-decl 0 kind=function name=multibyte_after_utf8 scope=0 flags=[] range=142..170 name_range=145..165 body=168..170 tests=[]
-decl 1 kind=struct name=Duplicate scope=0 flags=[] range=215..232 name_range=222..231 body=- tests=[]
-decl 2 kind=method name=name scope=2 flags=[receiver] range=255..294 name_range=258..262 body=277..294 tests=[]
-decl 3 kind=module name=nested scope=0 flags=[] range=298..355 name_range=302..308 body=309..355 tests=[]
-decl 4 kind=function name=name scope=4 flags=[] range=315..353 name_range=322..326 body=336..353 tests=[]
-decl 5 kind=module name=level_one scope=0 flags=[] range=375..545 name_range=379..388 body=389..545 tests=[]
-decl 6 kind=module name=level_two scope=6 flags=[] range=395..543 name_range=403..412 body=413..543 tests=[]
-decl 7 kind=module name=level_three scope=7 flags=[] range=423..537 name_range=431..442 body=443..537 tests=[]
-decl 8 kind=module name=level_four scope=8 flags=[] range=457..527 name_range=465..475 body=476..527 tests=[]
-decl 9 kind=function name=deepest scope=9 flags=[] range=494..513 name_range=501..508 body=511..513 tests=[]
-decl 10 kind=function name=semantically_invalid scope=0 flags=[] range=626..725 name_range=629..649 body=663..725 tests=[]
-decl 11 kind=function name=generated_0001 scope=0 flags=[] range=757..783 name_range=764..778 body=781..783 tests=[]
-decl 12 kind=function name=generated_0002 scope=0 flags=[] range=784..810 name_range=791..805 body=808..810 tests=[]
-decl 13 kind=function name=generated_0003 scope=0 flags=[] range=811..837 name_range=818..832 body=835..837 tests=[]
-decl 14 kind=function name=generated_0004 scope=0 flags=[] range=838..864 name_range=845..859 body=862..864 tests=[]
-decl 15 kind=function name=generated_0005 scope=0 flags=[] range=865..891 name_range=872..886 body=889..891 tests=[]
-decl 16 kind=function name=generated_0006 scope=0 flags=[] range=892..918 name_range=899..913 body=916..918 tests=[]
-decl 17 kind=function name=generated_0007 scope=0 flags=[] range=919..945 name_range=926..940 body=943..945 tests=[]
-decl 18 kind=function name=generated_0008 scope=0 flags=[] range=946..972 name_range=953..967 body=970..972 tests=[]
-ref 0 kind=impl_target written=Duplicate scope=2 decl=- range=239..248
-call 0 form=qualified_path callee=Missing::default scope=11 expr=694..712 callee_range=694..710 type_args=- dyn=false nullsafe=false
+file schema=1 path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
+scope 0 kind=file parent=- name=- range=0..973 (0:0..51:0) header=- lang=rust
+scope 1 kind=function parent=0 name=multibyte_after_utf8 range=142..170 (4:0..4:28) header=- lang=rust
+scope 2 kind=impl parent=0 name=- range=234..296 (10:0..14:1) header=234..249 (10:0..10:15) lang=rust
+scope 3 kind=method parent=2 name=name range=255..294 (11:4..13:5) header=- lang=rust
+scope 4 kind=module parent=0 name=nested range=298..355 (16:0..20:1) header=298..309 (16:0..16:11) lang=rust
+scope 5 kind=function parent=4 name=name range=315..353 (17:4..19:5) header=- lang=rust
+scope 6 kind=module parent=0 name=level_one range=375..545 (24:0..32:1) header=375..389 (24:0..24:14) lang=rust
+scope 7 kind=module parent=6 name=level_two range=395..543 (25:4..31:5) header=395..413 (25:4..25:22) lang=rust
+scope 8 kind=module parent=7 name=level_three range=423..537 (26:8..30:9) header=423..443 (26:8..26:28) lang=rust
+scope 9 kind=module parent=8 name=level_four range=457..527 (27:12..29:13) header=457..476 (27:12..27:31) lang=rust
+scope 10 kind=function parent=9 name=deepest range=494..513 (28:16..28:35) header=- lang=rust
+scope 11 kind=function parent=0 name=semantically_invalid range=626..725 (36:0..39:1) header=- lang=rust
+scope 12 kind=function parent=0 name=generated_0001 range=757..783 (43:0..43:26) header=- lang=rust
+scope 13 kind=function parent=0 name=generated_0002 range=784..810 (44:0..44:26) header=- lang=rust
+scope 14 kind=function parent=0 name=generated_0003 range=811..837 (45:0..45:26) header=- lang=rust
+scope 15 kind=function parent=0 name=generated_0004 range=838..864 (46:0..46:26) header=- lang=rust
+scope 16 kind=function parent=0 name=generated_0005 range=865..891 (47:0..47:26) header=- lang=rust
+scope 17 kind=function parent=0 name=generated_0006 range=892..918 (48:0..48:26) header=- lang=rust
+scope 18 kind=function parent=0 name=generated_0007 range=919..945 (49:0..49:26) header=- lang=rust
+scope 19 kind=function parent=0 name=generated_0008 range=946..972 (50:0..50:26) header=- lang=rust
+decl 0 kind=function name=multibyte_after_utf8 scope=0 flags=[] range=142..170 (4:0..4:28) name_range=145..165 (4:3..4:23) body=168..170 (4:26..4:28) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 1 kind=struct name=Duplicate scope=0 flags=[] range=215..232 (8:0..8:17) name_range=222..231 (8:7..8:16) body=- lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 2 kind=method name=name scope=2 flags=[receiver] range=255..294 (11:4..13:5) name_range=258..262 (11:7..11:11) body=277..294 (11:26..13:5) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 3 kind=module name=nested scope=0 flags=[] range=298..355 (16:0..20:1) name_range=302..308 (16:4..16:10) body=309..355 (16:11..20:1) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 4 kind=function name=name scope=4 flags=[] range=315..353 (17:4..19:5) name_range=322..326 (17:11..17:15) body=336..353 (17:25..19:5) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 5 kind=module name=level_one scope=0 flags=[] range=375..545 (24:0..32:1) name_range=379..388 (24:4..24:13) body=389..545 (24:14..32:1) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 6 kind=module name=level_two scope=6 flags=[] range=395..543 (25:4..31:5) name_range=403..412 (25:12..25:21) body=413..543 (25:22..31:5) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 7 kind=module name=level_three scope=7 flags=[] range=423..537 (26:8..30:9) name_range=431..442 (26:16..26:27) body=443..537 (26:28..30:9) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 8 kind=module name=level_four scope=8 flags=[] range=457..527 (27:12..29:13) name_range=465..475 (27:20..27:30) body=476..527 (27:31..29:13) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 9 kind=function name=deepest scope=9 flags=[] range=494..513 (28:16..28:35) name_range=501..508 (28:23..28:30) body=511..513 (28:33..28:35) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 10 kind=function name=semantically_invalid scope=0 flags=[] range=626..725 (36:0..39:1) name_range=629..649 (36:3..36:23) body=663..725 (36:37..39:1) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 11 kind=function name=generated_0001 scope=0 flags=[] range=757..783 (43:0..43:26) name_range=764..778 (43:7..43:21) body=781..783 (43:24..43:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 12 kind=function name=generated_0002 scope=0 flags=[] range=784..810 (44:0..44:26) name_range=791..805 (44:7..44:21) body=808..810 (44:24..44:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 13 kind=function name=generated_0003 scope=0 flags=[] range=811..837 (45:0..45:26) name_range=818..832 (45:7..45:21) body=835..837 (45:24..45:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 14 kind=function name=generated_0004 scope=0 flags=[] range=838..864 (46:0..46:26) name_range=845..859 (46:7..46:21) body=862..864 (46:24..46:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 15 kind=function name=generated_0005 scope=0 flags=[] range=865..891 (47:0..47:26) name_range=872..886 (47:7..47:21) body=889..891 (47:24..47:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 16 kind=function name=generated_0006 scope=0 flags=[] range=892..918 (48:0..48:26) name_range=899..913 (48:7..48:21) body=916..918 (48:24..48:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 17 kind=function name=generated_0007 scope=0 flags=[] range=919..945 (49:0..49:26) name_range=926..940 (49:7..49:21) body=943..945 (49:24..49:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+decl 18 kind=function name=generated_0008 scope=0 flags=[] range=946..972 (50:0..50:26) name_range=953..967 (50:7..50:21) body=970..972 (50:24..50:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
+ref 0 kind=impl_target written=Duplicate scope=2 decl=- range=239..248 (10:5..10:14)
+call 0 form=qualified_path callee=Missing::default scope=11 expr=694..712 (37:29..37:47) callee_range=694..710 (37:29..37:45) type_args=- type_args_range=- dyn=false nullsafe=false

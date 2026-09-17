@@ -55,9 +55,13 @@ RepoDex therefore never:
 * treats `obj.F()` as proof that a specific method `F` runs;
 * treats `Thing()` in Python as proof that `Thing` is a constructor;
 * treats `pkg.F()` in Go as a resolved package function;
-* treats `T(x)` in Go as a call rather than a possible conversion;
-* treats `Thing(...)` in PHP as anything other than explicit-construction
-  syntax;
+* treats `T(x)` in Go as a call rather than a possible conversion, or drops it
+  because the grammar labelled it a conversion: `Generic[int](value)` is
+  simultaneously a valid generic invocation and a valid conversion, so it is
+  recorded as a call-shaped occurrence and never resolved;
+* treats `Thing(...)` in PHP as construction: only `new Thing(...)` is
+  explicit-construction syntax, and an ordinary `Thing(...)` is call-shaped like
+  any other;
 * expands macros or evaluates `cfg`/build tags;
 * claims that a test runner would collect a candidate test.
 
@@ -192,6 +196,7 @@ member_selector       obj.m(x), obj?->m(x)
 static_scoped         Type::m(x)
 generic               f::<T>(x) / f[T](x)
 indirect              (expr)(x), handlers[0](x)
+type_conversion       Go T(x) / Generic[int](x), grammar-labelled conversions
 explicit_construction new Thing()
 macro_invocation      m!(x)
 ```
@@ -204,7 +209,10 @@ Ambiguities are recorded as the grammar shapes them and never resolved:
 * Go `int64(5)` with one argument is a `call_expression` and is reported as
   call-shaped even though it is a conversion.
 * Go `Generic[int](value)` with one argument is a
-  `type_conversion_expression` and is *not* reported as call-like.
+  `type_conversion_expression`. It is also exactly how a generic function is
+  invoked with one argument, so it **is** reported as call-like, with the
+  `type_conversion` form label and the exact range of its written type
+  arguments. Neither reading is chosen.
 * Rust tuple-struct construction `TupleStruct(1)` is call-shaped; it is not
   claimed to be a constructor call.
 * PHP `strlen(...)` is first-class callable *creation* and is a reference;

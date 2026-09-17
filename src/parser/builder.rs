@@ -305,6 +305,15 @@ impl<'a> FactBuilder<'a> {
         }
     }
 
+    /// Record that an analysis step could not run to completion.
+    ///
+    /// This outranks [`FactBuilder::mark_recovered`]: an analysis whose facts
+    /// are known to be partial must never be reported as merely `Recovered`,
+    /// and it must never be reported as `Clean`.
+    pub fn mark_incomplete(&mut self) {
+        self.status = AnalysisStatus::Incomplete;
+    }
+
     pub fn push_recovery_region(&mut self, range: SourceRange) {
         self.recovery_regions.push(range);
     }
@@ -314,67 +323,11 @@ impl<'a> FactBuilder<'a> {
     }
 
     /// Consume the builder and produce the canonical file analysis.
-    pub fn finish(mut self) -> FileAnalysis {
-        // References and call-like occurrences are collected by independent
-        // mechanisms, so sort them into canonical order and re-index.
-        self.references.sort_by(|left, right| {
-            (
-                left.range.byte_start,
-                left.range.byte_end,
-                left.kind,
-                left.written.as_str(),
-            )
-                .cmp(&(
-                    right.range.byte_start,
-                    right.range.byte_end,
-                    right.kind,
-                    right.written.as_str(),
-                ))
-        });
-        for (index, reference) in self.references.iter_mut().enumerate() {
-            reference.reference_id = index as u32;
-        }
-        self.calls.sort_by(|left, right| {
-            (
-                left.expression_range.byte_start,
-                left.expression_range.byte_end,
-                left.form,
-                left.callee_written.as_str(),
-            )
-                .cmp(&(
-                    right.expression_range.byte_start,
-                    right.expression_range.byte_end,
-                    right.form,
-                    right.callee_written.as_str(),
-                ))
-        });
-        for (index, call) in self.calls.iter_mut().enumerate() {
-            call.call_id = index as u32;
-        }
-        self.diagnostics.sort_by(|left, right| {
-            let left_start = left.range.map(|range| range.byte_start).unwrap_or(u32::MAX);
-            let right_start = right
-                .range
-                .map(|range| range.byte_start)
-                .unwrap_or(u32::MAX);
-            (left_start, left.kind, left.message.as_str()).cmp(&(
-                right_start,
-                right.kind,
-                right.message.as_str(),
-            ))
-        });
-        self.file_test_evidence.sort_by(|left, right| {
-            (left.range.byte_start, left.kind, left.detail.as_str()).cmp(&(
-                right.range.byte_start,
-                right.kind,
-                right.detail.as_str(),
-            ))
-        });
-        self.recovery_regions
-            .sort_by_key(|range| (range.byte_start, range.byte_end));
-        self.recovery_regions.dedup();
-
-        FileAnalysis {
+    ///
+    /// Normalization itself lives on [`FileAnalysis::normalize`], so there is
+    /// exactly one implementation of deterministic ordering in the crate.
+    pub fn finish(self) -> FileAnalysis {
+        let mut analysis = FileAnalysis {
             schema_version: SCHEMA_VERSION,
             file: self.file,
             status: self.status,
@@ -386,7 +339,9 @@ impl<'a> FactBuilder<'a> {
             calls: self.calls,
             file_test_evidence: self.file_test_evidence,
             recovery_regions: self.recovery_regions,
-        }
+        };
+        analysis.normalize();
+        analysis
     }
 }
 

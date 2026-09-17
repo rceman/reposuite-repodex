@@ -85,6 +85,12 @@ pub enum DiagnosticKind {
     DisappearedDuringScan,
     /// A Tree-sitter query failed to compile or run.
     QueryError,
+    /// A Tree-sitter query hit its match limit and abandoned captures, so the
+    /// query result is known to be truncated.
+    QueryMatchLimitExceeded,
+    /// The scanner could not descend into a directory or stat an entry, so part
+    /// of the tree under the scan root was never visited.
+    TraversalFailure,
     /// A grammar could not be loaded by the Tree-sitter runtime.
     GrammarLoadError,
 }
@@ -101,6 +107,8 @@ impl DiagnosticKind {
             DiagnosticKind::IoError => "io_error",
             DiagnosticKind::DisappearedDuringScan => "disappeared_during_scan",
             DiagnosticKind::QueryError => "query_error",
+            DiagnosticKind::QueryMatchLimitExceeded => "query_match_limit_exceeded",
+            DiagnosticKind::TraversalFailure => "traversal_failure",
             DiagnosticKind::GrammarLoadError => "grammar_load_error",
         }
     }

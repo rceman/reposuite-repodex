@@ -1,25 +1,25 @@
-file path=php/boundaries.php lang=php bytes=571 lines=45 final_newline=true status=clean snapshot=snap-006d949c1eddcd04
-scope 0 kind=file parent=- name=- range=0..571 header=-
-scope 1 kind=namespace parent=0 name=App\\Boundaries range=20..45 header=-
-scope 2 kind=trait parent=1 name=First range=112..174 header=112..124
-scope 3 kind=method parent=2 name=shared range=130..172 header=-
-scope 4 kind=trait parent=1 name=Second range=176..239 header=176..189
-scope 5 kind=method parent=4 name=shared range=195..237 header=-
-scope 6 kind=class parent=1 name=Combined range=241..472 header=241..256
-scope 7 kind=method parent=6 name=dynamic range=373..470 header=-
-scope 8 kind=namespace parent=0 name=App\\Boundaries\\Second range=482..514 header=-
-scope 9 kind=function parent=8 name=inSecondRegion range=516..551 header=-
-decl 0 kind=namespace name=App\\Boundaries scope=0 flags=[] range=20..45 name_range=30..44 body=- tests=[]
-decl 1 kind=trait name=First scope=1 flags=[] range=112..174 name_range=118..123 body=124..174 tests=[]
-decl 2 kind=method name=shared scope=2 flags=[] range=130..172 name_range=146..152 body=165..172 tests=[]
-decl 3 kind=trait name=Second scope=1 flags=[] range=176..239 name_range=182..188 body=189..239 tests=[]
-decl 4 kind=method name=shared scope=4 flags=[] range=195..237 name_range=211..217 body=230..237 tests=[]
-decl 5 kind=class name=Combined scope=1 flags=[] range=241..472 name_range=247..255 body=256..472 tests=[]
-decl 6 kind=method name=dynamic scope=6 flags=[] range=373..470 name_range=389..396 body=409..470 tests=[]
-decl 7 kind=namespace name=App\\Boundaries\\Second scope=0 flags=[] range=482..514 name_range=492..513 body=- tests=[]
-decl 8 kind=function name=inSecondRegion scope=8 flags=[] range=516..551 name_range=525..539 body=548..551 tests=[]
-ref 0 kind=include_target written=__DIR__ . '/included.php' scope=1 decl=- range=55..80
-ref 1 kind=include_target written='required.php' scope=1 decl=- range=95..109
-ref 2 kind=trait_composition written=First scope=6 decl=- range=266..271
-ref 3 kind=trait_composition written=Second scope=6 decl=- range=273..279
-call 0 form=member_selector callee=$this->$method scope=7 expr=447..463 callee_range=447..461 type_args=- dyn=true nullsafe=false
+file schema=1 path=php/boundaries.php lang=php bytes=571 lines=45 final_newline=true status=clean snapshot=snap-006d949c1eddcd04
+scope 0 kind=file parent=- name=- range=0..571 (0:0..45:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Boundaries range=20..45 (3:0..3:25) header=- lang=php
+scope 2 kind=trait parent=1 name=First range=112..174 (8:0..13:1) header=112..124 (8:0..9:0) lang=php
+scope 3 kind=method parent=2 name=shared range=130..172 (10:4..12:5) header=- lang=php
+scope 4 kind=trait parent=1 name=Second range=176..239 (15:0..20:1) header=176..189 (15:0..16:0) lang=php
+scope 5 kind=method parent=4 name=shared range=195..237 (17:4..19:5) header=- lang=php
+scope 6 kind=class parent=1 name=Combined range=241..472 (22:0..34:1) header=241..256 (22:0..23:0) lang=php
+scope 7 kind=method parent=6 name=dynamic range=373..470 (29:4..33:5) header=- lang=php
+scope 8 kind=namespace parent=0 name=App\\Boundaries\\Second range=482..514 (37:0..37:32) header=- lang=php
+scope 9 kind=function parent=8 name=inSecondRegion range=516..551 (39:0..41:1) header=- lang=php
+decl 0 kind=namespace name=App\\Boundaries scope=0 flags=[] range=20..45 (3:0..3:25) name_range=30..44 (3:10..3:24) body=- lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 1 kind=trait name=First scope=1 flags=[] range=112..174 (8:0..13:1) name_range=118..123 (8:6..8:11) body=124..174 (9:0..13:1) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 2 kind=method name=shared scope=2 flags=[] range=130..172 (10:4..12:5) name_range=146..152 (10:20..10:26) body=165..172 (11:4..12:5) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 3 kind=trait name=Second scope=1 flags=[] range=176..239 (15:0..20:1) name_range=182..188 (15:6..15:12) body=189..239 (16:0..20:1) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 4 kind=method name=shared scope=4 flags=[] range=195..237 (17:4..19:5) name_range=211..217 (17:20..17:26) body=230..237 (18:4..19:5) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 5 kind=class name=Combined scope=1 flags=[] range=241..472 (22:0..34:1) name_range=247..255 (22:6..22:14) body=256..472 (23:0..34:1) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 6 kind=method name=dynamic scope=6 flags=[] range=373..470 (29:4..33:5) name_range=389..396 (29:20..29:27) body=409..470 (30:4..33:5) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 7 kind=namespace name=App\\Boundaries\\Second scope=0 flags=[] range=482..514 (37:0..37:32) name_range=492..513 (37:10..37:31) body=- lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+decl 8 kind=function name=inSecondRegion scope=8 flags=[] range=516..551 (39:0..41:1) name_range=525..539 (39:9..39:23) body=548..551 (40:0..41:1) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04 tests=[]
+ref 0 kind=include_target written=__DIR__ . '/included.php' scope=1 decl=- range=55..80 (5:8..5:33)
+ref 1 kind=include_target written='required.php' scope=1 decl=- range=95..109 (6:13..6:27)
+ref 2 kind=trait_composition written=First scope=6 decl=- range=266..271 (24:8..24:13)
+ref 3 kind=trait_composition written=Second scope=6 decl=- range=273..279 (24:15..24:21)
+call 0 form=member_selector callee=$this->$method scope=7 expr=447..463 (32:8..32:24) callee_range=447..461 (32:8..32:22) type_args=- type_args_range=- dyn=true nullsafe=false
