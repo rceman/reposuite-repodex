@@ -42,6 +42,9 @@ Gate Unix-only tests and correct overstated TASK 1 claims
 ```text
 606faf13c86db890ce9f1f22627e8279e17a3017
 Validate TASK 1 foundation and fix the PHP anonymous-class range
+
+26d2bb9e2a40dbcfe4c910c68795b71c955885a4
+Complete the TASK 2 extraction-quality audit and reissue GO
 ```
 
 ## 5. Corpora evaluated
@@ -600,3 +603,6 @@ and the criteria are now met. Residual MEDIUM/INFO findings remain documented an
 are constraints on TASK 3, not on the validity of the TASK 2 foundation.
 
 **TASK 3**: may proceed. TASK 3 was not started in this pass.
+
+**Commit**: `26d2bb9e2a40dbcfe4c910c68795b71c955885a4` — "Complete the TASK 2
+extraction-quality audit and reissue GO". Not pushed.
