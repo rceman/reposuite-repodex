@@ -310,6 +310,33 @@ is reachable. This is a MEDIUM note for TASK 3, not a blocker.
 
 ---
 
+## F009 — PHP language constructs are recorded as `plain_name` calls
+
+```
+id:             F009
+category:       DOCUMENTATION / EXTRACTION
+severity:       LOW
+status:         OPEN — documentation gap; recording itself is correct
+```
+
+Tree-sitter-php shapes the language constructs `empty($x)` and `isset($x)` as
+`function_call_expression` nodes with a `name` callee. The PHP adapter maps that
+node kind to a `plain_name` call-like occurrence without special-casing them, so
+they are emitted as call-like occurrences.
+
+This is **source-grounded and therefore not a false positive**: the source
+literally contains a call-shaped `name(args)` occurrence, and RepoDex reports the
+grammar's shape without claiming the construct is a function. The gap is only
+that `docs/LANGUAGE_SPIKE.md` listed the call forms without noting that these two
+constructs are shaped as calls by the grammar. One clarifying sentence was added
+to the PHP quirks section; no code change was made.
+
+Found by the extraction-quality audit (region
+`laravel_framework/tests/Integration/Console/PromptsAssertionTest.php`,
+occurrences at lines 304 and 371).
+
+---
+
 ## Findings summary
 
 | ID | Category | Severity | Status |
@@ -322,5 +349,6 @@ is reachable. This is a MEDIUM note for TASK 3, not a blocker.
 | F006 | MEMORY | INFO | OPEN — TASK 3 input |
 | F007 | PERFORMANCE | INFO | OPEN — TASK 3 input |
 | F008 | MODEL | MEDIUM | OPEN — carried from TASK 1 |
+| F009 | DOCUMENTATION | LOW | OPEN — doc sentence added, no code change |
 
 No unresolved BLOCKER or HIGH finding remains.

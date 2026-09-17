@@ -6,7 +6,7 @@ compares RepoDex against another implementation.
 ```text
 TASK 1 status:                  FOUNDATION_SPIKE_COMPLETE
 TASK 2 validation status:       VALIDATION_COMPLETE
-TASK 2 architecture verdict:    CONDITIONAL_GO
+TASK 2 architecture verdict:    GO
 TASK 1 commit validated:        4a6e8e3fe88be068932279b3bf896c731c812859
 ```
 
@@ -1071,8 +1071,8 @@ Two Rust grammar boundaries were quantified and documented (**F001**, **F002**);
 neither is an adapter defect and neither is fixable inside the syntax-only
 boundary.
 
-The verdict is **CONDITIONAL_GO** (§35). No unresolved BLOCKER or HIGH finding
-remains.
+The verdict is **GO** (§35), reevaluated against the frozen plan's criteria in
+the audit-completion pass. No unresolved BLOCKER or HIGH finding remains.
 
 ## 14. TASK 1 commit validated
 
@@ -1092,14 +1092,16 @@ documentation cleanups applied (see `docs/TASK2_FINAL_REPORT.md`).
 VALIDATION_COMPLETE
 ```
 
-Every mandatory evidence class required by `task2.md` was produced and recorded.
+Every mandatory evidence class required by `task2.md` was produced and recorded,
+including the extraction-quality TP/FP/FN audit (measurement M4, §20.1) that an
+earlier pass of this document had left as a lower-bound check only.
 What was *not* measured is listed explicitly in the TASK 2 final report; nothing in this document
 infers a result that was not observed.
 
 ## 16. Architecture recommendation
 
 ```text
-CONDITIONAL_GO
+GO
 ```
 
 See §35 for the exact evidence behind this verdict.
@@ -1265,6 +1267,47 @@ A manual call-recall check was also done on a hand-read window of each language:
 in the Rust window, hand enumeration found 14 calls where RepoDex reported 13.
 The missing call was nested inside a macro argument and is the **F002** grammar
 boundary, not an oversight.
+
+### 20.1 Completed extraction-quality audit (TP/FP/FN)
+
+The checks above are lower bounds, not a confusion matrix. The canonical TASK 2
+specification required a full TP/FP/FN extraction-quality audit as mandatory
+evidence (frozen plan measurement M4), so a completion pass added one. Regions
+were frozen from source properties only and recorded in
+`audit/frozen-regions-v2.json`; the harness is
+`scripts/task2_extraction_audit.py`; raw output is
+`audit/extraction-audit-v2.json`.
+
+```text
+language  category      n     TP   FP   FN   precision  recall
+rust      declarations  32    32    0    0    100%       100%
+rust      imports        5     5    0    0    100%       100%   (5 stmts / 10 items)
+rust      calls         42    42    0    0    100%       100%
+rust      tests         12    12    0    0    100%       100%
+rust      calls*        55    42    0   13    100%       76.4%  (strict; *macro span)
+go        declarations  30    30    0    0    100%       100%
+go        calls         92    92    0    0    100%       100%
+go        tests         20    20    0    0    100%       100%
+go        imports        2     2    0    0    100%       100%   (2 stmts / 20 items)
+python    declarations  32    32    0    0    100%       100%
+python    imports       10    10    0    0    100%       100%   (10 stmts / 11 items)
+python    calls        108   108    0    0    100%       100%
+python    tests         21    21    0    0    100%       100%
+php       declarations  49    49    0    0    100%       100%
+php       imports       14    14    0    0    100%       100%
+php       calls        142   142    0    0    100%       100%
+php       tests         15    15    0    0    100%       100%
+```
+
+No false positive was found in any category or language. The only false
+negatives are the 13 calls written inside Rust macro arguments in the
+supplementary macro-heavy span — exactly the F002 boundary already documented.
+Strict call recall is therefore 426/439 = 96.9%; contract recall (macro-argument
+calls out of scope by design) is 100%. One documentation gap was found and fixed
+without a code change: the PHP constructs `empty()`/`isset()` are shaped as calls
+by the grammar and recorded as `plain_name` occurrences (**F009**). The PHP
+region also independently confirms the F003 fix: 15/15 anonymous-class
+constructions have a callee range of exactly 5 bytes.
 
 ## 21. Rust
 
@@ -1613,7 +1656,7 @@ No unresolved BLOCKER or HIGH finding remains.
 ## 35. Decision
 
 ```text
-architecture_recommendation: CONDITIONAL_GO
+architecture_recommendation: GO
 ```
 
 The evidence:
@@ -1622,18 +1665,24 @@ The evidence:
   cross-file resolution, no repository map, no LSP, no compiler integration.
 * Real parsing is broadly reliable: 0 parser failures, 0 extraction failures,
   0.163% recovery among parsed files, all recoveries explained.
-* All four adapters are substantive (extraction audit: 0 range mismatches, 0
-  independently-found misses in every region).
+* All four adapters are substantive, now measured as a full confusion matrix
+  (§20.1): 100% precision in every category and language, 100% contract recall,
+  strict call recall 96.9% with every miss being the documented F002 boundary.
 * Canonical output is deterministic across runs and checkout roots.
 * Incremental and fresh extraction agree on real files.
 * Source ranges are exact on 320 real files and 26 CRLF conversions, including
   multibyte content.
-* One genuine defect (F003) was found, fixed, regression-tested and re-verified.
+* One genuine defect (F003) was found, fixed, regression-tested and re-verified,
+  and independently confirmed by the audit holdout region.
 
-The conditionality is the two quantified Rust grammar boundaries (**F001**,
-**F002**) and the two TASK 3 design inputs (**F006** tree retention, **F007**
-whole-file extraction). None is a foundation blocker; each constrains how TASK 3
-may be built. This is why the verdict is `CONDITIONAL_GO` rather than `GO`.
+The verdict was reevaluated against the frozen plan's `GO` criteria rather than
+carried over from the previous `CONDITIONAL_GO`. Every `GO` condition is met and
+no BLOCKER or correctness-related HIGH remains. The residual findings — the two
+quantified Rust grammar boundaries (**F001**, **F002**), the two TASK 3 design
+inputs (**F006** tree retention, **F007** whole-file extraction), the
+documentation note **F009**, and the unproduced model variant **F008** — are
+MEDIUM/INFO and each belongs to a later layer, so they constrain how TASK 3 is
+built rather than blocking the foundation.
 
 ## 36. TASK 3 readiness
 
@@ -1658,6 +1707,7 @@ facts rather than on unresolved assumptions.
 RepoDex SHA validated:   4a6e8e3fe88be068932279b3bf896c731c812859
 corpus manifest:         benchmarks/corpora.json (pinned revisions, no local paths)
 range-validation script: scripts/task2_range_validation.py
+audit harness:           scripts/task2_extraction_audit.py
 retention harness:       examples/retention.rs
 validation plan:         docs/TASK2_VALIDATION_PLAN.md
                          (plan sha256 recorded in the run directory)

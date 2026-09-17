@@ -15,11 +15,20 @@ findings log is `docs/TASK2_FINDINGS.md`; the pre-registered plan is
 VALIDATION_COMPLETE
 ```
 
+Reevaluated in the audit-completion pass (§31). All mandatory measurements
+M1–M13 of the frozen plan are now present, including the previously missing M4
+extraction-quality audit with numeric TP/FP/FN.
+
 ## 2. architecture_recommendation
 
 ```text
-CONDITIONAL_GO
+GO
 ```
+
+Reevaluated against the frozen plan's `GO` criteria (§9 of the plan), not
+preserved from the previous conclusion. All twelve `GO` conditions are met and no
+BLOCKER or correctness-related HIGH remains; the residual findings are MEDIUM/INFO
+grammar boundaries or TASK 3 design inputs. See §31 for the itemised argument.
 
 ## 3. Exact TASK 1 commit validated
 
@@ -125,46 +134,126 @@ processed bytes ~68 MiB
 
 ## 9. Extraction audit methodology
 
-Regions were **frozen before inspecting RepoDex output** (`audit/frozen-regions.json`),
-selected by a rule using only line counts and path names. Per region:
+This section records the **completed** extraction-quality audit. An earlier pass
+of this report claimed `VALIDATION_COMPLETE` while stating that numeric TP/FP/FN
+had not been computed; that was inconsistent with the frozen plan, which lists
+the extraction-quality audit as mandatory measurement M4 and requires
+`VALIDATION_BLOCKED` / `NOT_ISSUED` when a mandatory measurement is missing. The
+audit below closes that gap. The frozen plan was not modified.
+
+**Frozen regions.** Regions were selected from source properties only — path
+patterns and source-content markers such as test-declaration conventions
+(`#[test]`, `func Test`, `def test_`, `function test`) — and frozen before any
+RepoDex prediction was collected. They are declared in
+`scripts/task2_extraction_audit.py` (`REGIONS`) and recorded in
+`audit/frozen-regions-v2.json`. No region was chosen from a RepoDex prediction.
 
 ```text
-precision  every emitted fact's range must exist in the source and have the
-           recorded (row, column) equal the true byte position
-recall     occurrences enumerated independently by regex/text search must not
-           include anything RepoDex did not predict (lower bound on recall)
+id                    language  file / lines                                              role
+rust-primary          rust      serde test_borrow.rs 1-196                              primary
+rust-supplementary    rust      tokio sync_broadcast.rs 55-132                          F002 macro boundary
+go-primary            go        cobra args_test.go 1-250                                primary
+go-supplementary      go        gin gin_integration_test.go 7-26                        import items
+python-primary        python    django template_tests/test_loaders.py 1-277             primary
+php-primary           php       laravel PromptsAssertionTest.php 1-424                  primary
 ```
+
+**Matching rules** (fixed before scoring; the frozen plan §7):
+
+```text
+same category and same occurrence identity
+declarations match on recorded name, including struct fields and enum variants
+imports counted per statement and per item
+call-like occurrences match on (row, callee name)
+test candidates match on the declaration name carrying the evidence
+one-to-one matching: unmatched expected = FN, unmatched prediction = FP,
+duplicate prediction = FP, matched = TP
+semantic ambiguity is not extraction failure: an unresolved member/selector
+target is still a correct call-like occurrence, never an FP
+a Rust call written inside a macro argument is a documented policy boundary
+(F002); it is reported separately as a strict FN and excluded from contract recall
+```
+
+Two independent measurements were made per region: RepoDex predictions whose
+anchor lies fully inside the region, and a source-only scanner that never reads
+RepoDex output. Every disagreement was inspected by hand.
 
 ## 10. Extraction results per language
 
+Hand-verified TP/FP/FN, precision and recall per category. `n` is the annotated
+sample size in the region.
+
 ```text
-language  file                         decl pred/mismatch/indep   import pred/indep   call pred/mismatch   test  not_predicted
-rust      tokio benches/copy.rs         31 / 0 / 25                 7 / 7              81 / 0             0/0   0
-rust      tokio rt_multi_threaded.rs    19 / 0 / 19                 7 / 7             126 / 0             0/0   0
-go        gpt-tunnel main.go            26 / 0 / 20                 1 / 1             113 / 0             0/0   0
-go        gpt-tunnel ..._test.go       18 / 0 /  2                 1 / 1             102 / 0             1/0   0
-python    django apps/config.py         13 / 0 / 11                 7 / 7              55 / 0             0/0   0
-python    django __init__.py            36 / 0 / 27                11 /11              89 / 0             0/0   0
-php       laravel Gate.php              54 / 0 / 43                14 /15             167 / 0             0/0   0
-php       laravel AuthManager.php       25 / 0 / 19                 7 / 8              45 / 0             0/0   0
+language  category      region              n     TP   FP   FN   precision  recall
+rust      declarations  primary            32     32    0    0    100%       100%
+rust      imports       primary             5      5    0    0    100%       100%   (5 stmts / 10 items)
+rust      calls         primary            42     42    0    0    100%       100%
+rust      tests         primary            12     12    0    0    100%       100%
+rust      declarations  supplementary       5      5    0    0    100%       100%
+rust      calls         supplementary      55     42    0   13     100%       76.4%  (strict; 100% contract)
+rust      tests         supplementary       4      4    0    0    100%       100%
+
+go        declarations  primary            30     30    0    0    100%       100%
+go        calls         primary            92     92    0    0    100%       100%
+go        tests         primary            20     20    0    0    100%       100%
+go        imports       primary+supp        2      2    0    0    100%       100%   (2 stmts / 20 items)
+
+python    declarations  primary            32     32    0    0    100%       100%
+python    imports       primary            10     10    0    0    100%       100%   (10 stmts / 11 items)
+python    calls         primary           108    108    0    0    100%       100%
+python    tests         primary            21     21    0    0    100%       100%
+
+php       declarations  primary            49     49    0    0    100%       100%
+php       imports       primary            14     14    0    0    100%       100%   (14 stmts / 14 items)
+php       calls         primary           142    142    0    0    100%       100%
+php       tests         primary            15     15    0    0    100%       100%
 ```
 
 ```text
-range mismatches (false-positive ranges):  0 of 1,024 audited facts
-independently-found misses (false negatives): 0
-sample size: 8 files (2 per language), 1,024 facts
+aggregate   declarations  148 TP / 0 FP / 0 FN   precision 100%   recall 100%
+            imports        55 TP / 0 FP / 0 FN   precision 100%   recall 100%   (items)
+            calls         426 TP / 0 FP / 13 FN  precision 100%   recall 96.9%  (strict)
+            tests          72 TP / 0 FP / 0 FN   precision 100%   recall 100%
 ```
 
-Two apparent import-count differences (PHP) and one test-candidate difference
-(Go) were investigated and are artifacts of the independent checks, not adapter
-defects: F004 (trait `use` is not an import) and F005 (`_test.go` filename
-evidence is legitimate).
+**The 13 strict false negatives are all one thing.** They are calls written
+inside Rust macro arguments (`assert_ok!(tx.send("hello"))`,
+`assert_pending!(recv.poll())`, `assert!(recv.is_woken())`,
+`assert_ready_ok!(recv.poll())`). tree-sitter-rust parses macro arguments as a
+flat `token_tree` with no expression subtrees, so the calls cannot be seen
+without a token-tree expression parser. This is the documented F002 boundary and
+is stated in `docs/LANGUAGE_SPIKE.md`; it is a deliberate policy limit, not an
+unnoticed defect. Reported two ways so nothing is hidden:
 
-**Honest limitation.** A full TP/FP/FN confusion matrix against hand-annotated
-ground truth was **not** computed. What is measured is: every emitted range is
-source-exact (no malformed ranges) and the independent enumeration found nothing
-RepoDex missed. Numeric precision/recall per category against a labelled corpus
-is NOT MEASURED (see §25).
+```text
+strict (macro-argument calls are required):   426 / 439 = 97.0% recall overall
+contract (macro-argument calls out of scope): 426 / 426 = 100% recall overall
+```
+
+**Negative examples in the test category** were audited and correctly left
+unmarked: 2 non-`#[test]` Rust functions, 9 non-`Test` Go helpers, 7 non-`test_`
+Python methods and the PHP `handle`/`__construct` methods carry no test evidence.
+
+**Qualitative mismatches.** No false positives and no false negatives were found
+in the primary regions. Two scanner disagreements were inspected and resolved as
+audit artifacts, not defects:
+
+* PHP: the source scanner undercounted 14 `new class extends ...` constructions
+  (anonymous classes without an argument list) and one import-count difference
+  traced to the trait `use` case F004; RepoDex was correct.
+* Rust primary: the scanner over-counted 5 pattern/tuple-struct occurrences
+  (`Cow::Owned(ref s)`, `Str(&'a str)`) and mangled 4 turbofish callee names
+  (`assert_de_tokens_error::<&str>`); after correction the match is exact.
+
+One documentation gap was found and fixed without code change: the PHP language
+constructs `empty($x)` / `isset($x)` are shaped as calls by the grammar and
+recorded as `plain_name` occurrences (finding F009).
+
+**Holdout.** The regions above were frozen after the F003 range fix and none of
+them was used to derive it, so they act as independent holdout evidence: the PHP
+region contains 15 anonymous-class constructions and **all 15 have a callee range
+of exactly the 5 bytes `class`**, confirming the F003 fix generalises beyond its
+regression fixture.
 
 ## 11. Source-range validation
 
@@ -344,7 +433,8 @@ none
 
 The only HIGH finding (F003, PHP anonymous-class range) was fixed. Remaining
 open findings are F001 (MEDIUM, grammar), F002 (MEDIUM, grammar/recall), F008
-(MEDIUM, model, carried from TASK 1), and INFO items F004–F007.
+(MEDIUM, model, carried from TASK 1), F009 (LOW, documentation of a grammar
+shape), and INFO items F004–F007.
 
 ## 23. Fixes made during TASK 2
 
@@ -359,7 +449,11 @@ F003  src/parser/php.rs — anonymous-class callee range narrowed to the `class`
 Plus non-code deliverables: `docs/TASK2_VALIDATION_PLAN.md`,
 `docs/TASK2_FINDINGS.md`, `docs/TASK2_FINAL_REPORT.md`,
 `benchmarks/corpora.json`, `scripts/task2_range_validation.py`,
-`examples/retention.rs`, `tests/task2_real_incremental.rs`.
+`scripts/task2_extraction_audit.py`, `examples/retention.rs`,
+`tests/task2_real_incremental.rs`.
+
+The audit-completion pass added one documentation sentence (F009) to
+`docs/LANGUAGE_SPIKE.md` and changed no production code.
 
 No other production code changed. The architecture boundary is unchanged.
 
@@ -380,9 +474,6 @@ evidence. Evidence: `diagnostics/F003-php-anonymous-class.txt`.
 ## 25. Anything NOT MEASURED
 
 ```text
-* numeric TP/FP/FN precision/recall per category against hand-annotated ground
-  truth — only source-exact ranges and a zero-miss independent enumeration were
-  measured
 * native Windows execution (cross-target type-check only)
 * multi-threaded / parallel scan throughput (scans were single-threaded by design)
 * generated-source effects measured separately
@@ -391,6 +482,9 @@ evidence. Evidence: `diagnostics/F003-php-anonymous-class.txt`.
 * very large single files beyond the raised limit
 * the old Go RepoDex comparison (see §26)
 ```
+
+The previously-listed gap "numeric TP/FP/FN precision/recall against
+hand-annotated ground truth" is **now measured** — see §9 and §10.
 
 ## 26. Optional old RepoDex comparison
 
@@ -404,29 +498,34 @@ behavioural or performance comparison against it was run, and none is claimed.
 
 ## 27. Exact evidence behind the architecture recommendation
 
-`CONDITIONAL_GO` rests on:
+`GO` rests on the frozen plan's `GO` conditions (plan §9), each evidenced:
 
 ```text
+* all mandatory measurements M1-M13 present, including M4 extraction audit
 * 0 parser failures, 0 extraction failures, 0 read failures across 19,165 files
 * recovery 18 / 11,054 = 0.163%, every recovery explained
-* extraction audit: 0 range mismatches and 0 independent misses in every region
+* extraction audit: 100% precision in every region; 100% contract recall;
+  strict call recall 96.9%, the 13 misses all the documented F002 macro boundary
 * 0 bad ranges over 320 real files (36,058 ranges) and 26 CRLF conversions
 * canonical digest + complete-fact signature identical across runs and roots
 * incremental result equivalent to fresh parse on 12 real files
-* one genuine defect (F003) found, fixed, regression-tested, re-verified to 0
+* one genuine defect (F003) found, fixed, regression-tested, re-verified to 0,
+  and independently confirmed by 15/15 correct ranges in the audit holdout region
 ```
 
-The conditionality is the quantified Rust grammar boundaries (F001, F002) and
-the two TASK 3 design inputs (F006 tree retention, F007 whole-file extraction).
-None is a foundation blocker; each constrains TASK 3. Hence `CONDITIONAL_GO`,
-not `GO`.
+Residual findings are non-blocking and each belongs to a later layer: F001/F002
+(Rust grammar macro boundaries, out of scope by design), F009 (documentation of a
+grammar shape), F008 (unproduced model variant carried from TASK 1), and F006/F007
+(retention and whole-file extraction measurements that inform TASK 3 design). No
+unresolved BLOCKER and no unresolved correctness-related HIGH remains, so the
+unconditional `GO` conditions are satisfied.
 
 ## 28. TASK 3 readiness
 
-TASK 3 can proceed under the constraints above: do not retain a tree per file
-for the whole repository (F006); do not assume incremental extraction is cheap
-(F007); keep Rust macro recall boundaries visible (F001, F002); keep recovery and
-grammar limitations explicit in any new layer.
+TASK 3 can proceed. It should still respect the recorded boundaries: do not
+retain a tree per file for the whole repository (F006); do not assume incremental
+extraction is cheap (F007); keep Rust macro recall boundaries visible (F001,
+F002); keep recovery and grammar limitations explicit in any new layer.
 
 ## 29. Smallest recommended TASK 3
 
@@ -446,11 +545,58 @@ assumptions.
   memory/     process-memory.txt  retention-abc.txt
   diagnostics/ F003-php-anonymous-class.txt  determinism.txt
                large-deep.txt  range-validation.txt
-  audit/      frozen-regions.json  extraction-audit.json
+  audit/      frozen-regions.json      extraction-audit.json
+              frozen-regions-v2.json   extraction-audit-v2.json
 ~/reposuite/repodex/benchmarks/task2-validation-20260917T101413Z-synthetic/
   results.txt  results.json
 ```
 
 Large machine-generated benchmark output is not committed; the small, stable
-manifest (`benchmarks/corpora.json`) and the validation script
-(`scripts/task2_range_validation.py`) are.
+manifest (`benchmarks/corpora.json`) and the validation scripts
+(`scripts/task2_range_validation.py`, `scripts/task2_extraction_audit.py`) are.
+
+---
+
+## 31. Audit-completion pass
+
+The first pass of this report issued `VALIDATION_COMPLETE` / `CONDITIONAL_GO`
+while stating that numeric TP/FP/FN had not been computed. The frozen plan lists
+that audit as mandatory measurement M4 and requires `VALIDATION_BLOCKED` /
+`NOT_ISSUED` when a mandatory measurement is missing, so the first-pass status was
+inconsistent with the plan. This pass closes the gap.
+
+**What the frozen plan required** (unchanged): mandatory measurement M4 —
+extraction-quality audit against frozen, independently selected regions, with
+TP/FP/FN, precision and recall per language and category, one-to-one matching,
+sample targets of >=30 declarations, >=30 calls, >=10 imports and >=10
+test-candidate examples (including negatives) per language, and semantic
+ambiguity kept separate from extraction failure. Section 4.1 marks it mandatory;
+section 11 makes a missing mandatory measurement a blocking condition.
+
+**What was done**: regions frozen from source properties only
+(`audit/frozen-regions-v2.json`, `scripts/task2_extraction_audit.py`); independent
+source-only annotation of every in-scope occurrence; RepoDex predictions
+collected for the same regions; one-to-one matching; full TP/FP/FN table (§10).
+
+**Result**: 100% precision in every category and language; 100% contract recall;
+strict call recall 96.9% with all 13 misses being the documented F002 macro
+boundary. No new defect was found. One documentation gap (F009) was corrected
+without a code change.
+
+**Holdout**: the audit regions were frozen after the F003 fix and none was used
+to derive it; the PHP region independently confirms the fix (15/15 anonymous-class
+callee ranges exactly 5 bytes).
+
+**Fix discipline**: no code defect was exposed by this pass, so no pre-fix /
+post-fix code evidence is reported. The F003 pre/post evidence in §24 is
+unchanged and preserved.
+
+**Status reevaluation**: with M4 present, all M1–M13 are satisfied. Every
+`GO` condition in plan §9 is met, no BLOCKER and no correctness-related HIGH
+remains, so `validation_status = VALIDATION_COMPLETE` and
+`architecture_recommendation = GO`. `CONDITIONAL_GO` was not retained merely
+because it was the previous conclusion; it was tested against the frozen criteria
+and the criteria are now met. Residual MEDIUM/INFO findings remain documented and
+are constraints on TASK 3, not on the validity of the TASK 2 foundation.
+
+**TASK 3**: may proceed. TASK 3 was not started in this pass.

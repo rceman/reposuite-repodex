@@ -24,7 +24,7 @@ repository files
 TASK 1 status:               FOUNDATION_SPIKE_COMPLETE
 TASK 1 commit validated:     4a6e8e3fe88be068932279b3bf896c731c812859
 TASK 2 validation status:    VALIDATION_COMPLETE
-TASK 2 architecture verdict: CONDITIONAL_GO
+TASK 2 architecture verdict: GO
 ```
 
 TASK 2 validated the foundation against 2.42M LOC across Go, PHP, Python and
@@ -32,8 +32,11 @@ Rust: zero parser, extraction and read failures; 0.163% recovery among parsed
 files; source-exact ranges; deterministic canonical output; and incremental
 equivalence on real files. It found and fixed one genuine defect (a PHP
 anonymous-class source-range bug, F003) and quantified two Rust grammar
-boundaries (F001, F002). See `docs/TASK2_FINAL_REPORT.md`,
-`docs/TASK2_FINDINGS.md` and `docs/SPIKE_RESULTS.md` Part II.
+boundaries (F001, F002). The completed extraction-quality audit measures 100%
+precision in every category and language, 100% contract recall, and 96.9% strict
+call recall with every miss being the documented macro-argument boundary. See
+`docs/TASK2_FINAL_REPORT.md`, `docs/TASK2_FINDINGS.md` and
+`docs/SPIKE_RESULTS.md` Part II.
 
 Everything downstream of that is deliberately absent:
 

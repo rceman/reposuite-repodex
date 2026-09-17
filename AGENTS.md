@@ -144,6 +144,11 @@ python3 scripts/task2_range_validation.py \
 # tree/source retention A/B/C memory experiment (Linux; peak 0 elsewhere)
 cargo run --release --example retention -- "$CORPUS" A
 
+# extraction-quality audit: frozen regions, independent source scan vs RepoDex
+python3 scripts/task2_extraction_audit.py \
+    --binary ./target/release/reposuite-repodex \
+    --corpus-root "$CORPUS_ROOT"
+
 # real-file incremental equivalence; skips cleanly when the corpus is absent
 REPODEX_TASK2_CORPUS_DIR="$CORPUS" cargo test --locked --test task2_real_incremental
 ```

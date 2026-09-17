@@ -320,6 +320,10 @@ test evidence  function_name_convention (test prefix), attribute (#[Test])
   ```
 
   Literal `Thing(...)` is neither an invocation nor construction.
+* The language constructs `empty($x)` and `isset($x)` are shaped by the grammar as
+  `function_call_expression` nodes with a `name` callee, so they are recorded as
+  `plain_name` call-like occurrences. RepoDex reports the grammar's shape and does
+  not claim they are functions (finding F009).
 * `strlen(...)` is first-class callable *creation*: it produces a
   `first_class_callable` reference and no call. `strlen(...)($x)` is an
   invocation and produces an `indirect` call with `dynamic_callee = true`.
