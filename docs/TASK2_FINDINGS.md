@@ -337,6 +337,29 @@ occurrences at lines 304 and 371).
 
 ---
 
+## F010 — Extraction-audit methodology was weaker than the frozen protocol (validation process)
+
+The frozen plan requires occurrence matching by source anchor / byte span. The
+first audit-completion attempt matched by recorded name and `(row, callee name)`
+instead, and its source-only scanner was a convenience aid with favourable blind
+spots: it excluded `print`/`len`/`append`/`make` and `Some`/`Ok`/`Err` by name,
+missed calls on declaration lines and multiline macro token trees, and
+mis-computed offsets after string stripping. Equal aggregate counts are not
+evidence of zero FP/FN.
+
+Resolution: the audit was re-implemented at occurrence level
+(`scripts/task2_occurrence_ledger.py` + `examples/grammar_enum.rs`), matching
+literally on byte spans with **zero tolerance matches**, and the earlier counts
+were demoted to non-ground-truth. The earlier attempt is preserved for
+traceability (report §31) and superseded (report §32). No production defect was
+exposed; the corrected result is 730 TP / 0 FP / 13 FN, every match an exact
+byte-span equality. M10 steady-state sample counts, which the earlier pass did
+not record, are now recorded (`audit/m9-m10-evidence-v3.txt`).
+
+Severity: PROCESS / VALIDATION. Status: RESOLVED by the closure pass.
+
+---
+
 ## Findings summary
 
 | ID | Category | Severity | Status |
@@ -350,5 +373,6 @@ occurrences at lines 304 and 371).
 | F007 | PERFORMANCE | INFO | OPEN — TASK 3 input |
 | F008 | MODEL | MEDIUM | OPEN — carried from TASK 1 |
 | F009 | DOCUMENTATION | LOW | OPEN — doc sentence added, no code change |
+| F010 | PROCESS / VALIDATION | MEDIUM | **RESOLVED** — occurrence-level audit supersedes the name-based pass |
 
 No unresolved BLOCKER or HIGH finding remains.

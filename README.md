@@ -27,14 +27,15 @@ TASK 2 validation status:    VALIDATION_COMPLETE
 TASK 2 architecture verdict: GO
 ```
 
-TASK 2 validated the foundation against 2.42M LOC across Go, PHP, Python and
-Rust: zero parser, extraction and read failures; 0.163% recovery among parsed
-files; source-exact ranges; deterministic canonical output; and incremental
-equivalence on real files. It found and fixed one genuine defect (a PHP
-anonymous-class source-range bug, F003) and quantified two Rust grammar
-boundaries (F001, F002). The completed extraction-quality audit measures 100%
-precision in every category and language, 100% contract recall, and 96.9% strict
-call recall with every miss being the documented macro-argument boundary. See
+TASK 2 validated the foundation against 2.42M manifest LOC (2.16M processed LOC)
+across Go, PHP, Python and Rust: zero parser, extraction and read failures; 0.163%
+recovery among parsed files; source-exact ranges; deterministic canonical output;
+and incremental equivalence on real files with enforced per-language coverage. It
+found and fixed one genuine defect (a PHP anonymous-class source-range bug, F003)
+and quantified two Rust grammar boundaries (F001, F002). The completed
+extraction-quality audit is at occurrence level with byte-span matching: 100%
+precision in every category and language, and 97.0% strict call recall (426/439)
+with every miss being the documented macro-argument boundary. See
 `docs/TASK2_FINAL_REPORT.md`, `docs/TASK2_FINDINGS.md` and
 `docs/SPIKE_RESULTS.md` Part II.
 

@@ -10,3 +10,6 @@
 # Editor and OS noise
 *.swp
 .DS_Store
+
+# Python bytecode from validation scripts
+__pycache__/

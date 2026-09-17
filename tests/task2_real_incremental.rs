@@ -25,6 +25,9 @@ use repodex::LanguageId;
 use tree_sitter::Parser;
 
 const ENV: &str = "REPODEX_TASK2_CORPUS_DIR";
+/// When set, every executed comparison is written here as one JSON record per
+/// file, so the mandatory validation run leaves machine-readable evidence.
+const EVIDENCE_ENV: &str = "REPODEX_TASK2_INCREMENTAL_EVIDENCE";
 
 struct Harness {
     registry: ParserRegistry,
@@ -121,10 +124,15 @@ fn line_start(source: &str, line: usize) -> usize {
         .unwrap_or(source.len().saturating_sub(1))
 }
 
-fn exercise(language: LanguageId, label: &str, path: &Path) {
+fn exercise(
+    language: LanguageId,
+    label: &str,
+    repo: &str,
+    path: &Path,
+) -> Option<serde_json::Value> {
     let source = std::fs::read_to_string(path).expect("corpus file must be valid UTF-8");
     if source.len() < 400 {
-        return;
+        return None;
     }
     let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("file");
     let mut harness = Harness::new(language);
@@ -150,10 +158,13 @@ fn exercise(language: LanguageId, label: &str, path: &Path) {
         ),
         ("temporary syntax damage", TextEdit::insert(mid, "((( ")),
     ];
+    let mut comparisons = Vec::new();
     for (what, edit) in cases {
         let outcome = harness.run(name, &source, &edit);
+        let equivalent = outcome.equivalent();
+        comparisons.push(serde_json::json!({"case": what, "equivalent": equivalent}));
         assert!(
-            outcome.equivalent(),
+            equivalent,
             "{label} {name}: incremental and fresh results disagree after: {what}"
         );
     }
@@ -170,11 +181,26 @@ fn exercise(language: LanguageId, label: &str, path: &Path) {
         .into_iter()
         .enumerate()
     {
+        let equivalent = outcome.equivalent();
+        comparisons.push(
+            serde_json::json!({"case": format!("sequence step {index}"), "equivalent": equivalent}),
+        );
         assert!(
-            outcome.equivalent(),
+            equivalent,
             "{label} {name}: incremental and fresh results disagree at sequence step {index}"
         );
     }
+
+    Some(serde_json::json!({
+        "language": label,
+        "repository": repo,
+        "file": path.display().to_string(),
+        "file_name": name,
+        "file_size_bytes": source.len(),
+        "comparisons": comparisons,
+        "comparison_count": comparisons.len(),
+        "result": "equivalent",
+    }))
 }
 
 #[test]
@@ -191,16 +217,40 @@ fn real_files_stay_equivalent_under_incremental_edits() {
         (LanguageId::Python, "python", "pallets_flask", "py"),
         (LanguageId::Php, "php", "composer_composer", "php"),
     ];
-    let mut ran = 0;
-    for (language, label, subdir, extension) in plan {
-        for path in pick(&root, subdir, extension, 3) {
-            exercise(language, label, &path);
-            ran += 1;
+    let mut records = Vec::new();
+    let mut per_language = std::collections::BTreeMap::new();
+    for (language, label, repo, extension) in plan {
+        let mut executed = 0;
+        for path in pick(&root, repo, extension, 3) {
+            if let Some(record) = exercise(language, label, repo, &path) {
+                records.push(record);
+                executed += 1;
+            }
         }
+        // A file skipped for minimum length is *not* an executed file, so a
+        // language with no executed real file is a failure, not a pass.
+        assert!(
+            executed > 0,
+            "{label}: no real file was executed (minimum-length skips do not count)"
+        );
+        per_language.insert(label, executed);
     }
-    assert!(
-        ran > 0,
-        "the corpus directory contained no usable real files"
+    if let Ok(path) = std::env::var(EVIDENCE_ENV) {
+        let mut out = String::new();
+        for record in &records {
+            out.push_str(&serde_json::to_string(record).expect("record serialises"));
+            out.push('\n');
+        }
+        std::fs::write(&path, out).expect("evidence must be writable");
+    }
+    let total: usize = records
+        .iter()
+        .map(|r| r["comparison_count"].as_u64().unwrap_or(0) as usize)
+        .sum();
+    eprintln!(
+        "real-file incremental: {} files, {} comparisons, per-language {:?}",
+        records.len(),
+        total,
+        per_language
     );
-    eprintln!("real-file incremental checks ran on {ran} files");
 }

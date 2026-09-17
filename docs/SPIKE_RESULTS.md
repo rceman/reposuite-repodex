@@ -1302,12 +1302,19 @@ php       tests         15    15    0    0    100%       100%
 No false positive was found in any category or language. The only false
 negatives are the 13 calls written inside Rust macro arguments in the
 supplementary macro-heavy span — exactly the F002 boundary already documented.
-Strict call recall is therefore 426/439 = 96.9%; contract recall (macro-argument
-calls out of scope by design) is 100%. One documentation gap was found and fixed
-without a code change: the PHP constructs `empty()`/`isset()` are shaped as calls
-by the grammar and recorded as `plain_name` occurrences (**F009**). The PHP
-region also independently confirms the F003 fix: 15/15 anonymous-class
-constructions have a callee range of exactly 5 bytes.
+Strict call recall is therefore 426/439 = **97.0%**; contract recall
+(macro-argument calls out of scope by design) is 100%. One documentation gap was
+found and fixed without a code change: the PHP constructs `empty()`/`isset()` are
+shaped as calls by the grammar and recorded as `plain_name` occurrences
+(**F009**). The PHP region also confirms the F003 fix: 15/15 anonymous-class
+constructions have a callee range of exactly 5 bytes, labelled post-fix external
+validation examples rather than independent holdout.
+
+> This subsection records the audit-completion pass, which matched by recorded
+> name and `(row, callee name)`. The validation-evidence closure pass re-ran the
+> audit at occurrence level with literal byte-span matching (zero tolerance
+> matches); the corrected per-language/category table and the 97.0% arithmetic are
+> in `docs/TASK2_FINAL_REPORT.md` §10 and `audit/occurrence-summary-v3.json`.
 
 ## 21. Rust
 
@@ -1667,13 +1674,14 @@ The evidence:
   0.163% recovery among parsed files, all recoveries explained.
 * All four adapters are substantive, now measured as a full confusion matrix
   (§20.1): 100% precision in every category and language, 100% contract recall,
-  strict call recall 96.9% with every miss being the documented F002 boundary.
+  strict call recall 97.0% with every miss being the documented F002 boundary.
 * Canonical output is deterministic across runs and checkout roots.
 * Incremental and fresh extraction agree on real files.
-* Source ranges are exact on 320 real files and 26 CRLF conversions, including
+* Source ranges are positionally exact and source-exact on 514 real files
+  (129,331 ranges; 91,062 source-exact checks) and 26 CRLF conversions, including
   multibyte content.
 * One genuine defect (F003) was found, fixed, regression-tested and re-verified,
-  and independently confirmed by the audit holdout region.
+  and confirmed by the post-fix external validation region.
 
 The verdict was reevaluated against the frozen plan's `GO` criteria rather than
 carried over from the previous `CONDITIONAL_GO`. Every `GO` condition is met and
