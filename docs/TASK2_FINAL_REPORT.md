@@ -31,8 +31,8 @@ Gate Unix-only tests and correct overstated TASK 1 claims
 ## 4. Final TASK 2 commit SHA
 
 ```text
-see the commit that introduced this file; recorded in the follow-up commit that
-updates this line, and in the TASK 2 completion message
+606faf13c86db890ce9f1f22627e8279e17a3017
+Validate TASK 1 foundation and fix the PHP anonymous-class range
 ```
 
 ## 5. Corpora evaluated
