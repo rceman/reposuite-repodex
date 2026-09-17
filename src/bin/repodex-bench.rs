@@ -17,12 +17,14 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use repodex::input::{self, DEFAULT_MAX_FILE_SIZE};
-use repodex::model::{AnalysisStatus, LanguageId};
-use repodex::parser::{extract_from_tree, Analyzer, AnalyzerConfig, ParserRegistry};
+use repodex::model::{AnalysisStatus, FileAnalysis, LanguageId};
+use repodex::parser::{
+    extract_from_tree, Analyzer, AnalyzerConfig, LanguageAdapter, ParserRegistry,
+};
 use repodex::paths::RepoDexPaths;
 use repodex::scanner::{ScanOptions, Scanner};
 use serde::Serialize;
-use tree_sitter::Parser;
+use tree_sitter::{InputEdit, Parser, Tree};
 
 const SIZES: [(&str, usize); 5] = [
     ("100KiB", 100 * 1024),
@@ -281,6 +283,31 @@ fn row(
     }
 }
 
+/// The exact unit of work the `incremental parse + extraction` stage times.
+///
+/// It performs the tree edit, the incremental parse and the whole-file
+/// re-extraction, and returns both the resulting tree and the resulting
+/// analysis. Naming it makes the interval's contents checkable: whatever this
+/// function returns was necessarily produced between the caller's two
+/// `Instant::now()` calls, so a test can assert the interval covers the parse
+/// and the extraction without comparing durations.
+fn incremental_parse_and_extract(
+    parser: &mut Parser,
+    adapter: &dyn LanguageAdapter,
+    file_name: &str,
+    base_tree: &Tree,
+    edited: &str,
+    edit: &InputEdit,
+) -> (Tree, FileAnalysis) {
+    let mut edited_tree = base_tree.clone();
+    edited_tree.edit(edit);
+    let tree = parser
+        .parse(edited.as_bytes(), Some(&edited_tree))
+        .expect("incremental parse");
+    let analysis = extract_from_tree(adapter, file_name, edited.as_bytes(), &tree);
+    (tree, analysis)
+}
+
 #[allow(clippy::too_many_arguments)]
 fn measure(
     analyzer: &Analyzer,
@@ -439,13 +466,15 @@ fn measure(
     //    incremental parse, re-extract the whole file. The timer starts before
     //    the tree edit and ends after extraction, so it covers the whole
     //    incremental path rather than only its last step.
+    //
+    //    The timed work is a named function rather than an inline block, so a
+    //    test can assert what the interval contains instead of inferring it
+    //    from durations: the function returns both the incrementally parsed tree
+    //    and the extracted analysis, so anything it returns was produced inside
+    //    the interval.
     let start = Instant::now();
-    let mut edited_tree = parsed.clone();
-    edited_tree.edit(&edit);
-    let incremental_tree = parser
-        .parse(edited.as_bytes(), Some(&edited_tree))
-        .expect("incremental parse");
-    let re_extracted = extract_from_tree(adapter, file_name, edited.as_bytes(), &incremental_tree);
+    let (incremental_tree, re_extracted) =
+        incremental_parse_and_extract(&mut parser, adapter, file_name, &parsed, &edited, &edit);
     let incremental_combined = start.elapsed();
     rows.push(row(
         "incremental parse + extraction",
@@ -1017,10 +1046,29 @@ mod tests {
         }
     }
 
-    /// The stage labels must describe what the timer covers, and the combined
-    /// incremental stage must actually include the parse.
+    /// The incremental stages must measure the edited source, and the combined
+    /// stage must include the extraction.
+    ///
+    /// What a test can prove here is deterministic and structural:
+    ///
+    /// * the parse-only stage reports no facts, so it does not extract;
+    /// * the combined stage reports the facts of the edited source, so
+    ///   extraction happened inside it;
+    /// * both stages measured the edited bytes, and the full stage measured the
+    ///   unedited bytes;
+    /// * `incremental_parse_and_extract` — the single call the combined stage
+    ///   times — returns both a tree and an analysis, so both were produced
+    ///   inside the interval.
+    ///
+    /// What no test here proves is the *parse* half of the combined interval by
+    /// timing: "combined took longer than the parse alone" is a timing
+    /// inequality and would not demonstrate that the parse is inside the timer
+    /// even when it happens to hold. The interval's start point is established
+    /// by code structure — the timer opens immediately before the call above
+    /// and closes immediately after it — and that call is what this test
+    /// inspects. There is no flaky timing assertion here on purpose.
     #[test]
-    fn the_incremental_stage_covers_the_parse_and_the_extraction() {
+    fn the_incremental_stages_measure_the_edited_source_and_the_combined_stage_extracts() {
         let work = TempDir::new("bench-stages");
         let source = generate(LanguageId::Rust, "1MiB", 1024 * 1024);
         let path = work.write("stage.rs", source.as_bytes());
@@ -1059,22 +1107,66 @@ mod tests {
         assert!(combined.declarations > 0);
         assert!(combined.calls > 0);
 
-        // Both stages measured the edited source, and it is the edited length.
+        // Both incremental stages measured the edited source; the full stage
+        // measured the unedited source.
         let edited = append_incremental_tail(LanguageId::Rust, &source);
         assert_eq!(parse_only.bytes, edited.len() as u64);
         assert_eq!(combined.bytes, edited.len() as u64);
         assert_eq!(full.bytes, source.len() as u64);
 
-        // The combined timer must contain the parse, so on this input it cannot
-        // be faster than the parse alone. The margin is wide (the parse is
-        // roughly half the combined cost) so this cannot flake.
-        let parse_ms = parse_only.duration.as_secs_f64() * 1000.0;
-        let combined_ms = combined.duration.as_secs_f64() * 1000.0;
+        // The timed unit itself: one call, two outputs. A tree and an analysis
+        // can only come out of it if both the parse and the extraction ran
+        // inside it.
+        let mut parser = Parser::new();
+        parser
+            .set_language(&registry.adapter(LanguageId::Rust).ts_language())
+            .expect("grammar");
+        let base = parser.parse(&source, None).expect("base parse");
+        let edit = InputEdit {
+            start_byte: source.len(),
+            old_end_byte: source.len(),
+            new_end_byte: edited.len(),
+            start_position: point_of(&source, source.len()),
+            old_end_position: point_of(&source, source.len()),
+            new_end_position: point_of(&edited, edited.len()),
+        };
+        let (tree, analysis) = incremental_parse_and_extract(
+            &mut parser,
+            registry.adapter(LanguageId::Rust),
+            "stage.rs",
+            &base,
+            &edited,
+            &edit,
+        );
+
+        // The tree is a real parse of the edited bytes: it agrees structurally
+        // with a fresh parse of the same bytes, and it is not the base tree.
+        let fresh = parser.parse(&edited, None).expect("fresh parse");
+        assert_eq!(
+            repodex::incremental::tree_structure_digest(tree.root_node(), edited.as_bytes()),
+            repodex::incremental::tree_structure_digest(fresh.root_node(), edited.as_bytes()),
+            "the timed parse must produce the tree of the edited source"
+        );
+        assert_ne!(
+            repodex::incremental::tree_structure_digest(tree.root_node(), edited.as_bytes()),
+            repodex::incremental::tree_structure_digest(base.root_node(), source.as_bytes()),
+            "the timed parse must not just return the base tree"
+        );
+
+        // The analysis is a real extraction of the edited bytes: it carries
+        // facts and agrees with a fresh extraction.
+        assert!(!analysis.declarations.is_empty());
+        assert!(!analysis.calls.is_empty());
+        assert_eq!(analysis.status, AnalysisStatus::Clean);
+        let fresh_analysis = extract_from_tree(
+            registry.adapter(LanguageId::Rust),
+            "stage.rs",
+            edited.as_bytes(),
+            &fresh,
+        );
         assert!(
-            combined_ms > parse_ms,
-            "the incremental parse + extraction stage ({combined_ms:.3} ms) must not be \
-             faster than the parse alone ({parse_ms:.3} ms); the timer no longer covers \
-             the parse"
+            analysis.same_facts(&fresh_analysis),
+            "the timed extraction must match a fresh extraction of the same bytes"
         );
     }
 

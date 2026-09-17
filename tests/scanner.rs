@@ -2,10 +2,7 @@
 
 mod support;
 
-use repodex::model::DiagnosticKind;
-use repodex::scanner::{
-    FileOutcome, ScanOptions, Scanner, TraversalFailureKind, PRUNED_DIRECTORIES,
-};
+use repodex::scanner::{FileOutcome, ScanOptions, Scanner, PRUNED_DIRECTORIES};
 use support::{analyzer, TempDir};
 
 fn scan(root: &std::path::Path) -> repodex::scanner::ScanReport {
@@ -268,85 +265,121 @@ fn scanning_a_missing_directory_is_an_error_not_a_panic() {
     assert!(scanner.scan(&missing).is_err());
 }
 
-/// Set a directory unreadable, returning whether the platform actually denied
-/// access to this process.
-fn deny_read(path: &std::path::Path) -> bool {
-    use std::os::unix::fs::PermissionsExt;
-    let permissions = std::fs::Permissions::from_mode(0o000);
-    if std::fs::set_permissions(path, permissions).is_err() {
-        return false;
-    }
-    std::fs::read_dir(path).is_err()
-}
-
-fn restore_read(path: &std::path::Path) {
-    use std::os::unix::fs::PermissionsExt;
-    let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o755));
-}
-
-/// An unreadable subtree must be reported, not silently skipped.
-///
-/// The scanner continues with the rest of the tree, but the report must say
-/// that coverage is incomplete, because a scan that quietly drops a subtree
-/// makes every count derived from it untrustworthy.
+/// The complete half of the traversal contract, and it is platform-independent:
+/// a scan that visits everything must say so, with no failures and no
+/// diagnostics. This runs on every platform, including native Windows.
 #[test]
-fn traversal_failures_are_reported_and_do_not_hide_the_rest_of_the_scan() {
-    let temp = TempDir::new("scanner-traversal");
-    temp.write("keep.rs", b"fn keep() {}\n");
-    let locked = temp.path().join("locked");
-    std::fs::create_dir_all(&locked).expect("create locked directory");
-    std::fs::write(locked.join("hidden.rs"), b"fn hidden() {}\n").expect("write hidden");
+fn a_scan_that_visits_everything_reports_itself_complete() {
+    let temp = TempDir::new("scanner-complete");
+    temp.write("a.rs", b"fn a() {}\n");
+    temp.write("nested/b.py", b"def b():\n    return 1\n");
+    let report = scan(temp.path());
+    assert!(
+        report.is_complete(),
+        "a scan that visited everything is complete"
+    );
+    assert_eq!(report.traversal_failures(), 0);
+    assert!(report.traversal_diagnostics().is_empty());
+    assert_eq!(report.parsed_clean_files, 2);
+}
 
-    if !deny_read(&locked) {
-        // Running as a user that can read anything (root in a container, for
-        // example). The platform cannot produce this failure here, so asserting
-        // on it would be meaningless rather than passing.
-        restore_read(&locked);
-        eprintln!(
-            "skipping traversal-failure assertion: this environment cannot make a \
-             directory unreadable"
-        );
-        return;
+/// Producing a traversal failure needs a directory the process cannot read.
+/// That is a POSIX permission operation, so the failure-injection half of the
+/// traversal contract is Unix-only. The reporting path itself is
+/// platform-independent; only the way this test provokes it is not.
+///
+/// No Windows ACL manipulation is implemented. On non-Unix platforms this test
+/// is simply absent, and the completeness assertions above still run.
+#[cfg(unix)]
+mod unreadable_directory {
+    use super::*;
+    // Both of these are used only by the failure-injection test, so they are
+    // imported here rather than at file scope: importing them unconditionally
+    // would leave them unused on non-Unix platforms, which fails
+    // `clippy --all-targets -- -D warnings` there.
+    use repodex::model::DiagnosticKind;
+    use repodex::scanner::TraversalFailureKind;
+    use std::os::unix::fs::PermissionsExt;
+
+    /// Set a directory unreadable, returning whether the platform actually
+    /// denied access to this process.
+    fn deny_read(path: &std::path::Path) -> bool {
+        let permissions = std::fs::Permissions::from_mode(0o000);
+        if std::fs::set_permissions(path, permissions).is_err() {
+            return false;
+        }
+        std::fs::read_dir(path).is_err()
     }
 
-    let report = scan(temp.path());
-    restore_read(&locked);
+    fn restore_read(path: &std::path::Path) {
+        let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o755));
+    }
 
-    // The accessible part of the tree is still analyzed.
-    assert_eq!(
-        report.files.len(),
-        1,
-        "the readable file must still be visited: {:?}",
-        report.files
-    );
-    assert_eq!(report.files[0].relative_path, "keep.rs");
-    assert_eq!(report.parsed_clean_files, 1);
+    /// An unreadable subtree must be reported, not silently skipped.
+    ///
+    /// The scanner continues with the rest of the tree, but the report must say
+    /// that coverage is incomplete, because a scan that quietly drops a subtree
+    /// makes every count derived from it untrustworthy.
+    #[test]
+    fn traversal_failures_are_reported_and_do_not_hide_the_rest_of_the_scan() {
+        let temp = TempDir::new("scanner-traversal");
+        temp.write("keep.rs", b"fn keep() {}\n");
+        let locked = temp.path().join("locked");
+        std::fs::create_dir_all(&locked).expect("create locked directory");
+        std::fs::write(locked.join("hidden.rs"), b"fn hidden() {}\n").expect("write hidden");
 
-    // And the failure is visible.
-    assert!(
-        !report.is_complete(),
-        "a scan that could not enter a directory is not complete"
-    );
-    assert_eq!(report.traversal_failures(), 1);
-    let failure = &report.traversal_failures[0];
-    assert_eq!(failure.relative_path, "locked");
-    assert_eq!(failure.kind, TraversalFailureKind::Directory);
-    assert!(
-        !failure.message.is_empty(),
-        "the failure must carry the underlying message"
-    );
+        if !deny_read(&locked) {
+            // Running as a user that can read anything (root in a container, for
+            // example). The platform cannot produce this failure here, so
+            // asserting on it would be meaningless rather than passing.
+            restore_read(&locked);
+            eprintln!(
+                "skipping traversal-failure assertion: this environment cannot make a \
+                 directory unreadable"
+            );
+            return;
+        }
 
-    // The failure is also available as diagnostics, so machine consumers see it.
-    let diagnostics = report.traversal_diagnostics();
-    assert_eq!(diagnostics.len(), 1);
-    assert_eq!(diagnostics[0].kind, DiagnosticKind::TraversalFailure);
-    assert!(diagnostics[0].message.contains("locked"));
+        let report = scan(temp.path());
+        restore_read(&locked);
 
-    // A scan with no traversal failure is reported as complete.
-    let clean = TempDir::new("scanner-complete");
-    clean.write("a.rs", b"fn a() {}\n");
-    let clean_report = scan(clean.path());
-    assert!(clean_report.is_complete());
-    assert_eq!(clean_report.traversal_failures(), 0);
-    assert!(clean_report.traversal_diagnostics().is_empty());
+        // The accessible part of the tree is still analyzed.
+        assert_eq!(
+            report.files.len(),
+            1,
+            "the readable file must still be visited: {:?}",
+            report.files
+        );
+        assert_eq!(report.files[0].relative_path, "keep.rs");
+        assert_eq!(report.parsed_clean_files, 1);
+
+        // And the failure is visible.
+        assert!(
+            !report.is_complete(),
+            "a scan that could not enter a directory is not complete"
+        );
+        assert_eq!(report.traversal_failures(), 1);
+        let failure = &report.traversal_failures[0];
+        assert_eq!(failure.relative_path, "locked");
+        assert_eq!(failure.kind, TraversalFailureKind::Directory);
+        assert!(
+            !failure.message.is_empty(),
+            "the failure must carry the underlying message"
+        );
+
+        // The failure is also available as diagnostics, so machine consumers see
+        // it.
+        let diagnostics = report.traversal_diagnostics();
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].kind, DiagnosticKind::TraversalFailure);
+        assert!(diagnostics[0].message.contains("locked"));
+
+        // A scan with no traversal failure is reported as complete.
+        let clean = TempDir::new("scanner-complete-after-failure");
+        clean.write("a.rs", b"fn a() {}\n");
+        let clean_report = scan(clean.path());
+        assert!(clean_report.is_complete());
+        assert_eq!(clean_report.traversal_failures(), 0);
+        assert!(clean_report.traversal_diagnostics().is_empty());
+    }
 }

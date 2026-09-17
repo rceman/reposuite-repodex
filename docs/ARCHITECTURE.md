@@ -59,11 +59,26 @@ RepoDex therefore never:
   because the grammar labelled it a conversion: `Generic[int](value)` is
   simultaneously a valid generic invocation and a valid conversion, so it is
   recorded as a call-shaped occurrence and never resolved;
-* treats `Thing(...)` in PHP as construction: only `new Thing(...)` is
-  explicit-construction syntax, and an ordinary `Thing(...)` is call-shaped like
-  any other;
+* conflates the three distinct PHP forms below, or treats `Thing(...)` as an
+  invocation or as construction;
 * expands macros or evaluates `cfg`/build tags;
 * claims that a test runner would collect a candidate test.
+
+### PHP callable and construction syntax
+
+These three PHP forms are different constructs and RepoDex keeps them apart:
+
+```php
+Thing($arg);       // invocation syntax   -> CallLikeOccurrence, form plain_name
+new Thing($arg);   // explicit construction -> CallLikeOccurrence, form explicit_construction
+Thing(...);        // first-class callable creation -> Reference, kind first_class_callable
+```
+
+`Thing(...)` is **not** an invocation and **not** construction. It produces a
+`first_class_callable` reference and no call-like occurrence. The callable is
+invoked only when it is called, as in `Thing(...)($arg)`, which produces an
+`indirect` call-like occurrence whose written callee is `Thing(...)` and whose
+`dynamic_callee` flag is true.
 
 ## Module layout
 
@@ -202,7 +217,8 @@ macro_invocation      m!(x)
 ```
 
 `dynamic_callee` marks a callee whose written form is not a static name
-(`$callable`, `$this->$method`, `strlen(...)`). `nullsafe` marks PHP `?->`.
+(`$callable('x')`, `$widget->{$name}()`, `strlen(...)($x)`). `nullsafe` marks
+PHP `?->`.
 
 Ambiguities are recorded as the grammar shapes them and never resolved:
 
@@ -215,8 +231,9 @@ Ambiguities are recorded as the grammar shapes them and never resolved:
   arguments. Neither reading is chosen.
 * Rust tuple-struct construction `TupleStruct(1)` is call-shaped; it is not
   claimed to be a constructor call.
-* PHP `strlen(...)` is first-class callable *creation* and is a reference;
-  `strlen(...)($x)` is an invocation and is a call.
+* PHP `strlen(...)` is first-class callable *creation* and is a reference, not a
+  call; `strlen(...)($x)` is an invocation and is a call with
+  `dynamic_callee = true`.
 * Python `getattr(obj, "m")()` is two facts: a `plain_name` call for `getattr`
   and an `indirect` call whose written callee is `getattr(obj, "m")`.
 

@@ -111,8 +111,14 @@ A directory the walk cannot enter or an entry it cannot stat is reported, never
 silently dropped. The scan continues with the rest of the tree, but it does not
 claim complete coverage: the text output prints `SCAN INCOMPLETE`, the JSON
 output carries a `traversal_failure_details` array, a `traversal_failures`
-count and `scan_complete: false`, and the
-exit code is the analysis-failure code.
+count and `scan_complete: false`, and the exit code is the analysis-failure code.
+
+Provoking that failure needs a directory the process cannot read, which is a
+POSIX operation, so the two tests that inject it are gated with `#[cfg(unix)]`.
+The other half of the contract — a scan that visits everything reports itself
+complete — is platform-independent and runs everywhere. No Windows ACL
+manipulation is implemented, and the test targets type-check for
+`x86_64-pc-windows-gnu`.
 
 Scanning this repository itself (counts change as the repository grows):
 
@@ -162,9 +168,10 @@ tests/shared_fixtures.rs     encodings, line endings, adversarial source
 tests/determinism.rs         byte-identical repeated analysis
 tests/incremental.rs         incremental vs full parse equivalence
 tests/scanner.rs             discovery, pruning, per-file failures,
-                             traversal-failure reporting
+                             traversal-failure reporting, scan completeness
 tests/paths.rs               runtime path resolution
-tests/cli.rs                 command behaviour and exit codes
+tests/cli.rs                 command behaviour and exit codes, scan
+                             completeness in the JSON output
 tests/canonical_completeness.rs
                              every normalized field is visible to the
                              canonical text and to structural equality

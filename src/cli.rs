@@ -27,9 +27,7 @@ use std::time::Instant;
 use serde::Serialize;
 
 use crate::canonical;
-use crate::model::{
-    AnalysisStatus, Diagnostic, DiagnosticKind, FileAnalysis, LanguageId, SCHEMA_VERSION,
-};
+use crate::model::{AnalysisStatus, FileAnalysis, LanguageId, SCHEMA_VERSION};
 use crate::parser::{Analyzer, AnalyzerConfig};
 use crate::paths::{self, RepoDexPaths};
 use crate::scanner::{describe_languages, ScanOptions, ScanReport, Scanner};
@@ -680,15 +678,6 @@ fn print_json<T: Serialize>(value: &T) -> Result<(), String> {
     serde_json::to_writer(&mut stdout, value).map_err(|error| error.to_string())?;
     stdout.write_all(b"\n").map_err(|error| error.to_string())?;
     Ok(())
-}
-
-/// Diagnostics helper for the CLI: a scan that could not start.
-#[allow(dead_code)]
-fn scan_start_diagnostic(root: &Path, message: &str) -> Diagnostic {
-    Diagnostic::error(
-        DiagnosticKind::IoError,
-        format!("cannot scan {}: {message}", root.display()),
-    )
 }
 
 /// Report type re-exported for library consumers that mirror the CLI.

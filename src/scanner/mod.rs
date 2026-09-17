@@ -476,3 +476,79 @@ pub fn source_file_view(
 ) -> SourceFile {
     SourceFile::new(relative_path(root, path), language, bytes)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::{Diagnostic, DiagnosticKind, LanguageId, SourceFile};
+
+    /// Build a `FileAnalysis` with a given status and diagnostics, for
+    /// exercising the counter classification directly.
+    fn analysis_with(status: AnalysisStatus, kinds: &[DiagnosticKind]) -> FileAnalysis {
+        FileAnalysis {
+            schema_version: 1,
+            file: SourceFile::new("probe.rs", LanguageId::Rust, b"fn probe() {}\n"),
+            status,
+            diagnostics: kinds
+                .iter()
+                .map(|kind| Diagnostic::error(*kind, "synthetic"))
+                .collect(),
+            scopes: Vec::new(),
+            declarations: Vec::new(),
+            imports: Vec::new(),
+            references: Vec::new(),
+            calls: Vec::new(),
+            file_test_evidence: Vec::new(),
+            recovery_regions: Vec::new(),
+        }
+    }
+
+    /// An analysis that was truncated by the query match limit must be counted
+    /// as an extraction failure, not as coverage.
+    ///
+    /// This exercises `accumulate` directly, which is the function that owns the
+    /// classification, because the counter it feeds is the thing the claim is
+    /// about. The integration test in `tests/query_limits.rs` covers the
+    /// end-to-end control: a merely recovered file is not counted as a failure.
+    #[test]
+    fn an_incomplete_analysis_is_counted_as_an_extraction_failure() {
+        let mut report = ScanReport::default();
+        accumulate(
+            &mut report,
+            &analysis_with(
+                AnalysisStatus::Incomplete,
+                &[DiagnosticKind::QueryMatchLimitExceeded],
+            ),
+        );
+        assert_eq!(report.extraction_failures, 1);
+        assert_eq!(report.parsed_clean_files, 0);
+        assert_eq!(report.parsed_with_recovery_files, 0);
+        assert_eq!(
+            outcome_of(&analysis_with(
+                AnalysisStatus::Incomplete,
+                &[DiagnosticKind::QueryMatchLimitExceeded]
+            )),
+            FileOutcome::Failed,
+            "a partial analysis is a failed file, not a usable one"
+        );
+
+        // A query error is classified the same way, for the runtime that can
+        // report one.
+        let mut report = ScanReport::default();
+        accumulate(
+            &mut report,
+            &analysis_with(AnalysisStatus::Failed, &[DiagnosticKind::QueryError]),
+        );
+        assert_eq!(report.extraction_failures, 1);
+
+        // The control: recovery is not a failure.
+        let mut report = ScanReport::default();
+        accumulate(
+            &mut report,
+            &analysis_with(AnalysisStatus::Recovered, &[DiagnosticKind::SyntaxError]),
+        );
+        assert_eq!(report.extraction_failures, 0);
+        assert_eq!(report.parsed_with_recovery_files, 1);
+        assert_eq!(report.failed_files(), 0);
+    }
+}

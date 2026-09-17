@@ -10,6 +10,12 @@
 //! limit. These tests therefore drive the guard through
 //! `RecoveryScanner::with_query_source`, which is the only way to reach it, and
 //! separately pin the fact that the production query never trips it.
+//!
+//! Scope note: `RecoveryError::Query` is declared but is not produced by any
+//! code path today (see its documentation), so no test here asserts that a
+//! query *error* is reported during analysis. `a_query_that_cannot_compile_is_rejected`
+//! covers the one query failure that does occur, which happens while a scanner
+//! is being built rather than while a file is being analyzed.
 
 mod support;
 
@@ -189,9 +195,11 @@ fn a_sufficient_match_limit_does_not_trip_the_guard() {
     assert!(!analysis.recovery_regions.is_empty());
 }
 
-/// A query that cannot compile is a query error, not a match-limit exhaustion.
+/// A query that cannot compile is rejected while the scanner is built, with a
+/// message naming the language. This is the only query failure the current
+/// runtime can produce.
 #[test]
-fn a_broken_query_is_a_query_error() {
+fn a_query_that_cannot_compile_is_rejected() {
     let (registry, _) = parse(LanguageId::Rust, MANY_ERRORS);
     let ts_language = registry.adapter(LanguageId::Rust).ts_language();
     let error = match RecoveryScanner::with_query_source(LanguageId::Rust, &ts_language, "((", 1) {
@@ -213,30 +221,83 @@ fn a_broken_query_is_a_query_error() {
     assert!(error.contains("@error"), "{error}");
 }
 
-/// A genuine query error must map to `QueryError`, not to the match-limit
-/// diagnostic, and must not be reported as `Incomplete`.
+/// A truncated recovery scan must be reported as *exactly* a match-limit
+/// exhaustion: not as ordinary recovery, not as clean, and not as a query
+/// error.
+///
+/// The contrast is real, not vacuous: the same source through the same
+/// orchestration path is `Recovered` with the production scanner and
+/// `Incomplete` with a scanner whose limit is low enough to abandon captures.
+/// (The `RecoveryError::Query` variant is not produced by any code path today —
+/// see its documentation — so no assertion here claims to exercise it.)
 #[test]
-fn a_query_error_is_not_reported_as_a_match_limit_exhaustion() {
-    let source = MANY_ERRORS;
-    let (registry, tree) = parse(LanguageId::Rust, source);
+fn a_match_limit_exhaustion_is_reported_only_as_a_match_limit_exhaustion() {
+    let source = nested_source();
+    let (registry, tree) = parse(LanguageId::Rust, &source);
+    let ts_language = registry.adapter(LanguageId::Rust).ts_language();
+
+    // Control: the production scanner over the same tree only recovers.
     let adapter = registry.adapter(LanguageId::Rust);
-    let mut builder = FactBuilder::new("many.rs", LanguageId::Rust, source.as_bytes());
+    let mut builder = FactBuilder::new("nested.rs", LanguageId::Rust, source.as_bytes());
     let file_range: SourceRange = range_from_offsets(source.as_bytes(), 0, source.len() as u32);
     builder.push_scope(ScopeKind::File, None::<String>, file_range, None);
     adapter.extract(&mut builder, &tree);
-    // The production scanner succeeds, so no query error is recorded.
     apply_recovery(adapter.recovery(), LanguageId::Rust, &tree, &mut builder);
     builder.pop_scope();
-    let analysis = builder.finish();
-    assert!(!analysis.has_diagnostic(DiagnosticKind::QueryError));
-    assert!(!analysis.has_diagnostic(DiagnosticKind::QueryMatchLimitExceeded));
-    assert_eq!(analysis.status, AnalysisStatus::Recovered);
+    let control = builder.finish();
+    assert!(
+        !control.has_diagnostic(DiagnosticKind::QueryMatchLimitExceeded),
+        "the production scanner must not report a truncated scan"
+    );
+    assert_ne!(control.status, AnalysisStatus::Incomplete);
+
+    // The truncated scanner over the same tree must report exactly that.
+    let scanner =
+        RecoveryScanner::with_query_source(LanguageId::Rust, &ts_language, HOLDING_QUERY, 1)
+            .expect("scanner");
+    let truncated = analyze_with_scanner(LanguageId::Rust, "nested.rs", &source, &scanner, &tree);
+
+    assert!(truncated.has_diagnostic(DiagnosticKind::QueryMatchLimitExceeded));
+    assert!(
+        !truncated.has_diagnostic(DiagnosticKind::QueryError),
+        "a truncation is not a query error"
+    );
+    assert_eq!(truncated.status, AnalysisStatus::Incomplete);
+    assert_ne!(truncated.status, AnalysisStatus::Clean);
+    assert_ne!(truncated.status, AnalysisStatus::Recovered);
+
+    // Exactly one diagnostic of the recovery-failure family is emitted, and it
+    // is the match-limit one. A truncation must not also masquerade as ordinary
+    // syntax recovery.
+    let failure_family = truncated
+        .diagnostics
+        .iter()
+        .filter(|diagnostic| {
+            matches!(
+                diagnostic.kind,
+                DiagnosticKind::QueryMatchLimitExceeded | DiagnosticKind::QueryError
+            )
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(failure_family.len(), 1);
+    assert_eq!(
+        failure_family[0].kind,
+        DiagnosticKind::QueryMatchLimitExceeded
+    );
 }
 
-/// The scan counters and the CLI policy must treat an incomplete analysis as a
+/// The scan counters and the CLI policy must treat a truncated analysis as a
 /// failure, not as coverage.
+///
+/// This is the end-to-end control: over these bytes the production path only
+/// ever recovers, and recovery is not a failure. The claim that a genuinely
+/// *incomplete* analysis is counted as an extraction failure is asserted by
+/// `scanner::tests::an_incomplete_analysis_is_counted_as_an_extraction_failure`,
+/// which drives the classification function directly, because the default
+/// analyzer's match limit is `u32::MAX` and no file can reach `Incomplete`
+/// through `Scanner::scan`.
 #[test]
-fn an_incomplete_analysis_is_counted_as_an_extraction_failure() {
+fn a_recovered_file_is_not_counted_as_an_extraction_failure() {
     // The default path over the same bytes must show no failure: the control.
     let analyzer = Analyzer::new(AnalyzerConfig::default()).expect("analyzer");
     let recovered = analyzer.analyze_bytes("many.rs", LanguageId::Rust, MANY_ERRORS.as_bytes());

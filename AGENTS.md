@@ -27,16 +27,57 @@ cargo run --release --bin repodex-bench -- --language all --size all
 Do not silence warnings to obtain green output, and do not weaken assertions to
 hide a parser or extraction limitation.
 
-There is exactly one lint allowance in the codebase:
+Every lint allowance in the codebase is listed here. An allowance is not a
+defect, but an undocumented one is, and a `#[allow]` guarding code nothing calls
+is dead code rather than a justified allowance.
 
 ```text
-src/bin/repodex-bench.rs   #[allow(clippy::too_many_arguments)] on `row(...)`
-                           and on `measure(...)`
+src/parser/builder.rs:267        #[allow(clippy::too_many_arguments)]
+                                 on `FactBuilder::push_call(...)`
+src/bin/repodex-bench.rs:257     #[allow(clippy::too_many_arguments)]
+                                 on `measure(...)`
+src/bin/repodex-bench.rs:284     #[allow(clippy::too_many_arguments)]
+                                 on `row(...)`
+tests/support/mod.rs:7           #![allow(dead_code)]
+                                 module-level, shared test helpers
 ```
 
-Both take the benchmark row fields positionally; bundling them into a struct
-would add a type whose only purpose is to satisfy the lint. Any new allowance
-must be listed here with its reason, and the count must stay small.
+```text
+push_call  takes the eight fields of one CallLikeOccurrence positionally. They
+           are one fact, not eight parameters, and every adapter calls it.
+measure    takes the analyzer, the parser registry, the language, the size name,
+           the file name, the path and the source.
+row        takes the benchmark row fields positionally.
+reason     bundling either into a struct would add a type whose only purpose is
+           to satisfy the lint, and would move the fields away from the call
+           sites that read as a table.
+
+tests/support/mod.rs  the shared helper module is compiled into every
+                      integration test binary, and each binary uses a subset of
+                      the helpers, so an unused one is expected rather than
+                      suspicious.
+```
+
+Any new allowance must be added here with its reason. Do not remove a justified
+allowance to claim there are none; do remove the code that makes an unjustified
+one necessary.
+
+## Portability
+
+The crate must build and its test targets must type-check on native Windows as
+well as on Unix. Any platform-specific API belongs behind a `#[cfg]` gate —
+including imports, since an import used only by a gated item becomes an unused
+import on the other platform and fails `-D warnings` there.
+
+The test targets are cross-checked with:
+
+```bash
+cargo clippy --locked --target x86_64-pc-windows-gnu --all-targets \
+  --all-features -- -D warnings
+```
+
+That is a cross-target type-check, not a native Windows run; do not describe it
+as one. Do not add Windows ACL manipulation.
 
 ## Tests
 

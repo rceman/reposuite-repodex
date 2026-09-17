@@ -7,12 +7,25 @@ compares RepoDex against another implementation.
 status: FOUNDATION_SPIKE_COMPLETE
 ```
 
-This document describes the **corrected** TASK 1 snapshot. An independent static
-review of the first snapshot raised eleven findings; all eleven were reproduced
-and corrected, and two further defects were found by the new tests. Section 10.6
-records each finding, its verdict and its correction. Section 10.3 lists exactly
-which benchmark numbers from the first report are superseded. The original TASK 1
-commit is preserved unamended for audit.
+This document describes the **corrected** TASK 1 snapshot. Two independent
+static reviews were run against it.
+
+The first raised eleven findings; all eleven were reproduced and corrected, and
+two further defects were found by the new tests. Section 10.6 records each
+finding, its verdict and its correction. Section 10.3 lists exactly which
+benchmark numbers from the first report are superseded.
+
+The second concluded `TASK_2_SHOULD_WAIT` and raised one HIGH portability issue
+plus five claim-accuracy items; all six were reproduced and corrected. Section
+10.7 records them, including the Windows portability gate and the two test names
+that claimed more than they asserted.
+
+Both previous commits are preserved unamended for audit:
+
+```text
+8f3314bc9cb2768efab32f0cdc9de4c93332eb82   original TASK 1 snapshot
+718891d1344b9fa0aec541fa4027160f9658fd64   first correction pass
+```
 
 Machine and toolchain for every measurement below:
 
@@ -22,6 +35,10 @@ rustc:     1.93.1 (01f6ddf75 2026-02-11)
 cargo:     1.93.1 (083ac5135 2025-12-15)
 profile:   release (bench and repodex-bench), debug for tests
 ```
+
+Portability note: the test targets are also type-checked for
+`x86_64-pc-windows-gnu` (see 10.7). No measurement in this document was taken on
+native Windows, and none is claimed to have been.
 
 ## 1. Adapters implemented
 
@@ -78,15 +95,16 @@ Command:
 cargo test --locked
 ```
 
-Result: **152 tests, 152 passed, 0 failed.**
+Result: **155 tests, 155 passed, 0 failed.**
 
 ```text
+src/lib.rs (unit tests)    1 passed   (scanner counter classification)
 src/bin/repodex-bench.rs   7 passed   (unit tests: generated sources, the
                                        language-correct incremental edit, the
                                        nested depth limit, stage boundaries,
                                        JSON rows)
 tests/canonical_completeness.rs  3 passed
-tests/cli.rs              14 passed
+tests/cli.rs              15 passed
 tests/determinism.rs       8 passed
 tests/expected_facts.rs    1 passed
 tests/go_adapter.rs       12 passed
@@ -98,10 +116,17 @@ tests/query_limits.rs      7 passed
 tests/ranges.rs            6 passed
 tests/recovery.rs          8 passed
 tests/rust_adapter.rs     13 passed
-tests/scanner.rs          11 passed
+tests/scanner.rs          12 passed
 tests/shared_fixtures.rs  12 passed
 tests/tree_comparator.rs   6 passed
 ```
+
+The Unix-only half of the traversal contract (`tests/scanner.rs` and
+`tests/cli.rs`, one test each) is gated with `#[cfg(unix)]` because provoking a
+traversal failure needs a directory the process cannot read. The
+platform-independent half — that a scan which visits everything reports itself
+complete — runs everywhere, so the portability gate does not remove all coverage
+of those accessors on non-Unix platforms.
 
 `tests/expected_facts.rs` compares the complete canonical fact set of all 26
 fixtures, so one test covers 26 fixture expectations.
@@ -198,12 +223,19 @@ tests/query_limits.rs             drives the match-limit guard with a query that
   arguments.
 * Go `int64(5)` is a `call_expression` and is reported as call-shaped with the
   `plain_name` form. It is never claimed to be a call rather than a conversion.
-* PHP `new Thing(...)` is explicit-construction syntax and is recorded with the
-  `explicit_construction` form. An ordinary `Thing(...)` in PHP is a call-shaped
-  occurrence like any other; it is **not** treated as construction.
+* PHP has three distinct forms, and RepoDex keeps them apart:
+
+  ```php
+  Thing($arg);       // invocation syntax      -> plain_name call-like
+  new Thing($arg);   // explicit construction  -> explicit_construction call-like
+  Thing(...);        // first-class callable   -> first_class_callable reference
+  ```
+
+  Literal `Thing(...)` is neither an invocation nor construction: it produces a
+  `first_class_callable` reference and no call-like occurrence.
 * PHP `strlen(...)` is first-class callable creation and produces a reference,
-  not a call. `strlen(...)($x)` is an invocation and produces an `indirect` call.
-  Both facts coexist for the same source span.
+  not a call. `strlen(...)($x)` is an invocation and produces an `indirect` call
+  with `dynamic_callee = true`. Both facts coexist for the same source span.
 * Python `getattr(obj, "m")()` produces a `plain_name` call for `getattr` and an
   `indirect` call whose written callee is `getattr(obj, "m")`.
 * Rust tuple-struct construction is call-shaped; struct literal construction
@@ -715,21 +747,202 @@ error recovery for Python (511 of 600              depth all four grammars parse
 declarations, one whole-file ERROR node)           clean, and the harness asserts it
 ```
 
-The one lint allowance in the codebase, stated precisely:
+The complete lint inventory, stated precisely. An earlier version of this
+report said "no warning was silenced", which was wrong: it omitted
+`FactBuilder::push_call`, and it described only Clippy allowances while two
+`dead_code` allowances also existed.
 
 ```text
-src/bin/repodex-bench.rs   #[allow(clippy::too_many_arguments)]
-                           on `row(...)` and on `measure(...)`
-
-reason  both functions take the benchmark row fields positionally. `row` builds
-        one `Row` from its columns and `measure` needs the analyzer, the parser
-        registry, the language, the size name, the file name, the path and the
-        source. Bundling them into a struct would add a type whose only purpose
-        is to satisfy the lint.
+src/parser/builder.rs:267        #[allow(clippy::too_many_arguments)]
+                                 on `FactBuilder::push_call(...)`
+src/bin/repodex-bench.rs:257     #[allow(clippy::too_many_arguments)]
+                                 on `measure(...)`
+src/bin/repodex-bench.rs:284     #[allow(clippy::too_many_arguments)]
+                                 on `row(...)`
+tests/support/mod.rs:7           #![allow(dead_code)]
+                                 module-level, shared test helpers
 ```
 
+```text
+push_call  takes the eight fields of one CallLikeOccurrence positionally. They
+           are one fact rather than eight independent parameters, and every
+           language adapter calls it.
+measure    takes the analyzer, the parser registry, the language, the size name,
+           the file name, the path and the source.
+row        takes the benchmark row fields positionally.
+reason     bundling either into a struct would add a type whose only purpose is
+           to satisfy the lint, and would separate the fields from the call
+           sites that read as a table.
+
+tests/support/mod.rs  the shared helper module is compiled into every
+                      integration test binary and each binary uses a subset of
+                      the helpers, so an unused helper is expected rather than
+                      suspicious.
+```
+
+One allowance that this pass removed rather than documented: `src/cli.rs` had
+
+```text
+#[allow(dead_code)] fn scan_start_diagnostic(root, message) -> Diagnostic
+```
+
+which nothing called — the CLI reports a scan failure with
+`.map_err(|error| format!("scan failed: {error}"))?`, and the helper's message
+text did not match that path. It was dead code kept alive by the allowance, so
+the function was deleted and the allowance with it, along with the two imports
+that then became unused. That is a deletion of dead code, not the removal of a
+justified allowance.
+
 Every other Clippy warning is denied: `cargo clippy --locked --all-targets
---all-features -- -D warnings` passes with no other allowance.
+--all-features -- -D warnings` passes with these allowances and no others, on
+Linux and on the `x86_64-pc-windows-gnu` target.
+
+
+### 10.7 TASK 1 portability and claim-accuracy pass
+
+A second independent review concluded `TASK_2_SHOULD_WAIT` and raised one HIGH
+portability issue plus five smaller claim-accuracy items. All were reproduced
+against the source. The correction commit is
+`718891d1344b9fa0aec541fa4027160f9658fd64`.
+
+```text
+finding                                    verdict      correction
+------------------------------------------ ------------ -------------------------------
+H1 Unix-only test helpers were not         CONFIRMED    helpers and the tests that
+   gated, so a native Windows build                     use them moved into
+   would fail while compiling the test                  `#[cfg(unix)]` modules; the
+   targets before any runtime skip                      platform-independent half of
+   could run                                            the traversal contract was
+                                                        split out into tests that
+                                                        run everywhere
+                                                        (see the portability note
+                                                        below)
+
+2  documentation still said               CONFIRMED    docs/LANGUAGE_SPIKE.md now
+   `Generic[int](value)` is not                         states that the form is
+   call-like                                            preserved as a call-like
+                                                        occurrence and never
+                                                        resolved
+
+3  the lint inventory was incomplete      CONFIRMED    complete inventory in 10.6
+   (it omitted `FactBuilder::push_call`                 and in AGENTS.md; one
+   and both `dead_code` allowances)                     allowance on dead code was
+                                                        removed with the dead code
+
+4  PHP examples were ambiguous            CONFIRMED    the three PHP forms are now
+   (`Thing(...)` described as                           given as concrete, distinct
+   invocation or construction)                          examples in ARCHITECTURE.md,
+                                                        LANGUAGE_SPIKE.md and 6
+
+5  two test names claimed more than       CONFIRMED    one test moved to the code
+   they asserted:                                       that owns the classification
+   `an_incomplete_analysis_is_counted_                  and genuinely drives it;
+   as_an_extraction_failure` never                      the other was rewritten and
+   produced an `Incomplete` analysis;                   renamed to assert the
+   `a_query_error_is_not_reported_as_                   reachable distinction
+   a_match_limit_exhaustion` never                      (see below)
+   produced a query error
+
+6  `combined_ms > parse_ms` does not      CONFIRMED    the timing inequality was
+   prove the timer covers the parse                     removed; the timed unit is
+                                                        now a named function whose
+                                                        two outputs prove what the
+                                                        interval contains
+```
+
+#### Windows portability
+
+The two traversal-failure tests make a directory unreadable with
+`std::os::unix::fs::PermissionsExt`. That import is unconditional in the test
+crate, so on a native Windows host the test target would fail to *compile*,
+before any runtime skip could run — under `cargo test` and under
+`cargo clippy --all-targets`.
+
+Both helpers and both tests now live inside `#[cfg(unix)] mod
+unreadable_directory`, and no Windows ACL manipulation was added. No other
+Unix-only API exists in the repository: a sweep for `std::os::unix`,
+`PermissionsExt`, `from_mode`, `OsStrExt`, `MetadataExt`, `FileTypeExt`,
+`CommandExt`, `ExitStatusExt` and `libc::` finds only those two modules and the
+pre-existing `#[cfg(unix)]` symlink test in `tests/scanner.rs`.
+
+Because the failure-injection half of the traversal contract is Unix-only, the
+platform-independent half was split out so non-Unix platforms still exercise the
+accessors:
+
+```text
+tests/scanner.rs  a_scan_that_visits_everything_reports_itself_complete
+tests/cli.rs      a_complete_scan_reports_itself_complete_in_json
+```
+
+Writing the gate also removed a second, subtler Windows failure that a reviewer
+would have hit next: `repodex::model::DiagnosticKind` and
+`repodex::scanner::TraversalFailureKind` were imported at file scope in
+`tests/scanner.rs` but used only by the gated test, so they became unused
+imports on non-Unix — which fails `-D warnings` there. Both imports moved into
+the gated module.
+
+#### Regression-test claim accuracy
+
+```text
+an_incomplete_analysis_is_counted_as_an_extraction_failure
+  claimed   an Incomplete analysis is counted as an extraction failure
+  actually  asserted extraction_failures == 0 on a *Recovered* file, and never
+            produced an Incomplete analysis at all
+  now       the claim is tested where the classification lives, by a unit test in
+            src/scanner/mod.rs that calls `accumulate` with a genuinely
+            Incomplete analysis and asserts extraction_failures == 1 and
+            FileOutcome::Failed. The end-to-end test is renamed
+            `a_recovered_file_is_not_counted_as_an_extraction_failure` and keeps
+            the control it always was.
+  why not end to end
+            `Scanner::scan` uses the default match limit of u32::MAX, so no file
+            can reach Incomplete through the scanner without a production hook.
+            The counter's owner is `accumulate`, so the counter is tested there.
+
+a_query_error_is_not_reported_as_a_match_limit_exhaustion
+  claimed   a genuine query error maps to QueryError, not to the match-limit
+            diagnostic
+  actually  used the production scanner, which succeeds, so no query error was
+            ever produced; both assertions were negative assertions about a
+            diagnostic that cannot occur
+  now       renamed `a_match_limit_exhaustion_is_reported_only_as_a_match_limit_exhaustion`
+            and rewritten to assert a real contrast: the same tree is `Recovered`
+            through the production scanner and `Incomplete` with exactly one
+            recovery-failure diagnostic through a scanner whose limit is low
+            enough to abandon captures.
+  root cause
+            `RecoveryError::Query` is not produced by any code path. A query that
+            fails to compile is rejected by `with_query_source` while an adapter
+            is being built, and Tree-sitter's `QueryCursor::matches` iteration
+            has no failure signal. The variant is now documented as unproduced
+            rather than implied to be exercised, and no test claims to reach it.
+```
+
+#### Benchmark interval claim
+
+The old test asserted `combined_ms > parse_ms`. That is a timing inequality: it
+can hold for reasons unrelated to where the timer starts, and it would not
+demonstrate the claim even when it held. It has been removed, and no
+timing-based assertion replaced it.
+
+What the test now proves is deterministic and structural. The timed work was
+extracted into a named function:
+
+```text
+src/bin/repodex-bench.rs   fn incremental_parse_and_extract(...) -> (Tree, FileAnalysis)
+```
+
+`measure` opens the timer immediately before that single call and closes it
+immediately after, so anything the function returns was produced inside the
+interval. The test calls the function directly and asserts that it returns both
+a tree and an analysis, that the tree matches a fresh parse of the edited bytes
+and differs from the base tree, and that the analysis matches a fresh extraction.
+Together with the row-level assertions (parse-only reports no facts, combined
+reports the edited source's facts and bytes), that is what the test can prove.
+
+What is established by code structure rather than by a test is the *start point*
+of the interval: the timer opens before the call. No test asserts that, and none
+claims to.
 
 Nothing in the correction pass changed the architecture. There is still no
 semantic resolution, no cross-file resolution, no repository map, no persistent
@@ -747,10 +960,16 @@ peak RSS                                       see 10.5
 cold-cache filesystem performance              not measured
 multi-threaded or parallel scanning            not implemented
 traversal failures under a real permission
-  model on a non-POSIX platform                not measured; the reporting path
-                                               is covered by a POSIX test that
-                                               skips when the platform cannot
-                                               deny access
+  model on a non-POSIX platform                not measured; the failure path is
+                                               Unix-only and gated with
+                                               `#[cfg(unix)]`, so only the
+                                               completeness half of the
+                                               contract runs on other platforms
+native Windows execution of the test suite     not executed; the test targets are
+                                               type-checked for
+                                               `x86_64-pc-windows-gnu`, which is
+                                               a cross-target check, not a
+                                               native Windows run
 query match-limit exhaustion in production     not reachable; the production
                                                recovery query cannot exhaust the
                                                capture pool at any limit, so the

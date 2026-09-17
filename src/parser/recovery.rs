@@ -13,6 +13,20 @@ use super::builder::FactBuilder;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RecoveryError {
     /// The query could not be executed.
+    ///
+    /// **This variant is currently not produced by any code path.**
+    /// [`RecoveryScanner::scan`] can only return
+    /// [`RecoveryError::MatchLimitExceeded`]: a query that fails to compile is
+    /// rejected earlier, by [`RecoveryScanner::with_query_source`], which
+    /// returns a `String` because it runs while an adapter is being built
+    /// rather than while a file is being analyzed. Tree-sitter's
+    /// `QueryCursor::matches` iteration has no failure signal to report.
+    ///
+    /// The variant and the [`DiagnosticKind::QueryError`] mapping in
+    /// `parser::apply_recovery` are therefore retained as a typed guard for a
+    /// runtime that can report an execution failure, and are not exercised
+    /// today. `tests/query_limits.rs` asserts the behaviour that is reachable
+    /// instead of asserting the absence of a diagnostic that cannot occur.
     Query(String),
     /// Tree-sitter abandoned in-progress captures at the configured match
     /// limit, so the reported recovery artifacts are known to be incomplete.

@@ -145,12 +145,25 @@ test evidence  function_name_convention (Test/Benchmark prefix rules),
   receiver*, which `tests/support/mod.rs::declaration_identity` demonstrates.
 * Interface method elements *are* lexically inside the interface scope. They are
   a different construct from receiver methods and are modelled as such.
-* Generic instantiation has two shapes:
+* Generic instantiation is genuinely ambiguous, and every shape is preserved as
+  a call-like occurrence rather than resolved:
   * `Generic[int](value)` — a single call argument — parses as
-    `type_conversion_expression`, so it is **not** reported as call-like.
+    `type_conversion_expression`. That syntax is simultaneously a valid generic
+    invocation with one argument and a valid conversion, so it **is** reported
+    as a call-like occurrence, with the `type_conversion` form label and the
+    exact range of its written type arguments. RepoDex does not decide which
+    reading is correct.
   * `Generic[int, string](value)` parses as `call_expression` with
-    `type_arguments`, so it **is** reported as call-like.
-  * `Generic[int]` without a call is a `type_instantiation_expression`.
+    `type_arguments`, and is reported as call-like with the `plain_name` form.
+  * `pkg.Generic[int](value)` and `obj.Generic[int](value)` parse as
+    `type_conversion_expression` and are reported as call-like with the
+    `type_conversion` form.
+  * `Generic[int](value, other)` — two or more call arguments — parses as
+    `call_expression` and is reported as call-like with the `indirect` form.
+  * `Generic[int]` without a call is a `type_instantiation_expression` and
+    produces no call-like fact.
+  * The discriminator is the **call-argument count**, not the number of type
+    arguments. No Go type checker or compiler is involved.
 * `int64(5)` with one argument is a `call_expression`, indistinguishable from a
   call at the syntax level. It is reported as call-shaped and never resolved.
 * Embedded fields have no written name, so they produce an `embedded_type`
@@ -280,9 +293,18 @@ test evidence  function_name_convention (test prefix), attribute (#[Test])
   `cacheKey` with a `name_range` selecting `cacheKey`, not `$cacheKey`.
   Promoted constructor properties belong to the *class* scope, not the
   constructor.
+* The three callable/construction forms are distinct:
+
+  ```php
+  Thing($arg);       // invocation syntax      -> plain_name call-like
+  new Thing($arg);   // explicit construction  -> explicit_construction call-like
+  Thing(...);        // first-class callable   -> first_class_callable reference
+  ```
+
+  Literal `Thing(...)` is neither an invocation nor construction.
 * `strlen(...)` is first-class callable *creation*: it produces a
   `first_class_callable` reference and no call. `strlen(...)($x)` is an
-  invocation and produces an `indirect` call.
+  invocation and produces an `indirect` call with `dynamic_callee = true`.
 * `$callable('x')` and `$widget->{$name}()` set `dynamic_callee = true`. They are
   never resolved.
 * `$widget?->render()` sets `nullsafe = true`; the form is still
