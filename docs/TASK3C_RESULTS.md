@@ -11,9 +11,12 @@ bounded syntactic observation, never a claim about runtime dispatch.
 
 ## 2. TASK 3C commit(s)
 
-Recorded in the header of this file's repository history; see `git log`. The
-working tree at commit time contains `src/candidates/`, the `candidates` CLI,
-`tests/call_candidates.rs`, `fixtures/callcandidates/`, the audit and perf
+```text
+6031fcb68316f521e3c0537752c30fc686384945  Add bounded Rust local call-candidate linking over the snapshot and links
+```
+
+The working tree at commit time contains `src/candidates/`, the `candidates`
+CLI, `tests/call_candidates.rs`, `fixtures/callcandidates/`, the audit and perf
 scripts, and this documentation.
 
 ## 3. Candidate model
