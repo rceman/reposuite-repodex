@@ -32,6 +32,7 @@ pub mod input;
 pub mod model;
 pub mod parser;
 pub mod paths;
+pub mod repository;
 pub mod scanner;
 
 pub use model::{

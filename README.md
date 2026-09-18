@@ -9,8 +9,8 @@ information.
 
 ## What this repository currently is
 
-This repository is the **TASK 1 foundation spike**, validated by **TASK 2**. It
-establishes one pipeline and stops there:
+This repository is the **TASK 1 foundation spike**, validated by **TASK 2** and
+extended by **TASK 3A**. It establishes one pipeline and stops there:
 
 ```text
 repository files
@@ -18,6 +18,7 @@ repository files
     -> Tree-sitter parsing
     -> language-specific extraction
     -> normalized unresolved syntax facts
+    -> deterministic repository fact snapshot + incremental file-level index
 ```
 
 ```text
@@ -25,6 +26,7 @@ TASK 1 status:               FOUNDATION_SPIKE_COMPLETE
 TASK 1 commit validated:     4a6e8e3fe88be068932279b3bf896c731c812859
 TASK 2 validation status:    VALIDATION_COMPLETE
 TASK 2 architecture verdict: GO
+TASK 3A status:              IMPLEMENTED (snapshot artifact EXPERIMENTAL)
 ```
 
 TASK 2 validated the foundation against 2.42M manifest LOC (2.16M processed LOC)
@@ -39,10 +41,19 @@ with every miss being the documented macro-argument boundary. See
 `docs/TASK2_FINAL_REPORT.md`, `docs/TASK2_FINDINGS.md` and
 `docs/SPIKE_RESULTS.md` Part II.
 
+TASK 3A adds a deterministic repository-level snapshot over those per-file facts
+and an incremental file-level rebuild that reuses unchanged analyses by SHA-256
+content digest plus analyzer fingerprint, without ever retaining a Tree-sitter
+tree or a source buffer. Measured on one repository per language, a no-change
+update reparses nothing and a one-file change reparses only that file, and the
+resulting snapshot digest equals an independent fresh full build in every
+measured repetition. See `docs/TASK3A_REPOSITORY_INDEX.md`.
+
 Everything downstream of that is deliberately absent:
 
 ```text
 normalized unresolved syntax facts
+    -> deterministic repository fact snapshot   (TASK 3A, syntax only)
     -> FUTURE semantic resolution
     -> FUTURE repository map
     -> FUTURE navigation
@@ -52,7 +63,8 @@ normalized unresolved syntax facts
 RepoDex does **not** resolve symbols, resolve references, build a call graph,
 claim runtime behavior, evaluate `cfg`/build tags, expand macros, or infer
 framework semantics. `obj.F()` is recorded as a member-selector call shape, not
-as proof that a specific method `F` runs.
+as proof that a specific method `F` runs. The repository snapshot is a
+deterministic collection of source-grounded file analyses, not a semantic graph.
 
 ## Supported languages
 
@@ -156,6 +168,58 @@ never followed. `.gitignore` rules are honoured by default; use
 
 JSON goes to stdout, logs go to stderr.
 
+### `index build <repository> --output <snapshot-dir>`
+
+```bash
+cargo run --locked --release -- index build . --output /tmp/repodex-snap
+cargo run --locked --release -- index build . --output /tmp/repodex-snap --json
+```
+
+Builds a deterministic repository fact snapshot: deterministic discovery, a
+SHA-256 content digest per file, parse/extract for every supported file, one
+persisted artifact per file, and a canonical manifest. Tree-sitter trees and
+source buffers are never retained or persisted.
+
+### `index update <repository> --previous <dir> --output <dir>`
+
+```bash
+cargo run --locked --release -- index update . \
+  --previous /tmp/repodex-snap --output /tmp/repodex-snap-2 --json
+```
+
+Reuses the persisted analysis of every unchanged file (content digest plus
+analyzer fingerprint plus configuration must all match), parses only changed and
+added files, and drops deleted ones. `--allow-incompatible` opts in to rebuilding
+from a previous snapshot produced by a different analyzer or configuration; by
+default such a snapshot is refused rather than silently ignored.
+
+### `index verify <snapshot-dir>`
+
+```bash
+cargo run --locked --release -- index verify /tmp/repodex-snap
+```
+
+Validates the manifest, the format version, the recomputed snapshot digest,
+canonical ordering, duplicate paths and every referenced artifact's digest.
+A successful verification means the artifact is internally consistent; it does
+**not** prove the source files still match it.
+
+### `index stats <snapshot-dir>` and `index find <snapshot-dir>`
+
+```bash
+cargo run --locked --release -- index stats /tmp/repodex-snap --json
+cargo run --locked --release -- index find /tmp/repodex-snap --declaration User --json
+cargo run --locked --release -- index find /tmp/repodex-snap --call helper
+cargo run --locked --release -- index find /tmp/repodex-snap --import std::collections::HashMap
+cargo run --locked --release -- index find /tmp/repodex-snap --test
+```
+
+`index stats` reports repository-level coverage, fact totals, per-language
+breakdown and artifact size without loading any Tree-sitter tree. `index find`
+performs **exact, source-grounded** lookup only: it matches the written name,
+target or callee form exactly, returns every occurrence, and never collapses
+equal names into one entity. There is no fuzzy or natural-language search.
+
 ### Exit codes
 
 ```text
@@ -197,6 +261,13 @@ tests/canonical_completeness.rs
 tests/tree_comparator.rs     every property the tree digest compares, and
                              that the digest separates trees that differ
 tests/query_limits.rs        query match-limit exhaustion is reported
+tests/task3_snapshot.rs      repository snapshot: determinism across roots and
+                             output directories, fresh build, artifact
+                             verification, digest/duplicate/ordering rejection,
+                             no-change and one-file-change reuse gates,
+                             add/delete/rename, invalid UTF-8, size limit,
+                             recovered reuse, analyzer/config mismatch,
+                             corrupt previous snapshot, exact lookup
 ```
 
 `fixtures/expected/**` holds the complete canonical fact set of every fixture.
@@ -264,7 +335,9 @@ export REPOSUITE_REPODEX_HOME=/path/to/repodex-home
 
 TASK 1 only *resolves* these paths. `languages`, `parse` and `scan` never create
 directories, so no persistent runtime state appears during normal use. Only the
-benchmark harness writes anything, and only under `benchmarks/`.
+benchmark harness writes anything, and only under `benchmarks/`. The TASK 3A
+`index` commands write only to the explicit `--output` directory they are given,
+which defaults to nothing.
 
 ## File input rules
 
@@ -295,6 +368,13 @@ missing/unreadable file -> per-file failure diagnostic
   parts.
 * Only `.rs`, `.go`, `.py` and `.php` are supported. JavaScript, TypeScript,
   Svelte and framework-specific analysis are out of scope.
+* A repository snapshot is syntax only. It never infers cross-file identity and
+  never claims that a missing normalized occurrence means the source construct
+  does not exist. In particular, the Rust macro-argument boundary above applies
+  unchanged at repository level.
+* The snapshot artifact format is EXPERIMENTAL and carries no long-term
+  compatibility promise. `index verify` proves structural consistency, not that
+  the working tree still matches the snapshot.
 * The CLI output format is experimental.
 
 ## Documentation
@@ -306,4 +386,9 @@ docs/SPIKE_RESULTS.md       observed results only; TASK 1 baseline (sections 1-1
 docs/TASK2_VALIDATION_PLAN.md  the pre-registered TASK 2 validation plan
 docs/TASK2_FINDINGS.md      TASK 2 findings log with stable IDs (F001..F008)
 docs/TASK2_FINAL_REPORT.md  the itemized TASK 2 final report
+docs/TASK3A_REPOSITORY_INDEX.md  TASK 3A: repository snapshot, incremental index,
+                             canonical identity, artifact format, safe reuse,
+                             known limitations, performance and memory
+                             observations
+scripts/task3a_perf.py       the TASK 3A performance validation harness
 ```

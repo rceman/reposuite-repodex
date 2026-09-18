@@ -30,6 +30,10 @@ use crate::canonical;
 use crate::model::{AnalysisStatus, FileAnalysis, LanguageId, SCHEMA_VERSION};
 use crate::parser::{Analyzer, AnalyzerConfig};
 use crate::paths::{self, RepoDexPaths};
+use crate::repository::{
+    self, build_snapshot, update_snapshot, BuildOptions, BuildStats, CoverageSummary, FactTotals,
+    RepositoryFactIndex, RepositoryManifest, SnapshotError,
+};
 use crate::scanner::{describe_languages, ScanOptions, ScanReport, Scanner};
 
 pub const EXIT_OK: u8 = 0;
@@ -58,6 +62,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "languages" => command_languages(&rest),
         "parse" => command_parse(&rest),
         "scan" => command_scan(&rest),
+        "index" => command_index(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -79,6 +84,11 @@ USAGE:
     reposuite-repodex languages [--json]
     reposuite-repodex parse <file> [--json] [--include-facts] [--max-file-size <bytes>]
     reposuite-repodex scan <repository> [--json] [--include-facts] [--max-file-size <bytes>] [--no-gitignore]
+    reposuite-repodex index build <repository> --output <snapshot-dir> [--json] [--max-file-size <bytes>] [--no-gitignore]
+    reposuite-repodex index update <repository> --previous <snapshot-dir> --output <snapshot-dir> [--json] [--allow-incompatible]
+    reposuite-repodex index verify <snapshot-dir> [--json]
+    reposuite-repodex index stats <snapshot-dir> [--json]
+    reposuite-repodex index find <snapshot-dir> [--declaration <name>] [--import <target>] [--call <callee>] [--test] [--json]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -96,6 +106,17 @@ struct Options {
     max_file_size: Option<u64>,
     respect_gitignore: bool,
     positional: Vec<String>,
+    /// `index build`/`index update` destination directory.
+    output: Option<String>,
+    /// `index update` previous snapshot directory.
+    previous: Option<String>,
+    /// `index update` opt-in to rebuilding from an incompatible snapshot.
+    allow_incompatible: bool,
+    /// `index find` selectors.
+    declaration: Option<String>,
+    import: Option<String>,
+    call: Option<String>,
+    tests_only: bool,
 }
 
 fn parse_options(args: &[String]) -> Result<Options, String> {
@@ -114,16 +135,19 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--json" => options.json = true,
             "--include-facts" | "--facts" => options.include_facts = true,
             "--no-gitignore" => options.respect_gitignore = false,
+            "--allow-incompatible" => options.allow_incompatible = true,
+            "--test" | "--tests" => options.tests_only = true,
+            "--output" => options.output = Some(value_for(args, &mut index, name, inline_value)?),
+            "--previous" => {
+                options.previous = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--declaration" => {
+                options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--import" => options.import = Some(value_for(args, &mut index, name, inline_value)?),
+            "--call" => options.call = Some(value_for(args, &mut index, name, inline_value)?),
             "--max-file-size" => {
-                let value = match inline_value {
-                    Some(value) => value,
-                    None => {
-                        index += 1;
-                        args.get(index)
-                            .cloned()
-                            .ok_or_else(|| "--max-file-size requires a value".to_string())?
-                    }
-                };
+                let value = value_for(args, &mut index, name, inline_value)?;
                 options.max_file_size = Some(
                     value
                         .parse::<u64>()
@@ -138,6 +162,25 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
         index += 1;
     }
     Ok(options)
+}
+
+/// Read the value of an option, either inline (`--name=value`) or as the next
+/// argument.
+fn value_for(
+    args: &[String],
+    index: &mut usize,
+    name: &str,
+    inline: Option<String>,
+) -> Result<String, String> {
+    match inline {
+        Some(value) => Ok(value),
+        None => {
+            *index += 1;
+            args.get(*index)
+                .cloned()
+                .ok_or_else(|| format!("{name} requires a value"))
+        }
+    }
 }
 
 fn analyzer_for(options: &Options) -> Result<Analyzer, String> {
@@ -682,3 +725,497 @@ fn print_json<T: Serialize>(value: &T) -> Result<(), String> {
 
 /// Report type re-exported for library consumers that mirror the CLI.
 pub type ScanReportAlias = ScanReport;
+
+// ---------------------------------------------------------------------------
+// `index` subcommands: deterministic repository snapshots.
+// ---------------------------------------------------------------------------
+
+fn command_index(args: &[String]) -> Result<u8, String> {
+    let Some(subcommand) = args.first() else {
+        return Err(
+            "index requires a subcommand: build, update, verify, stats or find".to_string(),
+        );
+    };
+    let rest = &args[1..];
+    match subcommand.as_str() {
+        "build" => command_index_build(rest),
+        "update" => command_index_update(rest),
+        "verify" => command_index_verify(rest),
+        "stats" => command_index_stats(rest),
+        "find" => command_index_find(rest),
+        other => Err(format!(
+            "unknown index subcommand `{other}`; expected build, update, verify, stats or find"
+        )),
+    }
+}
+
+/// Work performed by a build or update, in machine-readable form.
+#[derive(Serialize)]
+struct StatsOutput {
+    mode: &'static str,
+    files_total: u64,
+    reused_files: u64,
+    reparsed_files: u64,
+    reextracted_files: u64,
+    added: u64,
+    changed: u64,
+    unchanged: u64,
+    deleted: u64,
+    bytes_hashed: u64,
+    bytes_reparsed: u64,
+    duration_ms: f64,
+}
+
+impl From<&BuildStats> for StatsOutput {
+    fn from(stats: &BuildStats) -> Self {
+        Self {
+            mode: stats.mode,
+            files_total: stats.files_total,
+            reused_files: stats.reused_files,
+            reparsed_files: stats.reparsed_files,
+            reextracted_files: stats.reextracted_files,
+            added: stats.added,
+            changed: stats.changed,
+            unchanged: stats.unchanged,
+            deleted: stats.deleted,
+            bytes_hashed: stats.bytes_hashed,
+            bytes_reparsed: stats.bytes_reparsed,
+            duration_ms: stats.duration_ms,
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct IndexBuildOutput {
+    schema_version: u32,
+    command: &'static str,
+    output: String,
+    snapshot_digest: String,
+    analyzer_fingerprint: String,
+    /// True when every indexed file has a complete analysis and the walk
+    /// covered the whole subtree. Never inferred from counters alone.
+    fully_analyzed: bool,
+    /// True when the snapshot is additionally free of recovery artifacts.
+    fully_clean: bool,
+    coverage: CoverageSummary,
+    totals: FactTotals,
+    stats: StatsOutput,
+}
+
+fn command_index_build(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let root = require_positional(&options, "index build requires a repository path")?;
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "index build requires --output <snapshot-dir>".to_string())?;
+    let root = PathBuf::from(root);
+    if !root.is_dir() {
+        return Err(format!("`{}` is not a directory", root.display()));
+    }
+    let analyzer = analyzer_for(&options)?;
+    let outcome = build_snapshot(
+        &analyzer,
+        &root,
+        Path::new(&output),
+        BuildOptions {
+            respect_gitignore: options.respect_gitignore,
+            allow_incompatible: false,
+        },
+    )
+    .map_err(|error| error.to_string())?;
+    emit_index_build(&outcome, &output, options.json)?;
+    Ok(EXIT_OK)
+}
+
+fn command_index_update(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let root = require_positional(&options, "index update requires a repository path")?;
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "index update requires --output <snapshot-dir>".to_string())?;
+    let previous = options
+        .previous
+        .clone()
+        .ok_or_else(|| "index update requires --previous <snapshot-dir>".to_string())?;
+    let root = PathBuf::from(root);
+    if !root.is_dir() {
+        return Err(format!("`{}` is not a directory", root.display()));
+    }
+    let analyzer = analyzer_for(&options)?;
+    let outcome = update_snapshot(
+        &analyzer,
+        &root,
+        Path::new(&previous),
+        Path::new(&output),
+        BuildOptions {
+            respect_gitignore: options.respect_gitignore,
+            allow_incompatible: options.allow_incompatible,
+        },
+    )
+    .map_err(|error| index_update_error(error, &root, &output))?;
+    emit_index_build(&outcome, &output, options.json)?;
+    Ok(EXIT_OK)
+}
+
+/// Turn a previous-snapshot failure into an explicit diagnostic that tells the
+/// caller how to proceed. A corrupt or incompatible previous snapshot is never
+/// silently replaced with a fresh build.
+fn index_update_error(error: SnapshotError, root: &Path, output: &str) -> String {
+    let hint = match &error {
+        SnapshotError::FingerprintMismatch { .. } | SnapshotError::ConfigMismatch { .. } => {
+            format!(
+            "\nhint: the previous snapshot was built by a different analyzer or configuration.\n\
+             hint: run `reposuite-repodex index build {} --output {}` for a fresh snapshot, or\n\
+             hint: pass --allow-incompatible to rebuild from it without reusing any analysis.",
+            root.display(),
+            output
+        )
+        }
+        SnapshotError::PreviousSnapshotUnusable { .. } => format!(
+            "\nhint: the previous snapshot is not usable as-is.\n\
+             hint: run `reposuite-repodex index build {} --output {}` for a fresh snapshot.",
+            root.display(),
+            output
+        ),
+        _ => String::new(),
+    };
+    format!("{error}{hint}")
+}
+
+fn emit_index_build(
+    outcome: &repository::BuildOutcome,
+    output: &str,
+    json: bool,
+) -> Result<(), String> {
+    let manifest = &outcome.manifest;
+    let stats = StatsOutput::from(&outcome.stats);
+    if json {
+        print_json(&IndexBuildOutput {
+            schema_version: SCHEMA_VERSION,
+            command: "index",
+            output: output.to_string(),
+            snapshot_digest: manifest.snapshot_digest.clone(),
+            analyzer_fingerprint: manifest.analyzer_fingerprint.clone(),
+            fully_analyzed: manifest.coverage.is_fully_analyzed(),
+            fully_clean: manifest.coverage.is_fully_clean(),
+            coverage: manifest.coverage.clone(),
+            totals: manifest.totals.clone(),
+            stats,
+        })
+    } else {
+        println!("output:        {output}");
+        println!("mode:          {}", stats.mode);
+        println!("snapshot:      {}", manifest.snapshot_digest);
+        println!("fingerprint:   {}", manifest.analyzer_fingerprint);
+        println!(
+            "files:         {} (reused {}, reparsed {}, added {}, changed {}, deleted {})",
+            stats.files_total,
+            stats.reused_files,
+            stats.reparsed_files,
+            stats.added,
+            stats.changed,
+            stats.deleted
+        );
+        println!(
+            "coverage:      clean {} recovered {} incomplete {} failed {} skipped {}",
+            manifest.coverage.clean,
+            manifest.coverage.recovered,
+            manifest.coverage.incomplete,
+            manifest.coverage.failed,
+            manifest.coverage.skipped
+        );
+        println!(
+            "facts:         {} declarations, {} imports, {} references, {} call-like, {} test candidates",
+            manifest.totals.declarations,
+            manifest.totals.imports,
+            manifest.totals.references,
+            manifest.totals.call_like,
+            manifest.totals.test_candidates
+        );
+        println!(
+            "bytes:         hashed {}, reparsed {}",
+            stats.bytes_hashed, stats.bytes_reparsed
+        );
+        println!("fully analyzed: {}", manifest.coverage.is_fully_analyzed());
+        println!("fully clean:    {}", manifest.coverage.is_fully_clean());
+        println!("elapsed:       {:.1} ms", stats.duration_ms);
+        Ok(())
+    }
+}
+
+#[derive(Serialize)]
+struct IndexVerifyOutput {
+    schema_version: u32,
+    command: &'static str,
+    snapshot_dir: String,
+    valid: bool,
+    manifest_version: u32,
+    snapshot_digest: String,
+    files: u64,
+    checked_artifacts: u64,
+    artifact_bytes: u64,
+}
+
+fn command_index_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "index verify requires a snapshot directory")?;
+    let report = repository::verify(Path::new(dir)).map_err(|error| {
+        format!("{error}\nnote: verification checks the artifact's internal consistency only; it does not re-read the source")
+    })?;
+    let output = IndexVerifyOutput {
+        schema_version: SCHEMA_VERSION,
+        command: "index",
+        snapshot_dir: dir.to_string(),
+        valid: true,
+        manifest_version: report.manifest_version,
+        snapshot_digest: report.snapshot_digest,
+        files: report.files,
+        checked_artifacts: report.checked_artifacts,
+        artifact_bytes: report.artifact_bytes,
+    };
+    if options.json {
+        print_json(&output)?;
+    } else {
+        println!("snapshot:       {}", output.snapshot_digest);
+        println!("manifest:       version {}", output.manifest_version);
+        println!("files:          {}", output.files);
+        println!("artifacts:      {} checked", output.checked_artifacts);
+        println!("artifact bytes: {}", output.artifact_bytes);
+        println!("valid:          true");
+        println!(
+            "note: verification checks internal consistency only; it does not prove the\n\
+             note: original source files still match this snapshot."
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+#[derive(Serialize)]
+struct IndexStatsOutput {
+    schema_version: u32,
+    command: &'static str,
+    snapshot_dir: String,
+    snapshot_digest: String,
+    analyzer_fingerprint: String,
+    analyzer_fingerprint_text: String,
+    config: repository::SnapshotConfig,
+    coverage: CoverageSummary,
+    totals: FactTotals,
+    artifact_bytes: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    languages: Option<Vec<LanguageStats>>,
+}
+
+#[derive(Serialize)]
+struct LanguageStats {
+    language: String,
+    files: u64,
+    source_bytes: u64,
+    declarations: u64,
+    imports: u64,
+    references: u64,
+    call_like: u64,
+    test_candidates: u64,
+}
+
+fn command_index_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "index stats requires a snapshot directory")?;
+    let manifest = repository::load_manifest(Path::new(dir)).map_err(|error| error.to_string())?;
+    let artifact_bytes = repository::artifact::artifact_size(Path::new(dir));
+    let output = IndexStatsOutput {
+        schema_version: SCHEMA_VERSION,
+        command: "index",
+        snapshot_dir: dir.to_string(),
+        snapshot_digest: manifest.snapshot_digest.clone(),
+        analyzer_fingerprint: manifest.analyzer_fingerprint.clone(),
+        analyzer_fingerprint_text: manifest.analyzer_fingerprint_text.clone(),
+        config: manifest.config.clone(),
+        coverage: manifest.coverage.clone(),
+        totals: manifest.totals.clone(),
+        artifact_bytes,
+        languages: Some(language_stats(&manifest)),
+    };
+    if options.json {
+        print_json(&output)?;
+    } else {
+        print_index_stats_text(&output);
+    }
+    Ok(EXIT_OK)
+}
+
+fn language_stats(manifest: &RepositoryManifest) -> Vec<LanguageStats> {
+    let mut by_language: std::collections::BTreeMap<&str, LanguageStats> =
+        std::collections::BTreeMap::new();
+    for file in &manifest.files {
+        let entry = by_language
+            .entry(file.language.as_str())
+            .or_insert_with(|| LanguageStats {
+                language: file.language.clone(),
+                files: 0,
+                source_bytes: 0,
+                declarations: 0,
+                imports: 0,
+                references: 0,
+                call_like: 0,
+                test_candidates: 0,
+            });
+        entry.files += 1;
+        entry.source_bytes += file.source_bytes;
+        entry.declarations += file.declarations;
+        entry.imports += file.imports;
+        entry.references += file.references;
+        entry.call_like += file.call_like;
+        entry.test_candidates += file.test_candidates;
+    }
+    by_language.into_values().collect()
+}
+
+fn print_index_stats_text(output: &IndexStatsOutput) {
+    println!("snapshot:       {}", output.snapshot_digest);
+    println!("fingerprint:    {}", output.analyzer_fingerprint);
+    println!("config:         {}", output.config.canonical_text());
+    println!(
+        "coverage:       clean {} recovered {} incomplete {} failed {} skipped {} (scan complete: {})",
+        output.coverage.clean,
+        output.coverage.recovered,
+        output.coverage.incomplete,
+        output.coverage.failed,
+        output.coverage.skipped,
+        output.coverage.scan_complete
+    );
+    println!(
+        "totals:         {} files, {} source bytes",
+        output.coverage.supported_files, output.totals.source_bytes
+    );
+    println!(
+        "facts:          {} declarations, {} imports, {} references, {} call-like, {} test candidates",
+        output.totals.declarations,
+        output.totals.imports,
+        output.totals.references,
+        output.totals.call_like,
+        output.totals.test_candidates
+    );
+    println!("artifact bytes: {}", output.artifact_bytes);
+    if let Some(languages) = &output.languages {
+        println!("by language:");
+        for language in languages {
+            println!(
+                "  {:<7} files {:<6} bytes {:<10} decl {:<7} call {:<7} tests {}",
+                language.language,
+                language.files,
+                language.source_bytes,
+                language.declarations,
+                language.call_like,
+                language.test_candidates
+            );
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct IndexFindOutput {
+    schema_version: u32,
+    command: &'static str,
+    snapshot_dir: String,
+    declarations: Vec<repository::DeclarationHit>,
+    imports: Vec<repository::ImportHit>,
+    calls: Vec<repository::CallHit>,
+    tests: Vec<repository::DeclarationHit>,
+}
+
+fn command_index_find(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "index find requires a snapshot directory")?;
+    let index = RepositoryFactIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+
+    let declarations = options
+        .declaration
+        .as_deref()
+        .map(|name| index.declarations_named(name).to_vec())
+        .unwrap_or_default();
+    let imports = options
+        .import
+        .as_deref()
+        .map(|target| index.import_items_targeting(target).to_vec())
+        .unwrap_or_default();
+    let calls = options
+        .call
+        .as_deref()
+        .map(|callee| index.calls_named(callee).to_vec())
+        .unwrap_or_default();
+    let tests = if options.tests_only {
+        index.test_declarations().to_vec()
+    } else {
+        Vec::new()
+    };
+
+    let output = IndexFindOutput {
+        schema_version: SCHEMA_VERSION,
+        command: "index",
+        snapshot_dir: dir.to_string(),
+        declarations,
+        imports,
+        calls,
+        tests,
+    };
+    if options.json {
+        print_json(&output)?;
+    } else {
+        print_find_text(&output);
+    }
+    Ok(EXIT_OK)
+}
+
+fn print_find_text(output: &IndexFindOutput) {
+    println!("declarations: {}", output.declarations.len());
+    for hit in &output.declarations {
+        println!(
+            "  {} {} {} {}",
+            hit.relative_path,
+            hit.kind,
+            hit.name,
+            hit.name_range.render()
+        );
+    }
+    println!("imports: {}", output.imports.len());
+    for hit in &output.imports {
+        println!(
+            "  {} {} target={} {}",
+            hit.relative_path,
+            hit.form,
+            hit.target,
+            hit.target_range.render()
+        );
+    }
+    println!("calls: {}", output.calls.len());
+    for hit in &output.calls {
+        println!(
+            "  {} {} {} {}",
+            hit.relative_path,
+            hit.form,
+            hit.callee_written,
+            hit.callee_range.render()
+        );
+    }
+    println!("tests: {}", output.tests.len());
+    for hit in &output.tests {
+        println!(
+            "  {} {} {} {}",
+            hit.relative_path,
+            hit.kind,
+            hit.name,
+            hit.name_range.render()
+        );
+    }
+}
+
+fn require_positional<'a>(options: &'a Options, message: &str) -> Result<&'a str, String> {
+    options
+        .positional
+        .first()
+        .map(String::as_str)
+        .ok_or_else(|| message.to_string())
+}

@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::{
     CallLikeOccurrence, Declaration, Diagnostic, DiagnosticKind, DiagnosticSeverity,
@@ -10,7 +10,7 @@ use super::{
 pub const SCHEMA_VERSION: u32 = 1;
 
 /// The analyzed source snapshot.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SourceFile {
     /// Local snapshot identifier. Derived from the file bytes only, so it is
     /// stable across checkouts, machines and discovery order.
@@ -40,7 +40,7 @@ impl SourceFile {
 }
 
 /// Outcome of analyzing one file.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AnalysisStatus {
     /// Parsed with no `ERROR` and no `MISSING` nodes.
@@ -70,7 +70,7 @@ impl AnalysisStatus {
 }
 
 /// Complete normalized analysis of a single source file.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FileAnalysis {
     pub schema_version: u32,
     pub file: SourceFile,

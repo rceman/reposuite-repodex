@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// An exact half-open byte range in the original source snapshot plus the
 /// zero-based row/column coordinates of its two ends.
@@ -12,7 +12,7 @@ use serde::Serialize;
 /// * the original source bytes are authoritative; newlines are never normalized
 ///   before positions are computed, so `LF` and `CRLF` sources report the
 ///   columns that actually exist in the file.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct SourceRange {
     pub byte_start: u32,
     pub byte_end: u32,

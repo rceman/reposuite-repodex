@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::SourceRange;
 
@@ -6,7 +6,7 @@ use super::SourceRange;
 ///
 /// Diagnostics describe the analyzer's own state; they never assert that the
 /// analyzed code is semantically wrong.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Diagnostic {
     pub severity: DiagnosticSeverity,
     pub kind: DiagnosticKind,
@@ -55,7 +55,7 @@ impl Diagnostic {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum DiagnosticSeverity {
     Info,
@@ -63,7 +63,7 @@ pub enum DiagnosticSeverity {
     Error,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DiagnosticKind {
     /// Tree-sitter produced an `ERROR` node.

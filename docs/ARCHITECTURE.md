@@ -1,6 +1,6 @@
 # RepoDex Architecture
 
-This document describes what the TASK 1 implementation actually is. It does not
+This document describes what the implementation actually is. It does not
 describe planned systems.
 
 ## Layers
@@ -12,6 +12,8 @@ Language adapter (language-specific extraction)
     |
 Normalized unresolved syntax facts
     |
+Repository fact snapshot / incremental file-level index   (TASK 3A)
+    |
 FUTURE semantic resolution
     |
 FUTURE repository map
@@ -19,8 +21,15 @@ FUTURE repository map
 FUTURE navigator
 ```
 
-Everything above `Normalized unresolved syntax facts` exists today. Everything
-below it is out of scope for TASK 1 and does not exist in this crate.
+Everything above `FUTURE semantic resolution` exists today: the per-file
+foundation is TASK 1/TASK 2, and the repository-level snapshot and incremental
+index are TASK 3A. Semantic resolution and everything below it are out of scope
+and do not exist in this crate.
+
+The repository layer is documented in
+[`TASK3A_REPOSITORY_INDEX.md`](TASK3A_REPOSITORY_INDEX.md). It is still syntax
+only: a `RepositoryFactSnapshot` is a deterministic collection of source-grounded
+file analyses, not a semantic graph.
 
 ## What Tree-sitter provides
 
@@ -408,7 +417,13 @@ failures never abort the scan.
 tree-sitter + four grammars   parsing
 serde, serde_json             JSON output
 ignore                        repository walking with gitignore support
+sha2                          collision-resistant snapshot content digests (TASK 3A)
 ```
 
 No async runtime, no database, no daemon, no watcher, no network access, no
 framework dependency. Nothing is included "for later".
+
+`sha2` is the single dependency added by TASK 3A. It provides the SHA-256
+content and analysis digests the repository snapshot needs for safe incremental
+reuse; the FNV-1a canonical digest is a change detector and is not
+collision-resistant, so it is not used for content identity.

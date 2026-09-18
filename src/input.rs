@@ -102,6 +102,69 @@ pub fn read_source(path: &Path, max_bytes: u64) -> Result<SourceInput, InputErro
     }
 }
 
+/// A bounded read that keeps the bytes it managed to read.
+///
+/// [`read_source`] discards the buffer on failure, which is right for analysis
+/// but wrong for repository indexing: the snapshot must record a content digest
+/// of exactly the bytes that were read, including for files that were skipped
+/// because they are over the size limit or not valid UTF-8.
+#[derive(Debug)]
+pub struct BoundedRead {
+    /// The bytes that were read (empty when the file could not be opened).
+    pub bytes: Vec<u8>,
+    /// True when the read stopped at the size limit, so `bytes` is a prefix.
+    pub truncated: bool,
+    /// The validation failure, if any.
+    pub error: Option<InputError>,
+}
+
+/// Read at most `max_bytes + 1` bytes and report the outcome without discarding
+/// the buffer.
+pub fn read_bounded(path: &Path, max_bytes: u64) -> BoundedRead {
+    let limit = max_bytes.min(MAX_SUPPORTED_FILE_SIZE);
+    let file = match File::open(path) {
+        Ok(file) => file,
+        Err(error) => {
+            let error = match error.kind() {
+                ErrorKind::NotFound => InputError::NotFound,
+                _ => InputError::Io(error.to_string()),
+            };
+            return BoundedRead {
+                bytes: Vec::new(),
+                truncated: false,
+                error: Some(error),
+            };
+        }
+    };
+    let mut reader = file.take(limit + 1);
+    let mut bytes = Vec::new();
+    if let Err(error) = reader.read_to_end(&mut bytes) {
+        return BoundedRead {
+            bytes,
+            truncated: false,
+            error: Some(InputError::Io(error.to_string())),
+        };
+    }
+    if bytes.len() as u64 > limit {
+        let observed = bytes.len() as u64;
+        return BoundedRead {
+            bytes,
+            truncated: true,
+            error: Some(InputError::TooLarge { limit, observed }),
+        };
+    }
+    let error = std::str::from_utf8(&bytes)
+        .err()
+        .map(|error| InputError::NotUtf8 {
+            valid_up_to: error.valid_up_to(),
+        });
+    BoundedRead {
+        bytes,
+        truncated: false,
+        error,
+    }
+}
+
 /// Validate a byte buffer the same way [`read_source`] does.
 pub fn validate_bytes(bytes: Vec<u8>, max_bytes: u64) -> Result<SourceInput, InputError> {
     let limit = max_bytes.min(MAX_SUPPORTED_FILE_SIZE);

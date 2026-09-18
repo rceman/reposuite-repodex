@@ -278,70 +278,114 @@ impl<'a> Scanner<'a> {
     /// continues: one unreadable directory must not stop the rest of the scan,
     /// but it must also not disappear.
     fn collect(&self, root: &Path, report: &mut ScanReport) -> std::io::Result<Vec<PathBuf>> {
-        let mut builder = WalkBuilder::new(root);
-        builder
-            .standard_filters(false)
-            .hidden(false)
-            .parents(false)
-            .ignore(false)
-            .git_global(false)
-            .git_exclude(false)
-            .follow_links(false)
-            .require_git(false);
-        // Only ignore policy that lives inside the scan root may affect results.
-        builder.git_ignore(self.options.respect_gitignore);
-        builder.filter_entry(|entry| {
-            if entry.file_type().map(|kind| kind.is_dir()).unwrap_or(false) {
-                let name = entry.file_name().to_string_lossy();
-                return !PRUNED_DIRECTORIES.contains(&name.as_ref());
-            }
-            true
-        });
-
-        let mut paths = Vec::new();
-        for entry in builder.build() {
-            let entry = match entry {
-                Ok(entry) => entry,
-                Err(error) => {
-                    // The `ignore` crate tags walk errors with the path it was
-                    // working on. When it does not, the failure is still
-                    // recorded against the root rather than discarded.
-                    let path = error_path(&error)
-                        .map(|path| path.to_path_buf())
-                        .unwrap_or_else(|| root.to_path_buf());
-                    let kind = if path == root || path.is_dir() {
-                        TraversalFailureKind::Directory
-                    } else {
-                        TraversalFailureKind::Entry
-                    };
-                    report.traversal_failures.push(TraversalFailure {
-                        relative_path: display_path(root, &path),
-                        kind,
-                        message: error.to_string(),
-                    });
-                    continue;
-                }
-            };
-            let file_type = match entry.file_type() {
-                Some(file_type) => file_type,
-                None => {
-                    let path = entry.path();
-                    report.traversal_failures.push(TraversalFailure {
-                        relative_path: display_path(root, path),
-                        kind: TraversalFailureKind::Entry,
-                        message: "the walk could not determine this entry's file type".to_string(),
-                    });
-                    continue;
-                }
-            };
-            if !file_type.is_file() {
-                continue;
-            }
-            paths.push(entry.into_path());
-        }
-        paths.sort_by_key(|path| relative_path(root, path));
+        let (paths, failures) = walk_files(root, self.options)?;
+        report.traversal_failures.extend(failures);
         Ok(paths)
     }
+}
+
+/// Discover the regular files under `root`, in deterministic order.
+///
+/// This is the single implementation of deterministic discovery. The scanner
+/// uses it, and so does the repository snapshot builder, so a full build and a
+/// scan can never disagree about which files exist.
+///
+/// Paths a walk could not enter or stat are returned as [`TraversalFailure`]s
+/// rather than silently dropped: an unreadable subtree means the walk did not
+/// see everything under the root.
+pub fn walk_files(
+    root: &Path,
+    options: ScanOptions,
+) -> std::io::Result<(Vec<PathBuf>, Vec<TraversalFailure>)> {
+    walk_files_excluding(root, options, &[])
+}
+
+/// [`walk_files`], additionally pruning a set of directories.
+///
+/// The snapshot builder uses this to keep a snapshot from indexing its own
+/// artifact when the output directory happens to live inside the repository
+/// root. Excluded paths are compared by prefix, so a subtree is pruned as a
+/// whole.
+pub fn walk_files_excluding(
+    root: &Path,
+    options: ScanOptions,
+    excluded: &[PathBuf],
+) -> std::io::Result<(Vec<PathBuf>, Vec<TraversalFailure>)> {
+    let excluded = excluded.to_vec();
+    let mut builder = WalkBuilder::new(root);
+    builder
+        .standard_filters(false)
+        .hidden(false)
+        .parents(false)
+        .ignore(false)
+        .git_global(false)
+        .git_exclude(false)
+        .follow_links(false)
+        .require_git(false);
+    // Only ignore policy that lives inside the scan root may affect results.
+    builder.git_ignore(options.respect_gitignore);
+    builder.filter_entry(move |entry| {
+        if entry.file_type().map(|kind| kind.is_dir()).unwrap_or(false) {
+            let name = entry.file_name().to_string_lossy();
+            if PRUNED_DIRECTORIES.contains(&name.as_ref()) {
+                return false;
+            }
+            let path = entry.path();
+            if excluded
+                .iter()
+                .any(|excluded| path == excluded.as_path() || path.starts_with(excluded))
+            {
+                return false;
+            }
+        }
+        true
+    });
+
+    let mut failures = Vec::new();
+    let mut paths = Vec::new();
+    for entry in builder.build() {
+        let entry = match entry {
+            Ok(entry) => entry,
+            Err(error) => {
+                // The `ignore` crate tags walk errors with the path it was
+                // working on. When it does not, the failure is still
+                // recorded against the root rather than discarded.
+                let path = error_path(&error)
+                    .map(|path| path.to_path_buf())
+                    .unwrap_or_else(|| root.to_path_buf());
+                let kind = if path == root || path.is_dir() {
+                    TraversalFailureKind::Directory
+                } else {
+                    TraversalFailureKind::Entry
+                };
+                failures.push(TraversalFailure {
+                    relative_path: display_path(root, &path),
+                    kind,
+                    message: error.to_string(),
+                });
+                continue;
+            }
+        };
+        let file_type = match entry.file_type() {
+            Some(file_type) => file_type,
+            None => {
+                let path = entry.path();
+                failures.push(TraversalFailure {
+                    relative_path: display_path(root, path),
+                    kind: TraversalFailureKind::Entry,
+                    message: "the walk could not determine this entry's file type".to_string(),
+                });
+                continue;
+            }
+        };
+        if !file_type.is_file() {
+            continue;
+        }
+        paths.push(entry.into_path());
+    }
+    paths.sort_by_key(|path| relative_path(root, path));
+    failures.sort_by(|left, right| left.relative_path.cmp(&right.relative_path));
+    Ok((paths, failures))
 }
 
 /// Path as recorded in traversal failures: root-relative when it lies inside

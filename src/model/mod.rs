@@ -18,10 +18,10 @@ pub use facts::{
 };
 pub use range::{point_at, range_from_offsets, LineIndex, SourceRange};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Language identifiers supported by TASK 1.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum LanguageId {
     Rust,

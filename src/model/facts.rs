@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::LanguageId;
 use super::SourceRange;
@@ -8,7 +8,7 @@ use super::SourceRange;
 /// Scopes exist to preserve containment. They are deliberately *not* semantic
 /// namespaces and never claim to own a type's members: a Go method is not inside
 /// its receiver type, a Rust `impl Type` block is not the declaration of `Type`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Scope {
     /// Index of this scope inside its file analysis. Deterministic.
     pub scope_id: u32,
@@ -28,7 +28,7 @@ pub struct Scope {
     pub language: LanguageId,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ScopeKind {
     /// Whole-file scope.
@@ -83,7 +83,7 @@ impl ScopeKind {
 }
 
 /// A syntactically declared construct.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Declaration {
     /// Index of this declaration inside its file analysis. Deterministic.
     pub declaration_id: u32,
@@ -110,7 +110,7 @@ pub struct Declaration {
     pub test_evidence: Vec<TestEvidence>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DeclarationKind {
     Module,
@@ -167,7 +167,7 @@ impl DeclarationKind {
 }
 
 /// Modifiers that are literally present in the source syntax.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DeclarationFlag {
     Async,
@@ -214,7 +214,7 @@ impl DeclarationFlag {
 }
 
 /// An import statement observed in the source, unresolved.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ImportOccurrence {
     pub import_id: u32,
     pub snapshot_id: String,
@@ -235,7 +235,7 @@ pub struct ImportOccurrence {
     pub statement_text: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ImportForm {
     /// One item, no grouping syntax.
@@ -246,7 +246,7 @@ pub enum ImportForm {
     Wildcard,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ImportItem {
     /// Target exactly as written. For a wildcard entry this is `*`.
     pub target: String,
@@ -259,7 +259,7 @@ pub struct ImportItem {
     pub range: SourceRange,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ImportCategory {
     Normal,
@@ -296,7 +296,7 @@ impl ImportForm {
 }
 
 /// An unresolved, syntactically visible reference.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReferenceOccurrence {
     pub reference_id: u32,
     pub kind: ReferenceKind,
@@ -309,7 +309,7 @@ pub struct ReferenceOccurrence {
     pub declaration_id: Option<u32>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ReferenceKind {
     /// Rust `impl Foo` / `impl Trait for Foo` -> `Foo`.
@@ -355,7 +355,7 @@ impl ReferenceKind {
 }
 
 /// A call-shaped expression. Never a resolved call.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CallLikeOccurrence {
     pub call_id: u32,
     pub scope_id: u32,
@@ -376,7 +376,7 @@ pub struct CallLikeOccurrence {
     pub nullsafe: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CallLikeForm {
     /// `foo(...)`
@@ -418,7 +418,7 @@ impl CallLikeForm {
 /// A syntactic observation suggesting a declaration may be a test.
 ///
 /// This is evidence, not a claim about test-runner collection semantics.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TestEvidence {
     pub kind: TestEvidenceKind,
     /// The written syntax or convention that produced the evidence.
@@ -426,7 +426,7 @@ pub struct TestEvidence {
     pub range: SourceRange,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TestEvidenceKind {
     /// Rust `#[test]`, PHP `#[Test]`.
