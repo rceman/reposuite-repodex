@@ -425,5 +425,10 @@ TASK 3C must still avoid presenting candidate identity as runtime dispatch.
 
 ## 15. Commit state
 
-TASK 3B commit(s) are created on top of `fd62f5d6313d5d043b10fee5a7ae4c5ad7bcddf4`.
-TASK 3A was not amended. Nothing was pushed.
+```text
+base commit            fd62f5d6313d5d043b10fee5a7ae4c5ad7bcddf4   (TASK 3A, unamended)
+TASK 3B implementation 16d855c8ff5b0abab8b287336a86dfb5fa44211b
+```
+
+`16d855c` has `fd62f5d` as its sole parent. The TASK 3A commit was not amended.
+Nothing was pushed. TASK 3C was not started.
