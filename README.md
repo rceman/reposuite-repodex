@@ -10,8 +10,8 @@ information.
 ## What this repository currently is
 
 This repository is the **TASK 1 foundation spike**, validated by **TASK 2**,
-extended by **TASK 3A** and **TASK 3B**. It establishes one pipeline and stops
-there:
+extended by **TASK 3A**, **TASK 3B** and **TASK 3C**. It establishes one pipeline
+and stops there:
 
 ```text
 repository files
@@ -21,6 +21,7 @@ repository files
     -> normalized unresolved syntax facts
     -> deterministic repository fact snapshot + incremental file-level index
     -> derived cross-file structural relationships
+    -> Rust local call candidates
 ```
 
 ```text
@@ -30,6 +31,7 @@ TASK 2 validation status:    VALIDATION_COMPLETE
 TASK 2 architecture verdict: GO
 TASK 3A status:              IMPLEMENTED (snapshot artifact EXPERIMENTAL)
 TASK 3B status:              IMPLEMENTED (link artifact EXPERIMENTAL)
+TASK 3C status:              IMPLEMENTED (candidate artifact EXPERIMENTAL)
 ```
 
 TASK 2 validated the foundation against 2.42M manifest LOC (2.16M processed LOC)
@@ -64,27 +66,44 @@ because it references facts instead of copying them. An independent audit of
 12,296 relationships across four real repositories found zero false-exact links.
 See `docs/CROSS_FILE_LINKING.md` and `docs/TASK3B_RESULTS.md`.
 
+TASK 3C adds the first deliberately narrow call-candidate layer: for each Rust
+`plain_name` call whose callee is a single written identifier, a bounded
+lexical/module-local search produces zero, one or many candidate `function`
+declarations. **A candidate is not a resolved call target** — it is evidence a
+declaration could be relevant, never proof of dispatch — so the layer uses its
+own cardinality (`no_candidate`, `single_candidate`, `multiple_candidates`,
+`out_of_scope`) instead of the link vocabulary. Qualified, member, associated,
+indirect, constructor-shaped and macro calls are out of scope, and imports,
+re-exports, locals and methods are never silently resolved. An independent
+source-occurrence audit of all 5,345 in-scope calls on the tokio corpus found
+zero false candidates. See `docs/CALL_CANDIDATES.md` and
+`docs/TASK3C_RESULTS.md`.
+
 Everything downstream of that is deliberately absent:
 
 ```text
 normalized unresolved syntax facts
     -> deterministic repository fact snapshot   (TASK 3A, syntax only)
     -> derived cross-file structural links      (TASK 3B, syntax only)
-    -> FUTURE reference and call candidate linking (TASK 3C)
+    -> Rust local call candidates               (TASK 3C, syntax only)
+    -> FUTURE reference and wider call linking
     -> FUTURE repository map
     -> FUTURE navigation
     -> FUTURE investigation knowledge
 ```
 
-RepoDex does **not** resolve symbols, resolve references, build a call graph,
-claim runtime behavior, evaluate `cfg`/build tags, expand macros, or infer
-framework semantics. `obj.F()` is recorded as a member-selector call shape, not
-as proof that a specific method `F` runs. The repository snapshot is a
-deterministic collection of source-grounded file analyses, not a semantic graph,
-and a link artifact is a deterministic collection of provenance-bearing
-structural relationships, not a resolved dependency graph. There is no fuzzy,
-full-text or semantic search: TASK 3A's exact lookup and TASK 3B's exact
-relationship filters are both exact, and neither ranks results.
+RepoDex does **not** resolve symbols, resolve references, resolve calls, build a
+call graph, claim runtime behavior, evaluate `cfg`/build tags, expand macros, or
+infer framework semantics. `obj.F()` is recorded as a member-selector call
+shape, not as proof that a specific method `F` runs, and a `single_candidate`
+record is evidence a declaration could be relevant, not a resolved call target.
+The repository snapshot is a deterministic collection of source-grounded file
+analyses, not a semantic graph, a link artifact is a deterministic collection of
+provenance-bearing structural relationships, not a resolved dependency graph,
+and a candidate artifact is a deterministic collection of provenance-bearing
+candidate records, not a call graph. There is no fuzzy, full-text or semantic
+search: TASK 3A's exact lookup, TASK 3B's exact relationship filters and TASK
+3C's exact candidate filters are all exact, and none ranks results.
 
 ## Supported languages
 
@@ -281,6 +300,46 @@ registry, outcome counts and metadata dependencies; `links show` prints the
 relationships originating in or targeting a path. There is no query language, no
 ranking and no fuzzy match.
 
+### `candidates build <snapshot-dir> --links <links-dir> --output <candidates-dir>`
+
+```bash
+cargo run --locked --release -- candidates build /tmp/repodex-snap \
+  --links /tmp/repodex-links --output /tmp/repodex-candidates
+```
+
+Derives the bounded Rust local call candidates for a snapshot. It reads the
+persisted normalized facts only, never reparses source, and never mutates the
+snapshot or the link artifact. Output is staged, verified, then published
+atomically. **A candidate is not a resolved call target.**
+
+### `candidates verify <candidates-dir> --snapshot <snapshot-dir> --links <links-dir>`
+
+```bash
+cargo run --locked --release -- candidates verify /tmp/repodex-candidates \
+  --snapshot /tmp/repodex-snap --links /tmp/repodex-links
+```
+
+Validates the manifest, schema and rule ABI, the recorded snapshot and link
+digests against the supplied upstream artifacts, canonical ordering, every call
+and candidate locator, allowed candidate kinds, sorted duplicate-free candidate
+lists, and cardinality consistency. A successful verification means the
+artifact is internally consistent; it does **not** prove any call resolves to a
+candidate at runtime.
+
+### `candidates stats` / `candidates show` / `candidates none|single|multiple|out-of-scope`
+
+```bash
+cargo run --locked --release -- candidates stats /tmp/repodex-candidates --json
+cargo run --locked --release -- candidates show /tmp/repodex-candidates src/lib.rs
+cargo run --locked --release -- candidates single /tmp/repodex-candidates
+cargo run --locked --release -- candidates none /tmp/repodex-candidates --json
+```
+
+Exact filters over the candidate records. `candidates stats` prints the rule
+registry and cardinality counts; `candidates show` prints the records
+originating in a path. There is no query language, no ranking and no fuzzy
+match.
+
 ### Exit codes
 
 ```text
@@ -336,6 +395,13 @@ tests/crossfile_links.rs     cross-file structural links: complete per-rule
                              update-vs-fresh link equivalence across eight
                              scenarios, artifact integrity rejection, query API,
                              rule-registry completeness
+tests/call_candidates.rs     Rust local call candidates: complete candidate
+                             sets for the curated fixture, single_candidate is
+                             never Exact/Ambiguous, imports and re-exports
+                             produce no candidate, out-of-scope call forms,
+                             repeated/cross-output/cross-root determinism, TASK
+                             3A update-vs-fresh candidate equivalence, stale
+                             dependency and integrity rejection, query API
 ```
 
 `fixtures/expected/**` holds the complete canonical fact set of every fixture.

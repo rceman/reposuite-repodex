@@ -1,0 +1,6 @@
+file schema=1 path=callcandidates/rust/src/b.rs lang=rust bytes=28 lines=2 final_newline=true status=clean snapshot=snap-531943f757595bb7
+scope 0 kind=file parent=- name=- range=0..28 (0:0..2:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=0..14 (0:0..0:14) header=- lang=rust
+scope 2 kind=function parent=0 name=noop range=15..27 (1:0..1:12) header=- lang=rust
+decl 0 kind=function name=helper scope=0 flags=[] range=0..14 (0:0..0:14) name_range=3..9 (0:3..0:9) body=12..14 (0:12..0:14) lang=rust path=callcandidates/rust/src/b.rs snapshot=snap-531943f757595bb7 tests=[]
+decl 1 kind=function name=noop scope=0 flags=[] range=15..27 (1:0..1:12) name_range=18..22 (1:3..1:7) body=25..27 (1:10..1:12) lang=rust path=callcandidates/rust/src/b.rs snapshot=snap-531943f757595bb7 tests=[]

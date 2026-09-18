@@ -1,0 +1,23 @@
+file schema=1 path=callcandidates/rust/src/inline.rs lang=rust bytes=219 lines=18 final_newline=true status=clean snapshot=snap-fb23e12b43cc7a18
+scope 0 kind=file parent=- name=- range=0..219 (0:0..18:0) header=- lang=rust
+scope 1 kind=module parent=0 name=left range=0..70 (0:0..5:1) header=0..9 (0:0..0:9) lang=rust
+scope 2 kind=function parent=1 name=helper range=15..29 (1:4..1:18) header=- lang=rust
+scope 3 kind=function parent=1 name=run range=34..68 (2:4..4:5) header=- lang=rust
+scope 4 kind=module parent=0 name=right range=71..103 (6:0..8:1) header=71..81 (6:0..6:10) lang=rust
+scope 5 kind=function parent=4 name=helper range=87..101 (7:4..7:18) header=- lang=rust
+scope 6 kind=module parent=0 name=lonely_mod range=104..161 (9:0..13:1) header=104..119 (9:0..9:15) lang=rust
+scope 7 kind=function parent=6 name=run range=125..159 (10:4..12:5) header=- lang=rust
+scope 8 kind=function parent=0 name=file_helper range=162..181 (14:0..14:19) header=- lang=rust
+scope 9 kind=function parent=0 name=file_run range=182..218 (15:0..17:1) header=- lang=rust
+decl 0 kind=module name=left scope=0 flags=[] range=0..70 (0:0..5:1) name_range=4..8 (0:4..0:8) body=9..70 (0:9..5:1) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 1 kind=function name=helper scope=1 flags=[] range=15..29 (1:4..1:18) name_range=18..24 (1:7..1:13) body=27..29 (1:16..1:18) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 2 kind=function name=run scope=1 flags=[] range=34..68 (2:4..4:5) name_range=37..40 (2:7..2:10) body=43..68 (2:13..4:5) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 3 kind=module name=right scope=0 flags=[] range=71..103 (6:0..8:1) name_range=75..80 (6:4..6:9) body=81..103 (6:10..8:1) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 4 kind=function name=helper scope=4 flags=[] range=87..101 (7:4..7:18) name_range=90..96 (7:7..7:13) body=99..101 (7:16..7:18) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 5 kind=module name=lonely_mod scope=0 flags=[] range=104..161 (9:0..13:1) name_range=108..118 (9:4..9:14) body=119..161 (9:15..13:1) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 6 kind=function name=run scope=6 flags=[] range=125..159 (10:4..12:5) name_range=128..131 (10:7..10:10) body=134..159 (10:13..12:5) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 7 kind=function name=file_helper scope=0 flags=[] range=162..181 (14:0..14:19) name_range=165..176 (14:3..14:14) body=179..181 (14:17..14:19) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+decl 8 kind=function name=file_run scope=0 flags=[] range=182..218 (15:0..17:1) name_range=185..193 (15:3..15:11) body=196..218 (15:14..17:1) lang=rust path=callcandidates/rust/src/inline.rs snapshot=snap-fb23e12b43cc7a18 tests=[]
+call 0 form=plain_name callee=helper scope=3 expr=53..61 (3:8..3:16) callee_range=53..59 (3:8..3:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=helper scope=7 expr=144..152 (11:8..11:16) callee_range=144..150 (11:8..11:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=file_helper scope=9 expr=202..215 (16:4..16:17) callee_range=202..213 (16:4..16:15) type_args=- type_args_range=- dyn=false nullsafe=false

@@ -1,0 +1,21 @@
+file schema=1 path=callcandidates/rust/src/scope.rs lang=rust bytes=234 lines=17 final_newline=true status=clean snapshot=snap-710bcf1cd2bfa293
+scope 0 kind=file parent=- name=- range=0..234 (0:0..17:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=0..14 (0:0..0:14) header=- lang=rust
+scope 2 kind=struct parent=0 name=User range=15..32 (1:0..1:17) header=15..26 (1:0..1:11) lang=rust
+scope 3 kind=impl parent=0 name=- range=43..124 (3:0..8:1) header=43..50 (3:0..3:7) lang=rust
+scope 4 kind=method parent=3 name=method range=56..75 (4:4..4:23) header=- lang=rust
+scope 5 kind=method parent=3 name=caller range=80..122 (5:4..7:5) header=- lang=rust
+scope 6 kind=function parent=0 name=run range=125..233 (9:0..16:1) header=- lang=rust
+scope 7 kind=closure parent=6 name=- range=154..159 (10:18..10:23) header=- lang=rust
+decl 0 kind=function name=helper scope=0 flags=[] range=0..14 (0:0..0:14) name_range=3..9 (0:3..0:9) body=12..14 (0:12..0:14) lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+decl 1 kind=struct name=User scope=0 flags=[] range=15..32 (1:0..1:17) name_range=22..26 (1:7..1:11) body=26..31 (1:11..1:16) lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+decl 2 kind=struct name=S scope=0 flags=[] range=33..42 (2:0..2:9) name_range=40..41 (2:7..2:8) body=- lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+decl 3 kind=method name=method scope=3 flags=[receiver] range=56..75 (4:4..4:23) name_range=59..65 (4:7..4:13) body=73..75 (4:21..4:23) lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+decl 4 kind=method name=caller scope=3 flags=[receiver] range=80..122 (5:4..7:5) name_range=83..89 (5:7..5:13) body=97..122 (5:21..7:5) lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+decl 5 kind=function name=run scope=0 flags=[] range=125..233 (9:0..16:1) name_range=128..131 (9:3..9:6) body=134..233 (9:9..16:1) lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293 tests=[]
+ref 0 kind=impl_target written=S scope=3 decl=- range=48..49 (3:5..3:6)
+call 0 form=plain_name callee=helper scope=5 expr=107..115 (6:8..6:16) callee_range=107..113 (6:8..6:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=closure scope=6 expr=165..174 (11:4..11:13) callee_range=165..172 (11:4..11:11) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=f scope=6 expr=200..203 (13:4..13:7) callee_range=200..201 (13:4..13:5) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=helper scope=6 expr=209..217 (14:4..14:12) callee_range=209..215 (14:4..14:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=plain_name callee=User scope=6 expr=223..230 (15:4..15:11) callee_range=223..227 (15:4..15:8) type_args=- type_args_range=- dyn=false nullsafe=false

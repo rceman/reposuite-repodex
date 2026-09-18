@@ -1,0 +1,9 @@
+file schema=1 path=callcandidates/rust/src/broken.rs lang=rust bytes=56 lines=5 final_newline=true status=recovered snapshot=snap-606e27b451fb5fcc
+scope 0 kind=file parent=- name=- range=0..56 (0:0..5:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=0..14 (0:0..0:14) header=- lang=rust
+scope 2 kind=function parent=0 name=run range=15..55 (1:0..4:1) header=- lang=rust
+decl 0 kind=function name=helper scope=0 flags=[] range=0..14 (0:0..0:14) name_range=3..9 (0:3..0:9) body=12..14 (0:12..0:14) lang=rust path=callcandidates/rust/src/broken.rs snapshot=snap-606e27b451fb5fcc tests=[]
+decl 1 kind=function name=run scope=0 flags=[] range=15..55 (1:0..4:1) name_range=18..21 (1:3..1:6) body=24..55 (1:9..4:1) lang=rust path=callcandidates/rust/src/broken.rs snapshot=snap-606e27b451fb5fcc tests=[]
+call 0 form=plain_name callee=helper scope=2 expr=30..38 (2:4..2:12) callee_range=30..36 (2:4..2:10) type_args=- type_args_range=- dyn=false nullsafe=false
+recovery range=44..53 (3:4..3:13)
+diag error syntax_error [44..53 (3:4..3:13)] tree-sitter recovered from an ERROR node covering 9 byte(s)

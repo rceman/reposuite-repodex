@@ -21,10 +21,16 @@ const MALFORMED: [&str; 4] = [
     "php/malformed.php",
 ];
 
+/// Fixtures that are intentionally recovered but are *not* canonical malformed
+/// fixtures. They are exempt from the "must be clean" invariant, but they do
+/// not carry the `valid_before`/`valid_after`/MISSING+ERROR shape the
+/// malformed-specific assertions below require.
+const RECOVERED: [&str; 1] = ["callcandidates/rust/src/broken.rs"];
+
 #[test]
 fn valid_fixtures_contain_no_recovery_artifacts() {
     for relative in all_fixture_files() {
-        if MALFORMED.contains(&relative.as_str()) {
+        if MALFORMED.contains(&relative.as_str()) || RECOVERED.contains(&relative.as_str()) {
             continue;
         }
         let analysis = analyze_fixture(&relative);

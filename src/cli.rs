@@ -26,6 +26,7 @@ use std::time::Instant;
 
 use serde::Serialize;
 
+use crate::candidates::{self, CandidateIndex};
 use crate::canonical;
 use crate::links::{self, LinkIndex, LinkOutcome};
 use crate::model::{AnalysisStatus, FileAnalysis, LanguageId, SCHEMA_VERSION};
@@ -65,6 +66,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "scan" => command_scan(&rest),
         "index" => command_index(&rest),
         "links" => command_links(&rest),
+        "candidates" => command_candidates(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -96,6 +98,11 @@ USAGE:
     reposuite-repodex links stats <links-dir> [--json]
     reposuite-repodex links show <links-dir> <path> [--json]
     reposuite-repodex links exact|ambiguous|unresolved|out-of-scope <links-dir> [--json]
+    reposuite-repodex candidates build <snapshot-dir> --links <links-dir> --output <candidates-dir> [--json]
+    reposuite-repodex candidates verify <candidates-dir> --snapshot <snapshot-dir> --links <links-dir> [--json]
+    reposuite-repodex candidates stats <candidates-dir> [--json]
+    reposuite-repodex candidates show <candidates-dir> <path> [--json]
+    reposuite-repodex candidates none|single|multiple|out-of-scope <candidates-dir> [--json]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -122,6 +129,8 @@ struct Options {
     /// `links build`/`links verify` repository checkout root, used only to read
     /// the metadata a required link rule needs.
     repository: Option<String>,
+    /// `candidates build`/`candidates verify` TASK 3B link artifact directory.
+    links: Option<String>,
     /// `index update` opt-in to rebuilding from an incompatible snapshot.
     allow_incompatible: bool,
     /// `index find` selectors.
@@ -159,6 +168,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--repository" => {
                 options.repository = Some(value_for(args, &mut index, name, inline_value)?)
             }
+            "--links" => options.links = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -1619,4 +1629,362 @@ fn command_links_outcome(args: &[String], outcome: &str) -> Result<u8, String> {
 /// the whole module path.
 pub fn outcome_name(outcome: &LinkOutcome) -> &'static str {
     outcome.as_str()
+}
+
+// ---------------------------------------------------------------------------
+// `candidates` subcommands: derived Rust call-candidate records.
+// ---------------------------------------------------------------------------
+
+fn command_candidates(args: &[String]) -> Result<u8, String> {
+    let Some(subcommand) = args.first() else {
+        return Err(
+            "candidates requires a subcommand: build, verify, stats, show, none, single, \
+             multiple or out-of-scope"
+                .to_string(),
+        );
+    };
+    let rest = &args[1..];
+    match subcommand.as_str() {
+        "build" => command_candidates_build(rest),
+        "verify" => command_candidates_verify(rest),
+        "stats" => command_candidates_stats(rest),
+        "show" => command_candidates_show(rest),
+        "none" | "no-candidate" | "no_candidate" => {
+            command_candidates_outcome(rest, "no_candidate")
+        }
+        "single" | "single-candidate" | "single_candidate" => {
+            command_candidates_outcome(rest, "single_candidate")
+        }
+        "multiple" | "multiple-candidates" | "multiple_candidates" => {
+            command_candidates_outcome(rest, "multiple_candidates")
+        }
+        "out-of-scope" | "out_of_scope" => command_candidates_outcome(rest, "out_of_scope"),
+        other => Err(format!(
+            "unknown candidates subcommand `{other}`; expected build, verify, stats, show, \
+             none, single, multiple or out-of-scope"
+        )),
+    }
+}
+
+fn command_candidates_build(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let snapshot = require_positional(&options, "candidates build requires a snapshot directory")?;
+    let links_dir = options
+        .links
+        .clone()
+        .ok_or_else(|| "candidates build requires --links <links-dir>".to_string())?;
+    if !Path::new(&links_dir).is_dir() {
+        return Err(format!("`{links_dir}` is not a link artifact directory"));
+    }
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "candidates build requires --output <candidates-dir>".to_string())?;
+    let outcome = candidates::build_candidates(
+        Path::new(snapshot),
+        Path::new(&links_dir),
+        Path::new(&output),
+    )
+    .map_err(|error| error.to_string())?;
+
+    let stats = &outcome.stats;
+    let manifest = &outcome.manifest;
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "candidates",
+            "output": output,
+            "snapshot_digest": manifest.snapshot_digest,
+            "link_digest": manifest.link_digest,
+            "candidate_digest": manifest.candidate_digest,
+            "candidate_fingerprint": manifest.candidate_fingerprint,
+            "records": stats.records_total,
+            "cardinalities": stats.cardinalities,
+            "snapshot_bytes": stats.snapshot_bytes,
+            "link_bytes": stats.link_bytes,
+            "candidate_bytes": stats.candidate_bytes,
+            "size_ratio": stats.size_ratio(),
+            "link_ratio": stats.link_ratio(),
+            "duration_ms": stats.duration_ms,
+            "phases": {
+                "snapshot_load_ms": stats.phases.snapshot_load_ms,
+                "derive_ms": stats.phases.derive_ms,
+                "serialize_ms": stats.phases.serialize_ms,
+                "verify_ms": stats.phases.verify_ms,
+            },
+        }))?;
+    } else {
+        println!("output:        {output}");
+        println!("snapshot:      {}", manifest.snapshot_digest);
+        println!("link:          {}", manifest.link_digest);
+        println!("candidate:     {}", manifest.candidate_digest);
+        println!("fingerprint:   {}", manifest.candidate_fingerprint);
+        println!(
+            "files:         {} (snapshot {} bytes, links {} bytes, candidates {} bytes, \
+             snapshot-ratio {:.4}, link-ratio {:.4})",
+            stats.snapshot_files,
+            stats.snapshot_bytes,
+            stats.link_bytes,
+            stats.candidate_bytes,
+            stats.size_ratio(),
+            stats.link_ratio()
+        );
+        println!(
+            "records:       {} (single {}, multiple {}, none {}, out-of-scope {})",
+            stats.records_total,
+            stats.cardinalities.single_candidate,
+            stats.cardinalities.multiple_candidates,
+            stats.cardinalities.no_candidate,
+            stats.cardinalities.out_of_scope
+        );
+        println!(
+            "elapsed:       {:.1} ms (load {:.1}, derive {:.1}, serialize {:.1}, verify {:.1})",
+            stats.duration_ms,
+            stats.phases.snapshot_load_ms,
+            stats.phases.derive_ms,
+            stats.phases.serialize_ms,
+            stats.phases.verify_ms,
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_candidates_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(
+        &options,
+        "candidates verify requires a candidate artifact directory",
+    )?;
+    let snapshot = options
+        .snapshot
+        .clone()
+        .ok_or_else(|| "candidates verify requires --snapshot <snapshot-dir>".to_string())?;
+    let links_dir = options
+        .links
+        .clone()
+        .ok_or_else(|| "candidates verify requires --links <links-dir>".to_string())?;
+    let report = candidates::verify(Path::new(dir), Path::new(&snapshot), Path::new(&links_dir))
+        .map_err(|error| {
+            format!(
+                "{error}\nnote: verification checks the artifact's internal consistency with the \
+             recorded snapshot and link artifact; it does not prove any call resolves to a \
+             candidate at runtime"
+            )
+        })?;
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "candidates",
+            "candidates_dir": dir,
+            "snapshot_dir": snapshot,
+            "links_dir": links_dir,
+            "valid": true,
+            "candidate_manifest_version": report.candidate_manifest_version,
+            "candidate_schema_version": report.candidate_schema_version,
+            "candidate_rule_abi_version": report.candidate_rule_abi_version,
+            "snapshot_digest": report.snapshot_digest,
+            "link_digest": report.link_digest,
+            "candidate_digest": report.candidate_digest,
+            "records": report.records,
+            "cardinalities": report.cardinalities,
+            "artifact_bytes": report.artifact_bytes,
+        }))?;
+    } else {
+        println!("valid:            true");
+        println!("candidates:       {dir}");
+        println!("snapshot:         {snapshot}");
+        println!("links:            {links_dir}");
+        println!("snapshot digest:  {}", report.snapshot_digest);
+        println!("link digest:      {}", report.link_digest);
+        println!("candidate digest: {}", report.candidate_digest);
+        println!(
+            "records:          {} (single {}, multiple {}, none {}, out-of-scope {})",
+            report.records,
+            report.cardinalities.single_candidate,
+            report.cardinalities.multiple_candidates,
+            report.cardinalities.no_candidate,
+            report.cardinalities.out_of_scope
+        );
+        println!("artifact bytes:   {}", report.artifact_bytes);
+        println!(
+            "note:             internal consistency only; a candidate is not a resolved call target"
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_candidates_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(
+        &options,
+        "candidates stats requires a candidate artifact directory",
+    )?;
+    let index = CandidateIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let manifest = &index.manifest;
+    let counts = index.cardinality_counts();
+    let rules = index.counts_by_rule();
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "candidates",
+            "candidate_manifest_version": manifest.candidate_manifest_version,
+            "candidate_schema_version": manifest.candidate_schema_version,
+            "candidate_rule_abi_version": manifest.candidate_rule_abi_version,
+            "snapshot_digest": manifest.snapshot_digest,
+            "link_digest": manifest.link_digest,
+            "candidate_fingerprint": manifest.candidate_fingerprint,
+            "candidate_fingerprint_text": manifest.candidate_fingerprint_text,
+            "candidate_digest": manifest.candidate_digest,
+            "records": manifest.records,
+            "cardinalities": manifest.cardinalities,
+            "by_rule": rules,
+            "rules": manifest.rules,
+        }))?;
+    } else {
+        println!(
+            "candidate manifest version: {}",
+            manifest.candidate_manifest_version
+        );
+        println!(
+            "candidate schema version:   {}",
+            manifest.candidate_schema_version
+        );
+        println!(
+            "candidate rule abi version: {}",
+            manifest.candidate_rule_abi_version
+        );
+        println!("snapshot digest:            {}", manifest.snapshot_digest);
+        println!("link digest:                {}", manifest.link_digest);
+        println!(
+            "candidate fingerprint:      {}",
+            manifest.candidate_fingerprint
+        );
+        println!("candidate digest:           {}", manifest.candidate_digest);
+        println!("records:                    {}", manifest.records);
+        println!("  single:   {}", counts.single_candidate);
+        println!("  multiple: {}", counts.multiple_candidates);
+        println!("  none:     {}", counts.no_candidate);
+        println!("  out-of-scope: {}", counts.out_of_scope);
+        for (rule_id, count) in &rules {
+            println!("  rule {rule_id}: {count}");
+        }
+        for rule in &manifest.rules {
+            println!("rule {}", rule.rule_id);
+            println!("  in scope:   {}", rule.in_scope_calls);
+            println!("  candidates: {}", rule.candidate_declarations);
+            println!("  selection:  {}", rule.selection_rule);
+            println!("  one means:  {}", rule.single_candidate_meaning);
+            println!("  none means: {}", rule.no_candidate_meaning);
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+#[derive(Serialize)]
+struct CandidateRow {
+    record_id: String,
+    rule_id: String,
+    language: String,
+    source: String,
+    written: String,
+    outcome: String,
+    candidates: Vec<String>,
+    scope_path: String,
+    evidence: Vec<String>,
+}
+
+fn candidate_row(record: &candidates::CallCandidateRecord) -> CandidateRow {
+    CandidateRow {
+        record_id: record.record_id.clone(),
+        rule_id: record.rule_id.clone(),
+        language: record.language.clone(),
+        source: record.source.key(),
+        written: record.written.clone(),
+        outcome: record.outcome.as_str().to_string(),
+        candidates: record
+            .outcome
+            .candidates()
+            .iter()
+            .map(|candidate| candidate.render())
+            .collect(),
+        scope_path: record.provenance.scope_path.clone(),
+        evidence: record.provenance.evidence.clone(),
+    }
+}
+
+fn print_candidate_rows(rows: &[CandidateRow]) {
+    for row in rows {
+        println!(
+            "{} {} {} {} {} -> {}",
+            row.language,
+            row.outcome,
+            row.rule_id,
+            row.source,
+            row.written,
+            row.candidates.join(", ")
+        );
+    }
+}
+
+fn command_candidates_show(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(
+        &options,
+        "candidates show requires a candidate artifact directory",
+    )?;
+    let path = options
+        .positional
+        .get(1)
+        .cloned()
+        .ok_or_else(|| "candidates show requires a relative path".to_string())?;
+    let index = CandidateIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let mut records = index.from_source(&path);
+    records.extend(index.targeting_file(&path));
+    records.sort_by_key(|record| (record.source.relative_path.clone(), record.source.fact_id));
+    records.dedup_by_key(|record| record.record_id.clone());
+    let rows: Vec<CandidateRow> = records.iter().map(|record| candidate_row(record)).collect();
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "candidates",
+            "path": path,
+            "count": rows.len(),
+            "records": rows,
+        }))?;
+    } else {
+        println!("path:  {path}");
+        println!("count: {}", rows.len());
+        print_candidate_rows(&rows);
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_candidates_outcome(args: &[String], outcome: &str) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(
+        &options,
+        "candidates requires a candidate artifact directory",
+    )?;
+    let index = CandidateIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let records = match outcome {
+        "no_candidate" => index.none(),
+        "single_candidate" => index.single(),
+        "multiple_candidates" => index.multiple(),
+        _ => index.out_of_scope(),
+    };
+    let rows: Vec<CandidateRow> = records.iter().map(|record| candidate_row(record)).collect();
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "candidates",
+            "outcome": outcome,
+            "count": rows.len(),
+            "records": rows,
+        }))?;
+    } else {
+        println!("outcome: {outcome}");
+        println!("count:   {}", rows.len());
+        print_candidate_rows(&rows);
+    }
+    Ok(EXIT_OK)
 }

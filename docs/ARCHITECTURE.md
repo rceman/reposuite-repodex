@@ -16,25 +16,30 @@ Repository fact snapshot / incremental file-level index   (TASK 3A)
     |
 Derived cross-file structural relationships               (TASK 3B)
     |
-FUTURE reference and call candidate linking               (TASK 3C)
+Rust local call candidates                                (TASK 3C)
+    |
+FUTURE reference and wider call candidate linking
     |
 FUTURE repository map
     |
 FUTURE navigator
 ```
 
-Everything above `FUTURE reference and call candidate linking` exists today: the
-per-file foundation is TASK 1/TASK 2, the repository-level snapshot and
-incremental index are TASK 3A, and the bounded cross-file structural
-relationships are TASK 3B. Reference/call candidate linking and everything below
-it are out of scope and do not exist in this crate.
+Everything through `Rust local call candidates` exists today: the per-file
+foundation is TASK 1/TASK 2, the repository-level snapshot and incremental index
+are TASK 3A, the bounded cross-file structural relationships are TASK 3B, and the
+first bounded call-candidate rule is TASK 3C. Wider call/reference linking and
+everything below it are out of scope and do not exist in this crate.
 
 The repository layer is documented in
-[`TASK3A_REPOSITORY_INDEX.md`](TASK3A_REPOSITORY_INDEX.md) and the cross-file
-layer in [`CROSS_FILE_LINKING.md`](CROSS_FILE_LINKING.md). Both are still syntax
-only: a `RepositoryFactSnapshot` is a deterministic collection of source-grounded
-file analyses, and a link artifact is a deterministic collection of
-provenance-bearing structural relationships. Neither is a semantic graph.
+[`TASK3A_REPOSITORY_INDEX.md`](TASK3A_REPOSITORY_INDEX.md), the cross-file layer
+in [`CROSS_FILE_LINKING.md`](CROSS_FILE_LINKING.md), and the candidate layer in
+[`CALL_CANDIDATES.md`](CALL_CANDIDATES.md). All are still syntax only: a
+`RepositoryFactSnapshot` is a deterministic collection of source-grounded file
+analyses, a link artifact is a deterministic collection of provenance-bearing
+structural relationships, and a candidate artifact is a deterministic collection
+of provenance-bearing *candidate* records. None is a semantic graph, and a
+candidate is not a resolved call target.
 
 ## The cross-file layer (TASK 3B)
 
@@ -63,6 +68,35 @@ The layer is explicitly **not** call-target resolution, reference resolution,
 method dispatch, type inference, framework semantics, or semantic search. An
 import relationship is produced for `from foo import bar`; the call edge from
 `bar()` belongs to TASK 3C.
+
+## The call-candidate layer (TASK 3C)
+
+TASK 3C derives a bounded call-candidate index from a snapshot and a link
+artifact:
+
+```text
+Rust plain-name call-like occurrence
+    -> lexical/module-local syntactic candidate search
+    -> zero / one / many candidate declarations
+    -> provenance-bearing candidate record
+```
+
+**A candidate is not a resolved call target.** A candidate is evidence that a
+declaration could be relevant under the bounded rule, never proof of dispatch.
+That is why the layer has its own `CandidateOutcome` cardinality —
+`no_candidate`, `single_candidate`, `multiple_candidates`, `out_of_scope` —
+rather than reusing the link vocabulary: `single_candidate` is deliberately not
+`Exact` and not a one-element `Ambiguous`.
+
+One rule is implemented, `rust.call.local_function_candidate`: Rust
+`plain_name` calls whose callee is a single written identifier are matched
+against source-written `function` declarations reachable on a lexical chain
+that stops at the innermost enclosing module. Qualified-path, member-selector,
+associated, indirect, constructor-shaped and macro calls are `out_of_scope`;
+imports, re-exports, locals, methods and constructors are not candidates.
+Candidate records reference snapshot locators and never duplicate facts;
+measured size is ~0.54× the snapshot on tokio. The layer is **not** name
+resolution, dispatch, or a call graph.
 
 ## What Tree-sitter provides
 

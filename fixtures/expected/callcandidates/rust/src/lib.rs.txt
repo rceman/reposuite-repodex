@@ -1,0 +1,27 @@
+file schema=1 path=callcandidates/rust/src/lib.rs lang=rust bytes=312 lines=25 final_newline=true status=clean snapshot=snap-e12a8988aa950dcf
+scope 0 kind=file parent=- name=- range=0..312 (0:0..25:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=107..121 (8:0..8:14) header=- lang=rust
+scope 2 kind=function parent=0 name=run range=122..148 (9:0..11:1) header=- lang=rust
+scope 3 kind=function parent=0 name=missing range=149..179 (12:0..14:1) header=- lang=rust
+scope 4 kind=function parent=0 name=run_imported range=180..220 (15:0..17:1) header=- lang=rust
+scope 5 kind=function parent=0 name=run_reexport range=221..263 (18:0..20:1) header=- lang=rust
+scope 6 kind=function parent=0 name=outer range=264..311 (21:0..24:1) header=- lang=rust
+scope 7 kind=function parent=6 name=helper range=281..295 (22:4..22:18) header=- lang=rust
+decl 0 kind=module name=a scope=0 flags=[] range=69..75 (3:0..3:6) name_range=73..74 (3:4..3:5) body=- lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 1 kind=module name=b scope=0 flags=[] range=76..82 (4:0..4:6) name_range=80..81 (4:4..4:5) body=- lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 2 kind=module name=lonely scope=0 flags=[] range=83..94 (5:0..5:11) name_range=87..93 (5:4..5:10) body=- lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 3 kind=module name=other scope=0 flags=[] range=95..105 (6:0..6:10) name_range=99..104 (6:4..6:9) body=- lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 4 kind=function name=helper scope=0 flags=[] range=107..121 (8:0..8:14) name_range=110..116 (8:3..8:9) body=119..121 (8:12..8:14) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 5 kind=function name=run scope=0 flags=[] range=122..148 (9:0..11:1) name_range=125..128 (9:3..9:6) body=131..148 (9:9..11:1) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 6 kind=function name=missing scope=0 flags=[] range=149..179 (12:0..14:1) name_range=152..159 (12:3..12:10) body=162..179 (12:13..14:1) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 7 kind=function name=run_imported scope=0 flags=[] range=180..220 (15:0..17:1) name_range=183..195 (15:3..15:15) body=198..220 (15:18..17:1) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 8 kind=function name=run_reexport scope=0 flags=[] range=221..263 (18:0..20:1) name_range=224..236 (18:3..18:15) body=239..263 (18:18..20:1) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 9 kind=function name=outer scope=0 flags=[] range=264..311 (21:0..24:1) name_range=267..272 (21:3..21:8) body=275..311 (21:11..24:1) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+decl 10 kind=function name=helper scope=6 flags=[] range=281..295 (22:4..22:18) name_range=284..290 (22:7..22:13) body=293..295 (22:16..22:18) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf tests=[]
+import 0 form=single module=- module_range=- relative=- scope=0 range=0..30 (0:0..0:30) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf text=use crate::other::imported_fn; items=[{target=crate::other::imported_fn target_range=4..29 (0:4..0:29) alias=- alias_range=- wildcard=false cat=normal range=4..29 (0:4..0:29)}]
+import 1 form=single module=- module_range=- relative=- scope=0 range=31..67 (1:0..1:36) lang=rust path=callcandidates/rust/src/lib.rs snapshot=snap-e12a8988aa950dcf text=pub use crate::other::reexported_fn; items=[{target=crate::other::reexported_fn target_range=39..66 (1:8..1:35) alias=- alias_range=- wildcard=false cat=normal range=39..66 (1:8..1:35)}]
+call 0 form=plain_name callee=helper scope=2 expr=137..145 (10:4..10:12) callee_range=137..143 (10:4..10:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=absent scope=3 expr=168..176 (13:4..13:12) callee_range=168..174 (13:4..13:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=imported_fn scope=4 expr=204..217 (16:4..16:17) callee_range=204..215 (16:4..16:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=reexported_fn scope=5 expr=245..260 (19:4..19:19) callee_range=245..258 (19:4..19:17) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=plain_name callee=helper scope=6 expr=300..308 (23:4..23:12) callee_range=300..306 (23:4..23:10) type_args=- type_args_range=- dyn=false nullsafe=false

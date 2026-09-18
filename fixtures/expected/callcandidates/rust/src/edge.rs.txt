@@ -1,0 +1,19 @@
+file schema=1 path=callcandidates/rust/src/edge.rs lang=rust bytes=192 lines=14 final_newline=true status=clean snapshot=snap-f0090d81c7442209
+scope 0 kind=file parent=- name=- range=0..192 (0:0..14:0) header=- lang=rust
+scope 1 kind=impl parent=0 name=- range=10..38 (1:0..3:1) header=10..17 (1:0..1:7) lang=rust
+scope 2 kind=method parent=1 name=assoc range=23..36 (2:4..2:17) header=- lang=rust
+scope 3 kind=function parent=0 name=helper range=39..53 (4:0..4:14) header=- lang=rust
+scope 4 kind=function parent=0 name=run range=54..191 (5:0..13:1) header=- lang=rust
+decl 0 kind=struct name=S scope=0 flags=[] range=0..9 (0:0..0:9) name_range=7..8 (0:7..0:8) body=- lang=rust path=callcandidates/rust/src/edge.rs snapshot=snap-f0090d81c7442209 tests=[]
+decl 1 kind=method name=assoc scope=1 flags=[] range=23..36 (2:4..2:17) name_range=26..31 (2:7..2:12) body=34..36 (2:15..2:17) lang=rust path=callcandidates/rust/src/edge.rs snapshot=snap-f0090d81c7442209 tests=[]
+decl 2 kind=function name=helper scope=0 flags=[] range=39..53 (4:0..4:14) name_range=42..48 (4:3..4:9) body=51..53 (4:12..4:14) lang=rust path=callcandidates/rust/src/edge.rs snapshot=snap-f0090d81c7442209 tests=[]
+decl 3 kind=function name=run scope=0 flags=[] range=54..191 (5:0..13:1) name_range=57..60 (5:3..5:6) body=63..191 (5:9..13:1) lang=rust path=callcandidates/rust/src/edge.rs snapshot=snap-f0090d81c7442209 tests=[]
+ref 0 kind=impl_target written=S scope=1 decl=- range=15..16 (1:5..1:6)
+call 0 form=qualified_path callee=crate::helper scope=4 expr=69..84 (6:4..6:19) callee_range=69..82 (6:4..6:17) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=qualified_path callee=self::helper scope=4 expr=90..104 (7:4..7:18) callee_range=90..102 (7:4..7:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=member_selector callee=obj.method scope=4 expr=110..122 (8:4..8:16) callee_range=110..120 (8:4..8:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=qualified_path callee=S::assoc scope=4 expr=128..138 (9:4..9:14) callee_range=128..136 (9:4..9:12) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=indirect callee=(helper) scope=4 expr=144..154 (10:4..10:14) callee_range=144..152 (10:4..10:12) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=plain_name callee=produce scope=4 expr=160..169 (11:4..11:13) callee_range=160..167 (11:4..11:11) type_args=- type_args_range=- dyn=false nullsafe=false
+call 6 form=indirect callee=produce() scope=4 expr=160..171 (11:4..11:15) callee_range=160..169 (11:4..11:13) type_args=- type_args_range=- dyn=false nullsafe=false
+call 7 form=macro_invocation callee=my_macro scope=4 expr=177..188 (12:4..12:15) callee_range=177..185 (12:4..12:12) type_args=- type_args_range=- dyn=false nullsafe=false
