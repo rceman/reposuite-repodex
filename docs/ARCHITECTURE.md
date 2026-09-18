@@ -14,22 +14,55 @@ Normalized unresolved syntax facts
     |
 Repository fact snapshot / incremental file-level index   (TASK 3A)
     |
-FUTURE semantic resolution
+Derived cross-file structural relationships               (TASK 3B)
+    |
+FUTURE reference and call candidate linking               (TASK 3C)
     |
 FUTURE repository map
     |
 FUTURE navigator
 ```
 
-Everything above `FUTURE semantic resolution` exists today: the per-file
-foundation is TASK 1/TASK 2, and the repository-level snapshot and incremental
-index are TASK 3A. Semantic resolution and everything below it are out of scope
-and do not exist in this crate.
+Everything above `FUTURE reference and call candidate linking` exists today: the
+per-file foundation is TASK 1/TASK 2, the repository-level snapshot and
+incremental index are TASK 3A, and the bounded cross-file structural
+relationships are TASK 3B. Reference/call candidate linking and everything below
+it are out of scope and do not exist in this crate.
 
 The repository layer is documented in
-[`TASK3A_REPOSITORY_INDEX.md`](TASK3A_REPOSITORY_INDEX.md). It is still syntax
+[`TASK3A_REPOSITORY_INDEX.md`](TASK3A_REPOSITORY_INDEX.md) and the cross-file
+layer in [`CROSS_FILE_LINKING.md`](CROSS_FILE_LINKING.md). Both are still syntax
 only: a `RepositoryFactSnapshot` is a deterministic collection of source-grounded
-file analyses, not a semantic graph.
+file analyses, and a link artifact is a deterministic collection of
+provenance-bearing structural relationships. Neither is a semantic graph.
+
+## The cross-file layer (TASK 3B)
+
+TASK 3B derives a small, bounded structural relationship index from a snapshot:
+
+```text
+RepositoryFactSnapshot
+    -> repository structural model (module / package / namespace entities)
+    -> language-specific rules
+    -> import and module link outcomes
+```
+
+Every relationship carries a stable `rule_id`, a snapshot-local source locator,
+the written source form, the evidence that produced the candidates, and one of
+four discrete outcomes — `Exact`, `Ambiguous`, `Unresolved`, `OutOfScope`. There
+is no numeric confidence. Ambiguity is never collapsed into a chosen candidate,
+and an external or out-of-scope relationship is never reported as unresolved.
+
+Fourteen rules are implemented across Rust, Go, Python and PHP. Only repository
+root `go.mod` is read as metadata, because only one required rule needs it, and
+its content digest is recorded so a metadata change invalidates the derived
+artifact. The link artifact does not duplicate normalized facts: measured size is
+9.7%–16.8% of the snapshot it derives from.
+
+The layer is explicitly **not** call-target resolution, reference resolution,
+method dispatch, type inference, framework semantics, or semantic search. An
+import relationship is produced for `from foo import bar`; the call edge from
+`bar()` belongs to TASK 3C.
 
 ## What Tree-sitter provides
 
@@ -120,6 +153,18 @@ src/parser/python.rs    Python adapter
 src/parser/php.rs       PHP adapter
 src/paths/mod.rs        runtime path resolver
 src/scanner/mod.rs      repository scanner
+src/repository/mod.rs   snapshot, incremental index, artifact, fingerprint, digest
+src/links/mod.rs        cross-file structural linking (TASK 3B)
+src/links/model.rs      rule ids, outcomes, targets, provenance, rule registry
+src/links/structure.rs  repository structural model (modules/packages/namespaces)
+src/links/metadata.rs   repository-root go.mod reading and content digests
+src/links/rules_rust.rs Rust rules
+src/links/rules_go.rs   Go rules
+src/links/rules_python.rs Python rules
+src/links/rules_php.rs  PHP rules
+src/links/artifact.rs   link artifact read/write/verify/publish
+src/links/build.rs      link build orchestration
+src/links/query.rs      exact query API over derived relationships
 src/bin/repodex-bench.rs synthetic benchmark harness
 benches/spike.rs        fixture-corpus benchmark harness
 queries/<lang>/recovery.scm  recovery queries
@@ -427,3 +472,29 @@ framework dependency. Nothing is included "for later".
 content and analysis digests the repository snapshot needs for safe incremental
 reuse; the FNV-1a canonical digest is a change detector and is not
 collision-resistant, so it is not used for content identity.
+
+TASK 3B adds **no** dependency. The cross-file layer reuses `sha2` for metadata
+content digests, `serde`/`serde_json` for the artifact, and the existing
+canonical digest for link identity. It reads repository-root `go.mod` with a
+small purpose-built parser rather than a TOML dependency, because exactly one
+required rule needs exactly one field.
+
+## Cross-file linking discipline
+
+```text
+no source reparsing            the layer consumes persisted normalized facts only
+no fact duplication            relationships reference facts by snapshot-local locator
+no numeric confidence          four discrete outcomes instead
+no collapsed ambiguity         a candidate list is never reduced to a first pick
+no guessed target              zero candidates is Unresolved, never a guess
+no semantic identity           no permanent symbol id is introduced
+no runtime claims              Exact means "one structural candidate", not "the target"
+no checkout root in output     canonical bytes are root-independent
+content-digested metadata      never mtime
+staged, verified, then published atomically
+```
+
+A full relationship rebuild is measured at 0.405×–0.558× a snapshot build of the
+same repository, and only 3.4%–4.0% of that time is rule derivation, so TASK 3B
+rebuilds the whole derived artifact from the whole snapshot and performs no
+incremental relationship patching. See `docs/TASK3B_RESULTS.md`.

@@ -1,0 +1,7 @@
+file schema=1 path=crossfile/rust/src/util.rs lang=rust bytes=57 lines=5 final_newline=true status=clean snapshot=snap-f825b2852c78b93a
+scope 0 kind=file parent=- name=- range=0..57 (0:0..5:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=0..18 (0:0..0:18) header=- lang=rust
+scope 2 kind=function parent=0 name=other range=39..56 (4:0..4:17) header=- lang=rust
+decl 0 kind=function name=helper scope=0 flags=[] range=0..18 (0:0..0:18) name_range=7..13 (0:7..0:13) body=16..18 (0:16..0:18) lang=rust path=crossfile/rust/src/util.rs snapshot=snap-f825b2852c78b93a tests=[]
+decl 1 kind=struct name=Other scope=0 flags=[] range=20..37 (2:0..2:17) name_range=31..36 (2:11..2:16) body=- lang=rust path=crossfile/rust/src/util.rs snapshot=snap-f825b2852c78b93a tests=[]
+decl 2 kind=function name=other scope=0 flags=[] range=39..56 (4:0..4:17) name_range=46..51 (4:7..4:12) body=54..56 (4:15..4:17) lang=rust path=crossfile/rust/src/util.rs snapshot=snap-f825b2852c78b93a tests=[]

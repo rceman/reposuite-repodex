@@ -1,0 +1,5 @@
+file schema=1 path=crossfile/go/internal/foo/extra.go lang=go bytes=25 lines=3 final_newline=true status=clean snapshot=snap-f123f30f9eab889d
+scope 0 kind=file parent=- name=- range=0..25 (0:0..3:0) header=- lang=go
+scope 1 kind=function parent=0 name=G range=13..24 (2:0..2:11) header=- lang=go
+decl 0 kind=package name=foo scope=0 flags=[] range=0..11 (0:0..0:11) name_range=8..11 (0:8..0:11) body=- lang=go path=crossfile/go/internal/foo/extra.go snapshot=snap-f123f30f9eab889d tests=[]
+decl 1 kind=function name=G scope=0 flags=[] range=13..24 (2:0..2:11) name_range=18..19 (2:5..2:6) body=22..24 (2:9..2:11) lang=go path=crossfile/go/internal/foo/extra.go snapshot=snap-f123f30f9eab889d tests=[]

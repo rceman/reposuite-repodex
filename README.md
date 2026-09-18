@@ -9,8 +9,9 @@ information.
 
 ## What this repository currently is
 
-This repository is the **TASK 1 foundation spike**, validated by **TASK 2** and
-extended by **TASK 3A**. It establishes one pipeline and stops there:
+This repository is the **TASK 1 foundation spike**, validated by **TASK 2**,
+extended by **TASK 3A** and **TASK 3B**. It establishes one pipeline and stops
+there:
 
 ```text
 repository files
@@ -19,6 +20,7 @@ repository files
     -> language-specific extraction
     -> normalized unresolved syntax facts
     -> deterministic repository fact snapshot + incremental file-level index
+    -> derived cross-file structural relationships
 ```
 
 ```text
@@ -27,6 +29,7 @@ TASK 1 commit validated:     4a6e8e3fe88be068932279b3bf896c731c812859
 TASK 2 validation status:    VALIDATION_COMPLETE
 TASK 2 architecture verdict: GO
 TASK 3A status:              IMPLEMENTED (snapshot artifact EXPERIMENTAL)
+TASK 3B status:              IMPLEMENTED (link artifact EXPERIMENTAL)
 ```
 
 TASK 2 validated the foundation against 2.42M manifest LOC (2.16M processed LOC)
@@ -49,12 +52,25 @@ update reparses nothing and a one-file change reparses only that file, and the
 resulting snapshot digest equals an independent fresh full build in every
 measured repetition. See `docs/TASK3A_REPOSITORY_INDEX.md`.
 
+TASK 3B adds a bounded cross-file structural relationship layer over that
+snapshot: repository module/package/namespace entities plus import and module
+link outcomes, each carrying a stable rule id, a snapshot-local source locator
+and explicit evidence. RepoDex implements **these bounded structural
+import-link rules** — it does not resolve imports in the semantic sense. Every
+relationship is `Exact`, `Ambiguous`, `Unresolved` or `OutOfScope`, ambiguity is
+never collapsed, and no numeric confidence is used. The link artifact is
+deterministic, independent of checkout root, and 9.7%–16.8% of the snapshot size
+because it references facts instead of copying them. An independent audit of
+12,296 relationships across four real repositories found zero false-exact links.
+See `docs/CROSS_FILE_LINKING.md` and `docs/TASK3B_RESULTS.md`.
+
 Everything downstream of that is deliberately absent:
 
 ```text
 normalized unresolved syntax facts
     -> deterministic repository fact snapshot   (TASK 3A, syntax only)
-    -> FUTURE semantic resolution
+    -> derived cross-file structural links      (TASK 3B, syntax only)
+    -> FUTURE reference and call candidate linking (TASK 3C)
     -> FUTURE repository map
     -> FUTURE navigation
     -> FUTURE investigation knowledge
@@ -64,7 +80,11 @@ RepoDex does **not** resolve symbols, resolve references, build a call graph,
 claim runtime behavior, evaluate `cfg`/build tags, expand macros, or infer
 framework semantics. `obj.F()` is recorded as a member-selector call shape, not
 as proof that a specific method `F` runs. The repository snapshot is a
-deterministic collection of source-grounded file analyses, not a semantic graph.
+deterministic collection of source-grounded file analyses, not a semantic graph,
+and a link artifact is a deterministic collection of provenance-bearing
+structural relationships, not a resolved dependency graph. There is no fuzzy,
+full-text or semantic search: TASK 3A's exact lookup and TASK 3B's exact
+relationship filters are both exact, and neither ranks results.
 
 ## Supported languages
 
@@ -220,6 +240,47 @@ performs **exact, source-grounded** lookup only: it matches the written name,
 target or callee form exactly, returns every occurrence, and never collapses
 equal names into one entity. There is no fuzzy or natural-language search.
 
+### `links build <snapshot-dir> --repository <repo> --output <links-dir>`
+
+```bash
+cargo run --locked --release -- links build /tmp/repodex-snap \
+  --repository . --output /tmp/repodex-links
+```
+
+Derives the bounded cross-file structural relationships for a snapshot. It reads
+the persisted normalized facts plus repository-root `go.mod` only, never reparses
+source, and never mutates the snapshot. Output is staged, verified, then
+published atomically.
+
+### `links verify <links-dir> --snapshot <snapshot-dir> [--repository <repo>]`
+
+```bash
+cargo run --locked --release -- links verify /tmp/repodex-links \
+  --snapshot /tmp/repodex-snap --repository .
+```
+
+Validates the manifest and rule ABI, the recorded snapshot digest against the
+supplied snapshot, canonical ordering, duplicate link ids, rule documentation,
+every source and candidate locator, the canonical link digest, and — when
+`--repository` is given — every metadata dependency's content digest. A
+successful verification means the artifact is internally consistent with the
+recorded snapshot and metadata; it does **not** prove any relationship is
+semantically correct at runtime.
+
+### `links stats` / `links show` / `links exact|ambiguous|unresolved|out-of-scope`
+
+```bash
+cargo run --locked --release -- links stats /tmp/repodex-links --json
+cargo run --locked --release -- links show /tmp/repodex-links src/lib.rs
+cargo run --locked --release -- links unresolved /tmp/repodex-links
+cargo run --locked --release -- links exact /tmp/repodex-links --json
+```
+
+Exact filters over the derived relationships. `links stats` prints the rule
+registry, outcome counts and metadata dependencies; `links show` prints the
+relationships originating in or targeting a path. There is no query language, no
+ranking and no fuzzy match.
+
 ### Exit codes
 
 ```text
@@ -268,6 +329,13 @@ tests/task3_snapshot.rs      repository snapshot: determinism across roots and
                              add/delete/rename, invalid UTF-8, size limit,
                              recovered reuse, analyzer/config mismatch,
                              corrupt previous snapshot, exact lookup
+tests/crossfile_links.rs     cross-file structural links: complete per-rule
+                             relationship sets for the four multi-file fixtures,
+                             negative ambiguity (no false exactness), repeated
+                             and cross-root and cross-output determinism, TASK 3A
+                             update-vs-fresh link equivalence across eight
+                             scenarios, artifact integrity rejection, query API,
+                             rule-registry completeness
 ```
 
 `fixtures/expected/**` holds the complete canonical fact set of every fixture.
@@ -375,6 +443,21 @@ missing/unreadable file -> per-file failure diagnostic
 * The snapshot artifact format is EXPERIMENTAL and carries no long-term
   compatibility promise. `index verify` proves structural consistency, not that
   the working tree still matches the snapshot.
+* A link artifact is syntax only, at one remove: it records bounded structural
+  relationships, never resolved identity. An `Exact` link means "exactly one
+  structural candidate under this rule's documented assumptions", not "the
+  runtime target". `links verify` proves internal consistency, not semantic
+  correctness at runtime.
+* Cross-file linking resolves re-exports, glob imports, `sys.path`, Composer
+  autoloading and Go build tags only as far as the documented rules say, and
+  reports the rest as `Unresolved` or `OutOfScope` rather than guessing. The
+  bounded misses are listed in `docs/TASK3B_FINDINGS.md`.
+* No call edge is produced, even when an import makes a call target look
+  obvious. `from foo import bar` followed by `bar()` yields an import
+  relationship only.
+* The link artifact format is EXPERIMENTAL and carries no long-term
+  compatibility promise. The rule ids are a compatibility ABI and are not
+  renamed casually.
 * The CLI output format is experimental.
 
 ## Documentation
@@ -390,5 +473,17 @@ docs/TASK3A_REPOSITORY_INDEX.md  TASK 3A: repository snapshot, incremental index
                              canonical identity, artifact format, safe reuse,
                              known limitations, performance and memory
                              observations
+docs/CROSS_FILE_LINKING.md  TASK 3B: the cross-file layer, the four outcomes,
+                             provenance and locator model, artifact format and
+                             verification, and every implemented rule with its
+                             input syntax, assumptions, metadata dependency and
+                             four outcome conditions
+docs/TASK3B_RESULTS.md      TASK 3B: fixture results, negative ambiguity,
+                             determinism, real-repository measurements, the
+                             independent audit, what was not measured, and TASK
+                             3C readiness
+docs/TASK3B_FINDINGS.md     TASK 3B findings log with stable IDs (T3B-F001..)
 scripts/task3a_perf.py       the TASK 3A performance validation harness
+scripts/task3b_perf.py       the TASK 3B performance and artifact-size harness
+scripts/task3b_audit.py      the TASK 3B independent relationship audit
 ```

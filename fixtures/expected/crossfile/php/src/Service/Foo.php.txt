@@ -1,0 +1,6 @@
+file schema=1 path=crossfile/php/src/Service/Foo.php lang=php bytes=44 lines=5 final_newline=true status=clean snapshot=snap-ef91f11834831e0e
+scope 0 kind=file parent=- name=- range=0..44 (0:0..5:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
+scope 2 kind=class parent=1 name=Foo range=31..43 (4:0..4:12) header=31..41 (4:0..4:10) lang=php
+decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=7..29 (2:0..2:22) name_range=17..28 (2:10..2:21) body=- lang=php path=crossfile/php/src/Service/Foo.php snapshot=snap-ef91f11834831e0e tests=[]
+decl 1 kind=class name=Foo scope=1 flags=[] range=31..43 (4:0..4:12) name_range=37..40 (4:6..4:9) body=41..43 (4:10..4:12) lang=php path=crossfile/php/src/Service/Foo.php snapshot=snap-ef91f11834831e0e tests=[]

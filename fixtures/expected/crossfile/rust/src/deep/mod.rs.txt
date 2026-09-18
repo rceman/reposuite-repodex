@@ -1,0 +1,7 @@
+file schema=1 path=crossfile/rust/src/deep/mod.rs lang=rust bytes=51 lines=5 final_newline=true status=clean snapshot=snap-c4f5eb73ca014b8d
+scope 0 kind=file parent=- name=- range=0..51 (0:0..5:0) header=- lang=rust
+scope 1 kind=function parent=0 name=helper range=11..29 (2:0..2:18) header=- lang=rust
+scope 2 kind=function parent=0 name=deep_fn range=31..50 (4:0..4:19) header=- lang=rust
+decl 0 kind=module name=leaf scope=0 flags=[] range=0..9 (0:0..0:9) name_range=4..8 (0:4..0:8) body=- lang=rust path=crossfile/rust/src/deep/mod.rs snapshot=snap-c4f5eb73ca014b8d tests=[]
+decl 1 kind=function name=helper scope=0 flags=[] range=11..29 (2:0..2:18) name_range=18..24 (2:7..2:13) body=27..29 (2:16..2:18) lang=rust path=crossfile/rust/src/deep/mod.rs snapshot=snap-c4f5eb73ca014b8d tests=[]
+decl 2 kind=function name=deep_fn scope=0 flags=[] range=31..50 (4:0..4:19) name_range=38..45 (4:7..4:14) body=48..50 (4:17..4:19) lang=rust path=crossfile/rust/src/deep/mod.rs snapshot=snap-c4f5eb73ca014b8d tests=[]

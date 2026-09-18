@@ -1,0 +1,6 @@
+file schema=1 path=crossfile/rust/src/dupmod.rs lang=rust bytes=243 lines=6 final_newline=true status=clean snapshot=snap-7d9b0f4f0d1fcbbe
+scope 0 kind=file parent=- name=- range=0..243 (0:0..6:0) header=- lang=rust
+scope 1 kind=function parent=0 name=dup range=210..225 (3:0..3:15) header=- lang=rust
+scope 2 kind=function parent=0 name=dup range=227..242 (5:0..5:15) header=- lang=rust
+decl 0 kind=function name=dup scope=0 flags=[] range=210..225 (3:0..3:15) name_range=217..220 (3:7..3:10) body=223..225 (3:13..3:15) lang=rust path=crossfile/rust/src/dupmod.rs snapshot=snap-7d9b0f4f0d1fcbbe tests=[]
+decl 1 kind=function name=dup scope=0 flags=[] range=227..242 (5:0..5:15) name_range=234..237 (5:7..5:10) body=240..242 (5:13..5:15) lang=rust path=crossfile/rust/src/dupmod.rs snapshot=snap-7d9b0f4f0d1fcbbe tests=[]

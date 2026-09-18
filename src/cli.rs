@@ -27,6 +27,7 @@ use std::time::Instant;
 use serde::Serialize;
 
 use crate::canonical;
+use crate::links::{self, LinkIndex, LinkOutcome};
 use crate::model::{AnalysisStatus, FileAnalysis, LanguageId, SCHEMA_VERSION};
 use crate::parser::{Analyzer, AnalyzerConfig};
 use crate::paths::{self, RepoDexPaths};
@@ -63,6 +64,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "parse" => command_parse(&rest),
         "scan" => command_scan(&rest),
         "index" => command_index(&rest),
+        "links" => command_links(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -89,6 +91,11 @@ USAGE:
     reposuite-repodex index verify <snapshot-dir> [--json]
     reposuite-repodex index stats <snapshot-dir> [--json]
     reposuite-repodex index find <snapshot-dir> [--declaration <name>] [--import <target>] [--call <callee>] [--test] [--json]
+    reposuite-repodex links build <snapshot-dir> --repository <repo> --output <links-dir> [--json]
+    reposuite-repodex links verify <links-dir> --snapshot <snapshot-dir> [--repository <repo>] [--json]
+    reposuite-repodex links stats <links-dir> [--json]
+    reposuite-repodex links show <links-dir> <path> [--json]
+    reposuite-repodex links exact|ambiguous|unresolved|out-of-scope <links-dir> [--json]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -110,6 +117,11 @@ struct Options {
     output: Option<String>,
     /// `index update` previous snapshot directory.
     previous: Option<String>,
+    /// `links build`/`links verify` snapshot directory dependency.
+    snapshot: Option<String>,
+    /// `links build`/`links verify` repository checkout root, used only to read
+    /// the metadata a required link rule needs.
+    repository: Option<String>,
     /// `index update` opt-in to rebuilding from an incompatible snapshot.
     allow_incompatible: bool,
     /// `index find` selectors.
@@ -140,6 +152,12 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--output" => options.output = Some(value_for(args, &mut index, name, inline_value)?),
             "--previous" => {
                 options.previous = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--snapshot" => {
+                options.snapshot = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--repository" => {
+                options.repository = Some(value_for(args, &mut index, name, inline_value)?)
             }
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
@@ -1218,4 +1236,387 @@ fn require_positional<'a>(options: &'a Options, message: &str) -> Result<&'a str
         .first()
         .map(String::as_str)
         .ok_or_else(|| message.to_string())
+}
+
+// ---------------------------------------------------------------------------
+// `links` subcommands: derived cross-file structural relationships.
+// ---------------------------------------------------------------------------
+
+fn command_links(args: &[String]) -> Result<u8, String> {
+    let Some(subcommand) = args.first() else {
+        return Err(
+            "links requires a subcommand: build, verify, stats, show, exact, ambiguous, \
+             unresolved or out-of-scope"
+                .to_string(),
+        );
+    };
+    let rest = &args[1..];
+    match subcommand.as_str() {
+        "build" => command_links_build(rest),
+        "verify" => command_links_verify(rest),
+        "stats" => command_links_stats(rest),
+        "show" => command_links_show(rest),
+        "exact" => command_links_outcome(rest, "exact"),
+        "ambiguous" => command_links_outcome(rest, "ambiguous"),
+        "unresolved" => command_links_outcome(rest, "unresolved"),
+        "out-of-scope" | "out_of_scope" => command_links_outcome(rest, "out_of_scope"),
+        other => Err(format!(
+            "unknown links subcommand `{other}`; expected build, verify, stats, show, exact, \
+             ambiguous, unresolved or out-of-scope"
+        )),
+    }
+}
+
+#[derive(Serialize)]
+struct LinkStatsOutput {
+    schema_version: u32,
+    command: &'static str,
+    link_manifest_version: u32,
+    link_schema_version: u32,
+    link_rule_abi_version: u32,
+    snapshot_digest: String,
+    snapshot_schema_version: u32,
+    snapshot_analyzer_fingerprint: String,
+    link_fingerprint: String,
+    link_fingerprint_text: String,
+    link_digest: String,
+    links: u64,
+    structural_entities: u64,
+    outcomes: links::OutcomeCounts,
+    kinds: std::collections::BTreeMap<String, u64>,
+    metadata: Vec<links::MetadataDependency>,
+    rules: Vec<links::RuleDocumentation>,
+    artifact_bytes: u64,
+}
+
+fn command_links_build(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let snapshot = require_positional(&options, "links build requires a snapshot directory")?;
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "links build requires --output <links-dir>".to_string())?;
+    let repository = options.repository.clone();
+    if let Some(repository) = &repository {
+        if !Path::new(repository).is_dir() {
+            return Err(format!("`{repository}` is not a directory"));
+        }
+    }
+    let outcome = links::build_links(
+        Path::new(snapshot),
+        repository.as_deref().map(Path::new),
+        Path::new(&output),
+    )
+    .map_err(|error| error.to_string())?;
+
+    let stats = &outcome.stats;
+    let manifest = &outcome.manifest;
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "links",
+            "output": output,
+            "snapshot_digest": manifest.snapshot_digest,
+            "link_digest": manifest.link_digest,
+            "link_fingerprint": manifest.link_fingerprint,
+            "links": stats.links_total,
+            "structural_entities": stats.structural_entities,
+            "outcomes": stats.outcomes,
+            "kinds": stats.kinds,
+            "metadata_dependencies": stats.metadata_dependencies,
+            "snapshot_bytes": stats.snapshot_bytes,
+            "link_bytes": stats.link_bytes,
+            "size_ratio": stats.size_ratio(),
+            "duration_ms": stats.duration_ms,
+            "phases": {
+                "snapshot_load_ms": stats.phases.snapshot_load_ms,
+                "metadata_ms": stats.phases.metadata_ms,
+                "structure_ms": stats.phases.structure_ms,
+                "derive_ms": stats.phases.derive_ms,
+                "serialize_ms": stats.phases.serialize_ms,
+                "verify_ms": stats.phases.verify_ms,
+            },
+        }))?;
+    } else {
+        println!("output:        {output}");
+        println!("snapshot:      {}", manifest.snapshot_digest);
+        println!("link digest:   {}", manifest.link_digest);
+        println!("fingerprint:   {}", manifest.link_fingerprint);
+        println!(
+            "files:         {} (snapshot {} bytes, links {} bytes, ratio {:.4})",
+            stats.snapshot_files,
+            stats.snapshot_bytes,
+            stats.link_bytes,
+            stats.size_ratio()
+        );
+        println!(
+            "links:         {} (exact {}, ambiguous {}, unresolved {}, out-of-scope {})",
+            stats.links_total,
+            stats.outcomes.exact,
+            stats.outcomes.ambiguous,
+            stats.outcomes.unresolved,
+            stats.outcomes.out_of_scope
+        );
+        println!("entities:      {}", stats.structural_entities);
+        println!("metadata deps: {}", stats.metadata_dependencies);
+        for (kind, count) in &stats.kinds {
+            println!("  kind {kind}: {count}");
+        }
+        println!(
+            "elapsed:       {:.1} ms (load {:.1}, metadata {:.1}, structure {:.1}, derive {:.1}, \
+             serialize {:.1}, verify {:.1})",
+            stats.duration_ms,
+            stats.phases.snapshot_load_ms,
+            stats.phases.metadata_ms,
+            stats.phases.structure_ms,
+            stats.phases.derive_ms,
+            stats.phases.serialize_ms,
+            stats.phases.verify_ms,
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_links_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "links verify requires a link artifact directory")?;
+    let snapshot = options
+        .snapshot
+        .clone()
+        .ok_or_else(|| "links verify requires --snapshot <snapshot-dir>".to_string())?;
+    let repository = options.repository.clone();
+    let report = links::verify(
+        Path::new(dir),
+        Path::new(&snapshot),
+        repository.as_deref().map(Path::new),
+    )
+    .map_err(|error| {
+        format!(
+            "{error}\nnote: verification checks the artifact's internal consistency with the \
+             recorded snapshot and metadata; it does not prove any relationship is semantically \
+             correct at runtime"
+        )
+    })?;
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "links",
+            "links_dir": dir,
+            "snapshot_dir": snapshot,
+            "valid": true,
+            "link_manifest_version": report.link_manifest_version,
+            "link_schema_version": report.link_schema_version,
+            "link_rule_abi_version": report.link_rule_abi_version,
+            "snapshot_digest": report.snapshot_digest,
+            "link_digest": report.link_digest,
+            "links": report.links,
+            "structural_entities": report.structural_entities,
+            "outcomes": report.outcomes,
+            "artifact_bytes": report.artifact_bytes,
+            "metadata_checked": report.metadata_checked,
+            "metadata_dependencies": report.metadata_dependencies,
+        }))?;
+    } else {
+        println!("snapshot:       {}", report.snapshot_digest);
+        println!("link digest:    {}", report.link_digest);
+        println!(
+            "manifest:       link version {}, schema {}, rule abi {}",
+            report.link_manifest_version, report.link_schema_version, report.link_rule_abi_version
+        );
+        println!(
+            "links:          {} (exact {}, ambiguous {}, unresolved {}, out-of-scope {})",
+            report.links,
+            report.outcomes.exact,
+            report.outcomes.ambiguous,
+            report.outcomes.unresolved,
+            report.outcomes.out_of_scope
+        );
+        println!("entities:       {}", report.structural_entities);
+        println!("artifact bytes: {}", report.artifact_bytes);
+        println!(
+            "metadata:       {} dependencies, checked {}",
+            report.metadata_dependencies, report.metadata_checked
+        );
+        if !report.metadata_checked {
+            println!(
+                "note: metadata dependencies were not re-checked; pass --repository <repo> to \
+                 verify them against the working tree."
+            );
+        }
+        println!("valid:          true");
+        println!(
+            "note: verification checks internal consistency only; it does not prove any\n\
+             note: relationship is semantically correct at runtime."
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_links_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "links stats requires a link artifact directory")?;
+    let index = LinkIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let manifest = index.manifest();
+    let output = LinkStatsOutput {
+        schema_version: SCHEMA_VERSION,
+        command: "links",
+        link_manifest_version: manifest.link_manifest_version,
+        link_schema_version: manifest.link_schema_version,
+        link_rule_abi_version: manifest.link_rule_abi_version,
+        snapshot_digest: manifest.snapshot_digest.clone(),
+        snapshot_schema_version: manifest.snapshot_schema_version,
+        snapshot_analyzer_fingerprint: manifest.snapshot_analyzer_fingerprint.clone(),
+        link_fingerprint: manifest.link_fingerprint.clone(),
+        link_fingerprint_text: manifest.link_fingerprint_text.clone(),
+        link_digest: manifest.link_digest.clone(),
+        links: index.links().len() as u64,
+        structural_entities: index.entities().len() as u64,
+        outcomes: manifest.outcomes.clone(),
+        kinds: manifest.kinds.clone(),
+        metadata: manifest.metadata.clone(),
+        rules: manifest.rules.clone(),
+        artifact_bytes: links::artifact_size(Path::new(dir)),
+    };
+    if options.json {
+        print_json(&output)?;
+    } else {
+        println!("snapshot:      {}", output.snapshot_digest);
+        println!("link digest:   {}", output.link_digest);
+        println!("fingerprint:   {}", output.link_fingerprint);
+        println!("links:         {}", output.links);
+        println!("entities:      {}", output.structural_entities);
+        println!(
+            "outcomes:      exact {}, ambiguous {}, unresolved {}, out-of-scope {}",
+            output.outcomes.exact,
+            output.outcomes.ambiguous,
+            output.outcomes.unresolved,
+            output.outcomes.out_of_scope
+        );
+        for (kind, count) in &output.kinds {
+            println!("  kind {kind}: {count}");
+        }
+        println!("metadata deps: {}", output.metadata.len());
+        for dependency in &output.metadata {
+            println!(
+                "  {} present={} field={} value={}",
+                dependency.relative_path, dependency.present, dependency.field, dependency.value
+            );
+        }
+        println!("rules:         {}", output.rules.len());
+        for (rule_id, count) in index.counts_by_rule() {
+            println!("  {rule_id}: {count}");
+        }
+        println!("artifact bytes: {}", output.artifact_bytes);
+    }
+    Ok(EXIT_OK)
+}
+
+#[derive(Serialize)]
+struct LinkRow {
+    link_id: String,
+    kind: String,
+    rule_id: String,
+    language: String,
+    source: String,
+    written: String,
+    outcome: String,
+    targets: Vec<String>,
+    evidence: Vec<String>,
+    metadata: Vec<links::MetadataDependency>,
+}
+
+fn link_row(link: &links::LinkRecord) -> LinkRow {
+    LinkRow {
+        link_id: link.link_id.clone(),
+        kind: link.kind.clone(),
+        rule_id: link.rule_id.clone(),
+        language: link.language.clone(),
+        source: link.source.key(),
+        written: link.written.clone(),
+        outcome: link.outcome.as_str().to_string(),
+        targets: link
+            .outcome
+            .all_targets()
+            .iter()
+            .map(|target| target.render())
+            .collect(),
+        evidence: link.provenance.evidence.clone(),
+        metadata: link.provenance.metadata.clone(),
+    }
+}
+
+fn print_link_rows(rows: &[LinkRow]) {
+    for row in rows {
+        println!(
+            "{} {} {} {} {} -> {}",
+            row.language,
+            row.outcome,
+            row.rule_id,
+            row.source,
+            row.written,
+            row.targets.join(", ")
+        );
+    }
+}
+
+fn command_links_show(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "links show requires a link artifact directory")?;
+    let path = options
+        .positional
+        .get(1)
+        .cloned()
+        .ok_or_else(|| "links show requires a source path".to_string())?;
+    let index = LinkIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let mut records: Vec<&links::LinkRecord> = index.from_source(&path);
+    records.extend(index.targeting_file(&path));
+    records.sort_by_key(|link| link.source.key());
+    records.dedup_by(|left, right| left.link_id == right.link_id);
+    let rows: Vec<LinkRow> = records.iter().map(|link| link_row(link)).collect();
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "links",
+            "path": path,
+            "links": rows,
+        }))?;
+    } else {
+        println!("path:  {path}");
+        println!("links: {}", rows.len());
+        print_link_rows(&rows);
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_links_outcome(args: &[String], outcome: &str) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "links requires a link artifact directory")?;
+    let index = LinkIndex::load(Path::new(dir)).map_err(|error| error.to_string())?;
+    let records = match outcome {
+        "exact" => index.exact(),
+        "ambiguous" => index.ambiguous(),
+        "unresolved" => index.unresolved(),
+        _ => index.out_of_scope(),
+    };
+    let rows: Vec<LinkRow> = records.iter().map(|link| link_row(link)).collect();
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "links",
+            "outcome": outcome,
+            "count": rows.len(),
+            "links": rows,
+        }))?;
+    } else {
+        println!("outcome: {outcome}");
+        println!("count:   {}", rows.len());
+        print_link_rows(&rows);
+    }
+    Ok(EXIT_OK)
+}
+
+/// Re-exported so the outcome helper can be used from tests without pulling in
+/// the whole module path.
+pub fn outcome_name(outcome: &LinkOutcome) -> &'static str {
+    outcome.as_str()
 }

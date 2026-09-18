@@ -1,0 +1,7 @@
+file schema=1 path=crossfile/php/src/Service/Helper.php lang=php bytes=73 lines=6 final_newline=true status=clean snapshot=snap-fb3ba7950d9c12e7
+scope 0 kind=file parent=- name=- range=0..73 (0:0..6:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
+scope 2 kind=function parent=1 name=helper range=31..51 (4:0..4:20) header=- lang=php
+decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=7..29 (2:0..2:22) name_range=17..28 (2:10..2:21) body=- lang=php path=crossfile/php/src/Service/Helper.php snapshot=snap-fb3ba7950d9c12e7 tests=[]
+decl 1 kind=function name=helper scope=1 flags=[] range=31..51 (4:0..4:20) name_range=40..46 (4:9..4:15) body=49..51 (4:18..4:20) lang=php path=crossfile/php/src/Service/Helper.php snapshot=snap-fb3ba7950d9c12e7 tests=[]
+decl 2 kind=constant name=VERSION scope=1 flags=[] range=58..71 (5:6..5:19) name_range=58..65 (5:6..5:13) body=- lang=php path=crossfile/php/src/Service/Helper.php snapshot=snap-fb3ba7950d9c12e7 tests=[]

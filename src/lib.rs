@@ -29,6 +29,7 @@ pub mod canonical;
 pub mod cli;
 pub mod incremental;
 pub mod input;
+pub mod links;
 pub mod model;
 pub mod parser;
 pub mod paths;
