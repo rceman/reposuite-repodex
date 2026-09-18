@@ -357,7 +357,7 @@ FALSE_EXACT defects in required rules: 0
 ```text
 cargo fmt --all -- --check                                        PASS
 cargo check --locked                                              PASS
-cargo test --locked                                               PASS   236 passed, 0 failed
+cargo test --locked                                               PASS   245 passed, 0 failed, 22 suites
 cargo clippy --locked --all-targets --all-features -- -D warnings PASS
 cargo build --locked --release                                    PASS
 ```
