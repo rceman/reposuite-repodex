@@ -45,17 +45,37 @@ candidate false-negatives. The audit counts ~13,683 call-shaped tokens inside
 macro bodies on tokio (an upper-bound approximation). **Disposition: a known
 extraction boundary; out of scope for candidate generation.**
 
-## T3C-F005 — `LEXICAL_SCOPE`, MEDIUM — local bindings can shadow a `fn` candidate
+## T3C-F005 — `LEXICAL_SCOPE`, HIGH — local bindings can shadow a `fn` candidate (OPEN — blocked by fact model)
 
 The rule searches `function` declarations only; `let`, `const`, `static` and
 closure bindings are not declarations in the normalized model and therefore do
 not shadow. `fn helper(){}; fn run(){ let helper = ||{}; helper(); }` returns
 the module `fn helper` as a `single_candidate` even though the real binding is
-the local closure. This is correct *under the bounded rule* — the module
-function is an eligible declaration in the chain — but it is a semantic
-over-approximation and the clearest illustration that a candidate is not a
-resolved target. **Disposition: documented bound; a candidate is not a resolved
-call target.**
+the local closure. The module function is an eligible declaration in the
+lexical chain, but returning it when a nearer `let`/`param`/pattern owns the
+name is an unsafe over-approximation — the case the shadow-correction task
+(`REPODEX-T3C-LEXICAL-SHADOW-CORRECTION-V1`) targeted.
+
+*Original defect:* closer local value bindings are not modeled, so an outer
+free `fn` is returned as a candidate when a nearer `let`/`param`/pattern owns
+the written name.
+*Reproduction:* `docs/TASK3C_CORRECTION.md` §2 — `run`/`runp`/inner-block cases
+all emit `single_candidate(helper@0)`.
+*Fix:* **BLOCKED** — `TASK3C_CORRECTION_BLOCKED_BY_FACT_MODEL`. Detecting the
+mandatory `let`/parameter/pattern blockers requires a local-binding fact (plus
+an enclosing-block live range, because `{ }` blocks are not scopes) that the
+normalized model does not persist. That is a TASK 1/2 extraction-layer
+extension and a blocking architectural dependency — see
+`docs/TASK3C_CORRECTION.md`.
+*Regression evidence:* cannot be added until the facts exist; the mandatory
+fixtures are unsatisfiable under the current model.
+*Residual unsupported binding forms:* `let`, function parameter, closure
+parameter, `for`, `match`, `if-let`, `while-let`. Representable but
+corpus-no-op: local `const`/`static`, same-name `use` imports.
+
+**Disposition: open correctness defect; correction is blocked pending the
+local-binding fact extension. A candidate is not a resolved call target — this
+gap is documented rather than patched with an unsafe source scan.**
 
 ## T3C-F006 — `LEXICAL_SCOPE`, INFO — `impl` blocks are transparent
 

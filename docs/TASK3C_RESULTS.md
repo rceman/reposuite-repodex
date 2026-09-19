@@ -3,6 +3,13 @@
 **A candidate is not a resolved call target.** Everything in this document is a
 bounded syntactic observation, never a claim about runtime dispatch.
 
+> **Post-completion correction note.** A follow-up correction
+> (`REPODEX-T3C-LEXICAL-SHADOW-CORRECTION-V1`) required suppressing an outer
+> `fn` candidate when a closer local `let`/parameter/pattern binding owns the
+> written name. The persisted normalized facts do not represent those bindings,
+> so the correction is `TASK3C_CORRECTION_BLOCKED_BY_FACT_MODEL` — see
+> [`TASK3C_CORRECTION.md`](TASK3C_CORRECTION.md) and the escalated T3C-F005.
+
 ## 1. Base commit
 
 ```text

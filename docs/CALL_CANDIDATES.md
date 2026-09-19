@@ -125,6 +125,29 @@ Consequences:
 Rust's real rules are richer (visibility, `use`, trait dispatch, generics).
 This policy is a documented bound, not compiler equivalence.
 
+### Known gap: local bindings do not shadow (T3C-F005)
+
+The lexical search sees only `function` declarations. Local value bindings —
+`let`, function/closure parameters, `for`/`match`/`if-let`/`while-let` patterns,
+`const`, `static` — are not function declarations, and (except `const`/`static`)
+are **not persisted in the normalized facts at all**. So when a nearer local
+binding owns the written name, the rule may still return an outer `fn` as a
+`single_candidate`:
+
+```rust
+fn helper() {}
+fn run() { let helper = || {}; helper(); }   // -> single_candidate(helper) — unsafe
+```
+
+That candidate is correct *under the bounded rule* but semantically shadowed.
+A correction that suppresses the outer `fn` when a closer binding owns the name
+was attempted and is **blocked by the fact model**: `let`/parameter/pattern
+bindings are not persisted, so the mandatory cases cannot be detected without a
+new normalized `LocalBinding` fact (a TASK 1/2 extraction change). Until that
+exists, treat every `single_candidate`/`multiple_candidates` result as
+candidate evidence only — never a resolved target — and see
+[`TASK3C_CORRECTION.md`](TASK3C_CORRECTION.md) for the full blocked analysis.
+
 ## Imports and re-exports are out of scope
 
 TASK 3B carries a known re-export limitation (T3B-F004). TASK 3C does not solve
