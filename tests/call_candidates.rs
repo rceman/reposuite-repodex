@@ -822,6 +822,114 @@ fn update_equals_fresh_for_a_module_changed() {
 }
 
 // ---------------------------------------------------------------------------
+// Update-vs-fresh equivalence for lexical-blocker changes (TASK 3C V2)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn update_equals_fresh_for_a_let_blocker_added() {
+    let temp = TempDir::new("t3c-eq-letadd");
+    let root = candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "letadd",
+        &root,
+        |root| {
+            // Introduce a `let helper` that shadows the module `fn helper`; the
+            // call's binding fact and its outcome must recompute identically.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run() {\n    let helper = || {};\n    helper();\n}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_let_blocker_removed() {
+    let temp = TempDir::new("t3c-eq-letdel");
+    let root = candidate_repo(&temp, "repo");
+    // Start with the `let` present, then remove it.
+    std::fs::write(
+        root.join("src/lib.rs"),
+        b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run() {\n    let helper = || {};\n    helper();\n}\n",
+    )
+    .expect("write");
+    assert_update_equals_fresh(
+        "letdel",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run() {\n    helper();\n}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_parameter_renamed() {
+    let temp = TempDir::new("t3c-eq-renparam");
+    let root = candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "renparam",
+        &root,
+        |root| {
+            // Give `run` a `helper` parameter: it becomes the blocker for its
+            // own body call instead of the module `fn helper`.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run(helper: fn()) { helper(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_nested_block_changed() {
+    let temp = TempDir::new("t3c-eq-nestblock");
+    let root = candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "nestblock",
+        &root,
+        |root| {
+            // Wrap the `let` and the call in an inner block; visibility must be
+            // recomputed against the new block boundary.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run() {\n    {\n        let helper = || {};\n        helper();\n    }\n    helper();\n}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_import_blocker_added() {
+    let temp = TempDir::new("t3c-eq-impadd");
+    let root = candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "impadd",
+        &root,
+        |root| {
+            // A `use` inside `run` is a nearer blocker than the file-level
+            // `fn helper`, so the call must become blocked.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nfn helper() {}\nfn run() {\n    use crate::util::helper;\n    helper();\n}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Verification and integrity
 // ---------------------------------------------------------------------------
 
@@ -835,6 +943,25 @@ fn a_fresh_artifact_verifies() {
     assert_eq!(report.records, index.records().len() as u64);
     assert_eq!(report.snapshot_digest, index.manifest.snapshot_digest);
     assert_eq!(report.link_digest, index.manifest.link_digest);
+}
+
+#[test]
+fn a_stale_rule_fingerprint_is_rejected() {
+    // An artifact derived by an earlier candidate-rule version carries a
+    // different `candidate_fingerprint`. Even with otherwise-consistent
+    // digests it must fail compatibility verification (stale-V1 invalidation).
+    let temp = TempDir::new("t3c-stale-rule");
+    let (snap, links, _index) = fixture_candidates(&temp);
+    let candidates_dir = store(&temp, "candidates");
+    candidate(&snap, &links, &candidates_dir);
+    mutate_candidate_manifest(&candidates_dir, |manifest| {
+        manifest.candidate_fingerprint = FOREIGN_DIGEST.to_string();
+    });
+    let error = verify(&candidates_dir, &snap, &links).expect_err("must fail");
+    assert!(matches!(
+        error,
+        CandidateError::RuleFingerprintMismatch { .. }
+    ));
 }
 
 #[test]

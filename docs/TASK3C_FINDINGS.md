@@ -45,7 +45,7 @@ candidate false-negatives. The audit counts ~13,683 call-shaped tokens inside
 macro bodies on tokio (an upper-bound approximation). **Disposition: a known
 extraction boundary; out of scope for candidate generation.**
 
-## T3C-F005 — `LEXICAL_SCOPE`, HIGH — local bindings can shadow a `fn` candidate (OPEN — blocked by fact model)
+## T3C-F005 — `LEXICAL_SCOPE`, HIGH — local bindings can shadow a `fn` candidate (CLOSED — fixed in V2)
 
 The rule searches `function` declarations only; `let`, `const`, `static` and
 closure bindings are not declarations in the normalized model and therefore do
@@ -59,23 +59,47 @@ name is an unsafe over-approximation — the case the shadow-correction task
 *Original defect:* closer local value bindings are not modeled, so an outer
 free `fn` is returned as a candidate when a nearer `let`/`param`/pattern owns
 the written name.
-*Reproduction:* `docs/TASK3C_CORRECTION.md` §2 — `run`/`runp`/inner-block cases
-all emit `single_candidate(helper@0)`.
-*Fix:* **BLOCKED** — `TASK3C_CORRECTION_BLOCKED_BY_FACT_MODEL`. Detecting the
-mandatory `let`/parameter/pattern blockers requires a local-binding fact (plus
-an enclosing-block live range, because `{ }` blocks are not scopes) that the
-normalized model does not persist. That is a TASK 1/2 extraction-layer
-extension and a blocking architectural dependency — see
-`docs/TASK3C_CORRECTION.md`.
-*Regression evidence:* cannot be added until the facts exist; the mandatory
-fixtures are unsatisfiable under the current model.
-*Residual unsupported binding forms:* `let`, function parameter, closure
-parameter, `for`, `match`, `if-let`, `while-let`. Representable but
-corpus-no-op: local `const`/`static`, same-name `use` imports.
+*V1 reproduction:* `docs/TASK3C_CORRECTION.md` §2 — `run`/`runp`/inner-block
+cases all emit `single_candidate(helper@0)`. Re-derived under V2 emulation:
+`let`/`param`/nested-block/`import`/`const` cases each produced
+`single_candidate(fn helper)` under the blocker-blind rule and now produce the
+matching `no_candidate(...)` block.
+*Fact-model blocker (V1):* `TASK3C_CORRECTION_BLOCKED_BY_FACT_MODEL` — the
+normalized model did not persist local bindings or block-boundary live ranges.
+*Prerequisite:* `REPODEX-T3C-RUST-LOCAL-BINDING-FACTS-V1` added
+`FileAnalysis.bindings` (`LocalBindingOccurrence` with `visibility_ranges`,
+`covers`, and an `ambiguous` flag), so the blockers are now persisted facts.
+*V2 correction:* `rule_rust` now gates an outer `function` candidate on the
+nearer name-bearing constructs: a covering same-name `LocalBindingOccurrence`
+(`covers(call_byte)` plus a transparent-scope reachability gate) blocks with
+`shadowed_by_local_binding` / `blocked_by_ambiguous_local_binding`; a nearer
+same-name `const`/`static` blocks with `blocked_by_local_constant`; a nearer
+same-name `use` leaf/alias blocks with `blocked_by_import_binding`. Within each
+lexical level a `function` still wins over a same-level `use`/`const` (they
+cannot both be same-name values).
+*Regression evidence:* `tests/local_shadow_v2.rs` — 27 tests covering every
+mandatory shape (`let`, call-before-`let`, own-initializer, nested block,
+sequential `let`s, `fn`/closure/`for`/`match`/`if-let`/`while-let` bindings,
+`@`-capture, ambiguous refutable binding, unrelated name, nested `fn`,
+`use`/alias/wildcard, `const`), plus five `update_equals_fresh_for_*` blocker
+cases in `tests/call_candidates.rs`.
+*Real-corpus impact:* on tokio the defect is latent — the independent audit
+(`scripts/task3c_audit.py`, V2-aware) reports **0 `FALSE_CANDIDATE` /
+0 `WRONG_SCOPE_CANDIDATE`** and the V1→V2 diff shows **0 outcome-kind
+transitions**; 1,203 calls gain precise blocker provenance (165
+`shadowed_by_local_binding`, 8 `blocked_by_ambiguous_local_binding`, 1,030
+`blocked_by_import_binding`). No unsafe outer candidate was being emitted, and
+none is emitted now.
+*Remaining limitations:* a `use` that brings a macro/type (not a value) at a
+nearer level still conservatively blocks the outer `fn` (bounded recall loss —
+a `use` carries no namespace tag); bindings inside `macro_rules!`/macro bodies
+are not extracted (T3C-BF-F005) so they cannot block; blocker facts are
+blockers only, never candidates.
 
-**Disposition: open correctness defect; correction is blocked pending the
-local-binding fact extension. A candidate is not a resolved call target — this
-gap is documented rather than patched with an unsafe source scan.**
+**Disposition: closed — corrected in V2 (`candidate_rule_abi_version` 2). The
+rule now prefers "I cannot safely name an outer candidate" over an unsafe
+outer `function` whenever a nearer persisted name-bearing fact blocks the
+lookup.**
 
 ## T3C-F006 — `LEXICAL_SCOPE`, INFO — `impl` blocks are transparent
 

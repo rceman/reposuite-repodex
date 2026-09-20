@@ -44,13 +44,23 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 /// This version participates in [`CandidateFingerprint`], so bumping it
 /// invalidates previously derived candidate artifacts without touching the
 /// TASK 3A snapshot or the TASK 3B link artifact.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 1;
+///
+/// * `1` — plain-name calls searched `function` declarations only, innermost
+///   enclosing module outward.
+/// * `2` — added lexical blockers: a covering same-name `LocalBindingOccurrence`
+///   (definite or ambiguous), a same-name local `const`/`static`, or a same-name
+///   `use` leaf/alias suppresses the outer `function` candidate.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 2;
 
 /// Per-language candidate-policy versions.
 ///
 /// Separate from the ABI version so that a change confined to one language's
 /// candidate policy is visible as such in the fingerprint text.
-pub const POLICY_VERSION_RUST_CALL: u32 = 1;
+///
+/// * `1` — `function`-declaration search only.
+/// * `2` — local-binding / `const`/`static` / `use` blockers suppress outward
+///   function lookup.
+pub const POLICY_VERSION_RUST_CALL: u32 = 2;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///

@@ -96,6 +96,12 @@ pub enum CandidateError {
     UndocumentedRule {
         rule_id: String,
     },
+    /// The artifact was derived by a different candidate-rule version than the
+    /// one verifying it, so it is not analysis-compatible with this build.
+    RuleFingerprintMismatch {
+        expected: String,
+        found: String,
+    },
     /// The recomputed candidate digest does not match the manifest.
     CandidateDigestMismatch {
         expected: String,
@@ -161,6 +167,10 @@ impl fmt::Display for CandidateError {
             CandidateError::UndocumentedRule { rule_id } => write!(
                 formatter,
                 "candidate record references rule `{rule_id}` which the manifest does not document"
+            ),
+            CandidateError::RuleFingerprintMismatch { expected, found } => write!(
+                formatter,
+                "candidate artifact was derived by rule fingerprint {found}, but this build expects {expected}"
             ),
             CandidateError::CandidateDigestMismatch { expected, found } => write!(
                 formatter,
@@ -430,6 +440,18 @@ pub fn verify(
     links_dir: &Path,
 ) -> Result<CandidateVerificationReport, CandidateError> {
     let manifest = read_manifest(dir)?;
+
+    // 0. The artifact must have been derived by this build's candidate rule. A
+    //    stale artifact from an earlier rule version carries a different
+    //    fingerprint, so it is not analysis-compatible even if its digests are
+    //    internally consistent.
+    let current_fingerprint = super::model::CandidateFingerprint::current().digest;
+    if manifest.candidate_fingerprint != current_fingerprint {
+        return Err(CandidateError::RuleFingerprintMismatch {
+            expected: current_fingerprint,
+            found: manifest.candidate_fingerprint.clone(),
+        });
+    }
 
     // 1. The artifact must depend on exactly the supplied snapshot.
     let snapshot_manifest: RepositoryManifest =

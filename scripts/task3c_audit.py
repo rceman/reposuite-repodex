@@ -123,27 +123,127 @@ def enclosing_module_chain(scopes_by_id, start_id):
     return chain
 
 
-def expected_candidates(analysis, call):
-    """The candidate set the bounded rule produces, derived independently.
+def binding_applies(scopes_by_id, binding_scope, call_scope):
+    """Whether a local binding in `binding_scope` reaches a call in `call_scope`.
 
-    Returns the list of ``(relative_path, declaration_id)`` for the first
-    lexical level that contains a matching ``function`` declaration, or the
-    empty list when no level has one.
+    Independent re-implementation of the transparent-scope gate: a `let`/
+    parameter/pattern binding is visible in its own scope and inside nested
+    closures (which capture it), but not inside a nested `fn`/method/item body.
     """
-    scopes_by_id = {s["scope_id"]: s for s in analysis["scopes"]}
-    chain = enclosing_module_chain(scopes_by_id, call["scope_id"])
+    level = call_scope
+    guard = 0
+    while True:
+        if level == binding_scope:
+            return True
+        scope = scopes_by_id.get(level)
+        if scope is None or scope["kind"] != "closure":
+            return False
+        parent = scope["parent_scope_id"]
+        if parent is None:
+            return False
+        level = parent
+        guard += 1
+        if guard > len(scopes_by_id):
+            return False
+
+
+def covers(binding, byte_offset):
+    """Half-open membership test against `visibility_ranges`."""
+    return any(
+        r["byte_start"] <= byte_offset < r["byte_end"]
+        for r in binding.get("visibility_ranges", [])
+    )
+
+
+def import_local_name(item):
+    """The local name a `use` item binds: its alias, else the leaf `::` segment.
+
+    Wildcards bind no single name. `use a::b::{self}` binds `b`.
+    """
+    if item.get("wildcard"):
+        return None
+    if item.get("alias"):
+        return item["alias"]
+    parts = item["target"].split("::")
+    if parts and parts[-1] == "self":
+        return parts[-2] if len(parts) >= 2 else None
+    return parts[-1] if parts else None
+
+
+def expected_outcome(analysis, call):
+    """The expected result under the V2 lexical-blocker rule, derived
+    independently of the production rule.
+
+    Returns a tuple ``(kind, payload)`` where ``kind`` is one of:
+
+    ``("blocked", blocker_kind)``   a covering same-name blocker suppresses the
+                                    outer function; ``blocker_kind`` is one of
+                                    ``local_binding`` / ``ambiguous_binding`` /
+                                    ``constant`` / ``import``.
+    ``("candidates", [decls])``     the expected ``(path, declaration_id)`` set
+                                    for the nearest level with a ``function``.
+    """
     name = call["callee_written"]
-    for scope in chain:
-        matches = [
+    call_byte = call["callee_range"]["byte_start"]
+    scopes_by_id = {s["scope_id"]: s for s in analysis["scopes"]}
+
+    # A covering same-name local binding is the innermost name-bearing
+    # construct: it shadows every outer function/constant/import.
+    covering = [
+        b
+        for b in analysis.get("bindings", [])
+        if b["name"] == name
+        and covers(b, call_byte)
+        and binding_applies(scopes_by_id, b["scope_id"], call["scope_id"])
+    ]
+    if covering:
+        nearest = max(
+            covering, key=lambda b: (b["name_range"]["byte_start"], b["binding_id"])
+        )
+        return ("blocked", "ambiguous_binding" if nearest["ambiguous"] else "local_binding")
+
+    for scope in enclosing_module_chain(scopes_by_id, call["scope_id"]):
+        level = scope["scope_id"]
+        functions = [
             d
             for d in analysis["declarations"]
-            if d["scope_id"] == scope["scope_id"]
-            and d["kind"] == "function"
-            and d["name"] == name
+            if d["scope_id"] == level and d["kind"] == "function" and d["name"] == name
         ]
-        if matches:
-            return [(d["relative_path"], d["declaration_id"]) for d in matches]
-    return []
+        if functions:
+            return (
+                "candidates",
+                [(d["relative_path"], d["declaration_id"]) for d in functions],
+            )
+        if any(
+            d["scope_id"] == level and d["kind"] == "constant" and d["name"] == name
+            for d in analysis["declarations"]
+        ):
+            return ("blocked", "constant")
+        if any(
+            import_local_name(item) == name
+            for imp in analysis["imports"]
+            if imp["scope_id"] == level
+            for item in imp["items"]
+        ):
+            return ("blocked", "import")
+    return ("candidates", [])
+
+
+# Map an expected blocker kind to the emitted `NoCandidate` reason string.
+BLOCK_REASON = {
+    "local_binding": "shadowed_by_local_binding",
+    "ambiguous_binding": "blocked_by_ambiguous_local_binding",
+    "import": "blocked_by_import_binding",
+    "constant": "blocked_by_local_constant",
+}
+
+# Verdict to emit for a correctly-classified block of each kind.
+BLOCK_VERDICT = {
+    "local_binding": "CORRECTLY_BLOCKED_LOCAL_BINDING",
+    "ambiguous_binding": "CORRECTLY_BLOCKED_AMBIGUOUS_BINDING",
+    "import": "CORRECTLY_BLOCKED_IMPORT",
+    "constant": "CORRECTLY_BLOCKED_CONSTANT",
+}
 
 
 def candidate_scope_ids(analysis):
@@ -300,16 +400,48 @@ def audit(args) -> dict:
                 continue
 
             calls_in_scope += 1
-            expected = expected_candidates(analysis, call)
+            kind, payload = expected_outcome(analysis, call)
+            expected = payload if kind == "candidates" else []
             actual = []
+            actual_reason = None
             if record:
+                outcome = record["outcome"]
                 actual = [
                     (c["relative_path"], c["declaration_id"])
-                    for c in record["outcome"].get("candidates", [])
+                    for c in outcome.get("candidates", [])
                 ]
-                if record["outcome"]["outcome"] == "single_candidate":
-                    c = record["outcome"]["candidate"]
+                if outcome["outcome"] == "single_candidate":
+                    c = outcome["candidate"]
                     actual = [(c["relative_path"], c["declaration_id"])]
+                actual_reason = outcome.get("reason")
+
+            # A call an expected blocker should suppress: the record must be a
+            # `no_candidate` carrying the matching blocker reason. An emitted
+            # candidate here is the unsafe outer candidate the correction exists
+            # to prevent.
+            if kind == "blocked":
+                blocker_kind = payload
+                expected_reason = BLOCK_REASON[blocker_kind]
+                verdict = BLOCK_VERDICT[blocker_kind]
+                if actual:
+                    verdicts["FALSE_CANDIDATE"] += 1
+                    false_candidates.append(
+                        (path, call["call_id"], call["callee_written"],
+                         f"candidate emitted despite a {blocker_kind} blocker")
+                    )
+                elif record and record["outcome"]["outcome"] == "no_candidate" \
+                        and actual_reason == expected_reason:
+                    verdicts[verdict] += 1
+                elif record and record["outcome"]["outcome"] == "no_candidate":
+                    verdicts["BLOCKED_WRONG_REASON"] += 1
+                    details.append(
+                        (path, call["call_id"], call["callee_written"],
+                         f"expected {blocker_kind} block ({expected_reason}), got reason {actual_reason!r}")
+                    )
+                else:
+                    verdicts["MISSING_CANDIDATE"] += 1
+                    missing.append((path, call["call_id"], call["callee_written"]))
+                continue
 
             expected_set = set(expected)
             actual_set = set(actual)
@@ -402,8 +534,12 @@ def main() -> int:
     tp = v.get("CORRECT_SINGLE", 0) + v.get("CORRECT_MULTIPLE", 0)
     fp = v.get("FALSE_CANDIDATE", 0) + v.get("WRONG_SCOPE_CANDIDATE", 0)
     fn = v.get("MISSING_CANDIDATE", 0)
+    blocked_local = v.get("CORRECTLY_BLOCKED_LOCAL_BINDING", 0)
+    blocked_ambig = v.get("CORRECTLY_BLOCKED_AMBIGUOUS_BINDING", 0)
+    blocked_import = v.get("CORRECTLY_BLOCKED_IMPORT", 0)
+    blocked_const = v.get("CORRECTLY_BLOCKED_CONSTANT", 0)
 
-    print("TASK 3C independent call-candidate audit")
+    print("TASK 3C independent call-candidate audit (V2 lexical-blocker aware)")
     print(f"  regions:              {report['region_count']} files")
     print(f"  in-scope calls:       {total}")
     print(f"  out-of-scope calls:   {report['calls_out_of_scope']}")
@@ -411,9 +547,14 @@ def main() -> int:
     print(f"  correct single:       {v.get('CORRECT_SINGLE',0)}")
     print(f"  correct multiple:     {v.get('CORRECT_MULTIPLE',0)}")
     print(f"  out-of-scope correct: {v.get('OUT_OF_SCOPE_CORRECT',0)}")
+    print(f"  blocked local binding:{blocked_local}")
+    print(f"  blocked ambiguous:    {blocked_ambig}")
+    print(f"  blocked import:       {blocked_import}")
+    print(f"  blocked constant:     {blocked_const}")
     print(f"  FALSE_CANDIDATE:      {v.get('FALSE_CANDIDATE',0)}")
     print(f"  WRONG_SCOPE:          {v.get('WRONG_SCOPE_CANDIDATE',0)}")
     print(f"  MISSING_CANDIDATE:    {v.get('MISSING_CANDIDATE',0)}")
+    print(f"  BLOCKED_WRONG_REASON: {v.get('BLOCKED_WRONG_REASON',0)}")
     print(f"  OUT_OF_SCOPE_WRONG:   {v.get('OUT_OF_SCOPE_WRONG',0)}")
     print(f"  candidate TP/FP/FN:   {tp}/{fp}/{fn}")
     print(f"  macro-hidden calls:   {report['macro_hidden_calls']} (approx, NOT_AVAILABLE_TO_TASK3C)")
