@@ -12,7 +12,7 @@ source-written `function` produces zero/one/many candidates under the new rule
 Resolved base HEAD: `cd635b0ee4cc62bdcd836919c22336c2c04cf1d8` — working tree
 clean, `e7ab143` (TASK 3D) is an ancestor.
 
-TASK 3E implementation commit: recorded below.
+TASK 3E implementation commit: `2bbfdeef5ae104d29bfdff23945a26306768c792`.
 
 ## 3. Candidate rule ABI / version
 
