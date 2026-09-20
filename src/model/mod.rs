@@ -12,9 +12,9 @@ mod range;
 pub use analysis::{AnalysisStatus, FileAnalysis, SourceFile, SCHEMA_VERSION};
 pub use diagnostic::{Diagnostic, DiagnosticKind, DiagnosticSeverity};
 pub use facts::{
-    CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag, DeclarationKind,
-    ImportCategory, ImportForm, ImportItem, ImportOccurrence, ReferenceKind, ReferenceOccurrence,
-    Scope, ScopeKind, TestEvidence, TestEvidenceKind,
+    BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag, DeclarationKind,
+    ImportCategory, ImportForm, ImportItem, ImportOccurrence, LocalBindingOccurrence,
+    ReferenceKind, ReferenceOccurrence, Scope, ScopeKind, TestEvidence, TestEvidenceKind,
 };
 pub use range::{point_at, range_from_offsets, LineIndex, SourceRange};
 

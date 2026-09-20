@@ -1,7 +1,8 @@
-file schema=1 path=callcandidates/rust/src/ext.rs lang=rust bytes=81 lines=6 final_newline=true status=clean snapshot=snap-dddf958f22b2f912
+file schema=2 path=callcandidates/rust/src/ext.rs lang=rust bytes=81 lines=6 final_newline=true status=clean snapshot=snap-dddf958f22b2f912
 scope 0 kind=file parent=- name=- range=0..81 (0:0..6:0) header=- lang=rust
 scope 1 kind=extern_block parent=0 name=- range=0..48 (0:0..2:1) header=0..11 (0:0..0:11) lang=rust
 scope 2 kind=function parent=0 name=run range=49..80 (3:0..5:1) header=- lang=rust
 decl 0 kind=function name=ext_helper scope=1 flags=[] range=17..46 (1:4..1:33) name_range=20..30 (1:7..1:17) body=- lang=rust path=callcandidates/rust/src/ext.rs snapshot=snap-dddf958f22b2f912 tests=[]
 decl 1 kind=function name=run scope=0 flags=[] range=49..80 (3:0..5:1) name_range=52..55 (3:3..3:6) body=58..80 (3:9..5:1) lang=rust path=callcandidates/rust/src/ext.rs snapshot=snap-dddf958f22b2f912 tests=[]
 call 0 form=plain_name callee=ext_helper scope=2 expr=64..77 (4:4..4:17) callee_range=64..74 (4:4..4:14) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=function_parameter name=x scope=1 name_range=31..32 (1:18..1:19) site=31..37 (1:18..1:24) vis=[] ambiguous=false lang=rust path=callcandidates/rust/src/ext.rs snapshot=snap-dddf958f22b2f912

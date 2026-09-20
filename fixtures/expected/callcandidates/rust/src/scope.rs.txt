@@ -1,4 +1,4 @@
-file schema=1 path=callcandidates/rust/src/scope.rs lang=rust bytes=234 lines=17 final_newline=true status=clean snapshot=snap-710bcf1cd2bfa293
+file schema=2 path=callcandidates/rust/src/scope.rs lang=rust bytes=234 lines=17 final_newline=true status=clean snapshot=snap-710bcf1cd2bfa293
 scope 0 kind=file parent=- name=- range=0..234 (0:0..17:0) header=- lang=rust
 scope 1 kind=function parent=0 name=helper range=0..14 (0:0..0:14) header=- lang=rust
 scope 2 kind=struct parent=0 name=User range=15..32 (1:0..1:17) header=15..26 (1:0..1:11) lang=rust
@@ -19,3 +19,5 @@ call 1 form=plain_name callee=closure scope=6 expr=165..174 (11:4..11:13) callee
 call 2 form=plain_name callee=f scope=6 expr=200..203 (13:4..13:7) callee_range=200..201 (13:4..13:5) type_args=- type_args_range=- dyn=false nullsafe=false
 call 3 form=plain_name callee=helper scope=6 expr=209..217 (14:4..14:12) callee_range=209..215 (14:4..14:10) type_args=- type_args_range=- dyn=false nullsafe=false
 call 4 form=plain_name callee=User scope=6 expr=223..230 (15:4..15:11) callee_range=223..227 (15:4..15:8) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=let name=closure scope=6 name_range=144..151 (10:8..10:15) site=140..160 (10:4..10:24) vis=[160..233 (10:24..16:1)] ambiguous=false lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293
+binding 1 kind=let name=f scope=6 name_range=184..185 (12:8..12:9) site=180..195 (12:4..12:19) vis=[195..233 (12:19..16:1)] ambiguous=false lang=rust path=callcandidates/rust/src/scope.rs snapshot=snap-710bcf1cd2bfa293

@@ -2,12 +2,18 @@ use serde::{Deserialize, Serialize};
 
 use super::{
     CallLikeOccurrence, Declaration, Diagnostic, DiagnosticKind, DiagnosticSeverity,
-    ImportOccurrence, LanguageId, ReferenceOccurrence, Scope, SourceRange, TestEvidence,
+    ImportOccurrence, LanguageId, LocalBindingOccurrence, ReferenceOccurrence, Scope, SourceRange,
+    TestEvidence,
 };
 
 /// Version of the normalized fact schema. Bumped when the shape of the
 /// canonical facts changes in a way that is not purely additive.
-pub const SCHEMA_VERSION: u32 = 1;
+///
+/// * `1` — the original fact set (`scopes`, `declarations`, `imports`,
+///   `references`, `calls`, `diagnostics`, `recovery_regions`).
+/// * `2` — added `bindings` (`LocalBindingOccurrence`), the Rust local
+///   name-binding facts with bounded visibility ranges.
+pub const SCHEMA_VERSION: u32 = 2;
 
 /// The analyzed source snapshot.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -86,6 +92,12 @@ pub struct FileAnalysis {
     pub references: Vec<ReferenceOccurrence>,
     /// Call-like occurrences ordered by byte range. `call_id` is the index.
     pub calls: Vec<CallLikeOccurrence>,
+    /// Local name bindings ordered by byte range. `binding_id` is the index.
+    ///
+    /// These are *syntax* facts: a written identifier introduced by a `let`,
+    /// parameter, or pattern with the source regions where it may shadow an
+    /// outer name. They are not resolved values and not call targets.
+    pub bindings: Vec<LocalBindingOccurrence>,
     /// File-level test evidence, e.g. a `_test.go` file name convention.
     pub file_test_evidence: Vec<TestEvidence>,
     /// Byte ranges where Tree-sitter had to recover.
@@ -111,6 +123,7 @@ impl FileAnalysis {
             imports: Vec::new(),
             references: Vec::new(),
             calls: Vec::new(),
+            bindings: Vec::new(),
             file_test_evidence: Vec::new(),
             recovery_regions: Vec::new(),
         }
@@ -158,6 +171,23 @@ impl FileAnalysis {
         });
         for (index, call) in self.calls.iter_mut().enumerate() {
             call.call_id = index as u32;
+        }
+        self.bindings.sort_by(|left, right| {
+            (
+                left.name_range.byte_start,
+                left.name_range.byte_end,
+                left.kind,
+                left.name.as_str(),
+            )
+                .cmp(&(
+                    right.name_range.byte_start,
+                    right.name_range.byte_end,
+                    right.kind,
+                    right.name.as_str(),
+                ))
+        });
+        for (index, binding) in self.bindings.iter_mut().enumerate() {
+            binding.binding_id = index as u32;
         }
         self.diagnostics.sort_by(|left, right| {
             let left_start = left.range.map(|range| range.byte_start).unwrap_or(u32::MAX);
@@ -236,6 +266,17 @@ impl FileAnalysis {
         name: &'a str,
     ) -> impl Iterator<Item = &'a Declaration> {
         self.declarations.iter().filter(move |d| d.name == name)
+    }
+
+    /// All local bindings with the given written name, in canonical order.
+    ///
+    /// This is a bounded exact lookup for tests and consumers, not a
+    /// generalized search and not name resolution.
+    pub fn bindings_named<'a>(
+        &'a self,
+        name: &'a str,
+    ) -> impl Iterator<Item = &'a LocalBindingOccurrence> {
+        self.bindings.iter().filter(move |b| b.name == name)
     }
 
     pub fn scope(&self, scope_id: u32) -> &Scope {
@@ -444,6 +485,29 @@ impl FileAnalysis {
                     .unwrap_or_else(|| "-".to_string()),
                 call.dynamic_callee,
                 call.nullsafe,
+            ));
+        }
+        for binding in &self.bindings {
+            let visibility = binding
+                .visibility_ranges
+                .iter()
+                .map(SourceRange::render)
+                .collect::<Vec<_>>()
+                .join(",");
+            lines.push(format!(
+                "binding {} kind={} name={} scope={} name_range={} site={} vis=[{}] ambiguous={} \
+                 lang={} path={} snapshot={}",
+                binding.binding_id,
+                binding.kind.as_str(),
+                escape_field(&binding.name),
+                binding.scope_id,
+                binding.name_range.render(),
+                binding.binding_site_range.render(),
+                visibility,
+                binding.ambiguous,
+                binding.language.as_str(),
+                escape_field(&binding.relative_path),
+                binding.snapshot_id,
             ));
         }
         for evidence in &self.file_test_evidence {

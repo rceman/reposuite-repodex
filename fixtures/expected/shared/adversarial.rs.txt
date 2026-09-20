@@ -1,4 +1,4 @@
-file schema=1 path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
+file schema=2 path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
 scope 0 kind=file parent=- name=- range=0..973 (0:0..51:0) header=- lang=rust
 scope 1 kind=function parent=0 name=multibyte_after_utf8 range=142..170 (4:0..4:28) header=- lang=rust
 scope 2 kind=impl parent=0 name=- range=234..296 (10:0..14:1) header=234..249 (10:0..10:15) lang=rust
@@ -40,3 +40,4 @@ decl 17 kind=function name=generated_0007 scope=0 flags=[] range=919..945 (49:0.
 decl 18 kind=function name=generated_0008 scope=0 flags=[] range=946..972 (50:0..50:26) name_range=953..967 (50:7..50:21) body=970..972 (50:24..50:26) lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3 tests=[]
 ref 0 kind=impl_target written=Duplicate scope=2 decl=- range=239..248 (10:5..10:14)
 call 0 form=qualified_path callee=Missing::default scope=11 expr=694..712 (37:29..37:47) callee_range=694..710 (37:29..37:45) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=let name=value scope=11 name_range=673..678 (37:8..37:13) site=669..713 (37:4..37:48) vis=[713..725 (37:48..39:1)] ambiguous=false lang=rust path=shared/adversarial.rs snapshot=snap-3eac2d46abffefa3

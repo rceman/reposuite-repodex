@@ -1,4 +1,4 @@
-file schema=1 path=callcandidates/rust/src/other.rs lang=rust bytes=50 lines=2 final_newline=true status=clean snapshot=snap-6818a68bbc21fecb
+file schema=2 path=callcandidates/rust/src/other.rs lang=rust bytes=50 lines=2 final_newline=true status=clean snapshot=snap-6818a68bbc21fecb
 scope 0 kind=file parent=- name=- range=0..50 (0:0..2:0) header=- lang=rust
 scope 1 kind=function parent=0 name=imported_fn range=0..23 (0:0..0:23) header=- lang=rust
 scope 2 kind=function parent=0 name=reexported_fn range=24..49 (1:0..1:25) header=- lang=rust

@@ -1,4 +1,4 @@
-file schema=1 path=rust/calls.rs lang=rust bytes=352 lines=15 final_newline=true status=clean snapshot=snap-6b6e75240ccee0d4
+file schema=2 path=rust/calls.rs lang=rust bytes=352 lines=15 final_newline=true status=clean snapshot=snap-6b6e75240ccee0d4
 scope 0 kind=file parent=- name=- range=0..352 (0:0..15:0) header=- lang=rust
 scope 1 kind=function parent=0 name=callees range=39..351 (2:0..14:1) header=- lang=rust
 scope 2 kind=closure parent=1 name=- range=264..268 (10:18..10:22) header=- lang=rust
@@ -13,3 +13,6 @@ call 6 form=plain_name callee=closure scope=1 expr=274..283 (11:4..11:13) callee
 call 7 form=indirect callee=(make_callable()) scope=1 expr=289..309 (12:4..12:24) callee_range=289..306 (12:4..12:21) type_args=- type_args_range=- dyn=false nullsafe=false
 call 8 form=plain_name callee=make_callable scope=1 expr=290..305 (12:5..12:20) callee_range=290..303 (12:5..12:18) type_args=- type_args_range=- dyn=false nullsafe=false
 call 9 form=macro_invocation callee=println scope=1 expr=315..348 (13:4..13:37) callee_range=315..322 (13:4..13:11) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=let name=tuple scope=1 name_range=176..181 (8:8..8:13) site=172..199 (8:4..8:31) vis=[199..351 (8:31..14:1)] ambiguous=false lang=rust path=rust/calls.rs snapshot=snap-6b6e75240ccee0d4
+binding 1 kind=let name=literal scope=1 name_range=208..215 (9:8..9:15) site=204..245 (9:4..9:45) vis=[245..351 (9:45..14:1)] ambiguous=false lang=rust path=rust/calls.rs snapshot=snap-6b6e75240ccee0d4
+binding 2 kind=let name=closure scope=1 name_range=254..261 (10:8..10:15) site=250..269 (10:4..10:23) vis=[269..351 (10:23..14:1)] ambiguous=false lang=rust path=rust/calls.rs snapshot=snap-6b6e75240ccee0d4

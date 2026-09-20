@@ -1,4 +1,4 @@
-file schema=1 path=go/boundaries.go lang=go bytes=1607 lines=57 final_newline=true status=clean snapshot=snap-166ba57d4275ce96
+file schema=2 path=go/boundaries.go lang=go bytes=1607 lines=57 final_newline=true status=clean snapshot=snap-166ba57d4275ce96
 scope 0 kind=file parent=- name=- range=0..1607 (0:0..57:0) header=- lang=go
 scope 1 kind=interface parent=0 name=Handler range=81..111 (5:5..7:1) header=81..89 (5:5..5:13) lang=go
 scope 2 kind=struct parent=0 name=Base range=118..131 (9:5..9:18) header=118..123 (9:5..9:10) lang=go

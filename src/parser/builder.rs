@@ -1,10 +1,10 @@
 use tree_sitter::Node;
 
 use crate::model::{
-    AnalysisStatus, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,
+    AnalysisStatus, BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,
     DeclarationKind, Diagnostic, FileAnalysis, ImportCategory, ImportForm, ImportItem,
-    ImportOccurrence, LanguageId, LineIndex, ReferenceKind, ReferenceOccurrence, Scope, ScopeKind,
-    SourceFile, SourceRange, TestEvidence, SCHEMA_VERSION,
+    ImportOccurrence, LanguageId, LineIndex, LocalBindingOccurrence, ReferenceKind,
+    ReferenceOccurrence, Scope, ScopeKind, SourceFile, SourceRange, TestEvidence, SCHEMA_VERSION,
 };
 
 /// A declaration under construction.
@@ -65,6 +65,7 @@ pub struct FactBuilder<'a> {
     imports: Vec<ImportOccurrence>,
     references: Vec<ReferenceOccurrence>,
     calls: Vec<CallLikeOccurrence>,
+    bindings: Vec<LocalBindingOccurrence>,
     diagnostics: Vec<Diagnostic>,
     recovery_regions: Vec<SourceRange>,
     file_test_evidence: Vec<TestEvidence>,
@@ -85,6 +86,7 @@ impl<'a> FactBuilder<'a> {
             imports: Vec::new(),
             references: Vec::new(),
             calls: Vec::new(),
+            bindings: Vec::new(),
             diagnostics: Vec::new(),
             recovery_regions: Vec::new(),
             file_test_evidence: Vec::new(),
@@ -295,6 +297,35 @@ impl<'a> FactBuilder<'a> {
         call_id
     }
 
+    /// Push a local name binding. `binding_id` is the position in the bindings
+    /// vector. The adapter supplies the visibility ranges; `scope_id` is the
+    /// lexically enclosing scope at emission time.
+    pub fn push_binding(
+        &mut self,
+        kind: BindingKind,
+        name: impl Into<String>,
+        name_range: SourceRange,
+        binding_site_range: SourceRange,
+        visibility_ranges: Vec<SourceRange>,
+        ambiguous: bool,
+    ) -> u32 {
+        let binding_id = self.bindings.len() as u32;
+        self.bindings.push(LocalBindingOccurrence {
+            binding_id,
+            snapshot_id: self.file.snapshot_id.clone(),
+            language: self.file.language,
+            relative_path: self.file.relative_path.clone(),
+            scope_id: self.scope_id(),
+            kind,
+            name: name.into(),
+            name_range,
+            binding_site_range,
+            visibility_ranges,
+            ambiguous,
+        });
+        binding_id
+    }
+
     pub fn push_diagnostic(&mut self, diagnostic: Diagnostic) {
         self.diagnostics.push(diagnostic);
     }
@@ -337,6 +368,7 @@ impl<'a> FactBuilder<'a> {
             imports: self.imports,
             references: self.references,
             calls: self.calls,
+            bindings: self.bindings,
             file_test_evidence: self.file_test_evidence,
             recovery_regions: self.recovery_regions,
         };

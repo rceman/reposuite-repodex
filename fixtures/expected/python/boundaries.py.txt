@@ -1,4 +1,4 @@
-file schema=1 path=python/boundaries.py lang=python bytes=771 lines=42 final_newline=true status=clean snapshot=snap-d92d077b9b989350
+file schema=2 path=python/boundaries.py lang=python bytes=771 lines=42 final_newline=true status=clean snapshot=snap-d92d077b9b989350
 scope 0 kind=file parent=- name=- range=0..771 (0:0..42:0) header=- lang=python
 scope 1 kind=function parent=0 name=boundaries range=128..422 (8:0..24:16) header=- lang=python
 scope 2 kind=function parent=1 name=inner range=191..247 (12:4..14:20) header=- lang=python

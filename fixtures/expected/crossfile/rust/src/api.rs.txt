@@ -1,4 +1,4 @@
-file schema=1 path=crossfile/rust/src/api.rs lang=rust bytes=18 lines=1 final_newline=true status=clean snapshot=snap-1d1df135be66a5cd
+file schema=2 path=crossfile/rust/src/api.rs lang=rust bytes=18 lines=1 final_newline=true status=clean snapshot=snap-1d1df135be66a5cd
 scope 0 kind=file parent=- name=- range=0..18 (0:0..1:0) header=- lang=rust
 scope 1 kind=function parent=0 name=api_a range=0..17 (0:0..0:17) header=- lang=rust
 decl 0 kind=function name=api_a scope=0 flags=[] range=0..17 (0:0..0:17) name_range=7..12 (0:7..0:12) body=15..17 (0:15..0:17) lang=rust path=crossfile/rust/src/api.rs snapshot=snap-1d1df135be66a5cd tests=[]

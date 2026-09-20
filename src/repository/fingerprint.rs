@@ -32,7 +32,12 @@ use crate::repository::digest;
 ///
 /// It does **not** need to change for documentation, tests, CLI formatting or
 /// anything else that cannot affect facts.
-pub const ANALYSIS_ABI_VERSION: u32 = 1;
+///
+/// * `1` — the original fact set.
+/// * `2` — the Rust adapter now emits `LocalBindingOccurrence` facts for local
+///   name bindings (`let`, parameters, `for`/`match`/`if let`/`while let`
+///   patterns) with bounded visibility ranges.
+pub const ANALYSIS_ABI_VERSION: u32 = 2;
 
 /// Version of the deterministic discovery/ignore policy.
 ///

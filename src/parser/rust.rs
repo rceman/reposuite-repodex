@@ -16,8 +16,8 @@
 use tree_sitter::{Language, Node, Tree};
 
 use crate::model::{
-    CallLikeForm, DeclarationFlag, DeclarationKind, ImportCategory, ImportForm, LanguageId,
-    ReferenceKind, ScopeKind, SourceRange, TestEvidence, TestEvidenceKind,
+    BindingKind, CallLikeForm, DeclarationFlag, DeclarationKind, ImportCategory, ImportForm,
+    LanguageId, ReferenceKind, ScopeKind, SourceRange, TestEvidence, TestEvidenceKind,
 };
 
 use super::builder::{import_item, DeclarationDraft, FactBuilder};
@@ -81,6 +81,22 @@ fn visit(builder: &mut FactBuilder<'_>, node: Node) {
     match node.kind() {
         "source_file" | "declaration_list" | "block" => visit_item_list(builder, node),
         "closure_expression" => visit_closure(builder, node),
+        "for_expression" => {
+            emit_for_bindings(builder, node);
+            visit_children(builder, node);
+        }
+        "match_arm" => {
+            emit_match_bindings(builder, node);
+            visit_children(builder, node);
+        }
+        "if_expression" => {
+            emit_if_let_bindings(builder, node);
+            visit_children(builder, node);
+        }
+        "while_expression" => {
+            emit_while_let_bindings(builder, node);
+            visit_children(builder, node);
+        }
         "call_expression" => {
             emit_call(builder, node);
             visit_children(builder, node);
@@ -114,6 +130,12 @@ fn visit_item_list(builder: &mut FactBuilder<'_>, container: Node) {
         }
         if !child.is_named() {
             continue;
+        }
+        // A `let` statement is not a declaration, but it introduces local
+        // bindings whose visibility is bounded by this enclosing `container`
+        // block. Emit them here so the block range is in hand.
+        if child.kind() == "let_declaration" {
+            emit_let_bindings(builder, child, container);
         }
         if !visit_declaration(builder, child, &pending_attributes) {
             visit(builder, child);
@@ -221,8 +243,14 @@ fn handle_function(builder: &mut FactBuilder<'_>, node: Node, attributes: &[Node
             ScopeKind::Function
         };
         builder.push_scope(scope, Some(name), range, None);
+        // Parameters live in the new function scope and cover the body.
+        emit_parameter_bindings(builder, node, Some(builder.range(body)));
         visit_item_list(builder, body);
         builder.pop_scope();
+    } else {
+        // A signature-only item has no body scope; its parameters still bind a
+        // name but cover nothing.
+        emit_parameter_bindings(builder, node, None);
     }
 }
 
@@ -668,8 +696,327 @@ fn join_prefix(prefix: &str, part: &str) -> String {
 fn visit_closure(builder: &mut FactBuilder<'_>, node: Node) {
     let range = builder.range(node);
     builder.push_scope(ScopeKind::Closure, None::<String>, range, None);
+    emit_closure_param_bindings(builder, node);
     visit_children(builder, node);
     builder.pop_scope();
+}
+
+/// Pattern nodes that contain other patterns rather than binding a name
+/// directly. Anything not listed and not a binding leaf is treated as a
+/// non-binding (literal, path, wildcard, `..`), so an unknown pattern shape
+/// under-captures instead of over-capturing a name that is not a binding.
+const PATTERN_CONTAINERS: &[&str] = &[
+    "tuple_pattern",
+    "slice_pattern",
+    "or_pattern",
+    "parenthesized_pattern",
+    "tuple_struct_pattern",
+    "struct_pattern",
+    "field_pattern",
+    "ref_pattern",
+    "mut_pattern",
+    "reference_pattern",
+    "box_pattern",
+    "unary_pattern",
+    "deref_pattern",
+    "conjunction",
+    "identifier_pattern",
+];
+
+/// Collect the written identifiers bound by a pattern, in source order.
+///
+/// `refutable` marks whether the pattern sits in a refutable position (a
+/// `match` arm, an `if let`/`while let` condition, or a `let`...`else`). A bare
+/// `identifier` there is *ambiguous*: syntax alone cannot prove it binds a
+/// fresh local rather than referencing a unit variant, constant or path, so it
+/// is recorded with `ambiguous = true`. In irrefutable positions (`let`, `for`,
+/// parameters) a bare `identifier` is a definite binding (`ambiguous = false`).
+/// `shorthand_field_identifier` and `name @ ...` capture names are definite
+/// bindings regardless of position.
+fn bound_names<'tree>(
+    builder: &FactBuilder<'tree>,
+    node: Node<'tree>,
+    refutable: bool,
+    out: &mut Vec<(String, SourceRange, bool)>,
+) {
+    match node.kind() {
+        "identifier" => {
+            out.push((
+                builder.text(node).to_string(),
+                builder.range(node),
+                refutable,
+            ));
+        }
+        "shorthand_field_identifier" => {
+            out.push((builder.text(node).to_string(), builder.range(node), false));
+        }
+        "captured_pattern" => {
+            // `name @ pat`: the first identifier is the (definite) binding; the
+            // remainder is the sub-pattern that is matched, not bound.
+            let mut cursor = node.walk();
+            let mut children = node.named_children(&mut cursor);
+            if let Some(first) = children.next() {
+                out.push((builder.text(first).to_string(), builder.range(first), false));
+            }
+            for child in children {
+                bound_names(builder, child, refutable, out);
+            }
+        }
+        kind if PATTERN_CONTAINERS.contains(&kind) => {
+            // Recurse into children, skipping the `type` field — the
+            // constructor/type name of a struct or tuple-struct pattern, which
+            // is a bare `identifier` but never a binding.
+            let ty = node.child_by_field_name("type").map(|n| n.id());
+            let mut cursor = node.walk();
+            for child in node.named_children(&mut cursor) {
+                if Some(child.id()) == ty {
+                    continue;
+                }
+                bound_names(builder, child, refutable, out);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Emit bindings for each written name a pattern introduces.
+fn emit_pattern_bindings(
+    builder: &mut FactBuilder<'_>,
+    kind: BindingKind,
+    pattern: Node,
+    site: Node,
+    refutable: bool,
+    visibility_ranges: Vec<SourceRange>,
+) {
+    let mut names = Vec::new();
+    bound_names(builder, pattern, refutable, &mut names);
+    let site_range = builder.range(site);
+    for (name, name_range, ambiguous) in names {
+        builder.push_binding(
+            kind,
+            name,
+            name_range,
+            site_range,
+            visibility_ranges.clone(),
+            ambiguous,
+        );
+    }
+}
+
+/// `let <pat> = <init>;`. The binding is visible only *after* the statement,
+/// so its visibility runs from the end of the `let_declaration` (which includes
+/// the `;`) to the end of the enclosing `container` block. The initializer and
+/// anything before the `let` are therefore not covered.
+fn emit_let_bindings(builder: &mut FactBuilder<'_>, node: Node, container: Node) {
+    let Some(pattern) = node.child_by_field_name("pattern") else {
+        return;
+    };
+    // `let`...`else` is the only refutable `let`; a plain `let` is irrefutable.
+    let refutable = node.child_by_field_name("alternative").is_some();
+    let start = node.end_byte() as u32;
+    let end = container.end_byte() as u32;
+    if start > end {
+        return;
+    }
+    let visibility = vec![builder.range_from_offsets(start, end)];
+    emit_pattern_bindings(
+        builder,
+        BindingKind::Let,
+        pattern,
+        node,
+        refutable,
+        visibility,
+    );
+}
+
+/// `for <pat> in <iter> { <body> }`. The binding covers the loop body only —
+/// not the iterator expression and not the code after the loop.
+fn emit_for_bindings(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(pattern) = node.child_by_field_name("pattern") else {
+        return;
+    };
+    let body = node.child_by_field_name("body");
+    let visibility = body.map(|b| vec![builder.range(b)]).unwrap_or_default();
+    emit_pattern_bindings(
+        builder,
+        BindingKind::ForPattern,
+        pattern,
+        pattern,
+        false,
+        visibility,
+    );
+}
+
+/// `match` arm `<pat> [if <guard>] => <body>`. The binding covers the guard
+/// (when present) and the arm body — two disjoint regions, which is why the
+/// model carries `visibility_ranges[]` rather than a single range.
+fn emit_match_bindings(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(match_pattern) = node.child_by_field_name("pattern") else {
+        return;
+    };
+    let condition = match_pattern.child_by_field_name("condition");
+    // The inner pattern is the named child of `match_pattern` that is not the
+    // `condition` guard.
+    let cond_id = condition.map(|c| c.id());
+    let inner = {
+        let mut cursor = match_pattern.walk();
+        let mut found = None;
+        for child in match_pattern.named_children(&mut cursor) {
+            if Some(child.id()) != cond_id {
+                found = Some(child);
+                break;
+            }
+        }
+        found
+    };
+    let Some(inner) = inner else {
+        return;
+    };
+    let mut visibility = Vec::new();
+    if let Some(condition) = condition {
+        visibility.push(builder.range(condition));
+    }
+    if let Some(value) = node.child_by_field_name("value") {
+        visibility.push(builder.range(value));
+    }
+    emit_pattern_bindings(
+        builder,
+        BindingKind::MatchPattern,
+        inner,
+        inner,
+        true,
+        visibility,
+    );
+}
+
+/// `if let <pat> = <value> { <consequence> }`. The binding covers the
+/// consequence block only — not the initializer `value` and not any `else`
+/// alternative. A `let`-chain yields several `let_condition`s; an earlier
+/// condition's binding is also usable in later conditions' values, which the
+/// `[condition.end, consequence.end]` range covers.
+fn emit_if_let_bindings(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(condition) = node.child_by_field_name("condition") else {
+        return;
+    };
+    let mut conditions = Vec::new();
+    if condition.kind() == "let_condition" {
+        conditions.push(condition);
+    } else if condition.kind() == "let_chain" {
+        let mut cursor = condition.walk();
+        for child in condition.named_children(&mut cursor) {
+            if child.kind() == "let_condition" {
+                conditions.push(child);
+            }
+        }
+    } else {
+        return;
+    }
+    let consequence_end = node
+        .child_by_field_name("consequence")
+        .map(|c| c.end_byte() as u32);
+    for condition in conditions {
+        let Some(pattern) = condition.child_by_field_name("pattern") else {
+            continue;
+        };
+        let start = condition.end_byte() as u32;
+        let end = consequence_end.unwrap_or(start);
+        if start > end {
+            continue;
+        }
+        let visibility = vec![builder.range_from_offsets(start, end)];
+        emit_pattern_bindings(
+            builder,
+            BindingKind::IfLetPattern,
+            pattern,
+            condition,
+            true,
+            visibility,
+        );
+    }
+}
+
+/// `while let <pat> = <value> { <body> }`. The binding covers the loop body
+/// only — not the condition `value` and not the code after the loop.
+fn emit_while_let_bindings(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(condition) = node.child_by_field_name("condition") else {
+        return;
+    };
+    if condition.kind() != "let_condition" {
+        return;
+    }
+    let Some(pattern) = condition.child_by_field_name("pattern") else {
+        return;
+    };
+    let body = node.child_by_field_name("body");
+    let visibility = body.map(|b| vec![builder.range(b)]).unwrap_or_default();
+    emit_pattern_bindings(
+        builder,
+        BindingKind::WhileLetPattern,
+        pattern,
+        condition,
+        true,
+        visibility,
+    );
+}
+
+/// Function/method `parameter` bindings. `body_range` is `None` for a
+/// signature-only item (`fn f(x: T);`), so the parameter still binds a name but
+/// covers nothing. `self` receivers are not emitted: `self` is a receiver, not
+/// a written name that can be a plain-name callee.
+fn emit_parameter_bindings(
+    builder: &mut FactBuilder<'_>,
+    node: Node,
+    body_range: Option<SourceRange>,
+) {
+    let Some(parameters) = node.child_by_field_name("parameters") else {
+        return;
+    };
+    let visibility = body_range.map(|r| vec![r]).unwrap_or_default();
+    let mut cursor = parameters.walk();
+    for param in parameters.children(&mut cursor) {
+        if param.kind() != "parameter" {
+            continue;
+        }
+        if let Some(pattern) = param.child_by_field_name("pattern") {
+            emit_pattern_bindings(
+                builder,
+                BindingKind::FunctionParameter,
+                pattern,
+                param,
+                false,
+                visibility.clone(),
+            );
+        }
+    }
+}
+
+/// Closure parameter bindings. `closure_parameters` children are `parameter`
+/// nodes when typed (`|x: u8|`) or bare pattern nodes otherwise (`|x|`,
+/// `|(a, b)|`). The binding covers the closure body only.
+fn emit_closure_param_bindings(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(parameters) = node.child_by_field_name("parameters") else {
+        return;
+    };
+    let body = node.child_by_field_name("body");
+    let visibility = body.map(|b| vec![builder.range(b)]).unwrap_or_default();
+    let mut cursor = parameters.walk();
+    for param in parameters.children(&mut cursor) {
+        let pattern = if param.kind() == "parameter" {
+            param.child_by_field_name("pattern")
+        } else {
+            Some(param)
+        };
+        if let Some(pattern) = pattern {
+            emit_pattern_bindings(
+                builder,
+                BindingKind::ClosureParameter,
+                pattern,
+                param,
+                false,
+                visibility.clone(),
+            );
+        }
+    }
 }
 
 fn emit_call(builder: &mut FactBuilder<'_>, node: Node) {

@@ -542,6 +542,7 @@ mod tests {
             imports: Vec::new(),
             references: Vec::new(),
             calls: Vec::new(),
+            bindings: Vec::new(),
             file_test_evidence: Vec::new(),
             recovery_regions: Vec::new(),
         }

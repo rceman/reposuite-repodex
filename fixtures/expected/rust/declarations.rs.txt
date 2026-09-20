@@ -1,4 +1,4 @@
-file schema=1 path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
+file schema=2 path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
 scope 0 kind=file parent=- name=- range=0..728 (0:0..48:0) header=- lang=rust
 scope 1 kind=module parent=0 name=inline range=57..146 (2:0..8:1) header=57..68 (2:0..2:11) lang=rust
 scope 2 kind=module parent=1 name=nested range=74..121 (3:4..5:5) header=74..89 (3:4..3:19) lang=rust
@@ -35,3 +35,7 @@ decl 20 kind=function name=nested_function scope=9 flags=[] range=628..651 (42:4
 call 0 form=qualified_path callee=String::from scope=7 expr=400..423 (27:8..27:31) callee_range=400..412 (27:8..27:20) type_args=- type_args_range=- dyn=false nullsafe=false
 call 1 form=plain_name callee=nested_function scope=9 expr=691..708 (45:4..45:21) callee_range=691..706 (45:4..45:19) type_args=- type_args_range=- dyn=false nullsafe=false
 call 2 form=plain_name callee=closure scope=9 expr=714..724 (46:4..46:14) callee_range=714..721 (46:4..46:11) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=function_parameter name=value scope=6 name_range=339..344 (24:21..24:26) site=339..349 (24:21..24:31) vis=[] ambiguous=false lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d
+binding 1 kind=function_parameter name=value scope=8 name_range=577..582 (37:21..37:26) site=577..587 (37:21..37:31) vis=[596..609 (37:40..39:1)] ambiguous=false lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d
+binding 2 kind=let name=closure scope=9 name_range=661..668 (44:8..44:15) site=657..686 (44:4..44:33) vis=[686..727 (44:33..47:1)] ambiguous=false lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d
+binding 3 kind=closure_parameter name=x scope=11 name_range=672..673 (44:19..44:20) site=672..678 (44:19..44:25) vis=[680..685 (44:27..44:32)] ambiguous=false lang=rust path=rust/declarations.rs snapshot=snap-4f23d7232af5c47d

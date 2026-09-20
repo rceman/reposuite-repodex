@@ -1,4 +1,4 @@
-file schema=1 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
+file schema=2 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
 scope 0 kind=file parent=- name=- range=0..1195 (0:0..67:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
 scope 2 kind=interface parent=1 name=HandlerInterface range=191..305 (10:0..15:1) header=191..218 (10:0..11:0) lang=php

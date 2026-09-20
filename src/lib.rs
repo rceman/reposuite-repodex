@@ -38,10 +38,10 @@ pub mod repository;
 pub mod scanner;
 
 pub use model::{
-    AnalysisStatus, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,
+    AnalysisStatus, BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,
     DeclarationKind, Diagnostic, DiagnosticKind, DiagnosticSeverity, FileAnalysis, ImportCategory,
-    ImportForm, ImportItem, ImportOccurrence, LanguageId, ReferenceKind, ReferenceOccurrence,
-    Scope, ScopeKind, SourceFile, SourceRange, TestEvidence, TestEvidenceKind,
+    ImportForm, ImportItem, ImportOccurrence, LanguageId, LocalBindingOccurrence, ReferenceKind,
+    ReferenceOccurrence, Scope, ScopeKind, SourceFile, SourceRange, TestEvidence, TestEvidenceKind,
 };
 pub use parser::{
     AdapterError, Analyzer, AnalyzerConfig, GrammarInfo, LanguageAdapter, ParserRegistry,

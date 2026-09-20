@@ -1,4 +1,4 @@
-file schema=1 path=crossfile/rust/src/deep/leaf.rs lang=rust bytes=20 lines=1 final_newline=true status=clean snapshot=snap-dbb3ab56ef28444c
+file schema=2 path=crossfile/rust/src/deep/leaf.rs lang=rust bytes=20 lines=1 final_newline=true status=clean snapshot=snap-dbb3ab56ef28444c
 scope 0 kind=file parent=- name=- range=0..20 (0:0..1:0) header=- lang=rust
 scope 1 kind=function parent=0 name=leaf_fn range=0..19 (0:0..0:19) header=- lang=rust
 decl 0 kind=function name=leaf_fn scope=0 flags=[] range=0..19 (0:0..0:19) name_range=7..14 (0:7..0:14) body=17..19 (0:17..0:19) lang=rust path=crossfile/rust/src/deep/leaf.rs snapshot=snap-dbb3ab56ef28444c tests=[]

@@ -291,5 +291,13 @@ fn json_serialization_is_stable_and_lossless() {
         parsed["calls"].as_array().expect("calls").len(),
         analysis.calls.len()
     );
-    assert_eq!(parsed["schema_version"], serde_json::json!(1));
+    assert_eq!(
+        parsed["schema_version"],
+        serde_json::json!(repodex::model::SCHEMA_VERSION)
+    );
+    // The binding collection round-trips losslessly too.
+    assert_eq!(
+        parsed["bindings"].as_array().expect("bindings").len(),
+        analysis.bindings.len()
+    );
 }

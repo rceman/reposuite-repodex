@@ -1,4 +1,4 @@
-file schema=1 path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
+file schema=2 path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
 scope 0 kind=file parent=- name=- range=0..850 (0:0..65:0) header=- lang=go
 scope 1 kind=struct parent=0 name=Box range=338..368 (18:5..20:1) header=338..349 (18:5..18:16) lang=go
 scope 2 kind=struct parent=0 name=Pair range=375..449 (22:5..27:1) header=375..401 (22:5..22:31) lang=go

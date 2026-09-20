@@ -1,4 +1,4 @@
-file schema=1 path=shared/adversarial.go lang=go bytes=991 lines=56 final_newline=true status=clean snapshot=snap-efada90fb0e316e9
+file schema=2 path=shared/adversarial.go lang=go bytes=991 lines=56 final_newline=true status=clean snapshot=snap-efada90fb0e316e9
 scope 0 kind=file parent=- name=- range=0..991 (0:0..56:0) header=- lang=go
 scope 1 kind=struct parent=0 name=Duplicate range=208..226 (7:5..7:23) header=208..218 (7:5..7:15) lang=go
 scope 2 kind=method parent=0 name=Name range=228..281 (9:0..11:1) header=- lang=go

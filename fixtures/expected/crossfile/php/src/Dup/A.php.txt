@@ -1,4 +1,4 @@
-file schema=1 path=crossfile/php/src/Dup/A.php lang=php bytes=42 lines=5 final_newline=true status=clean snapshot=snap-e652973c087be1f8
+file schema=2 path=crossfile/php/src/Dup/A.php lang=php bytes=42 lines=5 final_newline=true status=clean snapshot=snap-e652973c087be1f8
 scope 0 kind=file parent=- name=- range=0..42 (0:0..5:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Dup range=7..25 (2:0..2:18) header=- lang=php
 scope 2 kind=class parent=1 name=Thing range=27..41 (4:0..4:14) header=27..39 (4:0..4:12) lang=php

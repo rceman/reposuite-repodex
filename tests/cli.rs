@@ -35,7 +35,7 @@ fn languages_reports_all_four_and_their_grammars_load() {
     let output = run(&["languages", "--json"]);
     assert_eq!(code_of(&output), 0, "{}", stderr_of(&output));
     let json: serde_json::Value = serde_json::from_str(&stdout_of(&output)).expect("json");
-    assert_eq!(json["schema_version"], 1);
+    assert_eq!(json["schema_version"], repodex::model::SCHEMA_VERSION);
     let languages = json["languages"].as_array().expect("languages");
     assert_eq!(languages.len(), 4);
     let names: Vec<&str> = languages

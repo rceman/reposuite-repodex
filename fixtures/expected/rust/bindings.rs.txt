@@ -1,0 +1,107 @@
+file schema=2 path=rust/bindings.rs lang=rust bytes=1575 lines=82 final_newline=true status=clean snapshot=snap-dcb421f8757480b8
+scope 0 kind=file parent=- name=- range=0..1575 (0:0..82:0) header=- lang=rust
+scope 1 kind=function parent=0 name=module_helper range=146..167 (3:0..3:21) header=- lang=rust
+scope 2 kind=function parent=0 name=params range=169..268 (5:0..8:1) header=- lang=rust
+scope 3 kind=function parent=0 name=lets range=270..670 (10:0..31:1) header=- lang=rust
+scope 4 kind=closure parent=3 name=- range=299..304 (11:17..11:22) header=- lang=rust
+scope 5 kind=closure parent=3 name=- range=623..628 (26:21..26:26) header=- lang=rust
+scope 6 kind=function parent=0 name=closures range=672..834 (33:0..38:1) header=- lang=rust
+scope 7 kind=closure parent=6 name=- range=702..713 (34:14..34:25) header=- lang=rust
+scope 8 kind=closure parent=6 name=- range=730..742 (35:15..35:27) header=- lang=rust
+scope 9 kind=closure parent=6 name=- range=760..778 (36:16..36:34) header=- lang=rust
+scope 10 kind=closure parent=6 name=- range=797..831 (37:17..37:51) header=- lang=rust
+scope 11 kind=closure parent=10 name=- range=805..831 (37:25..37:51) header=- lang=rust
+scope 12 kind=function parent=0 name=loops range=836..995 (40:0..49:1) header=- lang=rust
+scope 13 kind=function parent=0 name=matching range=997..1222 (51:0..59:1) header=- lang=rust
+scope 14 kind=function parent=0 name=conditional range=1224..1474 (61:0..74:1) header=- lang=rust
+scope 15 kind=function parent=0 name=shadowed range=1476..1574 (76:0..81:1) header=- lang=rust
+decl 0 kind=function name=module_helper scope=0 flags=[] range=146..167 (3:0..3:21) name_range=149..162 (3:3..3:16) body=165..167 (3:19..3:21) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 1 kind=function name=params scope=0 flags=[] range=169..268 (5:0..8:1) name_range=172..178 (5:3..5:9) body=247..268 (5:78..8:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 2 kind=function name=lets scope=0 flags=[] range=270..670 (10:0..31:1) name_range=273..277 (10:3..10:7) body=280..670 (10:10..31:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 3 kind=function name=closures scope=0 flags=[] range=672..834 (33:0..38:1) name_range=675..683 (33:3..33:11) body=686..834 (33:14..38:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 4 kind=function name=loops scope=0 flags=[] range=836..995 (40:0..49:1) name_range=839..844 (40:3..40:8) body=847..995 (40:11..49:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 5 kind=function name=matching scope=0 flags=[] range=997..1222 (51:0..59:1) name_range=1000..1008 (51:3..51:11) body=1023..1222 (51:26..59:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 6 kind=function name=conditional scope=0 flags=[] range=1224..1474 (61:0..74:1) name_range=1227..1238 (61:3..61:14) body=1241..1474 (61:17..74:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+decl 7 kind=function name=shadowed scope=0 flags=[] range=1476..1574 (76:0..81:1) name_range=1479..1487 (76:3..76:11) body=1490..1574 (76:14..81:1) lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8 tests=[]
+call 0 form=plain_name callee=a scope=2 expr=253..256 (6:4..6:7) callee_range=253..254 (6:4..6:5) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=x scope=2 expr=262..265 (7:4..7:7) callee_range=262..263 (7:4..7:5) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=helper scope=3 expr=310..318 (12:4..12:12) callee_range=310..316 (12:4..12:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=plain_name callee=pair scope=3 expr=345..351 (14:24..14:30) callee_range=345..349 (14:24..14:28) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=plain_name callee=origin scope=3 expr=378..386 (15:25..15:33) callee_range=378..384 (15:25..15:31) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=plain_name callee=source scope=3 expr=420..428 (16:32..16:40) callee_range=420..426 (16:32..16:38) type_args=- type_args_range=- dyn=false nullsafe=false
+call 6 form=plain_name callee=maybe scope=3 expr=448..455 (17:18..17:25) callee_range=448..453 (17:18..17:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 7 form=plain_name callee=compute scope=3 expr=492..501 (18:19..18:28) callee_range=492..499 (18:19..18:26) type_args=- type_args_range=- dyn=false nullsafe=false
+call 8 form=plain_name callee=dropped scope=3 expr=515..524 (19:12..19:21) callee_range=515..522 (19:12..19:19) type_args=- type_args_range=- dyn=false nullsafe=false
+call 9 form=plain_name callee=helper scope=3 expr=585..593 (23:4..23:12) callee_range=585..591 (23:4..23:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 10 form=plain_name callee=helper scope=3 expr=638..646 (27:8..27:16) callee_range=638..644 (27:8..27:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 11 form=plain_name callee=helper scope=3 expr=659..667 (30:4..30:12) callee_range=659..665 (30:4..30:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 12 form=plain_name callee=arg scope=7 expr=708..713 (34:20..34:25) callee_range=708..711 (34:20..34:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 13 form=plain_name callee=a scope=8 expr=739..742 (35:24..35:27) callee_range=739..740 (35:24..35:25) type_args=- type_args_range=- dyn=false nullsafe=false
+call 14 form=plain_name callee=items scope=12 expr=865..872 (41:16..41:23) callee_range=865..870 (41:16..41:21) type_args=- type_args_range=- dyn=false nullsafe=false
+call 15 form=plain_name callee=item scope=12 expr=883..889 (42:8..42:14) callee_range=883..887 (42:8..42:12) type_args=- type_args_range=- dyn=false nullsafe=false
+call 16 form=plain_name callee=entries scope=12 expr=921..930 (44:24..44:33) callee_range=921..928 (44:24..44:31) type_args=- type_args_range=- dyn=false nullsafe=false
+call 17 form=plain_name callee=key scope=12 expr=941..946 (45:8..45:13) callee_range=941..944 (45:8..45:11) type_args=- type_args_range=- dyn=false nullsafe=false
+call 18 form=plain_name callee=value scope=12 expr=956..963 (46:8..46:15) callee_range=956..961 (46:8..46:13) type_args=- type_args_range=- dyn=false nullsafe=false
+call 19 form=plain_name callee=once scope=12 expr=984..990 (48:13..48:19) callee_range=984..988 (48:13..48:17) type_args=- type_args_range=- dyn=false nullsafe=false
+call 20 form=plain_name callee=ready scope=13 expr=1066..1078 (53:23..53:35) callee_range=1066..1071 (53:23..53:28) type_args=- type_args_range=- dyn=false nullsafe=false
+call 21 form=plain_name callee=found scope=13 expr=1082..1089 (53:39..53:46) callee_range=1082..1087 (53:39..53:44) type_args=- type_args_range=- dyn=false nullsafe=false
+call 22 form=plain_name callee=x scope=13 expr=1117..1120 (54:26..54:29) callee_range=1117..1118 (54:26..54:27) type_args=- type_args_range=- dyn=false nullsafe=false
+call 23 form=plain_name callee=name scope=13 expr=1154..1160 (55:32..55:38) callee_range=1154..1158 (55:32..55:36) type_args=- type_args_range=- dyn=false nullsafe=false
+call 24 form=plain_name callee=fallback scope=13 expr=1178..1188 (56:16..56:26) callee_range=1178..1186 (56:16..56:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 25 form=plain_name callee=fallback scope=13 expr=1203..1213 (57:13..57:23) callee_range=1203..1211 (57:13..57:21) type_args=- type_args_range=- dyn=false nullsafe=false
+call 26 form=plain_name callee=maybe scope=14 expr=1266..1273 (62:23..62:30) callee_range=1266..1271 (62:23..62:28) type_args=- type_args_range=- dyn=false nullsafe=false
+call 27 form=plain_name callee=got scope=14 expr=1284..1289 (63:8..63:13) callee_range=1284..1287 (63:8..63:11) type_args=- type_args_range=- dyn=false nullsafe=false
+call 28 form=plain_name callee=missing scope=14 expr=1312..1321 (65:8..65:17) callee_range=1312..1319 (65:8..65:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 29 form=plain_name callee=first scope=14 expr=1348..1355 (67:19..67:26) callee_range=1348..1353 (67:19..67:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 30 form=plain_name callee=second scope=14 expr=1371..1379 (67:42..67:50) callee_range=1371..1377 (67:42..67:48) type_args=- type_args_range=- dyn=false nullsafe=false
+call 31 form=plain_name callee=a scope=14 expr=1390..1393 (68:8..68:11) callee_range=1390..1391 (68:8..68:9) type_args=- type_args_range=- dyn=false nullsafe=false
+call 32 form=plain_name callee=b scope=14 expr=1403..1406 (69:8..69:11) callee_range=1403..1404 (69:8..69:9) type_args=- type_args_range=- dyn=false nullsafe=false
+call 33 form=plain_name callee=advance scope=14 expr=1439..1448 (71:25..71:34) callee_range=1439..1446 (71:25..71:32) type_args=- type_args_range=- dyn=false nullsafe=false
+call 34 form=plain_name callee=next scope=14 expr=1459..1465 (72:8..72:14) callee_range=1459..1463 (72:8..72:12) type_args=- type_args_range=- dyn=false nullsafe=false
+call 35 form=plain_name callee=first scope=15 expr=1509..1516 (77:17..77:24) callee_range=1509..1514 (77:17..77:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 36 form=plain_name callee=helper scope=15 expr=1522..1530 (78:4..78:12) callee_range=1522..1528 (78:4..78:10) type_args=- type_args_range=- dyn=false nullsafe=false
+call 37 form=plain_name callee=second scope=15 expr=1549..1557 (79:17..79:25) callee_range=1549..1555 (79:17..79:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 38 form=plain_name callee=helper scope=15 expr=1563..1571 (80:4..80:12) callee_range=1563..1569 (80:4..80:10) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=function_parameter name=a scope=2 name_range=179..180 (5:10..5:11) site=179..184 (5:10..5:15) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 1 kind=function_parameter name=x scope=2 name_range=187..188 (5:18..5:19) site=186..202 (5:17..5:33) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 2 kind=function_parameter name=y scope=2 name_range=190..191 (5:21..5:22) site=186..202 (5:17..5:33) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 3 kind=function_parameter name=px scope=2 name_range=212..214 (5:43..5:45) site=204..227 (5:35..5:58) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 4 kind=function_parameter name=py scope=2 name_range=216..218 (5:47..5:49) site=204..227 (5:35..5:58) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 5 kind=function_parameter name=counter scope=2 name_range=233..240 (5:64..5:71) site=229..245 (5:60..5:76) vis=[247..268 (5:78..8:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 6 kind=let name=helper scope=3 name_range=290..296 (11:8..11:14) site=286..305 (11:4..11:23) vis=[305..670 (11:23..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 7 kind=let name=left scope=3 name_range=330..334 (14:9..14:13) site=325..352 (14:4..14:31) vis=[352..670 (14:31..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 8 kind=let name=right scope=3 name_range=336..341 (14:15..14:20) site=325..352 (14:4..14:31) vis=[352..670 (14:31..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 9 kind=let name=x scope=3 name_range=369..370 (15:16..15:17) site=357..387 (15:4..15:34) vis=[387..670 (15:34..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 10 kind=let name=y scope=3 name_range=372..373 (15:19..15:20) site=357..387 (15:4..15:34) vis=[387..670 (15:34..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 11 kind=let name=renamed scope=3 name_range=404..411 (16:16..16:23) site=392..429 (16:4..16:41) vis=[429..670 (16:41..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 12 kind=let name=f2 scope=3 name_range=413..415 (16:25..16:27) site=392..429 (16:4..16:41) vis=[429..670 (16:41..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 13 kind=let name=v scope=3 name_range=443..444 (17:13..17:14) site=434..472 (17:4..17:42) vis=[472..670 (17:42..31:1)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 14 kind=let name=_ignored scope=3 name_range=481..489 (18:8..18:16) site=477..502 (18:4..18:29) vis=[502..670 (18:29..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 15 kind=let name=growing scope=3 name_range=538..545 (20:12..20:19) site=530..550 (20:4..20:24) vis=[550..670 (20:24..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 16 kind=let name=reference scope=3 name_range=559..568 (21:8..21:17) site=555..579 (21:4..21:28) vis=[579..670 (21:28..31:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 17 kind=let name=helper scope=3 name_range=614..620 (26:12..26:18) site=610..629 (26:8..26:27) vis=[629..653 (26:27..28:5)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 18 kind=let name=run scope=6 name_range=696..699 (34:8..34:11) site=692..714 (34:4..34:26) vis=[714..834 (34:26..38:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 19 kind=closure_parameter name=arg scope=7 name_range=703..706 (34:15..34:18) site=703..706 (34:15..34:18) vis=[708..713 (34:20..34:25)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 20 kind=let name=pair scope=6 name_range=723..727 (35:8..35:12) site=719..743 (35:4..35:28) vis=[743..834 (35:28..38:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 21 kind=closure_parameter name=a scope=8 name_range=732..733 (35:17..35:18) site=731..737 (35:16..35:22) vis=[739..742 (35:24..35:27)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 22 kind=closure_parameter name=b scope=8 name_range=735..736 (35:20..35:21) site=731..737 (35:16..35:22) vis=[739..742 (35:24..35:27)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 23 kind=let name=typed scope=6 name_range=752..757 (36:8..36:13) site=748..779 (36:4..36:35) vis=[779..834 (36:35..38:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 24 kind=closure_parameter name=value scope=9 name_range=761..766 (36:17..36:22) site=761..771 (36:17..36:27) vis=[773..778 (36:29..36:34)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 25 kind=let name=nested scope=6 name_range=788..794 (37:8..37:14) site=784..832 (37:4..37:52) vis=[832..834 (37:52..38:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 26 kind=closure_parameter name=outer scope=10 name_range=798..803 (37:18..37:23) site=798..803 (37:18..37:23) vis=[805..831 (37:25..37:51)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 27 kind=closure_parameter name=inner scope=11 name_range=811..816 (37:31..37:36) site=811..816 (37:31..37:36) vis=[818..831 (37:38..37:51)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 28 kind=for_pattern name=item scope=12 name_range=857..861 (41:8..41:12) site=857..861 (41:8..41:12) vis=[873..896 (41:24..43:5)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 29 kind=for_pattern name=key scope=12 name_range=906..909 (44:9..44:12) site=905..917 (44:8..44:20) vis=[931..970 (44:34..47:5)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 30 kind=for_pattern name=value scope=12 name_range=911..916 (44:14..44:19) site=905..917 (44:8..44:20) vis=[931..970 (44:34..47:5)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 31 kind=function_parameter name=input scope=13 name_range=1009..1014 (51:12..51:17) site=1009..1021 (51:12..51:24) vis=[1023..1222 (51:26..59:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 32 kind=match_pattern name=found scope=13 name_range=1056..1061 (53:13..53:18) site=1051..1062 (53:8..53:19) vis=[1066..1078 (53:23..53:35),1082..1089 (53:39..53:46)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 33 kind=match_pattern name=x scope=13 name_range=1107..1108 (54:16..54:17) site=1099..1113 (54:8..54:22) vis=[1117..1120 (54:26..54:29)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 34 kind=match_pattern name=y scope=13 name_range=1110..1111 (54:19..54:20) site=1099..1113 (54:8..54:22) vis=[1117..1120 (54:26..54:29)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 35 kind=match_pattern name=name scope=13 name_range=1130..1134 (55:8..55:12) site=1130..1150 (55:8..55:28) vis=[1154..1160 (55:32..55:38)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 36 kind=match_pattern name=None scope=13 name_range=1170..1174 (56:8..56:12) site=1170..1174 (56:8..56:12) vis=[1178..1188 (56:16..56:26)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 37 kind=if_let_pattern name=got scope=14 name_range=1259..1262 (62:16..62:19) site=1250..1273 (62:7..62:30) vis=[1273..1296 (62:30..64:5)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 38 kind=if_let_pattern name=a scope=14 name_range=1343..1344 (67:14..67:15) site=1336..1355 (67:7..67:26) vis=[1355..1413 (67:26..70:5)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 39 kind=if_let_pattern name=b scope=14 name_range=1366..1367 (67:37..67:38) site=1359..1379 (67:30..67:50) vis=[1379..1413 (67:50..70:5)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 40 kind=while_let_pattern name=next scope=14 name_range=1431..1435 (71:17..71:21) site=1424..1448 (71:10..71:34) vis=[1449..1472 (71:35..73:5)] ambiguous=true lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 41 kind=let name=helper scope=15 name_range=1500..1506 (77:8..77:14) site=1496..1517 (77:4..77:25) vis=[1517..1574 (77:25..81:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8
+binding 42 kind=let name=helper scope=15 name_range=1540..1546 (79:8..79:14) site=1536..1558 (79:4..79:26) vis=[1558..1574 (79:26..81:1)] ambiguous=false lang=rust path=rust/bindings.rs snapshot=snap-dcb421f8757480b8

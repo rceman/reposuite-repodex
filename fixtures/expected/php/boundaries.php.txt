@@ -1,4 +1,4 @@
-file schema=1 path=php/boundaries.php lang=php bytes=571 lines=45 final_newline=true status=clean snapshot=snap-006d949c1eddcd04
+file schema=2 path=php/boundaries.php lang=php bytes=571 lines=45 final_newline=true status=clean snapshot=snap-006d949c1eddcd04
 scope 0 kind=file parent=- name=- range=0..571 (0:0..45:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Boundaries range=20..45 (3:0..3:25) header=- lang=php
 scope 2 kind=trait parent=1 name=First range=112..174 (8:0..13:1) header=112..124 (8:0..9:0) lang=php

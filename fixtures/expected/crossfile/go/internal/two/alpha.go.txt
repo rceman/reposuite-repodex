@@ -1,4 +1,4 @@
-file schema=1 path=crossfile/go/internal/two/alpha.go lang=go bytes=27 lines=3 final_newline=true status=clean snapshot=snap-1d5509cdfccd1ad3
+file schema=2 path=crossfile/go/internal/two/alpha.go lang=go bytes=27 lines=3 final_newline=true status=clean snapshot=snap-1d5509cdfccd1ad3
 scope 0 kind=file parent=- name=- range=0..27 (0:0..3:0) header=- lang=go
 scope 1 kind=function parent=0 name=A range=15..26 (2:0..2:11) header=- lang=go
 decl 0 kind=package name=alpha scope=0 flags=[] range=0..13 (0:0..0:13) name_range=8..13 (0:8..0:13) body=- lang=go path=crossfile/go/internal/two/alpha.go snapshot=snap-1d5509cdfccd1ad3 tests=[]

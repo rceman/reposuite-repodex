@@ -295,6 +295,89 @@ impl ImportForm {
     }
 }
 
+/// A local name binding introduced by syntax, with a bounded visibility region.
+///
+/// Source syntax introduces a local name that can shadow an outer name inside a
+/// bounded source region. This is a *syntax* fact only: it records where the
+/// written identifier is introduced and where it may apply, not that the name is
+/// a call target, a variable of a particular type, or a resolved value.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LocalBindingOccurrence {
+    /// Index of this binding inside its file analysis. Deterministic.
+    pub binding_id: u32,
+    /// Local snapshot identifier of the source file this binding came from.
+    pub snapshot_id: String,
+    pub language: LanguageId,
+    /// Path relative to the analysis root, always with `/` separators.
+    pub relative_path: String,
+    /// Lexically containing scope (the enclosing function/closure/module/etc.).
+    pub scope_id: u32,
+    pub kind: BindingKind,
+    /// Written bound identifier exactly as it appears in the source.
+    pub name: String,
+    /// Range of the bound identifier token.
+    pub name_range: SourceRange,
+    /// Range of the syntax that introduces the binding (the `let` statement,
+    /// parameter, pattern node, or `let` condition).
+    pub binding_site_range: SourceRange,
+    /// Half-open source regions where the binding can syntactically shadow an
+    /// outer name. Empty when the binding covers nothing (e.g. a parameter of
+    /// a bodiless function signature).
+    pub visibility_ranges: Vec<SourceRange>,
+    /// `true` when this bare identifier sits in a refutable pattern position
+    /// (`match` arm, `if let`, `while let`, `let`...`else`), where syntax alone
+    /// cannot prove the name binds a fresh local rather than referencing a unit
+    /// variant, constant, or path. The name is still recorded as a binding
+    /// candidate, but a consumer may treat `ambiguous` bindings as uncertain
+    /// rather than definite.
+    pub ambiguous: bool,
+}
+
+impl LocalBindingOccurrence {
+    /// `true` when `byte_offset` lies inside one of the binding's visibility
+    /// ranges. A pure source-region test used to validate persisted regions —
+    /// it is *not* name resolution and does not decide which binding wins when
+    /// several cover the same position.
+    pub fn covers(&self, byte_offset: u32) -> bool {
+        self.visibility_ranges
+            .iter()
+            .any(|r| r.byte_start <= byte_offset && byte_offset < r.byte_end)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BindingKind {
+    /// `let` / `let`...`else` pattern binding.
+    Let,
+    /// Function or method parameter.
+    FunctionParameter,
+    /// Closure parameter.
+    ClosureParameter,
+    /// `for <pat> in ..` pattern binding.
+    ForPattern,
+    /// `match` arm pattern binding.
+    MatchPattern,
+    /// `if let` pattern binding.
+    IfLetPattern,
+    /// `while let` pattern binding.
+    WhileLetPattern,
+}
+
+impl BindingKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BindingKind::Let => "let",
+            BindingKind::FunctionParameter => "function_parameter",
+            BindingKind::ClosureParameter => "closure_parameter",
+            BindingKind::ForPattern => "for_pattern",
+            BindingKind::MatchPattern => "match_pattern",
+            BindingKind::IfLetPattern => "if_let_pattern",
+            BindingKind::WhileLetPattern => "while_let_pattern",
+        }
+    }
+}
+
 /// An unresolved, syntactically visible reference.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReferenceOccurrence {
