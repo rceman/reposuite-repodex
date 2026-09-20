@@ -6,6 +6,8 @@ V1 was documentation-only and `BLOCKED_BY_FACT_MODEL`; the prerequisite
 `REPODEX-T3C-RUST-LOCAL-BINDING-FACTS-V1` added `FileAnalysis.bindings`, so the
 blockers are now normalized facts.
 
+V2 implementation commit: `9933a80ed76192cd5ba3e21c4f969faf7f11fb84`.
+
 ## 1. Base
 
 ```text
