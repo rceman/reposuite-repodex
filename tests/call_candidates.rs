@@ -347,34 +347,39 @@ fn a_call_inside_an_impl_method_reaches_the_module_function() {
 }
 
 #[test]
-fn imports_and_reexports_produce_no_candidate() {
+fn imports_and_reexports_resolve_through_their_link() {
     let temp = TempDir::new("t3c-imports");
     let (_snap, _links, index) = fixture_candidates(&temp);
+    // `use crate::other::imported_fn` binds `imported_fn` in `run_imported`;
+    // its TASK 3B `use_path` link resolves to the `fn` in `other.rs`, so the
+    // call is an import-aware `single_candidate` (rule
+    // `rust.call.imported_function_candidate`).
+    let imported = record_by(&index, "src/lib.rs", "imported_fn", "(file)::run_imported");
+    assert_eq!(
+        imported.rule_id,
+        candidate_rule::RUST_CALL_IMPORTED_FUNCTION_CANDIDATE
+    );
     assert_outcome(
         &index,
         "src/lib.rs",
         "imported_fn",
         "(file)::run_imported",
-        "no_candidate",
-        &[],
+        "single_candidate",
+        &["src/other.rs#0:imported_fn"],
     );
+    // `pub use crate::other::reexported_fn` is a direct import binding, so its
+    // link likewise resolves to a function candidate (no transitive chain).
     assert_outcome(
         &index,
         "src/lib.rs",
         "reexported_fn",
         "(file)::run_reexport",
-        "no_candidate",
-        &[],
+        "single_candidate",
+        &["src/other.rs#1:reexported_fn"],
     );
-    // No record anywhere may target the import/re-export declarations.
-    for decl_id in 0..2 {
-        assert!(
-            index
-                .targeting_declaration("src/other.rs", decl_id)
-                .is_empty(),
-            "no call may resolve an imported or re-exported function under this rule"
-        );
-    }
+    // Both resolve to the `function` declarations in `other.rs`.
+    assert_eq!(index.targeting_declaration("src/other.rs", 0).len(), 1);
+    assert_eq!(index.targeting_declaration("src/other.rs", 1).len(), 1);
 }
 
 #[test]
@@ -478,10 +483,13 @@ fn every_record_is_a_candidate_record_not_a_call_edge() {
     let temp = TempDir::new("t3c-no-edge");
     let (_snap, _links, index) = fixture_candidates(&temp);
     for record in index.records() {
-        assert_eq!(
-            record.rule_id,
-            candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE
-        );
+        // Local and imported candidates are both candidate records under the
+        // two candidate rules — never a call edge.
+        assert!(matches!(
+            record.rule_id.as_str(),
+            x if x == candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE
+                || x == candidate_rule::RUST_CALL_IMPORTED_FUNCTION_CANDIDATE
+        ));
         assert!(record.record_id.starts_with("cand-"));
         // Candidates are the only targets; the outcome vocabulary is candidate
         // vocabulary, never resolution vocabulary.
@@ -645,6 +653,21 @@ fn candidate_repo(temp: &TempDir, name: &str) -> PathBuf {
     std::fs::write(
         root.join("src/lib.rs"),
         b"mod util;\n\nuse crate::util::helper;\n\nfn helper() {}\nfn run() { helper(); }\n",
+    )
+    .expect("write");
+    std::fs::write(root.join("src/util.rs"), b"pub fn helper() {}\n").expect("write");
+    root
+}
+
+/// A repo where a bare `use crate::util::helper` is the only binding for
+/// `helper`, so `helper()` resolves through its TASK 3B link to a `function`
+/// candidate — exercising the import-aware path end to end.
+fn import_candidate_repo(temp: &TempDir, name: &str) -> PathBuf {
+    let root = temp.path().join(name);
+    std::fs::create_dir_all(root.join("src")).expect("mkdir");
+    std::fs::write(
+        root.join("src/lib.rs"),
+        b"mod util;\n\nuse crate::util::helper;\n\nfn run() { helper(); }\n",
     )
     .expect("write");
     std::fs::write(root.join("src/util.rs"), b"pub fn helper() {}\n").expect("write");
@@ -922,6 +945,101 @@ fn update_equals_fresh_for_an_import_blocker_added() {
             std::fs::write(
                 root.join("src/lib.rs"),
                 b"mod util;\n\nfn helper() {}\nfn run() {\n    use crate::util::helper;\n    helper();\n}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_import_removed() {
+    let temp = TempDir::new("t3d-eq-imprem");
+    let root = import_candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "imprem",
+        &root,
+        |root| {
+            // Removing the `use` drops the import binding (and its link), so
+            // `helper()` returns to the ordinary no-function outcome.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nfn run() { helper(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_import_alias_renamed() {
+    let temp = TempDir::new("t3d-eq-impalias");
+    let root = import_candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "impalias",
+        &root,
+        |root| {
+            // Rename the local alias `helper` -> `h` and the call to match: the
+            // import binds `h`, still resolving to `util::helper`.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper as h;\n\nfn run() { h(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_import_target_function_added() {
+    let temp = TempDir::new("t3d-eq-imptgtadd");
+    let root = import_candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "imptgtadd",
+        &root,
+        |root| {
+            // The import still owns `helper`; adding the target `fn` in
+            // `util.rs` turns the link from unresolved into an exact function.
+            std::fs::write(
+                root.join("src/util.rs"),
+                b"pub fn helper() {}\npub fn added() {}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_import_target_function_removed() {
+    let temp = TempDir::new("t3d-eq-imptgtrem");
+    let root = import_candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "imptgtrem",
+        &root,
+        |root| {
+            // Removing the target `fn` makes the link unresolved, so the call
+            // falls back to a conservative import no-candidate.
+            std::fs::write(root.join("src/util.rs"), b"pub fn other() {}\n").expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_local_function_blocker_added() {
+    let temp = TempDir::new("t3d-eq-fnblock");
+    let root = import_candidate_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "fnblock",
+        &root,
+        |root| {
+            // A nearer nested `fn helper` wins over the `use` for `helper()`.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\n\nuse crate::util::helper;\n\nfn run() {\n    fn helper() {}\n    helper();\n}\n",
             )
             .expect("write");
         },

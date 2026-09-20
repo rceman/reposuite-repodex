@@ -19,11 +19,11 @@
 use std::collections::HashMap;
 
 use crate::model::{
-    CallLikeForm, DeclarationKind, FileAnalysis, ImportItem, LanguageId, LocalBindingOccurrence,
-    Scope, ScopeKind,
+    CallLikeForm, DeclarationKind, FileAnalysis, ImportItem, ImportOccurrence, LanguageId,
+    LocalBindingOccurrence, Scope, ScopeKind,
 };
 
-use crate::links::model::{FactKind, FactLocator};
+use crate::links::model::{FactKind, FactLocator, LinkOutcome, LinkRecord, LinkTarget};
 
 use super::model::{
     candidate_rule, CallCandidateRecord, CandidateOutcome, CandidateProvenance, CandidateTarget,
@@ -35,8 +35,31 @@ use super::model::{
 /// in-scope plain-name call, and an `OutOfScope` record for every other call
 /// shape, so the artifact is a complete disposition of the calls the snapshot
 /// contains.
-pub fn candidates(analyses: &[FileAnalysis]) -> Vec<CallCandidateRecord> {
+pub fn candidates(analyses: &[FileAnalysis], links: &[LinkRecord]) -> Vec<CallCandidateRecord> {
     let mut records = Vec::new();
+    // File analyses by path, so an imported `function` target can be located
+    // and its real lexical scope path recovered for provenance.
+    let mut analyses_by_path: HashMap<&str, &FileAnalysis> = HashMap::new();
+    for analysis in analyses {
+        analyses_by_path.insert(analysis.file.relative_path.as_str(), analysis);
+    }
+    // TASK 3B `use_path` relationships keyed by the import occurrence they
+    // describe — `(relative_path, import_id, item_index)` — so a blocking
+    // `use` can be resolved to its already-derived structural candidates.
+    let mut links_by_import: HashMap<(String, u32, Option<u32>), &LinkRecord> = HashMap::new();
+    for link in links {
+        if link.kind == "use_path" && link.source.fact_kind == FactKind::Import {
+            links_by_import.insert(
+                (
+                    link.source.relative_path.clone(),
+                    link.source.fact_id,
+                    link.source.item_index,
+                ),
+                link,
+            );
+        }
+    }
+
     for analysis in analyses {
         if analysis.file.language != LanguageId::Rust {
             continue;
@@ -69,23 +92,31 @@ pub fn candidates(analyses: &[FileAnalysis]) -> Vec<CallCandidateRecord> {
                     evidence,
                 };
 
-            let (outcome, provenance) = match in_scope_reason(call) {
+            let (outcome, provenance, rule_id) = match in_scope_reason(call) {
                 Some(reason) => (
                     CandidateOutcome::out_of_scope(reason),
                     provenance(Vec::new(), None, None),
+                    candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
                 ),
                 None => {
-                    let (outcome, search_levels, enclosing_module, evidence) =
-                        lexical_candidates(analysis, call, &bindings_by_name);
+                    let (outcome, search_levels, enclosing_module, evidence, rule_id) =
+                        lexical_candidates(
+                            analysis,
+                            call,
+                            &bindings_by_name,
+                            &links_by_import,
+                            &analyses_by_path,
+                        );
                     (
                         outcome,
                         provenance(evidence, Some(search_levels), Some(enclosing_module)),
+                        rule_id,
                     )
                 }
             };
             records.push(CallCandidateRecord::new(
                 "rust",
-                candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
+                rule_id,
                 source,
                 call.callee_written.clone(),
                 outcome,
@@ -138,14 +169,22 @@ fn in_scope_reason(call: &crate::model::CallLikeOccurrence) -> Option<String> {
 ///     a same-name `constant`/`static` declaration
 ///         -> stop: `blocked_by_local_constant` (a nearer value item)
 ///     a same-name `use` import leaf/alias
-///         -> stop: `blocked_by_import_binding` (a nearer name-bearing item)
+///         -> stop: resolve it through its TASK 3B `use_path` relationship
+///            into zero/one/many `function` candidates, or a `no_candidate`
+///            reason when the link is `Unresolved`/`OutOfScope`/non-function
 /// nothing relevant -> continue outward
 /// ```
+///
+/// The returned `&'static str` is the producing rule id: imported outcomes
+/// carry `rust.call.imported_function_candidate` so they stay distinguishable
+/// from the lexical-local `rust.call.local_function_candidate`.
 fn lexical_candidates(
     analysis: &FileAnalysis,
     call: &crate::model::CallLikeOccurrence,
     bindings_by_name: &HashMap<&str, Vec<&LocalBindingOccurrence>>,
-) -> (CandidateOutcome, u32, String, Vec<String>) {
+    links_by_import: &HashMap<(String, u32, Option<u32>), &LinkRecord>,
+    analyses_by_path: &HashMap<&str, &FileAnalysis>,
+) -> (CandidateOutcome, u32, String, Vec<String>, &'static str) {
     let path = analysis.file.relative_path.as_str();
     let name = call.callee_written.as_str();
     let chain = lexical_chain(analysis, call.scope_id);
@@ -165,7 +204,13 @@ fn lexical_candidates(
         bindings_by_name.get(name),
         &enclosing_module,
     ) {
-        return (outcome, 0, enclosing_module, evidence);
+        return (
+            outcome,
+            0,
+            enclosing_module,
+            evidence,
+            candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
+        );
     }
 
     for (level_index, scope) in chain.iter().enumerate() {
@@ -204,6 +249,7 @@ fn lexical_candidates(
                 level_index as u32,
                 enclosing_module,
                 evidence,
+                candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
             );
         }
 
@@ -230,14 +276,17 @@ fn lexical_candidates(
                 level_index as u32,
                 enclosing_module,
                 evidence,
+                candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
             );
         }
 
         // A same-name `use` import binds the local leaf/alias in this scope, so
-        // a `use` nearer than the nearest `function` shadows it. Like `const`,
-        // an import is an item reaching nested items in its block's subtree.
-        // Wildcard `use`s bind no single name, so they never block here.
-        if let Some((import, item)) = analysis
+        // a `use` nearer than the nearest `function` owns the name here. That
+        // import is resolved through its persisted TASK 3B `use_path`
+        // relationship into zero/one/many `function` candidates — the import
+        // never falls back to an unrelated outer same-name function. Wildcard
+        // `use`s bind no single name, so they never reach this branch.
+        if let Some((import, item_index)) = analysis
             .imports
             .iter()
             .filter(|import| import.scope_id == level)
@@ -245,27 +294,28 @@ fn lexical_candidates(
                 import
                     .items
                     .iter()
-                    .find(|item| import_local_name(item) == Some(name))
-                    .map(|item| (import, item))
+                    .enumerate()
+                    .find(|(_, item)| import_local_name(item) == Some(name))
+                    .map(|(index, _)| (import, index as u32))
             })
         {
-            let mut evidence = vec![
-                "blocker=import".to_string(),
-                format!("blocker_import_id={}", import.import_id),
-                format!("blocker_name={name}"),
-                format!("blocker_target={}", item.target),
-                format!("blocker_scope={scope_name}"),
-                format!("matched_level={level_index}"),
-                format!("enclosing_module={enclosing_module}"),
-            ];
-            if let Some(alias) = &item.alias {
-                evidence.push(format!("blocker_alias={alias}"));
-            }
+            let (outcome, evidence) = import_candidates(
+                path,
+                name,
+                import,
+                item_index,
+                links_by_import,
+                analyses_by_path,
+                &scope_name,
+                level_index,
+                &enclosing_module,
+            );
             return (
-                CandidateOutcome::no_candidate("blocked_by_import_binding"),
+                outcome,
                 level_index as u32,
                 enclosing_module,
                 evidence,
+                candidate_rule::RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
             );
         }
     }
@@ -282,7 +332,155 @@ fn lexical_candidates(
         chain.len().saturating_sub(1) as u32,
         enclosing_module,
         evidence,
+        candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
     )
+}
+
+/// Resolve a blocking `use` occurrence to its TASK 3B `use_path` candidates.
+///
+/// The import already owns the local name lexically (it is the nearest
+/// name-bearing construct for this call), so this never falls back to an outer
+/// same-name `function`. It only converts the persisted structural
+/// relationship into `function` candidates:
+///
+/// * `Exact` + a `function` target -> `single_candidate`
+/// * `Exact` + a non-`function` target -> `no_candidate`
+/// * `Ambiguous` -> filter the structural candidates to `function`s;
+///   0 -> `no_candidate`, 1 -> `single_candidate`, 2+ -> `multiple_candidates`
+///   (provenance keeps `link_outcome=ambiguous` so a lone survivor is never
+///   mistaken for a uniquely resolved import)
+/// * `Unresolved` -> `no_candidate(import_structurally_unresolved)`
+/// * `OutOfScope` -> `no_candidate(import_out_of_scope)`
+/// * no link for this occurrence -> `no_candidate(blocked_by_import_binding)`
+///   (conservative: the import still owns the name)
+#[allow(clippy::too_many_arguments)]
+fn import_candidates(
+    path: &str,
+    name: &str,
+    import: &ImportOccurrence,
+    item_index: u32,
+    links_by_import: &HashMap<(String, u32, Option<u32>), &LinkRecord>,
+    analyses_by_path: &HashMap<&str, &FileAnalysis>,
+    scope_name: &str,
+    level_index: usize,
+    enclosing_module: &str,
+) -> (CandidateOutcome, Vec<String>) {
+    let item = import.items.get(item_index as usize);
+    let item_target = item.map(|item| item.target.clone()).unwrap_or_default();
+    let mut evidence = vec![
+        "blocker=import".to_string(),
+        format!("blocker_import_id={}", import.import_id),
+        format!("blocker_item_index={item_index}"),
+        format!("blocker_local_name={name}"),
+        format!("blocker_target={item_target}"),
+        format!("blocker_scope={scope_name}"),
+        format!("matched_level={level_index}"),
+        format!("enclosing_module={enclosing_module}"),
+    ];
+    if let Some(alias) = item.and_then(|item| item.alias.clone()) {
+        evidence.push(format!("blocker_alias={alias}"));
+    }
+
+    let key = (path.to_string(), import.import_id, Some(item_index));
+    let Some(link) = links_by_import.get(&key) else {
+        // No persisted relationship for this exact import occurrence: the
+        // import still owns the name, so suppress the outer function
+        // conservatively rather than invent a candidate.
+        evidence.push("import_link=absent".to_string());
+        return (
+            CandidateOutcome::no_candidate("blocked_by_import_binding"),
+            evidence,
+        );
+    };
+    evidence.push(format!("import_link_id={}", link.link_id));
+    evidence.push(format!("import_link_rule={}", link.rule_id));
+    evidence.push(format!("link_outcome={}", link.outcome.as_str()));
+    evidence.push(format!("import_written={}", link.written));
+
+    match &link.outcome {
+        LinkOutcome::Exact { target } => {
+            match eligible_imported_function(target, analyses_by_path) {
+                Some(candidate) => {
+                    evidence.push(format!("target={}", target.render()));
+                    (CandidateOutcome::SingleCandidate { candidate }, evidence)
+                }
+                None => {
+                    evidence.push(format!("excluded_non_function={}", target.render()));
+                    (
+                        CandidateOutcome::no_candidate("import_target_not_eligible_function"),
+                        evidence,
+                    )
+                }
+            }
+        }
+        LinkOutcome::Ambiguous { candidates } => {
+            let mut functions: Vec<CandidateTarget> = Vec::new();
+            let mut excluded = 0u32;
+            for target in candidates {
+                match eligible_imported_function(target, analyses_by_path) {
+                    Some(candidate) => functions.push(candidate),
+                    None => excluded += 1,
+                }
+            }
+            if excluded > 0 {
+                evidence.push(format!("excluded_non_function_count={excluded}"));
+            }
+            (
+                CandidateOutcome::from_candidates(
+                    functions,
+                    "import_target_not_eligible_function".to_string(),
+                ),
+                evidence,
+            )
+        }
+        LinkOutcome::Unresolved { reason } => {
+            evidence.push(format!("unresolved_reason={reason}"));
+            (
+                CandidateOutcome::no_candidate("import_structurally_unresolved"),
+                evidence,
+            )
+        }
+        LinkOutcome::OutOfScope { reason } => {
+            evidence.push(format!("out_of_scope_reason={reason}"));
+            (
+                CandidateOutcome::no_candidate("import_out_of_scope"),
+                evidence,
+            )
+        }
+    }
+}
+
+/// Convert a TASK 3B `Declaration` link target into a `function`
+/// [`CandidateTarget`], or `None` when it is not an eligible `function`.
+///
+/// The declaration is located in its own file's analysis so the candidate's
+/// `scope_path` is the target's real lexical scope, and the kind is verified
+/// against the actual declaration rather than only the link's claim. File /
+/// structural targets are never eligible call candidates.
+fn eligible_imported_function(
+    target: &LinkTarget,
+    analyses_by_path: &HashMap<&str, &FileAnalysis>,
+) -> Option<CandidateTarget> {
+    let LinkTarget::Declaration {
+        relative_path,
+        declaration_id,
+        ..
+    } = target
+    else {
+        return None;
+    };
+    let analysis = analyses_by_path.get(relative_path.as_str())?;
+    let declaration = analysis.declarations.get(*declaration_id as usize)?;
+    if declaration.kind != DeclarationKind::Function {
+        return None;
+    }
+    Some(CandidateTarget::new(
+        relative_path.clone(),
+        *declaration_id,
+        declaration.kind.as_str(),
+        declaration.name.clone(),
+        analysis.scope_path(declaration.scope_id),
+    ))
 }
 
 /// Whether a covering same-name local binding blocks this call.

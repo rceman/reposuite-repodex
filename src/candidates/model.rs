@@ -50,7 +50,11 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 /// * `2` — added lexical blockers: a covering same-name `LocalBindingOccurrence`
 ///   (definite or ambiguous), a same-name local `const`/`static`, or a same-name
 ///   `use` leaf/alias suppresses the outer `function` candidate.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 2;
+/// * `3` — import-aware candidates: a blocking `use` is resolved through its
+///   persisted TASK 3B `use_path` relationship into zero/one/many `function`
+///   candidates under `rust.call.imported_function_candidate`, instead of only
+///   suppressing the outer function.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 3;
 
 /// Per-language candidate-policy versions.
 ///
@@ -60,7 +64,9 @@ pub const CANDIDATE_RULE_ABI_VERSION: u32 = 2;
 /// * `1` — `function`-declaration search only.
 /// * `2` — local-binding / `const`/`static` / `use` blockers suppress outward
 ///   function lookup.
-pub const POLICY_VERSION_RUST_CALL: u32 = 2;
+/// * `3` — a blocking `use` may produce imported `function` candidates through
+///   the already-derived TASK 3B structural relationship.
+pub const POLICY_VERSION_RUST_CALL: u32 = 3;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -69,8 +75,17 @@ pub const POLICY_VERSION_RUST_CALL: u32 = 2;
 pub mod candidate_rule {
     /// The bounded Rust local plain-name function-candidate rule.
     pub const RUST_CALL_LOCAL_FUNCTION_CANDIDATE: &str = "rust.call.local_function_candidate";
+    /// The bounded Rust import-aware plain-name function-candidate rule.
+    ///
+    /// A blocking `use` occurrence is resolved through its persisted TASK 3B
+    /// `use_path` relationship into `function` candidates. Imported and
+    /// lexical-local provenance stay distinguishable.
+    pub const RUST_CALL_IMPORTED_FUNCTION_CANDIDATE: &str = "rust.call.imported_function_candidate";
 
-    pub const ALL: &[&str] = &[RUST_CALL_LOCAL_FUNCTION_CANDIDATE];
+    pub const ALL: &[&str] = &[
+        RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
+        RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
+    ];
 }
 
 /// What a call candidate points at.
@@ -419,45 +434,92 @@ pub struct CandidateRuleDocumentation {
 
 /// The complete candidate-rule registry.
 pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
-    vec![CandidateRuleDocumentation {
-        rule_id: candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE.to_string(),
-        language: "rust".to_string(),
-        summary: "Bounded lexical/module-local candidate search for Rust \
+    vec![
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE.to_string(),
+            language: "rust".to_string(),
+            summary: "Bounded lexical/module-local candidate search for Rust \
                   plain-name calls."
-            .to_string(),
-        in_scope_calls: "a Rust call-like occurrence with form `plain_name`, a \
+                .to_string(),
+            in_scope_calls: "a Rust call-like occurrence with form `plain_name`, a \
                          callee that is exactly one written identifier, and a \
                          non-dynamic callee."
-            .to_string(),
-        candidate_declarations: "source-written Rust `function` declarations \
+                .to_string(),
+            candidate_declarations: "source-written Rust `function` declarations \
                                  only; never methods, associated functions, \
                                  closures, locals, constructors, macros, \
                                  imports or re-exports."
-            .to_string(),
-        selection_rule: "start at the call's containing scope; at each lexical \
+                .to_string(),
+            selection_rule: "start at the call's containing scope; at each lexical \
                          level collect eligible `function` declarations; stop \
                          at the first level that contains a match; never cross \
                          a `module` or `file` boundary, so the search is \
                          confined to the innermost enclosing module."
-            .to_string(),
-        single_candidate_meaning: "one syntactic candidate under this bounded \
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate under this bounded \
                                    rule. A candidate is evidence a declaration \
                                    could be relevant, NOT proof the call \
                                    resolves to it."
-            .to_string(),
-        no_candidate_meaning: "no candidate under the TASK 3C rule. It does not \
+                .to_string(),
+            no_candidate_meaning: "no candidate under the TASK 3C rule. It does not \
                                mean the call has no runtime target."
-            .to_string(),
-        known_exclusions: vec![
-            "imports and re-exports (use / pub use)".to_string(),
-            "methods, associated functions and trait methods".to_string(),
-            "closures and local callable variables".to_string(),
-            "tuple-struct and enum-variant constructors".to_string(),
-            "qualified-path, member-selector, static-scoped and indirect calls".to_string(),
-            "macro invocations and calls inside macro token trees".to_string(),
-            "function declarations inside extern blocks".to_string(),
-        ],
-    }]
+                .to_string(),
+            known_exclusions: vec![
+                "imports and re-exports as *lexical* candidates (a blocking `use` \
+             is handled by `rust.call.imported_function_candidate` instead)"
+                    .to_string(),
+                "methods, associated functions and trait methods".to_string(),
+                "closures and local callable variables".to_string(),
+                "tuple-struct and enum-variant constructors".to_string(),
+                "qualified-path, member-selector, static-scoped and indirect calls".to_string(),
+                "macro invocations and calls inside macro token trees".to_string(),
+                "function declarations inside extern blocks".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::RUST_CALL_IMPORTED_FUNCTION_CANDIDATE.to_string(),
+            language: "rust".to_string(),
+            summary: "Bounded import-aware candidate search for Rust plain-name \
+                  calls: a blocking `use` is resolved through its persisted \
+                  TASK 3B `use_path` relationship."
+                .to_string(),
+            in_scope_calls: "a Rust `plain_name` call whose lexical lookup reaches \
+                         an applicable same-local-name `use` import blocker."
+                .to_string(),
+            candidate_declarations: "source-written Rust `function` declarations \
+                                 named by the import's TASK 3B `use_path` \
+                                 relationship only; `Exact` yields that \
+                                 function, `Ambiguous` is filtered to eligible \
+                                 functions, `Unresolved`/`OutOfScope` and \
+                                 non-function targets yield no candidate."
+                .to_string(),
+            selection_rule: "an import candidate is only produced where the `use` \
+                         occurrence already blocks lexical lookup under \
+                         `rust.call.local_function_candidate` — never for \
+                         every same-name import in the file. A closer local \
+                         binding, `const`/`static`, or nearer `function` still \
+                         wins first; the import never falls back to an \
+                         unrelated outer same-name function."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate the import's TASK \
+                                   3B structural relationship names. It is \
+                                   structural evidence, NOT proof Rust resolves \
+                                   the call to it."
+                .to_string(),
+            no_candidate_meaning: "the applicable import could not produce an \
+                               eligible `function` candidate under the bounded \
+                               rule — its link is `Unresolved`, `OutOfScope`, \
+                               or names no `function`."
+                .to_string(),
+            known_exclusions: vec![
+                "glob imports, pub use / transitive re-export chains, preludes".to_string(),
+                "self/super/external-crate path resolution beyond TASK 3B".to_string(),
+                "qualified-path, method, associated-function, trait calls".to_string(),
+                "closures, function pointers, local callable variables, constructors".to_string(),
+                "macro-generated imports, cfg evaluation, external crate resolution".to_string(),
+            ],
+        },
+    ]
 }
 
 /// The manifest of a derived candidate artifact.

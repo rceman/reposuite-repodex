@@ -72,6 +72,23 @@ def load_candidates(candidates_dir: Path):
     return manifest, records, by_source
 
 
+def load_links(links_dir: Path):
+    """Index persisted TASK 3B `use_path` relationships by the exact import
+    occurrence they describe — `(relative_path, import_id, item_index)`."""
+    links = [
+        json.loads(line)
+        for line in (links_dir / "links.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    by_import = {}
+    for link in links:
+        if link["kind"] != "use_path" or link["source"]["fact_kind"] != "import":
+            continue
+        source = link["source"]
+        by_import[(source["relative_path"], source["fact_id"], source.get("item_index"))] = link
+    return by_import
+
+
 # ---------------------------------------------------------------------------
 # Independent candidate derivation
 # ---------------------------------------------------------------------------
@@ -170,8 +187,63 @@ def import_local_name(item):
     return parts[-1] if parts else None
 
 
-def expected_outcome(analysis, call):
-    """The expected result under the V2 lexical-blocker rule, derived
+def is_fn_target(target, analyses):
+    """Whether a link target is an eligible `function` declaration, verified
+    against the snapshot, not only the link's own `declaration_kind` claim."""
+    if target["kind"] != "declaration":
+        return False
+    analysis = analyses.get(target["relative_path"])
+    if analysis is None:
+        return False
+    decls = analysis["declarations"]
+    did = target["declaration_id"]
+    return did < len(decls) and decls[did]["kind"] == "function"
+
+
+def import_expected(path, imp, item_index, links_by_import, analyses):
+    """The expected outcome when a `use` import owns the call name, derived
+    from the persisted TASK 3B `use_path` relationship for that exact item.
+
+    Returns ``{"candidates": [...], "reason": str|None, "link_outcome": str|None}``.
+    `reason` is the expected `no_candidate` reason when `candidates` is empty.
+    """
+    link = links_by_import.get((path, imp["import_id"], item_index))
+    if link is None:
+        # No persisted relationship: the import still owns the name.
+        return {"candidates": [], "reason": "blocked_by_import_binding",
+                "link_outcome": None, "link_id": None}
+    outcome = link["outcome"]
+    kind = outcome["outcome"]
+    if kind == "exact":
+        target = outcome["target"]
+        if is_fn_target(target, analyses):
+            return {"candidates": [(target["relative_path"], target["declaration_id"])],
+                    "reason": None, "link_outcome": "exact", "link_id": link["link_id"]}
+        return {"candidates": [], "reason": "import_target_not_eligible_function",
+                "link_outcome": "exact", "link_id": link["link_id"]}
+    if kind == "ambiguous":
+        fns = [
+            (t["relative_path"], t["declaration_id"])
+            for t in outcome["candidates"]
+            if is_fn_target(t, analyses)
+        ]
+        if fns:
+            return {"candidates": fns, "reason": None,
+                    "link_outcome": "ambiguous", "link_id": link["link_id"]}
+        return {"candidates": [], "reason": "import_target_not_eligible_function",
+                "link_outcome": "ambiguous", "link_id": link["link_id"]}
+    if kind == "unresolved":
+        return {"candidates": [], "reason": "import_structurally_unresolved",
+                "link_outcome": "unresolved", "link_id": link["link_id"]}
+    if kind == "out_of_scope":
+        return {"candidates": [], "reason": "import_out_of_scope",
+                "link_outcome": "out_of_scope", "link_id": link["link_id"]}
+    return {"candidates": [], "reason": "blocked_by_import_binding",
+            "link_outcome": kind, "link_id": link["link_id"]}
+
+
+def expected_outcome(path, analysis, call, links_by_import, analyses):
+    """The expected result under the import-aware lexical-blocker rule, derived
     independently of the production rule.
 
     Returns a tuple ``(kind, payload)`` where ``kind`` is one of:
@@ -179,7 +251,10 @@ def expected_outcome(analysis, call):
     ``("blocked", blocker_kind)``   a covering same-name blocker suppresses the
                                     outer function; ``blocker_kind`` is one of
                                     ``local_binding`` / ``ambiguous_binding`` /
-                                    ``constant`` / ``import``.
+                                    ``constant``.
+    ``("import", expectation)``     a `use` owns the name; ``expectation`` is the
+                                    ``import_expected`` dict (candidates or a
+                                    no_candidate reason plus link outcome).
     ``("candidates", [decls])``     the expected ``(path, declaration_id)`` set
                                     for the nearest level with a ``function``.
     """
@@ -219,21 +294,28 @@ def expected_outcome(analysis, call):
             for d in analysis["declarations"]
         ):
             return ("blocked", "constant")
-        if any(
-            import_local_name(item) == name
-            for imp in analysis["imports"]
-            if imp["scope_id"] == level
-            for item in imp["items"]
-        ):
-            return ("blocked", "import")
+        # A same-name `use` item owns the name here: resolve its TASK 3B link.
+        matched = next(
+            (
+                (imp, index)
+                for imp in analysis["imports"]
+                if imp["scope_id"] == level
+                for index, item in enumerate(imp["items"])
+                if import_local_name(item) == name
+            ),
+            None,
+        )
+        if matched is not None:
+            imp, index = matched
+            return ("import", import_expected(path, imp, index, links_by_import, analyses))
     return ("candidates", [])
 
 
 # Map an expected blocker kind to the emitted `NoCandidate` reason string.
+# `import` is no longer a `blocked` kind — it resolves through its TASK 3B link.
 BLOCK_REASON = {
     "local_binding": "shadowed_by_local_binding",
     "ambiguous_binding": "blocked_by_ambiguous_local_binding",
-    "import": "blocked_by_import_binding",
     "constant": "blocked_by_local_constant",
 }
 
@@ -241,7 +323,6 @@ BLOCK_REASON = {
 BLOCK_VERDICT = {
     "local_binding": "CORRECTLY_BLOCKED_LOCAL_BINDING",
     "ambiguous_binding": "CORRECTLY_BLOCKED_AMBIGUOUS_BINDING",
-    "import": "CORRECTLY_BLOCKED_IMPORT",
     "constant": "CORRECTLY_BLOCKED_CONSTANT",
 }
 
@@ -365,6 +446,7 @@ def audit(args) -> dict:
 
     _snap_manifest, analyses = load_snapshot(snapshot_dir)
     cand_manifest, _records, by_source = load_candidates(candidates_dir)
+    links_by_import = load_links(Path(args.links))
 
     regions = select_regions(analyses)
     if args.all:
@@ -400,7 +482,7 @@ def audit(args) -> dict:
                 continue
 
             calls_in_scope += 1
-            kind, payload = expected_outcome(analysis, call)
+            kind, payload = expected_outcome(path, analysis, call, links_by_import, analyses)
             expected = payload if kind == "candidates" else []
             actual = []
             actual_reason = None
@@ -417,14 +499,14 @@ def audit(args) -> dict:
 
             # A call an expected blocker should suppress: the record must be a
             # `no_candidate` carrying the matching blocker reason. An emitted
-            # candidate here is the unsafe outer candidate the correction exists
-            # to prevent.
+            # candidate here means a closer name-bearing fact lost precedence to
+            # a candidate — a lexical-precedence error.
             if kind == "blocked":
                 blocker_kind = payload
                 expected_reason = BLOCK_REASON[blocker_kind]
                 verdict = BLOCK_VERDICT[blocker_kind]
                 if actual:
-                    verdicts["FALSE_CANDIDATE"] += 1
+                    verdicts["LEXICAL_PRECEDENCE_ERROR"] += 1
                     false_candidates.append(
                         (path, call["call_id"], call["callee_written"],
                          f"candidate emitted despite a {blocker_kind} blocker")
@@ -441,6 +523,69 @@ def audit(args) -> dict:
                 else:
                     verdicts["MISSING_CANDIDATE"] += 1
                     missing.append((path, call["call_id"], call["callee_written"]))
+                continue
+
+            # A `use` owns the call name: the expected outcome is derived from
+            # the persisted TASK 3B `use_path` relationship, independently of
+            # the production import-candidate path.
+            if kind == "import":
+                expectation = payload
+                expected_cands = set(expectation["candidates"])
+                expected_reason = expectation["reason"]
+                actual_set = set(actual)
+                # Source cross-check: every emitted candidate must name a
+                # `function` declaration in the snapshot.
+                for cpath, cdec in actual_set:
+                    cand_analysis = analyses.get(cpath)
+                    decl = None
+                    if cand_analysis is not None and cdec < len(
+                        cand_analysis["declarations"]
+                    ):
+                        decl = cand_analysis["declarations"][cdec]
+                    if decl is None or decl["kind"] != "function":
+                        verdicts["FALSE_IMPORTED_CANDIDATE"] += 1
+                        false_candidates.append(
+                            (path, call["call_id"], call["callee_written"],
+                             f"imported candidate {cpath}#{cdec} is not a snapshot function")
+                        )
+                if expected_cands:
+                    if actual_set == expected_cands:
+                        if len(actual_set) == 1:
+                            verdicts["CORRECT_SINGLE_IMPORTED"] += 1
+                        else:
+                            verdicts["CORRECT_MULTIPLE_IMPORTED"] += 1
+                    elif not actual_set:
+                        verdicts["MISSING_IMPORTED_CANDIDATE"] += 1
+                        missing.append((path, call["call_id"], call["callee_written"]))
+                    else:
+                        verdicts["WRONG_IMPORTED_TARGET"] += 1
+                        details.append(
+                            (path, call["call_id"], call["callee_written"],
+                             f"import expected={sorted(expected_cands)} actual={sorted(actual_set)}")
+                        )
+                else:
+                    if actual_set:
+                        verdicts["FALSE_IMPORTED_CANDIDATE"] += 1
+                        false_candidates.append(
+                            (path, call["call_id"], call["callee_written"],
+                             "candidate emitted despite an unresolved/non-function import")
+                        )
+                    elif record and record["outcome"]["outcome"] == "no_candidate" \
+                            and actual_reason == expected_reason:
+                        verdicts["CORRECT_IMPORT_NO_CANDIDATE"] += 1
+                        if expectation["link_outcome"] in (
+                            "unresolved", "out_of_scope", "ambiguous",
+                        ):
+                            verdicts["UPSTREAM_LINK_LIMITATION"] += 1
+                    elif record and record["outcome"]["outcome"] == "no_candidate":
+                        verdicts["BLOCKED_WRONG_REASON"] += 1
+                        details.append(
+                            (path, call["call_id"], call["callee_written"],
+                             f"expected import reason {expected_reason!r}, got {actual_reason!r}")
+                        )
+                    else:
+                        verdicts["MISSING_IMPORTED_CANDIDATE"] += 1
+                        missing.append((path, call["call_id"], call["callee_written"]))
                 continue
 
             expected_set = set(expected)
@@ -531,15 +676,21 @@ def main() -> int:
     v = report["verdicts"]
     total = report["calls_in_scope"]
     correct = v.get("CORRECT_NONE", 0) + v.get("CORRECT_SINGLE", 0) + v.get("CORRECT_MULTIPLE", 0)
-    tp = v.get("CORRECT_SINGLE", 0) + v.get("CORRECT_MULTIPLE", 0)
-    fp = v.get("FALSE_CANDIDATE", 0) + v.get("WRONG_SCOPE_CANDIDATE", 0)
-    fn = v.get("MISSING_CANDIDATE", 0)
+    tp = v.get("CORRECT_SINGLE", 0) + v.get("CORRECT_MULTIPLE", 0) \
+        + v.get("CORRECT_SINGLE_IMPORTED", 0) + v.get("CORRECT_MULTIPLE_IMPORTED", 0)
+    fp = v.get("FALSE_CANDIDATE", 0) + v.get("WRONG_SCOPE_CANDIDATE", 0) \
+        + v.get("FALSE_IMPORTED_CANDIDATE", 0) + v.get("WRONG_IMPORTED_TARGET", 0) \
+        + v.get("LEXICAL_PRECEDENCE_ERROR", 0)
+    fn = v.get("MISSING_CANDIDATE", 0) + v.get("MISSING_IMPORTED_CANDIDATE", 0)
     blocked_local = v.get("CORRECTLY_BLOCKED_LOCAL_BINDING", 0)
     blocked_ambig = v.get("CORRECTLY_BLOCKED_AMBIGUOUS_BINDING", 0)
-    blocked_import = v.get("CORRECTLY_BLOCKED_IMPORT", 0)
     blocked_const = v.get("CORRECTLY_BLOCKED_CONSTANT", 0)
+    import_no_candidate = v.get("CORRECT_IMPORT_NO_CANDIDATE", 0)
+    import_single = v.get("CORRECT_SINGLE_IMPORTED", 0)
+    import_multiple = v.get("CORRECT_MULTIPLE_IMPORTED", 0)
+    upstream_limited = v.get("UPSTREAM_LINK_LIMITATION", 0)
 
-    print("TASK 3C independent call-candidate audit (V2 lexical-blocker aware)")
+    print("TASK 3D independent call-candidate audit (import-aware)")
     print(f"  regions:              {report['region_count']} files")
     print(f"  in-scope calls:       {total}")
     print(f"  out-of-scope calls:   {report['calls_out_of_scope']}")
@@ -549,11 +700,19 @@ def main() -> int:
     print(f"  out-of-scope correct: {v.get('OUT_OF_SCOPE_CORRECT',0)}")
     print(f"  blocked local binding:{blocked_local}")
     print(f"  blocked ambiguous:    {blocked_ambig}")
-    print(f"  blocked import:       {blocked_import}")
     print(f"  blocked constant:     {blocked_const}")
+    print("  --- import-aware ---")
+    print(f"  import single:        {import_single}")
+    print(f"  import multiple:      {import_multiple}")
+    print(f"  import no-candidate:  {import_no_candidate}")
+    print(f"  upstream-link-limited:{upstream_limited}")
     print(f"  FALSE_CANDIDATE:      {v.get('FALSE_CANDIDATE',0)}")
     print(f"  WRONG_SCOPE:          {v.get('WRONG_SCOPE_CANDIDATE',0)}")
     print(f"  MISSING_CANDIDATE:    {v.get('MISSING_CANDIDATE',0)}")
+    print(f"  FALSE_IMPORTED:       {v.get('FALSE_IMPORTED_CANDIDATE',0)}")
+    print(f"  WRONG_IMPORTED:       {v.get('WRONG_IMPORTED_TARGET',0)}")
+    print(f"  MISSING_IMPORTED:     {v.get('MISSING_IMPORTED_CANDIDATE',0)}")
+    print(f"  LEXICAL_PRECEDENCE:   {v.get('LEXICAL_PRECEDENCE_ERROR',0)}")
     print(f"  BLOCKED_WRONG_REASON: {v.get('BLOCKED_WRONG_REASON',0)}")
     print(f"  OUT_OF_SCOPE_WRONG:   {v.get('OUT_OF_SCOPE_WRONG',0)}")
     print(f"  candidate TP/FP/FN:   {tp}/{fp}/{fn}")
@@ -576,8 +735,16 @@ def main() -> int:
         Path(args.json).write_text(json.dumps(report, indent=2))
         print(f"\n  wrote {args.json}")
 
-    # Fail loudly on any false or wrong-scope candidate.
-    return 1 if (v.get("FALSE_CANDIDATE", 0) + v.get("WRONG_SCOPE_CANDIDATE", 0)) else 0
+    # Fail loudly on any false, wrong-scope, wrong-import or precedence
+    # candidate — the §29 acceptance rule requires all of these to be zero.
+    bad = (
+        v.get("FALSE_CANDIDATE", 0)
+        + v.get("WRONG_SCOPE_CANDIDATE", 0)
+        + v.get("FALSE_IMPORTED_CANDIDATE", 0)
+        + v.get("WRONG_IMPORTED_TARGET", 0)
+        + v.get("LEXICAL_PRECEDENCE_ERROR", 0)
+    )
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":

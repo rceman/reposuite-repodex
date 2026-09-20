@@ -12,8 +12,9 @@
 //! The build never mutates the snapshot or the link artifact, never reparses
 //! source through Tree-sitter, and never writes a second copy of the normalized
 //! facts. The TASK 3B link artifact is a *dependency*: it is digested into the
-//! manifest so a stale upstream invalidates this artifact, but the rule itself
-//! is file-local and reads no link records.
+//! manifest so a stale upstream invalidates this artifact, and TASK 3D reads its
+//! `use_path` relationships so a blocking `use` can become an imported
+//! `function` candidate.
 //!
 //! TASK 3C rebuilds the whole candidate artifact from the whole snapshot. The
 //! measured cost (see `docs/TASK3C_RESULTS.md`) does not justify incremental
@@ -86,8 +87,9 @@ pub struct CandidateBuildOutcome {
 /// Build the derived call-candidate artifact for `snapshot_dir` into `output`.
 ///
 /// `links_dir` is the TASK 3B link artifact this build depends on. Its digest is
-/// recorded so a stale upstream invalidates this artifact; the rule itself is
-/// file-local and reads no link records.
+/// recorded so a stale upstream invalidates this artifact; the rule reads its
+/// `use_path` relationships so a blocking `use` can become an imported
+/// `function` candidate.
 pub fn build_candidates(
     snapshot_dir: &Path,
     links_dir: &Path,
@@ -127,11 +129,18 @@ pub fn build_candidates(
     stats.snapshot_files = analyses.len() as u64;
     stats.snapshot_bytes = snapshot_artifact::artifact_size(snapshot_dir);
     stats.link_bytes = crate::links::artifact::artifact_size(links_dir);
+    // TASK 3D reads the persisted `use_path` relationships so a blocking `use`
+    // can be resolved into imported `function` candidates.
+    let links = crate::links::artifact::read_links(links_dir).map_err(|error| {
+        CandidateError::InvalidManifest {
+            reason: format!("the link records could not be read: {error}"),
+        }
+    })?;
     phases.snapshot_load_ms = elapsed_ms(load_started);
 
     // 2. Apply the bounded Rust candidate rule.
     let derive_started = Instant::now();
-    let mut records: Vec<CallCandidateRecord> = rule_rust::candidates(&analyses);
+    let mut records: Vec<CallCandidateRecord> = rule_rust::candidates(&analyses, &links);
     artifact::order_records(&mut records)?;
     phases.derive_ms = elapsed_ms(derive_started);
 
