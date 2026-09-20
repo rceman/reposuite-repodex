@@ -54,7 +54,7 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 ///   persisted TASK 3B `use_path` relationship into zero/one/many `function`
 ///   candidates under `rust.call.imported_function_candidate`, instead of only
 ///   suppressing the outer function.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 3;
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 4;
 
 /// Per-language candidate-policy versions.
 ///
@@ -66,7 +66,10 @@ pub const CANDIDATE_RULE_ABI_VERSION: u32 = 3;
 ///   function lookup.
 /// * `3` — a blocking `use` may produce imported `function` candidates through
 ///   the already-derived TASK 3B structural relationship.
-pub const POLICY_VERSION_RUST_CALL: u32 = 3;
+/// * `4` — `qualified_path` calls may produce `function` candidates when the
+///   path is structurally proven to traverse repository modules
+///   (`crate`/`self`/`super`/in-crate module roots).
+pub const POLICY_VERSION_RUST_CALL: u32 = 4;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -81,10 +84,18 @@ pub mod candidate_rule {
     /// `use_path` relationship into `function` candidates. Imported and
     /// lexical-local provenance stay distinguishable.
     pub const RUST_CALL_IMPORTED_FUNCTION_CANDIDATE: &str = "rust.call.imported_function_candidate";
+    /// The bounded Rust structural qualified-path function-candidate rule.
+    ///
+    /// A `qualified_path` call (`crate::`/`self::`/`super::`/in-crate module
+    /// prefixes) whose path traverses repository modules and ends at a
+    /// source-written `function`. Never semantic path resolution.
+    pub const RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE: &str =
+        "rust.call.structural_path_function_candidate";
 
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
         RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
+        RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE,
     ];
 }
 
@@ -517,6 +528,51 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "qualified-path, method, associated-function, trait calls".to_string(),
                 "closures, function pointers, local callable variables, constructors".to_string(),
                 "macro-generated imports, cfg evaluation, external crate resolution".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE.to_string(),
+            language: "rust".to_string(),
+            summary: "Bounded structural-path candidate search for Rust \
+                      `qualified_path` calls: a `crate`/`self`/`super`/in-crate \
+                      module path that traverses repository modules and ends at \
+                      a source-written `function`."
+                .to_string(),
+            in_scope_calls: "a Rust `qualified_path` call whose `::`-separated \
+                         path has a structurally-proven module root and every \
+                         intermediate segment resolves to a repository module; \
+                         the terminal segment names `function` declarations."
+                .to_string(),
+            candidate_declarations: "source-written Rust `function` declarations \
+                                     reached by descending the crate module tree \
+                                     through the path's module segments; only \
+                                     `DeclarationKind::Function` is eligible."
+                .to_string(),
+            selection_rule: "resolve the root (`crate`/`self`/`super`/a structural \
+                         child module of the call's module), descend each module \
+                         segment through the persisted `children` module edges, \
+                         then collect the terminal `function` declarations. A \
+                         relative root that is shadowed by a local binding or \
+                         import produces no candidate; an unproven/external root \
+                         is out of scope."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate reached by a \
+                                       structurally-proven module path. It is \
+                                       structural evidence, NOT proof Rust \
+                                       resolves the call to it."
+                .to_string(),
+            no_candidate_meaning: "the path is structurally proven but names no \
+                               eligible `function` (non-function terminal, \
+                               unresolvable segment, or shadowed root)."
+                .to_string(),
+            known_exclusions: vec![
+                "Type:: / associated / trait / member-selector calls (need type resolution)"
+                    .to_string(),
+                "external-crate and unproven path roots".to_string(),
+                "imported module aliases used as path prefixes".to_string(),
+                "re-export traversal, glob, prelude, cfg evaluation".to_string(),
+                "turbofish-qualified calls (generic arguments not resolved)".to_string(),
+                "closures, function pointers, constructors, enum variants".to_string(),
             ],
         },
     ]

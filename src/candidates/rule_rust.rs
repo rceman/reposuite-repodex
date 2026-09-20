@@ -24,6 +24,7 @@ use crate::model::{
 };
 
 use crate::links::model::{FactKind, FactLocator, LinkOutcome, LinkRecord, LinkTarget};
+use crate::links::structure::{RustCrate, Structure};
 
 use super::model::{
     candidate_rule, CallCandidateRecord, CandidateOutcome, CandidateProvenance, CandidateTarget,
@@ -59,6 +60,12 @@ pub fn candidates(analyses: &[FileAnalysis], links: &[LinkRecord]) -> Vec<CallCa
             );
         }
     }
+    // The TASK 3B structural module tree — reused unchanged so qualified-path
+    // candidates descend the same `mod`-derived module edges the link rules
+    // proved, never a re-derived or heuristic module layout.
+    let structure = Structure::build(analyses);
+    let crate_indexes: Vec<CrateIndex> =
+        structure.rust_crates.iter().map(CrateIndex::new).collect();
 
     for analysis in analyses {
         if analysis.file.language != LanguageId::Rust {
@@ -92,26 +99,43 @@ pub fn candidates(analyses: &[FileAnalysis], links: &[LinkRecord]) -> Vec<CallCa
                     evidence,
                 };
 
-            let (outcome, provenance, rule_id) = match in_scope_reason(call) {
-                Some(reason) => (
-                    CandidateOutcome::out_of_scope(reason),
-                    provenance(Vec::new(), None, None),
-                    candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
-                ),
-                None => {
-                    let (outcome, search_levels, enclosing_module, evidence, rule_id) =
-                        lexical_candidates(
-                            analysis,
-                            call,
-                            &bindings_by_name,
-                            &links_by_import,
-                            &analyses_by_path,
-                        );
-                    (
-                        outcome,
-                        provenance(evidence, Some(search_levels), Some(enclosing_module)),
-                        rule_id,
-                    )
+            let (outcome, provenance, rule_id) = if call.form == CallLikeForm::QualifiedPath {
+                // Qualified/path callees take the structural module-path rule:
+                // they are never in the plain-name lexical scope.
+                let (outcome, evidence) = structural_path_candidates(
+                    analysis,
+                    call,
+                    &bindings_by_name,
+                    &crate_indexes,
+                    &analyses_by_path,
+                );
+                (
+                    outcome,
+                    provenance(evidence, None, None),
+                    candidate_rule::RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE,
+                )
+            } else {
+                match in_scope_reason(call) {
+                    Some(reason) => (
+                        CandidateOutcome::out_of_scope(reason),
+                        provenance(Vec::new(), None, None),
+                        candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
+                    ),
+                    None => {
+                        let (outcome, search_levels, enclosing_module, evidence, rule_id) =
+                            lexical_candidates(
+                                analysis,
+                                call,
+                                &bindings_by_name,
+                                &links_by_import,
+                                &analyses_by_path,
+                            );
+                        (
+                            outcome,
+                            provenance(evidence, Some(search_levels), Some(enclosing_module)),
+                            rule_id,
+                        )
+                    }
                 }
             };
             records.push(CallCandidateRecord::new(
@@ -477,6 +501,385 @@ fn eligible_imported_function(
     Some(CandidateTarget::new(
         relative_path.clone(),
         *declaration_id,
+        declaration.kind.as_str(),
+        declaration.name.clone(),
+        analysis.scope_path(declaration.scope_id),
+    ))
+}
+
+// ---------------------------------------------------------------------------
+// `rust.call.structural_path_function_candidate` — qualified-path calls
+// ---------------------------------------------------------------------------
+
+/// Per-crate lookup tables over a persisted [`RustCrate`] module tree.
+///
+/// The module tree itself is built by TASK 3B's `Structure`; this index only
+/// re-keys it so a call's containing module and each path hop resolve without
+/// re-deriving any `mod`→file/module relationship.
+struct CrateIndex<'a> {
+    krate: &'a RustCrate,
+    /// Crate-relative module path -> module index (`["crate","a","b"]`).
+    module_by_path: HashMap<&'a [String], usize>,
+    /// File -> the crate-relative path of that file's own module (the shortest
+    /// path among the modules it hosts; deeper paths are inline `mod`s inside
+    /// it).
+    file_own_path: HashMap<&'a str, &'a [String]>,
+}
+
+impl<'a> CrateIndex<'a> {
+    fn new(krate: &'a RustCrate) -> Self {
+        let mut module_by_path = HashMap::new();
+        let mut file_own_path: HashMap<&'a str, &'a [String]> = HashMap::new();
+        for (index, module) in krate.modules.iter().enumerate() {
+            module_by_path.insert(module.path.as_slice(), index);
+            file_own_path
+                .entry(module.file.as_str())
+                .and_modify(|current| {
+                    if module.path.len() < current.len() {
+                        *current = module.path.as_slice();
+                    }
+                })
+                .or_insert(module.path.as_slice());
+        }
+        Self {
+            krate,
+            module_by_path,
+            file_own_path,
+        }
+    }
+}
+
+/// The crate-relative module path of the module containing `call_scope_id`.
+///
+/// The file's own module supplies the base path (`["crate"]` for a crate root,
+/// `["crate","a","b"]` for `src/a/b.rs` reached through `mod` declarations);
+/// each inline `mod` scope the call is nested inside appends its name.
+fn containing_module_path(
+    crate_index: &CrateIndex,
+    analysis: &FileAnalysis,
+    scope_id: u32,
+) -> Option<Vec<String>> {
+    let mut path = crate_index
+        .file_own_path
+        .get(analysis.file.relative_path.as_str())?
+        .to_vec();
+    let mut inline: Vec<String> = Vec::new();
+    let mut level = scope_id;
+    let mut guard = 0usize;
+    while let Some(scope) = analysis.scopes.get(level as usize) {
+        if scope.kind == ScopeKind::File {
+            break;
+        }
+        if scope.kind == ScopeKind::Module {
+            if let Some(name) = &scope.name {
+                inline.push(name.clone());
+            }
+        }
+        match scope.parent_scope_id {
+            Some(parent) => level = parent,
+            None => break,
+        }
+        guard += 1;
+        if guard > analysis.scopes.len() {
+            break;
+        }
+    }
+    inline.reverse();
+    path.extend(inline);
+    Some(path)
+}
+
+/// Descend `children` module edges from `start` module indices, one segment at
+/// a time, returning the surviving module-index set (ambiguity preserved).
+fn descend_modules(
+    krate: &RustCrate,
+    start: Vec<usize>,
+    segments: &[&str],
+) -> Result<Vec<usize>, String> {
+    let mut current = start;
+    for segment in segments {
+        let mut next = Vec::new();
+        for index in &current {
+            if let Some(children) = krate.modules[*index].children.get(*segment) {
+                next.extend(children.iter().copied());
+            }
+        }
+        if next.is_empty() {
+            return Err(format!(
+                "no module `{segment}` under the current module set"
+            ));
+        }
+        next.sort_unstable();
+        next.dedup();
+        current = next;
+    }
+    Ok(current)
+}
+
+/// Whether a relative path root `name` is shadowed by a local value binding or
+/// a `use` import that owns the name nearer than the structural `mod name`.
+///
+/// For `util::helper()` the root `util` is only a module if the lexical model
+/// does not already own it: a covering `let`/`param` `util` makes the prefix a
+/// value expression, and a `use …::util` makes it an imported name (imported
+/// module aliases are out of scope). Both suppress the structural path.
+fn path_root_shadowed(
+    analysis: &FileAnalysis,
+    call: &crate::model::CallLikeOccurrence,
+    name: &str,
+    bindings_by_name: &HashMap<&str, Vec<&LocalBindingOccurrence>>,
+) -> bool {
+    let call_byte = call.callee_range.byte_start;
+    if let Some(same_name) = bindings_by_name.get(name) {
+        let shadowed = same_name.iter().any(|binding| {
+            binding.covers(call_byte) && binding_applies(analysis, binding.scope_id, call.scope_id)
+        });
+        if shadowed {
+            return true;
+        }
+    }
+    // A `use` binding `name` in any scope enclosing the call owns the name as
+    // an imported path prefix — never a local structural module.
+    let mut level = call.scope_id;
+    let mut guard = 0usize;
+    while let Some(scope) = analysis.scopes.get(level as usize) {
+        if analysis
+            .imports
+            .iter()
+            .filter(|import| import.scope_id == scope.scope_id)
+            .flat_map(|import| import.items.iter())
+            .any(|item| import_local_name(item) == Some(name))
+        {
+            return true;
+        }
+        if is_module_boundary(scope.kind) {
+            break;
+        }
+        match scope.parent_scope_id {
+            Some(parent) => level = parent,
+            None => break,
+        }
+        guard += 1;
+        if guard > analysis.scopes.len() {
+            break;
+        }
+    }
+    false
+}
+
+/// Resolve a `qualified_path` call through the persisted crate module tree.
+///
+/// Only a path whose root is structurally proven (`crate`, `self`, `super`, or
+/// a `mod` child of the containing module) and whose every intermediate
+/// segment resolves to repository modules may produce candidates. Anything
+/// else is a bounded `no_candidate`/`out_of_scope` — never a guessed module.
+fn structural_path_candidates(
+    analysis: &FileAnalysis,
+    call: &crate::model::CallLikeOccurrence,
+    bindings_by_name: &HashMap<&str, Vec<&LocalBindingOccurrence>>,
+    crate_indexes: &[CrateIndex],
+    analyses_by_path: &HashMap<&str, &FileAnalysis>,
+) -> (CandidateOutcome, Vec<String>) {
+    let path = analysis.file.relative_path.as_str();
+    let written = call.callee_written.as_str();
+    let mut evidence = vec![format!("written={written}")];
+
+    // §34: turbofish-qualified callees carry generic arguments this bounded
+    // rule does not resolve.
+    if call.type_arguments.is_some() {
+        evidence.push("path_root=turbofish".to_string());
+        return (
+            CandidateOutcome::out_of_scope(
+                "qualified callee carries turbofish type arguments, not resolved".to_string(),
+            ),
+            evidence,
+        );
+    }
+
+    // `callee_written` is the normalized `::`-joined path — the same `split`
+    // normalization TASK 3B applies to `use` targets (`::` never occurs inside
+    // a segment, so this is deserialization, not source parsing).
+    let segments: Vec<&str> = written.split("::").collect();
+    let Some((final_name, module_segments)) = segments.split_last() else {
+        return (
+            CandidateOutcome::out_of_scope("empty qualified path".to_string()),
+            evidence,
+        );
+    };
+    let Some(first) = module_segments.first() else {
+        return (
+            CandidateOutcome::out_of_scope("qualified path has no module segment".to_string()),
+            evidence,
+        );
+    };
+    evidence.push(format!("terminal={final_name}"));
+
+    // The crates whose module tree reaches this file (normally one).
+    let owners: Vec<&CrateIndex> = crate_indexes
+        .iter()
+        .filter(|index| index.krate.files.contains(path))
+        .collect();
+    if owners.is_empty() {
+        evidence.push("path_root=no_crate".to_string());
+        return (
+            CandidateOutcome::out_of_scope(
+                "call file is not reachable from a crate root module".to_string(),
+            ),
+            evidence,
+        );
+    }
+
+    let mut functions: Vec<CandidateTarget> = Vec::new();
+    let mut root_proven = false;
+    let mut descent_ok = false;
+    for index in &owners {
+        let Some(containing_path) = containing_module_path(index, analysis, call.scope_id) else {
+            continue;
+        };
+        let Some(&containing) = index.module_by_path.get(containing_path.as_slice()) else {
+            continue;
+        };
+
+        // Resolve the path root to a starting module-index set plus the
+        // remaining segments to descend.
+        let (start, rest): (Vec<usize>, &[&str]) = match *first {
+            "crate" => {
+                evidence.push("path_root=crate".to_string());
+                (vec![0], &module_segments[1..])
+            }
+            "self" => {
+                evidence.push("path_root=self".to_string());
+                (vec![containing], &module_segments[1..])
+            }
+            "super" => {
+                // `super` may repeat: `super::super::f` walks two parents up.
+                let mut up = 0usize;
+                while module_segments.get(up).copied() == Some("super") {
+                    up += 1;
+                }
+                let ancestor_len = containing_path.len().checked_sub(up);
+                match ancestor_len {
+                    Some(0) | None => {
+                        evidence.push("path_root=super_above_crate".to_string());
+                        continue;
+                    }
+                    Some(len) => match index.module_by_path.get(&containing_path[..len]) {
+                        Some(&ancestor) => {
+                            evidence.push(format!("path_root=super+{up}"));
+                            (vec![ancestor], &module_segments[up..])
+                        }
+                        None => continue,
+                    },
+                }
+            }
+            name => {
+                // A relative module root: only a structurally-proven `mod` child
+                // of the containing module qualifies, and only when no closer
+                // value binding or import owns the name.
+                if path_root_shadowed(analysis, call, name, bindings_by_name) {
+                    evidence.push(format!("path_root=shadowed:{name}"));
+                    return (
+                        CandidateOutcome::no_candidate(format!(
+                            "path root `{name}` is shadowed by a nearer binding"
+                        )),
+                        evidence,
+                    );
+                }
+                match index.krate.modules[containing].children.get(name) {
+                    Some(children) if !children.is_empty() => {
+                        evidence.push(format!("path_root=module:{name}"));
+                        (children.clone(), &module_segments[1..])
+                    }
+                    _ => {
+                        // No structural `mod` child proves this root — it may be
+                        // an external crate or a type; never guessed.
+                        evidence.push(format!("path_root=unproven:{name}"));
+                        continue;
+                    }
+                }
+            }
+        };
+        root_proven = true;
+
+        match descend_modules(index.krate, start, rest) {
+            Err(reason) => evidence.push(format!("module_descent={reason}")),
+            Ok(module_set) => {
+                descent_ok = true;
+                for module_index in module_set {
+                    for declaration in &index.krate.modules[module_index].declarations {
+                        if declaration.declaration_kind == "function"
+                            && declaration.name == *final_name
+                        {
+                            if let Some(candidate) = path_function_candidate(
+                                &declaration.relative_path,
+                                declaration.declaration_id,
+                                analyses_by_path,
+                            ) {
+                                functions.push(candidate);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if !functions.is_empty() {
+        functions.sort_by(|a, b| {
+            (&a.relative_path, a.declaration_id).cmp(&(&b.relative_path, b.declaration_id))
+        });
+        functions.dedup_by(|a, b| {
+            a.relative_path == b.relative_path && a.declaration_id == b.declaration_id
+        });
+        return (
+            CandidateOutcome::from_candidates(
+                functions,
+                "unreachable: functions non-empty".to_string(),
+            ),
+            evidence,
+        );
+    }
+    if descent_ok {
+        // A module set was reached but `final_name` is not a `function` there.
+        return (
+            CandidateOutcome::no_candidate(format!(
+                "module path resolved but `{final_name}` is not a `function` declaration"
+            )),
+            evidence,
+        );
+    }
+    if root_proven {
+        return (
+            CandidateOutcome::no_candidate(
+                "structural root proven but an intermediate path segment is not a module"
+                    .to_string(),
+            ),
+            evidence,
+        );
+    }
+    (
+        CandidateOutcome::out_of_scope(format!(
+            "qualified path root `{first}` is not a proven repository module"
+        )),
+        evidence,
+    )
+}
+
+/// Build a `function` [`CandidateTarget`] for a structural-path terminal,
+/// verifying the real declaration kind in its own file's analysis.
+fn path_function_candidate(
+    relative_path: &str,
+    declaration_id: u32,
+    analyses_by_path: &HashMap<&str, &FileAnalysis>,
+) -> Option<CandidateTarget> {
+    let analysis = analyses_by_path.get(relative_path)?;
+    let declaration = analysis.declarations.get(declaration_id as usize)?;
+    if declaration.kind != DeclarationKind::Function {
+        return None;
+    }
+    Some(CandidateTarget::new(
+        relative_path.to_string(),
+        declaration_id,
         declaration.kind.as_str(),
         declaration.name.clone(),
         analysis.scope_path(declaration.scope_id),

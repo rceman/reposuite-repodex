@@ -43,6 +43,9 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+# TASK 3E: `qualified_path` calls are handled by the structural-path rule.
+STRUCTURAL_PATH_RULE = "rust.call.structural_path_function_candidate"
+
 # ---------------------------------------------------------------------------
 # Loading
 # ---------------------------------------------------------------------------
@@ -473,7 +476,18 @@ def audit(args) -> dict:
             record = by_source.get(key)
             if not in_scope(call):
                 calls_out_of_scope += 1
-                if record and record["outcome"]["outcome"] == "out_of_scope":
+                # TASK 3E: `qualified_path` calls are now handled by the
+                # structural-path rule, which emits its own candidate /
+                # no_candidate / out_of_scope outcomes. They are validated by
+                # `task3e_audit.py`, not by the plain-name out-of-scope check.
+                if call["form"] == "qualified_path":
+                    if record and record["rule_id"] == STRUCTURAL_PATH_RULE:
+                        verdicts["STRUCTURAL_PATH_HANDLED"] += 1
+                    else:
+                        verdicts["STRUCTURAL_PATH_MISSING"] += 1
+                        false_candidates.append((path, call["call_id"], call["callee_written"],
+                                                 "qualified_path call missing structural-path record"))
+                elif record and record["outcome"]["outcome"] == "out_of_scope":
                     verdicts["OUT_OF_SCOPE_CORRECT"] += 1
                 elif record:
                     verdicts["OUT_OF_SCOPE_WRONG"] += 1
@@ -715,6 +729,7 @@ def main() -> int:
     print(f"  LEXICAL_PRECEDENCE:   {v.get('LEXICAL_PRECEDENCE_ERROR',0)}")
     print(f"  BLOCKED_WRONG_REASON: {v.get('BLOCKED_WRONG_REASON',0)}")
     print(f"  OUT_OF_SCOPE_WRONG:   {v.get('OUT_OF_SCOPE_WRONG',0)}")
+    print(f"  STRUCTURAL_PATH handled/missing: {v.get('STRUCTURAL_PATH_HANDLED',0)}/{v.get('STRUCTURAL_PATH_MISSING',0)}")
     print(f"  candidate TP/FP/FN:   {tp}/{fp}/{fn}")
     print(f"  macro-hidden calls:   {report['macro_hidden_calls']} (approx, NOT_AVAILABLE_TO_TASK3C)")
 
@@ -743,6 +758,8 @@ def main() -> int:
         + v.get("FALSE_IMPORTED_CANDIDATE", 0)
         + v.get("WRONG_IMPORTED_TARGET", 0)
         + v.get("LEXICAL_PRECEDENCE_ERROR", 0)
+        + v.get("STRUCTURAL_PATH_MISSING", 0)
+        + v.get("OUT_OF_SCOPE_WRONG", 0)
     )
     return 1 if bad else 0
 

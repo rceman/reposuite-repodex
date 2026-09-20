@@ -483,12 +483,13 @@ fn every_record_is_a_candidate_record_not_a_call_edge() {
     let temp = TempDir::new("t3c-no-edge");
     let (_snap, _links, index) = fixture_candidates(&temp);
     for record in index.records() {
-        // Local and imported candidates are both candidate records under the
-        // two candidate rules — never a call edge.
+        // Local, imported and structural-path candidates are all candidate
+        // records under the candidate rules — never a call edge.
         assert!(matches!(
             record.rule_id.as_str(),
             x if x == candidate_rule::RUST_CALL_LOCAL_FUNCTION_CANDIDATE
                 || x == candidate_rule::RUST_CALL_IMPORTED_FUNCTION_CANDIDATE
+                || x == candidate_rule::RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE
         ));
         assert!(record.record_id.starts_with("cand-"));
         // Candidates are the only targets; the outcome vocabulary is candidate
@@ -668,6 +669,22 @@ fn import_candidate_repo(temp: &TempDir, name: &str) -> PathBuf {
     std::fs::write(
         root.join("src/lib.rs"),
         b"mod util;\n\nuse crate::util::helper;\n\nfn run() { helper(); }\n",
+    )
+    .expect("write");
+    std::fs::write(root.join("src/util.rs"), b"pub fn helper() {}\n").expect("write");
+    root
+}
+
+/// A repo exercising TASK 3E structural qualified-path candidates: `mod util`
+/// resolves to `src/util.rs`, and `crate::util::helper()`/`util::helper()`/
+/// `super::…`/`self::…` calls traverse the module tree.
+fn structural_repo(temp: &TempDir, name: &str) -> PathBuf {
+    let root = temp.path().join(name);
+    std::fs::create_dir_all(root.join("src")).expect("mkdir");
+    std::fs::write(
+        root.join("src/lib.rs"),
+        b"mod util;\nmod nested { pub fn run() { super::util::helper(); self::inner(); } \
+            pub fn inner() {} }\nfn run() { crate::util::helper(); util::helper(); }\n",
     )
     .expect("write");
     std::fs::write(root.join("src/util.rs"), b"pub fn helper() {}\n").expect("write");
@@ -1226,4 +1243,176 @@ fn a_missing_call_locator_is_rejected() {
     mutate_candidate_manifest(&candidates_dir, |_| {});
     let error = verify(&candidates_dir, &snap, &links).expect_err("must fail");
     assert!(matches!(error, CandidateError::MissingLocator { .. }));
+}
+
+// ---------------------------------------------------------------------------
+// TASK 3E structural qualified-path update-vs-fresh equivalence
+// ---------------------------------------------------------------------------
+
+#[test]
+fn update_equals_fresh_for_a_module_function_added() {
+    let temp = TempDir::new("t3e-eq-fnadd");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "modfnadd",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/util.rs"),
+                b"pub fn helper() {}\npub fn added() {}\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_module_function_removed() {
+    let temp = TempDir::new("t3e-eq-fnrem");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "modfnrem",
+        &root,
+        |root| {
+            // Removing the target `fn` leaves the module path proven but the
+            // terminal empty -> no_candidate for `crate::util::helper()`.
+            std::fs::write(root.join("src/util.rs"), b"pub fn other() {}\n").expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_module_renamed() {
+    let temp = TempDir::new("t3e-eq-modren");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "modren",
+        &root,
+        |root| {
+            // `mod util` -> `mod util2`, `util.rs` -> `util2.rs`.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util2;\nfn run() { crate::util2::helper(); util2::helper(); }\n",
+            )
+            .expect("write");
+            std::fs::rename(root.join("src/util.rs"), root.join("src/util2.rs")).expect("rename");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_qualified_call_path_changed() {
+    let temp = TempDir::new("t3e-eq-pathchg");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "pathchg",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\nfn run() { crate::util::helper(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_module_file_added() {
+    let temp = TempDir::new("t3e-eq-modadd");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "modfileadd",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\nmod extra;\nfn run() { crate::extra::thing(); }\n",
+            )
+            .expect("write");
+            std::fs::write(root.join("src/extra.rs"), b"pub fn thing() {}\n").expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_module_file_removed() {
+    let temp = TempDir::new("t3e-eq-modrem");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "modfilerem",
+        &root,
+        |root| {
+            // `mod util` has no file -> `crate::util::helper()` loses its
+            // structural module and falls to out_of_scope.
+            std::fs::remove_file(root.join("src/util.rs")).expect("remove");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_an_inline_module_added() {
+    let temp = TempDir::new("t3e-eq-inlineadd");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "inlineadd",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\nmod inline { pub fn f() {} }\nfn run() { inline::f(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_root_shadowing_binding_added() {
+    let temp = TempDir::new("t3e-eq-shadadd");
+    let root = structural_repo(&temp, "repo");
+    assert_update_equals_fresh(
+        "shadadd",
+        &root,
+        |root| {
+            // A `let util` covering the call shadows the relative module root.
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\nfn run() { let util = 0; util::helper(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
+}
+
+#[test]
+fn update_equals_fresh_for_a_root_shadowing_binding_removed() {
+    let temp = TempDir::new("t3e-eq-shadrem");
+    let root = structural_repo(&temp, "repo");
+    // Start shadowed, then remove the binding.
+    std::fs::write(
+        root.join("src/lib.rs"),
+        b"mod util;\nfn run() { let util = 0; util::helper(); }\n",
+    )
+    .expect("write");
+    assert_update_equals_fresh(
+        "shadrem",
+        &root,
+        |root| {
+            std::fs::write(
+                root.join("src/lib.rs"),
+                b"mod util;\nfn run() { util::helper(); }\n",
+            )
+            .expect("write");
+        },
+        &temp,
+    );
 }
