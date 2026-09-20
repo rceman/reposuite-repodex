@@ -20,8 +20,12 @@ d147a3626c0740f1987d01f96efaac1be10b03a9   (TASK 3C shadow-correction blocked re
 
 ## 2. Implementation / report commit(s)
 
-Recorded in git after this report is committed; the working tree at commit time
-contains the model, adapter, snapshot and test changes described below.
+```text
+8884bc0bea9ae53ae44799ac042afafbccad7c91   Add normalized Rust local-binding facts with bounded visibility ranges
+```
+
+The working tree at commit time contains the model, adapter, snapshot and test
+changes described below, on top of the required base `d147a36`.
 
 ## 3. New fact model
 
