@@ -16,7 +16,7 @@ base, so TASK 3D builds on the V2 correction.
 
 ## 4. Implementation / report SHAs
 
-Recorded below; see the V3 implementation commit and its SHA-recording commit.
+V3 implementation commit: `e7ab143837d7519c41c00cbadd6df850997931dc`.
 
 ## 5. Candidate rule ABI / version
 
