@@ -46,6 +46,15 @@ pub enum QueryMode {
     Exhaustive,
 }
 
+impl QueryMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            QueryMode::Ranked => "ranked",
+            QueryMode::Exhaustive => "exhaustive",
+        }
+    }
+}
+
 /// The user's investigation intent (§25).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QueryIntent {
@@ -196,6 +205,10 @@ pub struct QueryResult {
     pub complete: bool,
     /// `budget`/`limit` when output was truncated.
     pub truncated_reason: Option<String>,
+    /// Optional System One provenance (§30/§43): `disabled`/`used`/`fallback`
+    /// for each role. Never affects evidence, completeness or totals.
+    pub so_query: Option<String>,
+    pub so_rerank: Option<String>,
 }
 
 /// The query engine: holds a loaded graph + a term index for fast seed lookup.
@@ -276,6 +289,8 @@ impl<'a> QueryEngine<'a> {
             shown,
             complete,
             truncated_reason: reason,
+            so_query: None,
+            so_rerank: None,
         }
     }
 

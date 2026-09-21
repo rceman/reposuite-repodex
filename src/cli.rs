@@ -69,6 +69,8 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "candidates" => command_candidates(&rest),
         "graph" => command_graph(&rest),
         "query" => command_query(&rest),
+        "config" => command_config(&rest),
+        "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -2514,7 +2516,20 @@ fn command_query(args: &[String]) -> Result<u8, String> {
     let mut plan = plan;
     plan.max_depth = options.depth.unwrap_or(4);
     plan.validate()?; // §19: reject malformed plans before running
-    let result = engine.run(&plan);
+                      // Optional System One layer: config absent/disabled => pure deterministic
+                      // run. Enabled => bounded query/rerank advice with deterministic fallback.
+    let explicit_intent = options.domain.is_some();
+    let so_cfg = crate::system_one::config::load(&crate::system_one::config::config_path())
+        .ok()
+        .and_then(|c| c.system_one);
+    let result = match so_cfg {
+        Some(c) if c.enabled => {
+            let so = crate::system_one::SystemOne::new(Some(c));
+            let (r, _prov) = so.run(&engine, &plan, explicit_intent);
+            r
+        }
+        _ => engine.run(&plan),
+    };
     if options.explain {
         return print_query_explain(&result, options.json);
     }
@@ -2524,6 +2539,7 @@ fn command_query(args: &[String]) -> Result<u8, String> {
             "command":"query","query":text,"mode":if options.exhaustive{"exhaustive"}else{"ranked"},
             "intent":plan.intent.as_str(),"terms":plan.terms,
             "total":result.total,"shown":result.shown,"complete":result.complete,
+            "so_query":result.so_query,"so_rerank":result.so_rerank,
             "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
             "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
         }))?;
@@ -2617,4 +2633,118 @@ fn print_query_explain(result: &crate::query::QueryResult, json: bool) -> Result
         }
     }
     Ok(EXIT_OK)
+}
+
+// ---------------------------------------------------------------------------
+// config — key-oriented get/set on ~/reposuite/repodex/config.toml
+// ---------------------------------------------------------------------------
+
+fn command_config(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let key = options.positional.first().cloned().ok_or_else(|| {
+        "config requires a key, e.g. `config system-one.enabled true`".to_string()
+    })?;
+    let value = options.positional.get(1).cloned();
+    let path = crate::system_one::config::config_path();
+    let mut doc = crate::system_one::config::load_value(&path)?;
+    match value {
+        Some(v) => {
+            crate::system_one::config::set_key(&mut doc, &key, &v)?;
+            crate::system_one::config::save_value(&path, &doc)?;
+            println!("{key} = {v}");
+        }
+        None => match crate::system_one::config::get_key(&doc, &key) {
+            Some(v) => println!("{key} = {v}"),
+            None => println!("{key} = <unset>"),
+        },
+    }
+    Ok(EXIT_OK)
+}
+
+// ---------------------------------------------------------------------------
+// system-one — status (no network) + probe (one request)
+// ---------------------------------------------------------------------------
+
+fn command_system_one(args: &[String]) -> Result<u8, String> {
+    let sub = args
+        .first()
+        .map(|s| s.as_str())
+        .ok_or_else(|| "system-one requires a subcommand (status|probe)".to_string())?;
+    match sub {
+        "status" => command_system_one_status(),
+        "probe" => command_system_one_probe(&args[1..]),
+        _ => Err(format!("unknown system-one subcommand `{sub}`")),
+    }
+}
+
+fn command_system_one_status() -> Result<u8, String> {
+    let path = crate::system_one::config::config_path();
+    let cfg = crate::system_one::config::load(&path)?;
+    let Some(so) = cfg.system_one else {
+        println!("system-one: disabled (no [system_one] in {path:?})");
+        return Ok(EXIT_OK);
+    };
+    println!(
+        "system-one: {}",
+        if so.enabled { "enabled" } else { "disabled" }
+    );
+    println!(
+        "  roles: query={} rerank={}",
+        so.roles.query.as_deref().unwrap_or("-"),
+        so.roles.rerank.as_deref().unwrap_or("-")
+    );
+    for (name, m) in &so.models {
+        println!(
+            "  model {name}: {} {} timeout={}ms auth={}",
+            m.protocol,
+            m.url,
+            m.timeout_ms,
+            match &m.auth {
+                crate::system_one::config::Auth::None => "none",
+                crate::system_one::config::Auth::Bearer { .. } => "bearer",
+                crate::system_one::config::Auth::Header { header, .. } => header.as_str(),
+            }
+        );
+    }
+    match so.validate() {
+        Ok(()) => println!("  config: valid"),
+        Err(e) => println!("  config: INVALID — {e}"),
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_system_one_probe(args: &[String]) -> Result<u8, String> {
+    let name = args
+        .first()
+        .cloned()
+        .ok_or_else(|| "system-one probe requires a model name".to_string())?;
+    let path = crate::system_one::config::config_path();
+    let cfg = crate::system_one::config::load(&path)?;
+    let so = cfg
+        .system_one
+        .ok_or_else(|| "no [system_one] configured".to_string())?;
+    let mc = so
+        .models
+        .get(&name)
+        .ok_or_else(|| format!("unknown model `{name}`"))?;
+    let model =
+        crate::system_one::HttpSystemOneModel::new(name.clone(), mc).map_err(|e| e.to_string())?;
+    // Minimal deterministic protocol question — validates transport+schema,
+    // not answer quality.
+    let mut req = crate::system_one::SystemOneRequest::new(
+        mc.model.clone(),
+        serde_json::json!({"probe": true}),
+    );
+    req.questions.insert(
+        "probe".into(),
+        crate::system_one::Question::noul("Is the service reachable?"),
+    );
+    match crate::system_one::SystemOneModel::decide(&model, &req) {
+        Ok(resp) => {
+            println!("probe {name}: ok ({} answer(s))", resp.answers.len());
+            println!("note: protocol probe success does not prove query quality");
+            Ok(EXIT_OK)
+        }
+        Err(e) => Err(format!("probe {name}: {e}")),
+    }
 }

@@ -142,6 +142,14 @@ pub fn render(result: &QueryResult) -> String {
     if let Some(reason) = &result.truncated_reason {
         out.push_str(&format!("S truncated=1 reason={}\n", reason));
     }
+    // Optional System One provenance — additive `S` keys only (§43), never
+    // evidence. Emitted only when a role was actually exercised.
+    if let Some(q) = &result.so_query {
+        out.push_str(&format!("S so_query={q}\n"));
+    }
+    if let Some(r) = &result.so_rerank {
+        out.push_str(&format!("S so_rerank={r}\n"));
+    }
     out
 }
 
