@@ -68,6 +68,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "links" => command_links(&rest),
         "candidates" => command_candidates(&rest),
         "graph" => command_graph(&rest),
+        "query" => command_query(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -149,6 +150,20 @@ struct Options {
     depth: Option<usize>,
     /// `graph paths`/`query` result-count bound.
     max_results: Option<usize>,
+    /// `query`/`graph` artifact directory for the query engine.
+    graph: Option<String>,
+    /// `query --explain` debug output.
+    explain: bool,
+    /// `query` output token budget.
+    tokens: Option<usize>,
+    /// `query --exhaustive` mode.
+    exhaustive: bool,
+    /// `query --human` human-readable output.
+    human: bool,
+    /// `query` callers/callees/paths target node.
+    target: Option<String>,
+    /// `query`/`paths` second endpoint.
+    to: Option<String>,
     import: Option<String>,
     call: Option<String>,
     tests_only: bool,
@@ -200,6 +215,16 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
                         .map_err(|_| format!("invalid --max-results `{v}`"))?,
                 );
             }
+            "--graph" => options.graph = Some(value_for(args, &mut index, name, inline_value)?),
+            "--explain" => options.explain = true,
+            "--tokens" => {
+                let v = value_for(args, &mut index, name, inline_value)?;
+                options.tokens = Some(v.parse().map_err(|_| format!("invalid --tokens `{v}`"))?);
+            }
+            "--exhaustive" => options.exhaustive = true,
+            "--human" => options.human = true,
+            "--target" => options.target = Some(value_for(args, &mut index, name, inline_value)?),
+            "--to" => options.to = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -2440,6 +2465,142 @@ fn command_graph_paths(args: &[String]) -> Result<u8, String> {
         for p in &paths {
             let route: Vec<_> = p.nodes.iter().map(|n| n.label.clone()).collect();
             println!("  [{}] {}", p.evidence_label(), route.join(" -> "));
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+// `query` — the deterministic textual query engine (Phase B).
+fn command_query(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let graph_dir = options
+        .graph
+        .clone()
+        .ok_or_else(|| "query requires --graph <graph-dir>".to_string())?;
+    let text = options
+        .positional
+        .first()
+        .cloned()
+        .ok_or_else(|| "query requires a query string".to_string())?;
+    let index = crate::graph::GraphIndex::load(Path::new(&graph_dir)).map_err(|e| e.to_string())?;
+    let engine = crate::query::QueryEngine::new(&index);
+    let mode = if options.exhaustive {
+        crate::query::QueryMode::Exhaustive
+    } else {
+        crate::query::QueryMode::Ranked
+    };
+    let intent = match options.domain.as_deref() {
+        None => None,
+        Some(d) => match crate::query::QueryIntent::parse(d) {
+            Some(i) => Some(i),
+            None => return Err(format!("unknown query intent `{d}`")),
+        },
+    };
+    let plan = crate::query::QueryPlan::parse(
+        &text,
+        mode,
+        intent,
+        options.target.clone(),
+        options.to.clone(),
+        options.max_results.unwrap_or(50),
+        options.tokens,
+    );
+    let result = engine.run(&plan);
+    if options.explain {
+        return print_query_explain(&result, options.json);
+    }
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"query","query":text,"mode":if options.exhaustive{"exhaustive"}else{"ranked"},
+            "intent":plan.intent.as_str(),"terms":plan.terms,
+            "total":result.total,"shown":result.shown,"complete":result.complete,
+            "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
+            "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
+        }))?;
+    } else {
+        println!("query: {text}");
+        println!(
+            "intent: {}  mode: {}",
+            plan.intent.as_str(),
+            if options.exhaustive {
+                "exhaustive"
+            } else {
+                "ranked"
+            }
+        );
+        println!(
+            "seeds: {} (total {} {})",
+            result.shown,
+            result.total,
+            if result.complete {
+                "complete"
+            } else {
+                "truncated"
+            }
+        );
+        for s in &result.seeds {
+            println!(
+                "  {:<12} {:<32} {}  [score {}]",
+                s.node.kind.as_str(),
+                s.node.label,
+                s.node.path,
+                s.score
+            );
+        }
+        if !result.related.is_empty() {
+            println!("related: {}", result.related.len());
+            for r in result.related.iter().take(32) {
+                println!(
+                    "  {} {:<16} {:<10} {}",
+                    r.direction,
+                    r.kind,
+                    r.evidence.as_str(),
+                    r.node.label
+                );
+            }
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn print_query_explain(result: &crate::query::QueryResult, json: bool) -> Result<u8, String> {
+    let p = &result.plan;
+    if json {
+        print_json(&serde_json::json!({
+            "command":"query --explain","raw":p.raw,"terms":p.terms,"mode":format!("{:?}",p.mode).to_lowercase(),
+            "intent":p.intent.as_str(),"max_results":p.max_results,"token_budget":p.token_budget,
+            "total":result.total,"shown":result.shown,"complete":result.complete,
+            "seed_factors":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
+        }))?;
+    } else {
+        println!("query explain");
+        println!("  raw:           {}", p.raw);
+        println!("  terms:         {}", p.terms.join(" "));
+        println!(
+            "  mode:          {}",
+            if p.mode == crate::query::QueryMode::Exhaustive {
+                "exhaustive"
+            } else {
+                "ranked"
+            }
+        );
+        println!("  intent:        {}", p.intent.as_str());
+        println!("  max_results:   {}", p.max_results);
+        println!(
+            "  token_budget:  {}",
+            p.token_budget.map(|t| t.to_string()).unwrap_or("-".into())
+        );
+        println!("  total seeds:   {}", result.total);
+        println!("  shown:         {}", result.shown);
+        println!("  complete:      {}", result.complete);
+        println!("  seed ranking:");
+        for s in &result.seeds {
+            println!(
+                "    {:<10} score={} factors={}",
+                s.node.label,
+                s.score,
+                s.factors.join(",")
+            );
         }
     }
     Ok(EXIT_OK)
