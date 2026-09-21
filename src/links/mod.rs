@@ -58,6 +58,7 @@
 
 pub mod artifact;
 pub mod build;
+pub mod go_topology;
 pub mod metadata;
 pub mod model;
 pub mod query;

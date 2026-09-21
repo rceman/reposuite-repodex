@@ -12,7 +12,7 @@
 
 use crate::model::{DeclarationKind, FileAnalysis, LanguageId};
 
-use super::metadata::GoModuleState;
+use super::go_topology::GoPackageTopology;
 use super::model::{
     rule, FactLocator, LinkOutcome, LinkProvenance, LinkRecord, LinkTarget, MetadataDependency,
 };
@@ -22,11 +22,11 @@ use super::structure::{directory_of, Structure};
 pub fn links(
     structure: &Structure,
     analyses: &[FileAnalysis],
-    go_module: &GoModuleState,
+    topology: &GoPackageTopology,
 ) -> Vec<LinkRecord> {
     let mut records = Vec::new();
     records.extend(package_membership_links(structure, analyses));
-    records.extend(import_links(structure, analyses, go_module));
+    records.extend(import_links(structure, analyses, topology));
     records
 }
 
@@ -93,10 +93,9 @@ fn package_membership_links(structure: &Structure, analyses: &[FileAnalysis]) ->
 fn import_links(
     structure: &Structure,
     analyses: &[FileAnalysis],
-    go_module: &GoModuleState,
+    topology: &GoPackageTopology,
 ) -> Vec<LinkRecord> {
     let mut records = Vec::new();
-    let module_path = go_module.module_path().map(str::to_string);
 
     for analysis in analyses {
         if analysis.file.language != LanguageId::Go {
@@ -112,7 +111,7 @@ fn import_links(
                 };
                 let written = item.target.clone();
                 let (rule_id, outcome, evidence, metadata) =
-                    classify_go_import(structure, &module_path, go_module, &written);
+                    classify_go_import(structure, topology, &written);
                 let provenance = LinkProvenance {
                     language: "go".to_string(),
                     rule_id: rule_id.to_string(),
@@ -136,8 +135,7 @@ fn import_links(
 
 fn classify_go_import(
     structure: &Structure,
-    module_path: &Option<String>,
-    go_module: &GoModuleState,
+    topology: &GoPackageTopology,
     written: &str,
 ) -> (
     &'static str,
@@ -145,49 +143,61 @@ fn classify_go_import(
     Vec<String>,
     Vec<MetadataDependency>,
 ) {
-    let dependency = vec![go_module.dependency(rule::GO_IMPORT_LOCAL_MODULE)];
-    let Some(module_path) = module_path else {
-        let reason = match go_module {
-            GoModuleState::Absent => {
-                "no repository-root go.mod, so no import path can be shown to be local".to_string()
-            }
-            GoModuleState::Malformed { reason, .. } => format!(
-                "the repository-root go.mod could not be read ({reason}), so no import path can \
-                 be shown to be local"
-            ),
-            GoModuleState::Present(_) => unreachable!("module_path is Some for Present"),
+    // TASK 4A: an import is `local_module` when it prefixes into ANY
+    // repository-local module (the nearest matching module path wins), not only
+    // the repo-root module. `external` covers everything else.
+    let matched = topology
+        .modules
+        .iter()
+        .filter(|m| {
+            written == m.module_path
+                || written
+                    .strip_prefix(m.module_path.as_str())
+                    .is_some_and(|rest| rest.starts_with('/'))
+        })
+        .max_by_key(|m| m.module_path.len());
+
+    let Some(module) = matched else {
+        // `written` matches no repository-local module path. The dependency is
+        // on the whole discovered module set — any go.mod change could make it
+        // local.
+        let dependency = topology.metadata_dependencies();
+        let reason = if topology.modules.is_empty() {
+            "no repository-local go.mod, so no import path can be shown to be local".to_string()
+        } else {
+            format!("`{written}` is outside every repository-local module")
         };
         return (
             rule::GO_IMPORT_EXTERNAL,
             LinkOutcome::out_of_scope(reason),
-            vec!["module_prefix=unknown".to_string()],
-            dependency.clone(),
+            vec!["module_prefix=none".to_string()],
+            dependency,
         );
     };
 
-    // `example.com/project` and `example.com/project/sub` are inside the module;
-    // `example.com/projectile` is not.
-    let remainder = if written == module_path {
-        Some(String::new())
+    let module_path = module.module_path.as_str();
+    let remainder = written
+        .strip_prefix(module_path)
+        .and_then(|rest| rest.strip_prefix('/'))
+        .unwrap_or("")
+        .trim_end_matches('/');
+    // The package directory is module_root_dir + remainder.
+    let directory = if module.root_dir.is_empty() {
+        remainder.to_string()
+    } else if remainder.is_empty() {
+        module.root_dir.clone()
     } else {
-        written
-            .strip_prefix(module_path.as_str())
-            .and_then(|rest| rest.strip_prefix('/'))
-            .map(str::to_string)
+        format!("{}/{}", module.root_dir, remainder)
     };
 
-    let Some(remainder) = remainder else {
-        return (
-            rule::GO_IMPORT_EXTERNAL,
-            LinkOutcome::out_of_scope(format!(
-                "`{written}` is outside the local module `{module_path}`"
-            )),
-            vec![format!("module_prefix={module_path}")],
-            dependency.clone(),
-        );
-    };
-
-    let directory = remainder.trim_end_matches('/').to_string();
+    let dependency = vec![MetadataDependency {
+        relative_path: module.manifest_path.clone(),
+        content_digest: module.manifest_digest.clone(),
+        present: true,
+        rule_id: rule::GO_IMPORT_LOCAL_MODULE.to_string(),
+        field: "module".to_string(),
+        value: module_path.to_string(),
+    }];
     let mut candidates = Vec::new();
     if let Some(packages) = structure.go_packages_in(&directory) {
         for package in packages.keys() {
@@ -208,8 +218,8 @@ fn classify_go_import(
     let outcome = LinkOutcome::from_candidates(
         candidates,
         format!(
-            "`{written}` maps to directory `{display}` inside the local module, but no indexed Go \
-             file declares a package there"
+            "`{written}` maps to directory `{display}` inside local module `{module_path}`, but no \
+             indexed Go file declares a package there"
         ),
     );
     let evidence = vec![

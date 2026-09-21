@@ -122,23 +122,31 @@ pub fn build_links(
     };
     phases.metadata_ms = elapsed_ms(metadata_started);
 
-    // 3. Derive structural identities, then the Cargo crate/target topology.
+    // 3. Derive structural identities, then the Cargo and Go topologies.
     let structure_started = Instant::now();
     let mut structure = Structure::build(&analyses);
     let topology =
         crate::links::topology::RustTargetTopology::build(&mut structure, &analyses, repository);
+    // TASK 4A: the Go package/module topology consumes every repository-local
+    // `go.mod` (not just the repo root) plus the persisted `package` clauses.
+    let go_topology =
+        crate::links::go_topology::GoPackageTopology::build(&structure, &analyses, repository);
     phases.structure_ms = elapsed_ms(structure_started);
 
     // 4. Apply the bounded per-language rules.
     let derive_started = Instant::now();
     let mut links: Vec<LinkRecord> = Vec::new();
     links.extend(rules_rust::links(&structure, &analyses));
-    links.extend(rules_go::links(&structure, &analyses, &go_module));
+    links.extend(rules_go::links(&structure, &analyses, &go_topology));
     links.extend(rules_python::links(&structure, &analyses));
     links.extend(rules_php::links(&structure, &analyses));
     artifact::order_links(&mut links)?;
     let mut entities = structure.entities.clone();
     entities.extend(topology.target_entities());
+    entities.extend(go_topology.entities());
+    // TASK 4A: enrich the existing `go_package` entities with the package's
+    // kind, owning module, and derived import path — no duplicate entity set.
+    go_topology.enrich_package_entities(&mut entities);
     artifact::order_entities(&mut entities);
     phases.derive_ms = elapsed_ms(derive_started);
 
@@ -153,11 +161,17 @@ pub fn build_links(
             metadata_dependencies.insert(dependency_key(dependency), dependency.clone());
         }
     }
-    // The Go rules depend on the presence or absence of a `go.mod` whenever the
-    // snapshot contains a Go file, even if no Go import was classified.
+    // TASK 4A: the Go topology depends on every discovered `go.mod` (root and
+    // nested). Record each so a manifest change invalidates this artifact.
+    for dependency in go_topology.metadata_dependencies() {
+        metadata_dependencies.insert(dependency_key(&dependency), dependency);
+    }
+    // And when the snapshot contains a Go file but no `go.mod` was found at
+    // all, record the absence so adding one later invalidates this artifact.
     if analyses
         .iter()
         .any(|analysis| analysis.file.language == crate::model::LanguageId::Go)
+        && go_topology.manifests.is_empty()
     {
         let dependency = go_module.dependency(super::model::rule::GO_IMPORT_LOCAL_MODULE);
         metadata_dependencies.insert(dependency_key(&dependency), dependency);

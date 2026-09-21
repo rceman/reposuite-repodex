@@ -34,7 +34,7 @@ pub const LINK_MANIFEST_VERSION: u32 = 1;
 ///
 /// This version participates in [`LinkFingerprint`], so bumping it invalidates
 /// previously derived link artifacts without touching the TASK 3A snapshot.
-pub const LINK_RULE_ABI_VERSION: u32 = 2;
+pub const LINK_RULE_ABI_VERSION: u32 = 3;
 
 /// Per-language resolution-policy versions.
 ///
@@ -46,7 +46,12 @@ pub const LINK_RULE_ABI_VERSION: u32 = 2;
 /// crate roots discovered from `Cargo.toml`, and files gain explicit
 /// crate membership rather than only the `lib.rs`/`main.rs` convention.
 pub const POLICY_VERSION_RUST: u32 = 2;
-pub const POLICY_VERSION_GO: u32 = 1;
+/// `POLICY_VERSION_GO` 2 adds the TASK 4A package/module topology: every
+/// repository-local `go.mod` is a module boundary (nested modules isolate), a
+/// `package` is `directory + package_name` with `ordinary`/`command_main`/
+/// `external_test` kinds, and `go.import.local_module` matches any
+/// repository-local module path rather than only the repo-root one.
+pub const POLICY_VERSION_GO: u32 = 2;
 pub const POLICY_VERSION_PYTHON: u32 = 1;
 pub const POLICY_VERSION_PHP: u32 = 1;
 

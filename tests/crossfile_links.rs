@@ -285,11 +285,15 @@ fn go_fixture_produces_the_complete_expected_relationship_set() {
 
     assert_eq!(counts(&index), (9, 2, 2, 2));
     assert_eq!(outcome.stats.links_total, 15);
-    // The `go.mod` dependency is recorded with a content digest.
-    assert_eq!(outcome.manifest.metadata.len(), 1);
-    assert_eq!(outcome.manifest.metadata[0].relative_path, "go.mod");
-    assert_eq!(outcome.manifest.metadata[0].value, "example.com/fixture");
-    assert!(outcome.manifest.metadata[0].present);
+    // The `go.mod` is now depended on by two rules — `go.module.go_mod` (the
+    // TASK 4A topology's module discovery) and `go.import.local_module` (the
+    // import classification) — recorded as distinct content-digest deps.
+    assert_eq!(outcome.manifest.metadata.len(), 2);
+    for dep in &outcome.manifest.metadata {
+        assert_eq!(dep.relative_path, "go.mod");
+        assert_eq!(dep.value, "example.com/fixture");
+        assert!(dep.present);
+    }
 }
 
 #[test]
