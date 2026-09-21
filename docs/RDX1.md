@@ -54,13 +54,30 @@ are stable for a given result — they are *not* the persistent `gn-` ids.
 
 Key=value fields describing coverage. Always present:
 
-- `shown` — seeds emitted; `total` — total seed matches; `complete` — `1`/`0`.
+- `shown` — seeds emitted; `total` — total seed matches (the full logical
+  enumeration before presentation truncation); `complete` — `1`/`0`.
 - `seeds` — seed count; `related` — expanded relation count;
-  `candidates` — number of CANDIDATE relations.
+  `candidates` — number of CANDIDATE relations;
+  `unresolved`/`out_of_scope` — related *call* nodes carrying a
+  NoCandidate/OutOfScope disposition (they exist, with no target edge).
 - On truncation: `S truncated=1 reason=<budget|limit>`.
 
 `complete=0` means the *presentation* was truncated by a budget/limit — never
 that the underlying enumeration is unknown. `total` stays available.
+
+## Candidate-set atomicity
+
+A `MultipleCandidates` set is **atomic under the output budget**: a `cs=` group
+is emitted whole or not at all — the engine expands relations only from emitted
+seeds, so a partial alternative can never be presented as if it were a lone
+`SingleCandidate`. Truncation is reported via `complete=0`/`truncated=1`, not a
+smaller-looking set.
+
+## Field semantics (non-overlapping)
+
+`seeds` = lexical seed matches; `related` = graph-expanded neighbors;
+`candidates` = CANDIDATE relations among them; `shown` = emitted seeds;
+`total` = all seed matches before any limit/budget. These never conflate.
 
 ## Determinism
 

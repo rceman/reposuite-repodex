@@ -109,20 +109,35 @@ pub fn render(result: &QueryResult) -> String {
         }
         out.push('\n');
     }
-    // Summary.
+    // Summary. `candidates` counts CANDIDATE relations; `unresolved`/`out_of_scope`
+    // count related *call* nodes carrying a NoCandidate/OutOfScope disposition
+    // (they exist but have no target edge — §11/§37).
     let cand = result
         .related
         .iter()
         .filter(|r| r.evidence == EvidenceClass::Candidate)
         .count();
+    let mut unresolved = 0u64;
+    let mut out_of_scope = 0u64;
+    for r in &result.related {
+        if let Some(d) = r.node.disposition.as_deref() {
+            if d.starts_with("no_candidate") {
+                unresolved += 1;
+            } else if d.starts_with("out_of_scope") {
+                out_of_scope += 1;
+            }
+        }
+    }
     out.push_str(&format!(
-        "S shown={} total={} complete={} seeds={} related={} candidates={}\n",
+        "S shown={} total={} complete={} seeds={} related={} candidates={} unresolved={} out_of_scope={}\n",
         result.shown,
         result.total,
         u8::from(result.complete),
         result.seeds.len(),
         result.related.len(),
-        cand
+        cand,
+        unresolved,
+        out_of_scope
     ));
     if let Some(reason) = &result.truncated_reason {
         out.push_str(&format!("S truncated=1 reason={}\n", reason));
@@ -144,18 +159,22 @@ pub fn parse(text: &str) -> Result<Rdx1Doc, String> {
         if line.is_empty() {
             continue;
         }
-        if line == "#RDX1 v1" || line.starts_with("#RDX1") {
+        if line.starts_with("#RDX1") {
+            // Reject an unsupported version rather than mis-parsing it (§13).
+            if line != "#RDX1 v1" {
+                return Err(format!("unsupported RDX1 version: `{line}`"));
+            }
             saw_header = true;
             continue;
         }
-        let mut it = line.split_whitespace();
-        match it.next() {
+        let mut it = tokenize(line).into_iter();
+        match it.next().as_deref() {
             Some("Q") => doc.query = Some(unescape(&line[2..])),
             Some("F") => {
                 let lid: u32 = it.next().and_then(|s| s.parse().ok()).ok_or("bad F lid")?;
-                let kind = it.next().ok_or("bad F kind")?.to_string();
-                let key = it.next().map(unescape).ok_or("bad F key")?;
-                let label = unescape(it.next().unwrap_or(""));
+                let kind = it.next().ok_or("bad F kind")?;
+                let key = unescape(&it.next().ok_or("bad F key")?);
+                let label = unescape(&it.next().unwrap_or_default());
                 doc.facts.push(Rdx1Fact {
                     lid,
                     kind,
@@ -164,7 +183,7 @@ pub fn parse(text: &str) -> Result<Rdx1Doc, String> {
                 });
             }
             Some("R") => {
-                let rel = it.next().ok_or("bad R rel")?.to_string();
+                let rel = it.next().ok_or("bad R rel")?;
                 let src: u32 = it.next().and_then(|s| s.parse().ok()).ok_or("bad R src")?;
                 let tgt: u32 = it.next().and_then(|s| s.parse().ok()).ok_or("bad R tgt")?;
                 let evidence = it.next().and_then(|s| s.chars().next()).ok_or("bad R ev")?;
@@ -193,9 +212,49 @@ pub fn parse(text: &str) -> Result<Rdx1Doc, String> {
     Ok(doc)
 }
 
+/// Split a record line into fields, keeping `"..."` quoted groups (which may
+/// contain whitespace/escapes) as a single field. Escaped quotes stay inside.
+fn tokenize(line: &str) -> Vec<String> {
+    let mut fields = Vec::new();
+    let mut cur = String::new();
+    let mut in_quote = false;
+    let mut escaped = false;
+    let mut has_field = false;
+    for c in line.chars() {
+        if escaped {
+            cur.push('\\');
+            cur.push(c);
+            escaped = false;
+            continue;
+        }
+        match c {
+            '\\' if in_quote => escaped = true,
+            '"' => {
+                in_quote = !in_quote;
+                cur.push('"');
+            }
+            c if c.is_whitespace() && !in_quote => {
+                if has_field {
+                    fields.push(std::mem::take(&mut cur));
+                    has_field = false;
+                }
+            }
+            c => {
+                cur.push(c);
+                has_field = true;
+            }
+        }
+    }
+    if has_field {
+        fields.push(cur);
+    }
+    fields
+}
+
 fn escape(s: &str) -> String {
-    if s.contains(char::is_whitespace) {
-        // quote + backslash-escape for whitespace-bearing values
+    // Quote whenever a value contains whitespace, a quote or a backslash — a
+    // bare `"` or `\` would otherwise corrupt the field tokenizer.
+    if s.contains(char::is_whitespace) || s.contains('"') || s.contains('\\') {
         let mut o = String::from("\"");
         for c in s.chars() {
             match c {

@@ -2511,6 +2511,9 @@ fn command_query(args: &[String]) -> Result<u8, String> {
         options.max_results.unwrap_or(50),
         options.tokens,
     );
+    let mut plan = plan;
+    plan.max_depth = options.depth.unwrap_or(4);
+    plan.validate()?; // §19: reject malformed plans before running
     let result = engine.run(&plan);
     if options.explain {
         return print_query_explain(&result, options.json);

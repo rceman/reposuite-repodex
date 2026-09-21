@@ -19,6 +19,23 @@ use crate::graph::{EvidenceClass, GraphIndex, GraphNode, NodeKind};
 
 use super::normalize::{identifier_terms, query_terms};
 
+/// Query/ranking/normalization policy version (§23). Bump when the identifier
+/// splitter, scoring weights or expansion semantics change. Indexes are
+/// in-memory and rebuilt from the graph each run, so no persisted derived
+/// artifact needs invalidation — but the version is recorded so a future
+/// System One `query` role produces plans against a known policy.
+pub const QUERY_POLICY_VERSION: u32 = 1;
+
+/// Deterministic estimate of the output tokens one emitted seed costs (a `F`
+/// line plus its share of relations/overhead). ~4 chars/token heuristic — a
+/// documented approximation, not a model tokenizer (§38).
+const RESULT_TOKEN_EST: usize = 8;
+const RESULT_TOKEN_OVERHEAD: usize = 16;
+
+fn estimate_result_tokens(seeds: usize) -> usize {
+    RESULT_TOKEN_OVERHEAD + seeds * RESULT_TOKEN_EST
+}
+
 /// Query mode (§20).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QueryMode {
@@ -111,6 +128,32 @@ impl QueryPlan {
             token_budget,
         }
     }
+
+    /// Validate a plan (§19). A future System One `query` model would produce
+    /// plans — they must be rejected if malformed rather than trusted.
+    /// Returns `Err(reason)` for invalid limits/intents/budgets.
+    pub fn validate(&self) -> Result<(), String> {
+        if self.max_results == 0 {
+            return Err("max_results must be > 0".to_string());
+        }
+        if self.max_depth == 0 {
+            return Err("max_depth must be > 0".to_string());
+        }
+        if let Some(b) = self.token_budget {
+            if b == 0 {
+                return Err("token budget must be > 0".to_string());
+            }
+        }
+        if self.intent == QueryIntent::Paths && (self.target.is_none() || self.to.is_none()) {
+            return Err("paths intent requires --target and --to".to_string());
+        }
+        if matches!(self.intent, QueryIntent::Callers | QueryIntent::Callees)
+            && self.target.is_none()
+        {
+            return Err("callers/callees require --target".to_string());
+        }
+        Ok(())
+    }
 }
 
 /// A node with its deterministic rank and the factors that produced it.
@@ -184,29 +227,46 @@ impl<'a> QueryEngine<'a> {
     }
 
     /// Run the query.
+    ///
+    /// Ordering of operations is significant for correctness:
+    /// `total` is the full seed enumeration *before* any truncation, `seeds` is
+    /// the emitted subset, and `related` is expanded only from the emitted
+    /// seeds — so a MultipleCandidates set stays atomic (all its edges hang off
+    /// one shown seed and are never split by a budget boundary).
     pub fn run(&self, plan: &QueryPlan) -> QueryResult {
-        // 1. Seed lookup.
+        // 1. Seed lookup + deterministic rank.
         let mut seeds = self.seed(plan);
-        // 2. Intent-specific expansion.
-        let related = self.expand(plan, &seeds);
-        // 3. Order + budget.
+        seeds.sort_by(|a, b| b.score.cmp(&a.score).then(a.node.key.cmp(&b.node.key)));
+        // 2. `total` = the full logical result set before presentation limits.
         let total = seeds.len();
-        let (complete, reason) = match plan.mode {
-            QueryMode::Ranked => {
-                seeds.sort_by(|a, b| b.score.cmp(&a.score).then(a.node.key.cmp(&b.node.key)));
-                seeds.truncate(plan.max_results);
-                (true, None)
+        let mut complete = true;
+        let mut reason: Option<String> = None;
+        // 3. Structural result cap. `ranked` treats top-N as the intended
+        //    answer (still complete); `exhaustive` truncation is incomplete.
+        if seeds.len() > plan.max_results {
+            seeds.truncate(plan.max_results);
+            if plan.mode == QueryMode::Exhaustive {
+                complete = false;
+                reason = Some("limit".to_string());
             }
-            QueryMode::Exhaustive => {
-                seeds.sort_by(|a, b| b.score.cmp(&a.score).then(a.node.key.cmp(&b.node.key)));
-                if seeds.len() > plan.max_results {
-                    seeds.truncate(plan.max_results);
-                    (false, Some("limit".to_string()))
-                } else {
-                    (true, None)
-                }
+        }
+        // 4. Presentation token budget (§38). It only reduces *emitted* seeds —
+        //    the enumeration (`total`) is untouched. Any drop marks the output
+        //    incomplete with reason=budget, regardless of mode.
+        if let Some(budget) = plan.token_budget {
+            let fits = |n: usize| -> bool { estimate_result_tokens(n) <= budget };
+            let mut keep = seeds.len();
+            while keep > 0 && !fits(keep) {
+                keep -= 1;
             }
-        };
+            if keep < seeds.len() {
+                seeds.truncate(keep);
+                complete = false;
+                reason = Some("budget".to_string());
+            }
+        }
+        // 5. Expand related edges from the emitted seeds only.
+        let related = self.expand(plan, &seeds);
         let shown = seeds.len();
         QueryResult {
             plan: plan.clone(),
