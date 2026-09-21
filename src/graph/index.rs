@@ -85,11 +85,22 @@ pub struct Neighbor {
 }
 
 impl GraphIndex {
-    /// Load a verified graph artifact into memory.
+    /// Load a verified graph artifact into memory. The manifest version is
+    /// checked and the node/edge content is integrity-checked (ordering, ids,
+    /// refs, digest) so a corrupt graph cannot be silently queried (§51).
     pub fn load(dir: &Path) -> Result<Self, GraphError> {
         let manifest = artifact::read_manifest(dir)?;
+        if manifest.graph_schema_version != crate::graph::GRAPH_SCHEMA_VERSION
+            || manifest.graph_policy_version != crate::graph::GRAPH_POLICY_VERSION
+        {
+            return Err(GraphError::FingerprintMismatch {
+                expected: crate::graph::GraphFingerprint::current().text,
+                found: manifest.graph_fingerprint_text.clone(),
+            });
+        }
         let nodes = artifact::read_nodes(dir)?;
         let edges = artifact::read_edges(dir)?;
+        artifact::check_integrity(&manifest, &nodes, &edges)?;
         Ok(Self::from_parts(manifest, nodes, edges))
     }
 

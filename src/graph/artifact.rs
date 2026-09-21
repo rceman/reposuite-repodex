@@ -171,21 +171,26 @@ pub fn compute_graph_digest(nodes: &[GraphNode], edges: &[GraphEdge]) -> String 
     let mut text = String::from("repodex-graph-v1\n");
     for n in nodes {
         text.push_str(&format!(
-            "n {} {} {} {}\n",
+            "n {} {} {} {} {} {}\n",
             n.node_id,
             n.kind.as_str(),
             n.key,
+            n.path,
+            n.label,
             n.disposition.as_deref().unwrap_or("-")
         ));
     }
     for e in edges {
         text.push_str(&format!(
-            "e {} {} {} {} {}\n",
+            "e {} {} {} {} {} {} {} {}\n",
             e.edge_id,
             e.kind,
             e.evidence_class.as_str(),
             e.source,
-            e.target
+            e.target,
+            e.rule_id,
+            e.upstream_id.as_deref().unwrap_or("-"),
+            e.candidate_set_id.as_deref().unwrap_or("-")
         ));
     }
     digest::sha256_text(&text)
@@ -246,7 +251,18 @@ pub fn verify(
 
     let nodes = read_nodes(dir)?;
     let edges = read_edges(dir)?;
+    check_integrity(&manifest, &nodes, &edges)
+}
 
+/// Self-contained integrity check on loaded nodes/edges/manifest — canonical
+/// ordering, unique ids, resolvable refs, candidate-set presence and the
+/// recomputed graph digest. Does not consult upstream artifacts; `load` uses
+/// it so a corrupt graph cannot be silently queried (§51).
+pub fn check_integrity(
+    manifest: &GraphManifest,
+    nodes: &[GraphNode],
+    edges: &[GraphEdge],
+) -> Result<(), GraphError> {
     // Canonical ordering + no duplicate ids + no absolute paths.
     let mut node_ids = std::collections::HashSet::new();
     let mut prev_key = String::new();
@@ -275,7 +291,7 @@ pub fn verify(
     }
 
     let mut edge_ids = std::collections::HashSet::new();
-    for e in &edges {
+    for e in edges {
         if !edge_ids.insert(e.edge_id.clone()) {
             return Err(GraphError::Corrupt {
                 reason: format!("duplicate edge id {}", e.edge_id),
@@ -298,11 +314,11 @@ pub fn verify(
         }
     }
     // Recompute the digest.
-    let digest = compute_graph_digest(&nodes, &edges);
+    let digest = compute_graph_digest(nodes, edges);
     if digest != manifest.graph_digest {
         return Err(GraphError::DigestMismatch {
             expected: digest,
-            found: manifest.graph_digest,
+            found: manifest.graph_digest.clone(),
         });
     }
     Ok(())

@@ -23,7 +23,10 @@ use serde::{Deserialize, Serialize};
 use crate::repository::digest;
 
 /// Graph record schema version.
-pub const GRAPH_SCHEMA_VERSION: u32 = 1;
+/// * `1` — initial artifact.
+/// * `2` — the canonical graph digest also covers node `path`/`label` and edge
+///   `rule_id`/`upstream_id`/`candidate_set_id` so tampering is detected.
+pub const GRAPH_SCHEMA_VERSION: u32 = 2;
 /// Graph artifact manifest format version.
 pub const GRAPH_MANIFEST_VERSION: u32 = 1;
 /// Graph *policy* version — the projection rules that map upstream artifacts to

@@ -367,9 +367,16 @@ pub fn build_graph(
     }
     phases.derive_ms = elapsed_ms(derive_started);
 
+    // Canonical ordering: nodes are key-sorted (BTreeMap); edges are sorted by
+    // edge_id and deduplicated so identical upstream always yields identical
+    // bytes (§26/§49). The digest is computed over exactly what is written.
+    let node_vec: Vec<GraphNode> = nodes.into_values().collect();
+    edges.sort_by(|a, b| a.edge_id.cmp(&b.edge_id));
+    edges.dedup_by(|a, b| a.edge_id == b.edge_id);
+
     // 3. Count + manifest.
     let mut node_counts: BTreeMap<String, u64> = BTreeMap::new();
-    for n in nodes.values() {
+    for n in &node_vec {
         *node_counts.entry(n.kind.as_str().to_string()).or_default() += 1;
     }
     let mut edge_counts: BTreeMap<String, u64> = BTreeMap::new();
@@ -383,7 +390,7 @@ pub fn build_graph(
         }
     }
     stats.files = analyses.len() as u64;
-    stats.nodes = nodes.len() as u64;
+    stats.nodes = node_vec.len() as u64;
     stats.edges = edges.len() as u64;
     stats.candidate_edges = candidate_edges;
     stats.candidate_sets = candidate_sets;
@@ -399,18 +406,17 @@ pub fn build_graph(
         graph_fingerprint: fingerprint.digest.clone(),
         graph_fingerprint_text: fingerprint.text.clone(),
         graph_digest: String::new(),
-        nodes: nodes.len() as u64,
+        nodes: node_vec.len() as u64,
         edges: edges.len() as u64,
         node_counts: node_counts.into_iter().collect(),
         edge_counts: edge_counts.into_iter().collect(),
         languages: languages.into_iter().collect(),
     };
-    manifest.graph_digest = compute_graph_digest(&nodes, &edges);
+    manifest.graph_digest = artifact::compute_graph_digest(&node_vec, &edges);
 
     // 4. Write into staging, verify, publish.
     let serialize_started = Instant::now();
     let staging = artifact::prepare_staging(output)?;
-    let node_vec: Vec<GraphNode> = nodes.into_values().collect();
     let result = artifact::write(&staging, &manifest, &node_vec, &edges);
     phases.serialize_ms = elapsed_ms(serialize_started);
     if let Err(e) = result {
@@ -585,31 +591,6 @@ fn add_node(
         disposition: spec.disposition,
     });
     id
-}
-
-/// Deterministic digest over the whole node+edge set.
-fn compute_graph_digest(nodes: &BTreeMap<String, GraphNode>, edges: &[GraphEdge]) -> String {
-    let mut text = String::from("repodex-graph-v1\n");
-    for n in nodes.values() {
-        text.push_str(&format!(
-            "n {} {} {} {}\n",
-            n.node_id,
-            n.kind.as_str(),
-            n.key,
-            n.disposition.as_deref().unwrap_or("-")
-        ));
-    }
-    for e in edges {
-        text.push_str(&format!(
-            "e {} {} {} {} {}\n",
-            e.edge_id,
-            e.kind,
-            e.evidence_class.as_str(),
-            e.source,
-            e.target
-        ));
-    }
-    crate::repository::digest::sha256_text(&text)
 }
 
 fn elapsed_ms(started: Instant) -> f64 {

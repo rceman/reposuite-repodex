@@ -110,6 +110,12 @@ USAGE:
     reposuite-repodex graph stats <graph-dir> [--json]
     reposuite-repodex graph node <graph-dir> <id-or-key> [--json]
     reposuite-repodex graph outgoing|incoming|neighborhood <graph-dir> <id-or-key> [--json]
+    reposuite-repodex graph find <graph-dir> <term> [--domain name|path|entity|id|any] [--json]
+    reposuite-repodex graph callers|callees <graph-dir> <decl-or-file> [--json]
+    reposuite-repodex graph paths <graph-dir> <from> <to> [--depth N] [--max-paths N] [--json]
+    reposuite-repodex query --graph <graph-dir> <text> [--intent find|callers|callees|related]
+        [--target <node>] [--to <node>] [--depth N] [--max-results N] [--tokens N]
+        [--exhaustive] [--explain] [--json | --human]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
