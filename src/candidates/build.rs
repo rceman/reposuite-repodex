@@ -136,11 +136,19 @@ pub fn build_candidates(
             reason: format!("the link records could not be read: {error}"),
         }
     })?;
+    // TASK 3E V2 consumes the persisted TASK 3F `rust_crate_target` entities —
+    // the crate/target membership topology — rather than re-deriving Cargo
+    // targets inside candidate code.
+    let entities = crate::links::artifact::read_entities(links_dir).map_err(|error| {
+        CandidateError::InvalidManifest {
+            reason: format!("the structural entities could not be read: {error}"),
+        }
+    })?;
     phases.snapshot_load_ms = elapsed_ms(load_started);
 
     // 2. Apply the bounded Rust candidate rule.
     let derive_started = Instant::now();
-    let mut records: Vec<CallCandidateRecord> = rule_rust::candidates(&analyses, &links);
+    let mut records: Vec<CallCandidateRecord> = rule_rust::candidates(&analyses, &links, &entities);
     artifact::order_records(&mut records)?;
     phases.derive_ms = elapsed_ms(derive_started);
 

@@ -139,6 +139,7 @@ fn exact_link_to_function_is_a_single_candidate() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_single(&records, "helper", 0, "helper");
     assert_import_rule(&records, "helper", 0);
@@ -167,6 +168,7 @@ fn exact_link_to_non_function_is_no_candidate() {
                 "helper",
             )),
         )],
+        &[],
     );
     let record = assert_no_candidate(&records, "helper", 0, "import_target_not_eligible_function");
     assert_import_rule(&records, "helper", 0);
@@ -196,6 +198,7 @@ fn ambiguous_link_filters_to_functions() {
                 ],
             },
         )],
+        &[],
     );
     // Two eligible functions survive the filter -> multiple_candidates, with
     // upstream `ambiguous` preserved in provenance.
@@ -223,6 +226,7 @@ fn ambiguous_link_with_one_function_is_single_but_provenance_keeps_ambiguous() {
                 ],
             },
         )],
+        &[],
     );
     // One eligible function survives -> single_candidate, but the record must
     // still say the upstream relationship was Ambiguous.
@@ -249,6 +253,7 @@ fn ambiguous_link_with_no_functions_is_no_candidate() {
                 ],
             },
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "import_target_not_eligible_function");
 }
@@ -263,6 +268,7 @@ fn unresolved_link_is_no_candidate() {
             "crate::util::helper",
             LinkOutcome::unresolved("no such module"),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "import_structurally_unresolved");
     assert_import_rule(&records, "helper", 0);
@@ -278,6 +284,7 @@ fn out_of_scope_link_is_no_candidate() {
             "std::other::helper",
             LinkOutcome::out_of_scope("not a crate path"),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "import_out_of_scope");
     assert_import_rule(&records, "helper", 0);
@@ -287,6 +294,7 @@ fn out_of_scope_link_is_no_candidate() {
 fn missing_link_keeps_the_conservative_import_blocker() {
     let records = rule_rust::candidates(
         &analyses("use crate::util::helper;\nfn run() { helper(); }\n", &[]),
+        &[],
         &[],
     );
     assert_no_candidate(&records, "helper", 0, "blocked_by_import_binding");
@@ -304,6 +312,7 @@ fn glob_import_never_produces_a_candidate() {
             "crate::util::*",
             LinkOutcome::exact(LinkTarget::file(TARGET)),
         )],
+        &[],
     );
     let calls = calls_to(&records, "helper");
     match &calls[0].outcome {
@@ -335,6 +344,7 @@ fn a_closer_let_binding_beats_the_import() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "shadowed_by_local_binding");
 }
@@ -352,6 +362,7 @@ fn a_closer_function_parameter_beats_the_import() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "shadowed_by_local_binding");
 }
@@ -369,6 +380,7 @@ fn a_nearer_nested_function_beats_the_import() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_single(&records, "helper", 0, "helper");
     // The nearer lexical `fn` wins under the local rule, not the import.
@@ -391,6 +403,7 @@ fn a_call_before_a_later_let_can_use_the_import() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     // The first call precedes the `let`, so the import still owns the name.
     assert_single(&records, "helper", 0, "helper");
@@ -407,6 +420,7 @@ fn an_import_outside_lexical_applicability_does_not_link() {
             &[(TARGET, "pub fn helper() {}\n")],
         ),
         &[link(0, 0, "crate::util::helper", LinkOutcome::exact(fn_target(TARGET, 0, "helper")))],
+        &[],
     );
     let calls = calls_to(&records, "helper");
     assert_eq!(calls.len(), 1);
@@ -433,6 +447,7 @@ fn an_unresolved_import_does_not_borrow_an_outer_function() {
             "crate::types::helper",
             LinkOutcome::unresolved("no such decl"),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "import_structurally_unresolved");
 }
@@ -450,6 +465,7 @@ fn a_local_function_blocker_also_beats_the_import() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "blocked_by_local_constant");
 }
@@ -471,6 +487,7 @@ fn an_aliased_import_binds_the_alias_not_the_target() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     // The local call name `execute` binds the alias; the candidate name is the
     // imported target `helper`.
@@ -499,6 +516,7 @@ fn a_grouped_import_resolves_the_matching_item() {
                 LinkOutcome::exact(fn_target(TARGET, 1, "other")),
             ),
         ],
+        &[],
     );
     assert_single(&records, "helper", 0, "helper");
     assert_import_rule(&records, "helper", 0);
@@ -517,6 +535,7 @@ fn a_grouped_aliased_import_uses_the_alias() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     assert_single(&records, "run_helper", 0, "helper");
 }
@@ -551,6 +570,7 @@ fn a_reexport_chain_is_not_followed() {
                 "helper",
             )),
         )],
+        &[],
     );
     assert_no_candidate(&records, "helper", 0, "import_target_not_eligible_function");
 }
@@ -568,6 +588,7 @@ fn provenance_identifies_the_call_import_link_and_target() {
             "crate::util::helper",
             LinkOutcome::exact(fn_target(TARGET, 0, "helper")),
         )],
+        &[],
     );
     let record = calls_to(&records, "helper")[0];
     let ev = evidence(record);

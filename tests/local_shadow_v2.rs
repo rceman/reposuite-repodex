@@ -26,7 +26,7 @@ fn candidates_for(source: &str) -> Vec<CallCandidateRecord> {
     let analysis = analyze_source(LanguageId::Rust, "t.rs", source.as_bytes());
     // The lexical-shadowing tests exercise the local blockers only; no TASK 3B
     // link relationships are needed, so the import lookup is empty.
-    rule_rust::candidates(&[analysis], &[])
+    rule_rust::candidates(&[analysis], &[], &[])
 }
 
 /// The records for every call to `written`, in source order.

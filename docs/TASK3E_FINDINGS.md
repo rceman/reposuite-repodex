@@ -93,3 +93,42 @@ does not resolve generic instantiation, so turbofish `qualified_path` calls
 `mod` tree; tokio test/bench files are not, so their qualified calls are
 `out_of_scope` (`no_crate`). Widening to per-file crate roots is a structure
 change, not a candidate-rule change. **Disposition: documented.**
+
+## T3E2-F011 — `TARGET_CONTEXT`, HIGH (fixed) — candidate crate context now target-aware
+
+TASK 3E V1 built the crate index only from `Structure::rust_crates`
+(`lib.rs`/`main.rs`), so `crate::`/`self::`/`super::`/relative paths in
+test/bench/example/bin source had no crate context (`no_crate`). V2 builds one
+`CrateIndex` per persisted `rust_crate_target` entity — the TASK 3F topology —
+reusing the same `build_rust_crate_tree` module-tree builder. The lib/main
+convention remains only as a fallback when no topology exists. **Disposition:
+implemented.**
+
+## T3E2-F012 — `CROSS_TARGET`, INFO — target isolation holds
+
+A `crate::` path inside a target resolves only within that target's own module
+tree. `tests/it.rs` `crate::helper` resolves to the test root, never the lib;
+two integration tests never borrow each other's root. Independent audit shows
+`CROSS_TARGET_LEAK = 0`. **Disposition: verified.**
+
+## T3E2-F013 — `MULTI_MEMBERSHIP`, INFO — shared support files keep all memberships
+
+Six `tests/support/*.rs` files belong to several test targets each (every test
+does `mod support`). Qualified paths inside them are evaluated per target and
+unioned/deduplicated — none leaked across crates. **Disposition: verified.**
+
+## T3E2-F014 — `STRUCTURAL_PATH`, INFO — V2 converts only +3 real calls
+
+Of the 5,040 newly-attached prior-`no_crate` calls, the overwhelming majority
+stay `no_candidate`/`out_of_scope`: roots are imported module aliases
+(`shadowed`), external crates, or type/associated terminals (`unproven`). Only
+3 became `single_candidate` (1 `crate::`, plus relative-module paths now
+proven in test-target trees). The 1,234 "relative module" projection was
+dominated by imported/external lowercase roots, not structural `mod` children.
+**Disposition: measured; honest small gain.**
+
+## T3E2-F015 — `TARGET_CONTEXT`, INFO — `super_above_crate` bounded
+
+`super::…` walking above a target's crate root stays `out_of_scope` — it never
+crosses into another target. Carries forward the V1 bound, now per-target.
+**Disposition: implemented.**

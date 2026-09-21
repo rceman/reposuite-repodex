@@ -22,7 +22,7 @@ fn analyses(files: &[(&str, &str)]) -> Vec<FileAnalysis> {
 }
 
 fn records(files: &[(&str, &str)]) -> Vec<CallCandidateRecord> {
-    rule_rust::candidates(&analyses(files), &[])
+    rule_rust::candidates(&analyses(files), &[], &[])
 }
 
 /// All `qualified_path` records whose written callee is `written`.

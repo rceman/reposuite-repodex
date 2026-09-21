@@ -54,7 +54,11 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 ///   persisted TASK 3B `use_path` relationship into zero/one/many `function`
 ///   candidates under `rust.call.imported_function_candidate`, instead of only
 ///   suppressing the outer function.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 4;
+/// * `5` — `qualified_path` candidates are now target-aware: crate context is
+///   the TASK 3F crate/target topology (every `lib`/`bin`/`integration_test`/
+///   `example`/`bench` target is an independent crate root), not only the
+///   `lib.rs`/`main.rs` convention.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 5;
 
 /// Per-language candidate-policy versions.
 ///
@@ -69,7 +73,11 @@ pub const CANDIDATE_RULE_ABI_VERSION: u32 = 4;
 /// * `4` — `qualified_path` calls may produce `function` candidates when the
 ///   path is structurally proven to traverse repository modules
 ///   (`crate`/`self`/`super`/in-crate module roots).
-pub const POLICY_VERSION_RUST_CALL: u32 = 4;
+/// * `5` — the crate context for those paths is the TASK 3F target topology
+///   (each Cargo target is an independent crate root), not just `lib.rs`/
+///   `main.rs`. Falls back to the `lib.rs`/`main.rs` convention only when no
+///   `rust_crate_target` topology exists.
+pub const POLICY_VERSION_RUST_CALL: u32 = 5;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///

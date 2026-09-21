@@ -16,14 +16,16 @@
 //! Everything else is `OutOfScope`. Nothing here resolves a call: one candidate
 //! is still only a candidate.
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 use crate::model::{
     CallLikeForm, DeclarationKind, FileAnalysis, ImportItem, ImportOccurrence, LanguageId,
     LocalBindingOccurrence, Scope, ScopeKind,
 };
 
-use crate::links::model::{FactKind, FactLocator, LinkOutcome, LinkRecord, LinkTarget};
+use crate::links::model::{
+    FactKind, FactLocator, LinkOutcome, LinkRecord, LinkTarget, StructuralEntity,
+};
 use crate::links::structure::{RustCrate, Structure};
 
 use super::model::{
@@ -36,7 +38,11 @@ use super::model::{
 /// in-scope plain-name call, and an `OutOfScope` record for every other call
 /// shape, so the artifact is a complete disposition of the calls the snapshot
 /// contains.
-pub fn candidates(analyses: &[FileAnalysis], links: &[LinkRecord]) -> Vec<CallCandidateRecord> {
+pub fn candidates(
+    analyses: &[FileAnalysis],
+    links: &[LinkRecord],
+    entities: &[StructuralEntity],
+) -> Vec<CallCandidateRecord> {
     let mut records = Vec::new();
     // File analyses by path, so an imported `function` target can be located
     // and its real lexical scope path recovered for provenance.
@@ -60,12 +66,44 @@ pub fn candidates(analyses: &[FileAnalysis], links: &[LinkRecord]) -> Vec<CallCa
             );
         }
     }
-    // The TASK 3B structural module tree — reused unchanged so qualified-path
-    // candidates descend the same `mod`-derived module edges the link rules
-    // proved, never a re-derived or heuristic module layout.
-    let structure = Structure::build(analyses);
-    let crate_indexes: Vec<CrateIndex> =
-        structure.rust_crates.iter().map(CrateIndex::new).collect();
+    // TASK 3E V2: the crate context is the persisted TASK 3F crate/target
+    // topology — one independent module tree per Cargo target (`lib`, `bin`,
+    // `integration_test`, `example`, `bench`), not just `lib.rs`/`main.rs`.
+    // Each target's tree is rebuilt through the same TASK 3B module-tree
+    // builder the link rules used, never a re-derived or heuristic layout.
+    // A file may own several targets (shared `tests/support` modules), so a
+    // qualified path is evaluated inside every applicable target and the
+    // eligible-function set is unioned and deduplicated.
+    let mut structure = Structure::build(analyses);
+    let analyses_by_path_tree: BTreeMap<&str, &FileAnalysis> = analyses
+        .iter()
+        .map(|a| (a.file.relative_path.as_str(), a))
+        .collect();
+    let mut target_crates: Vec<RustCrate> = Vec::new();
+    for entity in entities {
+        if entity.structural_kind != "rust_crate_target" {
+            continue;
+        }
+        let Some(root) = entity
+            .assumptions
+            .iter()
+            .find_map(|a| a.strip_prefix("root_file="))
+        else {
+            continue;
+        };
+        if let Some(krate) = structure.build_rust_crate_tree(root, &analyses_by_path_tree) {
+            target_crates.push(krate);
+        }
+    }
+    // When the link artifact carries no `rust_crate_target` topology — a repo
+    // with no `Cargo.toml`, or an in-memory analysis set — the conventional
+    // `lib.rs`/`main.rs` crate roots remain the crate context. The topology is
+    // authoritative whenever it is present.
+    let crate_indexes: Vec<CrateIndex> = if target_crates.is_empty() {
+        structure.rust_crates.iter().map(CrateIndex::new).collect()
+    } else {
+        target_crates.iter().map(CrateIndex::new).collect()
+    };
 
     for analysis in analyses {
         if analysis.file.language != LanguageId::Rust {
