@@ -1,0 +1,58 @@
+{
+  "schema": "repodex/pre-system-one-review/v1",
+  "commit": "PENDING_FINAL",
+  "source_prompt_id": "REPODEX-AUTONOMOUS-DETERMINISTIC-QUERY-TO-PRE-SYSTEM-ONE-V1",
+  "previous_prompt_id": "REPODEX-T5A-INVESTIGATION-GRAPH-FOUNDATION-V1",
+  "versions": {
+    "graph_schema": 2,
+    "graph_policy": 2,
+    "graph_manifest": 1,
+    "rdx1": 1
+  },
+  "deterministic_only": true,
+  "network_required": false,
+  "model_required": false,
+  "test_count": 586,
+  "corpora": {
+    "hugo": {
+      "language": "go",
+      "nodes": 71119,
+      "edges": 133136,
+      "candidate_edges": 7223,
+      "candidate_sets": 7207,
+      "graph_bytes": 39836101,
+      "snapshot_bytes": 59279974,
+      "candidates_bytes": 23068672,
+      "links_bytes": 8906497,
+      "graph_build_ms": 2607.9,
+      "graph_verify_ms": 350.0,
+      "query_cold_ms": 290.0,
+      "query_rss_mb": 107
+    },
+    "tokio": {
+      "language": "rust",
+      "nodes": 44839,
+      "edges": 76683,
+      "candidate_edges": 969,
+      "candidate_sets": 968,
+      "graph_bytes": 23633340,
+      "snapshot_bytes": 31638074,
+      "candidates_bytes": 14041178,
+      "links_bytes": 3354880,
+      "graph_build_ms": 1475.5
+    }
+  },
+  "rdx1_efficiency": {
+    "small_result": { "rdx1_bytes": 2810, "json_bytes": 4717, "human_bytes": 1484, "rdx1_vs_json": 0.60 },
+    "large_result": { "rdx1_bytes": 23380, "json_bytes": 49283, "rdx1_vs_json": 0.47 }
+  },
+  "audits": {
+    "graph_hugo": { "missing_node": 0, "extra_node": 0, "wrong_edge_target": 0, "wrong_edge_class": 0, "candidate_promoted_to_fact": 0, "broken_provenance": 0 },
+    "graph_tokio": { "missing_node": 0, "extra_node": 0, "wrong_edge_target": 0, "wrong_edge_class": 0, "candidate_promoted_to_fact": 0, "broken_provenance": 0 },
+    "rust_task3e2_tokio": "PASS",
+    "go_task4c_hugo": "PASS",
+    "go_task4d_hugo": "PASS"
+  },
+  "known_blockers": [],
+  "checkpoint": "REPODEX_PRE_SYSTEM_ONE_REVIEW_READY"
+}
