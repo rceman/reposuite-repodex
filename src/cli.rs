@@ -67,6 +67,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "index" => command_index(&rest),
         "links" => command_links(&rest),
         "candidates" => command_candidates(&rest),
+        "graph" => command_graph(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
             Ok(EXIT_OK)
@@ -103,6 +104,11 @@ USAGE:
     reposuite-repodex candidates stats <candidates-dir> [--json]
     reposuite-repodex candidates show <candidates-dir> <path> [--json]
     reposuite-repodex candidates none|single|multiple|out-of-scope <candidates-dir> [--json]
+    reposuite-repodex graph build <snapshot-dir> --links <links-dir> --candidates <candidates-dir> --output <graph-dir> [--json]
+    reposuite-repodex graph verify <graph-dir> --snapshot <snapshot-dir> --links <links-dir> --candidates <candidates-dir> [--json]
+    reposuite-repodex graph stats <graph-dir> [--json]
+    reposuite-repodex graph node <graph-dir> <id-or-key> [--json]
+    reposuite-repodex graph outgoing|incoming|neighborhood <graph-dir> <id-or-key> [--json]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -131,6 +137,8 @@ struct Options {
     repository: Option<String>,
     /// `candidates build`/`candidates verify` TASK 3B link artifact directory.
     links: Option<String>,
+    /// `graph build`/`graph verify` candidate artifact directory.
+    candidates: Option<String>,
     /// `index update` opt-in to rebuilding from an incompatible snapshot.
     allow_incompatible: bool,
     /// `index find` selectors.
@@ -169,6 +177,9 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
                 options.repository = Some(value_for(args, &mut index, name, inline_value)?)
             }
             "--links" => options.links = Some(value_for(args, &mut index, name, inline_value)?),
+            "--candidates" => {
+                options.candidates = Some(value_for(args, &mut index, name, inline_value)?)
+            }
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -1985,6 +1996,240 @@ fn command_candidates_outcome(args: &[String], outcome: &str) -> Result<u8, Stri
         println!("outcome: {outcome}");
         println!("count:   {}", rows.len());
         print_candidate_rows(&rows);
+    }
+    Ok(EXIT_OK)
+}
+
+// `graph` subcommands: the TASK 5A investigation graph.
+fn command_graph(args: &[String]) -> Result<u8, String> {
+    let Some(subcommand) = args.first() else {
+        return Err(
+            "graph requires a subcommand: build, verify, stats, node, outgoing, incoming or \
+             neighborhood"
+                .to_string(),
+        );
+    };
+    let rest = &args[1..];
+    match subcommand.as_str() {
+        "build" => command_graph_build(rest),
+        "verify" => command_graph_verify(rest),
+        "stats" => command_graph_stats(rest),
+        "node" => command_graph_lookup(rest, "node"),
+        "outgoing" => command_graph_lookup(rest, "outgoing"),
+        "incoming" => command_graph_lookup(rest, "incoming"),
+        "neighborhood" => command_graph_lookup(rest, "neighborhood"),
+        other => Err(format!("unknown graph subcommand `{other}`")),
+    }
+}
+
+fn command_graph_build(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let snapshot = require_positional(&options, "graph build requires a snapshot directory")?;
+    let links = options
+        .links
+        .clone()
+        .ok_or_else(|| "graph build requires --links <links-dir>".to_string())?;
+    let candidates = options
+        .candidates
+        .clone()
+        .ok_or_else(|| "graph build requires --candidates <candidates-dir>".to_string())?;
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "graph build requires --output <graph-dir>".to_string())?;
+    let outcome = crate::graph::build_graph(
+        Path::new(snapshot),
+        Path::new(&links),
+        Path::new(&candidates),
+        Path::new(&output),
+    )
+    .map_err(|e| e.to_string())?;
+    let stats = &outcome.stats;
+    if options.json {
+        print_json(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "command": "graph build",
+            "output": output,
+            "graph_digest": outcome.manifest.graph_digest,
+            "nodes": stats.nodes,
+            "edges": stats.edges,
+            "candidate_edges": stats.candidate_edges,
+            "graph_bytes": stats.graph_bytes,
+            "duration_ms": stats.duration_ms,
+        }))?;
+    } else {
+        println!("output:        {output}");
+        println!("graph:         {}", outcome.manifest.graph_digest);
+        println!("nodes:         {}", stats.nodes);
+        println!("edges:         {}", stats.edges);
+        println!("candidate edges: {}", stats.candidate_edges);
+        println!("bytes:         {}", stats.graph_bytes);
+        println!("elapsed:       {:.1} ms", stats.duration_ms);
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_graph_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let graph = require_positional(&options, "graph verify requires a graph directory")?;
+    let snapshot = options
+        .snapshot
+        .clone()
+        .ok_or_else(|| "graph verify requires --snapshot <snapshot-dir>".to_string())?;
+    let links = options
+        .links
+        .clone()
+        .ok_or_else(|| "graph verify requires --links <links-dir>".to_string())?;
+    let candidates = options
+        .candidates
+        .clone()
+        .ok_or_else(|| "graph verify requires --candidates <candidates-dir>".to_string())?;
+    match crate::graph::verify(
+        Path::new(graph),
+        Path::new(&snapshot),
+        Path::new(&links),
+        Path::new(&candidates),
+    ) {
+        Ok(()) => {
+            if options.json {
+                print_json(&serde_json::json!({"command":"graph verify","status":"ok"}))?;
+            } else {
+                println!("graph: verified");
+            }
+            Ok(EXIT_OK)
+        }
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+fn command_graph_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "graph stats requires a graph directory")?;
+    let index = crate::graph::GraphIndex::load(Path::new(dir)).map_err(|e| e.to_string())?;
+    let stats = index.stats();
+    if options.json {
+        print_json(&serde_json::json!({
+            "command": "graph stats",
+            "nodes": stats.nodes,
+            "edges": stats.edges,
+            "node_kinds": stats.node_kinds,
+            "edge_kinds": stats.edge_kinds,
+            "candidate_edges": stats.candidate_edges,
+            "candidate_sets": stats.candidate_sets,
+            "call_dispositions": stats.call_dispositions,
+            "languages": stats.languages,
+        }))?;
+    } else {
+        println!("nodes:            {}", stats.nodes);
+        println!("edges:            {}", stats.edges);
+        println!("candidate edges:  {}", stats.candidate_edges);
+        println!("candidate sets:   {}", stats.candidate_sets);
+        for (k, v) in &stats.node_kinds {
+            println!("  node {:<13} {}", k, v);
+        }
+        for (k, v) in &stats.edge_kinds {
+            println!("  edge {:<28} {}", k, v);
+        }
+        for (d, v) in &stats.call_dispositions {
+            println!("  call {:<18} {}", d, v);
+        }
+        println!("languages:        {}", stats.languages.join(", "));
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_graph_lookup(args: &[String], mode: &str) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(
+        &options,
+        &format!("graph {mode} requires a graph directory"),
+    )?;
+    let id = options
+        .positional
+        .get(1)
+        .cloned()
+        .ok_or_else(|| format!("graph {mode} requires a node id or key"))?;
+    let index = crate::graph::GraphIndex::load(Path::new(dir)).map_err(|e| e.to_string())?;
+    match mode {
+        "node" => {
+            let Some(node) = index.node(&id) else {
+                return Err(format!("no graph node `{id}`"));
+            };
+            if options.json {
+                print_json(&serde_json::json!({"command":"graph node","node":node}))?;
+            } else {
+                println!("id:         {}", node.node_id);
+                println!("key:        {}", node.key);
+                println!("kind:       {}", node.kind.as_str());
+                println!("language:   {}", node.language);
+                println!("path:       {}", node.path);
+                println!("label:      {}", node.label);
+                if let Some(d) = &node.disposition {
+                    println!("disposition:{d}");
+                }
+            }
+        }
+        "outgoing" | "incoming" => {
+            let edges = if mode == "outgoing" {
+                index.outgoing(&id)
+            } else {
+                index.incoming(&id)
+            };
+            let rows: Vec<_> = edges
+                .iter()
+                .map(|e| {
+                    serde_json::json!({
+                        "edge_id": e.edge_id, "kind": e.kind,
+                        "evidence": e.evidence_class.as_str(),
+                        "source": e.source, "target": e.target,
+                        "candidate_set": e.candidate_set_id, "rule": e.rule_id,
+                    })
+                })
+                .collect();
+            if options.json {
+                print_json(
+                    &serde_json::json!({"command":format!("graph {mode}"),"node":id,"count":rows.len(),"edges":rows}),
+                )?;
+            } else {
+                println!("{mode} edges for {id}: {}", rows.len());
+                for e in &edges {
+                    println!(
+                        "  {} {} {} -> {}",
+                        e.evidence_class.as_str(),
+                        e.kind,
+                        e.source,
+                        e.target
+                    );
+                }
+            }
+        }
+        "neighborhood" => {
+            let neighbors = index.neighborhood(&id, &crate::graph::NeighborFilter::both());
+            if options.json {
+                let rows: Vec<_> = neighbors
+                    .iter()
+                    .map(|n| {
+                        serde_json::json!({"direction":n.direction,"edge":n.edge,"node":n.node})
+                    })
+                    .collect();
+                print_json(
+                    &serde_json::json!({"command":"graph neighborhood","node":id,"count":rows.len(),"neighbors":rows}),
+                )?;
+            } else {
+                println!("neighborhood of {id}: {}", neighbors.len());
+                for n in &neighbors {
+                    println!(
+                        "  {} {} {} {} ({})",
+                        n.direction,
+                        n.edge.evidence_class.as_str(),
+                        n.edge.kind,
+                        n.node.key,
+                        n.node.kind.as_str()
+                    );
+                }
+            }
+        }
+        _ => unreachable!(),
     }
     Ok(EXIT_OK)
 }

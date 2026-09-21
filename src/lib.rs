@@ -28,6 +28,7 @@
 pub mod candidates;
 pub mod canonical;
 pub mod cli;
+pub mod graph;
 pub mod incremental;
 pub mod input;
 pub mod links;
