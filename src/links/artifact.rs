@@ -97,6 +97,12 @@ pub enum LinkError {
     MetadataMissing {
         relative_path: String,
     },
+    /// The artifact was derived by a different rule/policy fingerprint, so it
+    /// is stale under this build even if its recorded digests are intact.
+    FingerprintMismatch {
+        expected: String,
+        found: String,
+    },
 }
 
 impl fmt::Display for LinkError {
@@ -154,6 +160,10 @@ impl fmt::Display for LinkError {
             LinkError::MetadataMissing { relative_path } => {
                 write!(formatter, "metadata `{relative_path}` is recorded as a dependency but is absent")
             }
+            LinkError::FingerprintMismatch { expected, found } => write!(
+                formatter,
+                "link artifact was derived by rule fingerprint {found}, but this build expects {expected}"
+            ),
         }
     }
 }
@@ -472,6 +482,18 @@ pub fn verify(
         return Err(LinkError::SnapshotMismatch {
             expected: snapshot_manifest.snapshot_digest,
             found: manifest.snapshot_digest,
+        });
+    }
+
+    // 1b. The artifact must have been derived by this build's link rules. A
+    //     stale-fingerprint artifact is rejected even when its digests are
+    //     internally consistent, because a rule/policy change may have altered
+    //     the derivation without changing any recorded digest.
+    let current_fingerprint = super::model::LinkFingerprint::current().digest;
+    if manifest.link_fingerprint != current_fingerprint {
+        return Err(LinkError::FingerprintMismatch {
+            expected: current_fingerprint,
+            found: manifest.link_fingerprint.clone(),
         });
     }
 

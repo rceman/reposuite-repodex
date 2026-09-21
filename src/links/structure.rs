@@ -249,33 +249,46 @@ impl Structure {
             .collect();
 
         for root in roots {
-            let Some(analysis) = by_path.get(root.as_str()) else {
-                continue;
-            };
-            let mut crate_tree = RustCrate {
-                root_file: root.clone(),
-                modules: Vec::new(),
-                files: BTreeSet::new(),
-            };
-            let root_dir = rust_module_dir(&root);
-            crate_tree.modules.push(RustModule {
-                path: vec!["crate".to_string()],
-                dir: root_dir,
-                file: root.clone(),
-                declarations: Vec::new(),
-                children: BTreeMap::new(),
-            });
-            crate_tree.files.insert(root.clone());
-            let mut visited = BTreeSet::new();
-            visited.insert(root.clone());
-            self.visit_rust_module(&mut crate_tree, 0, analysis, 0, &by_path, &mut visited);
-            crate_tree.modules[0]
-                .declarations
-                .sort_by(|left, right| left.name.cmp(&right.name));
-            self.rust_crates.push(crate_tree);
+            if let Some(crate_tree) = self.build_rust_crate_tree(&root, &by_path) {
+                self.rust_crates.push(crate_tree);
+            }
         }
         self.rust_crates
             .sort_by(|left, right| left.root_file.cmp(&right.root_file));
+    }
+
+    /// Build a [`RustCrate`] module tree rooted at `root`, using the same
+    /// `mod`-declaration traversal TASK 3B applies to every crate root — reused
+    /// for the conventional `lib.rs`/`main.rs` roots and for Cargo target roots
+    /// discovered by the crate/target topology (TASK 3F).
+    pub fn build_rust_crate_tree(
+        &mut self,
+        root: &str,
+        by_path: &BTreeMap<&str, &FileAnalysis>,
+    ) -> Option<RustCrate> {
+        let analysis = by_path.get(root)?;
+        // A crate root's submodules live in the directory *containing* the
+        // root file, for every root — `lib.rs`/`main.rs`/`mod.rs` as well as a
+        // `bin`/`test`/`example`/`bench` target root such as `tests/foo.rs`,
+        // whose `mod shared;` resolves to `tests/shared/…`, not `tests/foo/…`.
+        let root_dir = directory_of(root);
+        let mut crate_tree = RustCrate {
+            root_file: root.to_string(),
+            modules: vec![RustModule {
+                path: vec!["crate".to_string()],
+                dir: root_dir,
+                file: root.to_string(),
+                declarations: Vec::new(),
+                children: BTreeMap::new(),
+            }],
+            files: BTreeSet::from([root.to_string()]),
+        };
+        let mut visited = BTreeSet::from([root.to_string()]);
+        self.visit_rust_module(&mut crate_tree, 0, analysis, 0, by_path, &mut visited);
+        crate_tree.modules[0]
+            .declarations
+            .sort_by(|left, right| left.name.cmp(&right.name));
+        Some(crate_tree)
     }
 
     #[allow(clippy::too_many_arguments)]

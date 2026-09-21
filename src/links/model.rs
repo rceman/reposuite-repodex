@@ -34,13 +34,18 @@ pub const LINK_MANIFEST_VERSION: u32 = 1;
 ///
 /// This version participates in [`LinkFingerprint`], so bumping it invalidates
 /// previously derived link artifacts without touching the TASK 3A snapshot.
-pub const LINK_RULE_ABI_VERSION: u32 = 1;
+pub const LINK_RULE_ABI_VERSION: u32 = 2;
 
 /// Per-language resolution-policy versions.
 ///
 /// These are separate from the ABI version so that a change confined to one
 /// language's policy is visible as such in the fingerprint text.
-pub const POLICY_VERSION_RUST: u32 = 1;
+///
+/// `POLICY_VERSION_RUST` 2 adds the TASK 3F Cargo crate/target topology:
+/// `lib`/`bin`/`integration_test`/`example`/`bench` targets are independent
+/// crate roots discovered from `Cargo.toml`, and files gain explicit
+/// crate membership rather than only the `lib.rs`/`main.rs` convention.
+pub const POLICY_VERSION_RUST: u32 = 2;
 pub const POLICY_VERSION_GO: u32 = 1;
 pub const POLICY_VERSION_PYTHON: u32 = 1;
 pub const POLICY_VERSION_PHP: u32 = 1;

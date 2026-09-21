@@ -66,6 +66,7 @@ pub mod rules_php;
 pub mod rules_python;
 pub mod rules_rust;
 pub mod structure;
+pub mod topology;
 
 pub use artifact::{
     artifact_size, order_entities, order_links, read_entities, read_links, read_manifest, verify,
@@ -80,3 +81,4 @@ pub use model::{
 };
 pub use query::LinkIndex;
 pub use structure::Structure;
+pub use topology::{CargoManifestRef, RustTarget, RustTargetKind, RustTargetTopology};

@@ -122,9 +122,11 @@ pub fn build_links(
     };
     phases.metadata_ms = elapsed_ms(metadata_started);
 
-    // 3. Derive structural identities.
+    // 3. Derive structural identities, then the Cargo crate/target topology.
     let structure_started = Instant::now();
-    let structure = Structure::build(&analyses);
+    let mut structure = Structure::build(&analyses);
+    let topology =
+        crate::links::topology::RustTargetTopology::build(&mut structure, &analyses, repository);
     phases.structure_ms = elapsed_ms(structure_started);
 
     // 4. Apply the bounded per-language rules.
@@ -136,6 +138,7 @@ pub fn build_links(
     links.extend(rules_php::links(&structure, &analyses));
     artifact::order_links(&mut links)?;
     let mut entities = structure.entities.clone();
+    entities.extend(topology.target_entities());
     artifact::order_entities(&mut entities);
     phases.derive_ms = elapsed_ms(derive_started);
 
@@ -157,6 +160,11 @@ pub fn build_links(
         .any(|analysis| analysis.file.language == crate::model::LanguageId::Go)
     {
         let dependency = go_module.dependency(super::model::rule::GO_IMPORT_LOCAL_MODULE);
+        metadata_dependencies.insert(dependency_key(&dependency), dependency);
+    }
+    // TASK 3F: the crate/target topology depends on every discovered
+    // `Cargo.toml`. Record each so a manifest change invalidates this artifact.
+    for dependency in topology.metadata_dependencies() {
         metadata_dependencies.insert(dependency_key(&dependency), dependency);
     }
     let metadata_dependencies: Vec<MetadataDependency> =
