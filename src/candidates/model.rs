@@ -61,7 +61,10 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 /// * `6` — added `go.call.package_local_function_candidate`: Go `plain_name`
 ///   calls may produce `function` candidates from the call's own TASK 4A
 ///   `go_package` after local-binding/import/namespace blockers.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 6;
+/// * `7` — added `go.call.imported_package_function_candidate`: a direct
+///   `member_selector` `pkg.Func()` may produce `function` candidates from a
+///   repo-local imported package after root-shadowing/export/namespace rules.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 7;
 
 /// Per-language candidate-policy versions.
 ///
@@ -88,7 +91,10 @@ pub const POLICY_VERSION_RUST_CALL: u32 = 5;
 ///   name a source-written `function` in the call's own TASK 4A `go_package`,
 ///   after local-binding, dot-import, file-import and package-namespace
 ///   blockers are applied.
-pub const POLICY_VERSION_GO_CALL: u32 = 1;
+/// * `2` — imported package-qualified function candidates: a direct
+///   `member_selector` `pkg.Func()` may name a source-written `function` in a
+///   repo-local imported package after root-shadowing/export/namespace rules.
+pub const POLICY_VERSION_GO_CALL: u32 = 2;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -119,11 +125,21 @@ pub mod candidate_rule {
     pub const GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE: &str =
         "go.call.package_local_function_candidate";
 
+    /// The bounded Go imported package-qualified function-candidate rule.
+    ///
+    /// A direct `member_selector` `pkg.Func()` names a source-written `function`
+    /// in a repo-local imported package when `pkg` is this file's import
+    /// binding, is not locally shadowed, and `Func` is exported. Never a
+    /// receiver/method call and never an external package.
+    pub const GO_CALL_IMPORTED_PACKAGE_FUNCTION_CANDIDATE: &str =
+        "go.call.imported_package_function_candidate";
+
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
         RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
         RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE,
         GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE,
+        GO_CALL_IMPORTED_PACKAGE_FUNCTION_CANDIDATE,
     ];
 }
 
@@ -640,6 +656,44 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "dot-imported external names (file block not enumerable)".to_string(),
                 "Go builtins (len/cap/make/append/...)".to_string(),
                 "cross-package and cross-module same-name functions".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::GO_CALL_IMPORTED_PACKAGE_FUNCTION_CANDIDATE.to_string(),
+            language: "go".to_string(),
+            summary: "Bounded imported package-qualified candidate search for Go \
+                  direct `pkg.Func()` selector calls."
+                .to_string(),
+            in_scope_calls: "a Go call-like occurrence with form `member_selector` \
+                         whose callee is a direct `ident.Func` selector where the \
+                         root identifier is one of this file's import bindings."
+                .to_string(),
+            candidate_declarations: "source-written Go `function` declarations in the \
+                                 repo-local package the import structurally links to, \
+                                 with an exported (uppercase-led) terminal name only."
+                .to_string(),
+            selection_rule: "split the direct selector into root+terminal; the root \
+                         must be a file import binding (alias or resolved repo-local \
+                         package name) that is not locally shadowed, and the import \
+                         must link to a repo-local `go_package`; collect exported \
+                         `function` declarations named after the terminal across that \
+                         package's files, after a same-name non-function check."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate under this bounded \
+                                   rule — evidence a declaration could be relevant, \
+                                   NOT proof the call resolves to it."
+                .to_string(),
+            no_candidate_meaning: "no candidate — root shadowed locally, terminal \
+                               unexported or absent, or the imported package \
+                               namespace is ambiguous. Never 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "receiver/method selectors (obj.M()) where the root is not an import".to_string(),
+                "multi-hop selectors (a.b.C(), x.f.M())".to_string(),
+                "external-package imports (no dependency resolution)".to_string(),
+                "package-level function-valued variables (var Handler func())".to_string(),
+                "generic selector calls (represented as a different form)".to_string(),
+                "Go internal/ visibility and build-tag evaluation".to_string(),
             ],
         },
     ]

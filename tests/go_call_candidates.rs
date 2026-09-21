@@ -620,3 +620,286 @@ fn update_vs_fresh_preserves_candidates() {
         "incremental path must equal fresh"
     );
 }
+
+// ---------------------------------------------------------------------------
+// TASK 4D — imported package-qualified function candidates
+// ---------------------------------------------------------------------------
+
+/// A repo with a `go.mod`, an imported package `auth`, and a calling file.
+fn repo_with_auth(call_file: &str) -> Vec<(&'static str, String)> {
+    vec![
+        ("go.mod", "module example.com/m\n\ngo 1.22\n".to_string()),
+        (
+            "auth/auth.go",
+            "package auth\nfunc Validate() {}\nfunc validate() {}\ntype Config struct{}\nvar Handler func()\n".to_string(),
+        ),
+        ("app/run.go", call_file.to_string()),
+    ]
+}
+
+fn sel<'a>(
+    records: &'a [CallCandidateRecord],
+    path: &str,
+    written: &str,
+) -> &'a CallCandidateRecord {
+    let found: Vec<_> = records
+        .iter()
+        .filter(|r| r.language == "go" && r.source.relative_path == path && r.written == written)
+        .collect();
+    assert_eq!(found.len(), 1, "expected one `{written}` call in {path}");
+    found[0]
+}
+
+#[test]
+fn direct_repo_local_import_selector_is_single_candidate() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() { auth.Validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    let c = sel(&r, "app/run.go", "auth.Validate");
+    assert_eq!(c.rule_id, "go.call.imported_package_function_candidate");
+    assert_eq!(outcome(c), "single_candidate");
+    assert!(single_target(c).starts_with("auth/auth.go"));
+}
+
+#[test]
+fn aliased_repo_local_import_selector() {
+    let files = repo_with_auth(
+        "package app\nimport a \"example.com/m/auth\"\nfunc run() { a.Validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "a.Validate")),
+        "single_candidate"
+    );
+    // The unaliased name `auth` is NOT bound -> `auth.Validate` would not resolve.
+}
+
+#[test]
+fn unaliased_import_uses_package_clause_not_basename() {
+    // `import "example.com/m/client/v2"` whose package clause is `api`.
+    let files = &[
+        ("go.mod", "module example.com/m\n\ngo 1.22\n"),
+        ("client/v2/x.go", "package api\nfunc Get() {}\n"),
+        (
+            "app/run.go",
+            "package app\nimport \"example.com/m/client/v2\"\nfunc run() { api.Get() }\n",
+        ),
+    ];
+    let (_t, r) = go_records(files);
+    // `api.Get()` resolves via the true package name `api`, not basename `v2`.
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "api.Get")),
+        "single_candidate"
+    );
+}
+
+#[test]
+fn external_import_selector_is_out_of_scope() {
+    let files =
+        repo_with_auth("package app\nimport \"example.com/ext/pkg\"\nfunc run() { pkg.Do() }\n");
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(outcome(sel(&r, "app/run.go", "pkg.Do")), "out_of_scope");
+}
+
+#[test]
+fn blank_import_binds_no_selector_root() {
+    let files = repo_with_auth(
+        "package app\nimport _ \"example.com/m/auth\"\nfunc run() { auth.Validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    // `auth` is not bound -> selector_root_not_an_import (a value selector).
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "auth.Validate")),
+        "out_of_scope"
+    );
+}
+
+#[test]
+fn dot_import_yields_no_selector_candidate() {
+    let files = repo_with_auth(
+        "package app\nimport . \"example.com/m/auth\"\nfunc run() { auth.Validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "auth.Validate")),
+        "out_of_scope"
+    );
+}
+
+#[test]
+fn local_short_var_shadows_import_root() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() {\n\tauth := svc\n\tauth.Validate()\n}\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    let c = sel(&r, "app/run.go", "auth.Validate");
+    assert_eq!(outcome(c), "no_candidate");
+    assert_eq!(no_reason(c), "import_root_shadowed_by_local_binding");
+}
+
+#[test]
+fn parameter_shadows_import_root() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run(auth Svc) { auth.Validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        no_reason(sel(&r, "app/run.go", "auth.Validate")),
+        "import_root_shadowed_by_local_binding"
+    );
+}
+
+#[test]
+fn nested_shadowing_does_not_leak() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() {\n\tauth.Validate()\n\t{\n\t\tauth := svc\n\t\tauth.Validate()\n\t}\n\tauth.Validate()\n}\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    let calls: Vec<_> = r
+        .iter()
+        .filter(|c| c.source.relative_path == "app/run.go" && c.written == "auth.Validate")
+        .collect();
+    assert_eq!(calls.len(), 3);
+    let outs: BTreeSet<_> = calls.iter().map(|c| outcome(c)).collect();
+    assert!(outs.contains("single_candidate") && outs.contains("no_candidate"));
+    let blocked = calls
+        .iter()
+        .filter(|c| outcome(c) == "no_candidate")
+        .count();
+    assert_eq!(blocked, 1);
+}
+
+#[test]
+fn call_before_shadow_decl_is_candidate() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() {\n\tauth.Validate()\n\tauth := svc\n\t_ = auth\n}\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "auth.Validate")),
+        "single_candidate"
+    );
+}
+
+#[test]
+fn range_variable_shadows_import_root() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() {\n\tfor auth := range xs { auth.Validate() }\n}\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        no_reason(sel(&r, "app/run.go", "auth.Validate")),
+        "import_root_shadowed_by_local_binding"
+    );
+}
+
+#[test]
+fn unexported_terminal_is_not_a_candidate() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() { auth.validate() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    let c = sel(&r, "app/run.go", "auth.validate");
+    assert_eq!(outcome(c), "no_candidate");
+    assert_eq!(no_reason(c), "imported_function_not_exported");
+}
+
+#[test]
+fn same_name_non_function_terminal_is_not_a_candidate() {
+    // `auth.Config` is a type, not a function.
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() { auth.Config() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(
+        no_reason(sel(&r, "app/run.go", "auth.Config")),
+        "imported_package_namespace_ambiguous"
+    );
+}
+
+#[test]
+fn package_function_valued_variable_is_not_eligible() {
+    // `auth.Handler` is a `var` of func type — not a Function decl.
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() { auth.Handler() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    let c = sel(&r, "app/run.go", "auth.Handler");
+    assert_eq!(outcome(c), "no_candidate");
+}
+
+#[test]
+fn multi_hop_selector_is_not_a_package_call() {
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run() { auth.Client.New() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    // `auth.Client.New` -> root `auth.Client` not a bare identifier.
+    assert_eq!(
+        outcome(sel(&r, "app/run.go", "auth.Client.New")),
+        "out_of_scope"
+    );
+}
+
+#[test]
+fn receiver_selector_is_not_a_package_call() {
+    // `obj.Method()` — obj is not an import.
+    let files = repo_with_auth(
+        "package app\nimport \"example.com/m/auth\"\nfunc run(obj Svc) { obj.Method() }\n",
+    );
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, s)| (*p, s.as_str())).collect();
+    let (_t, r) = go_records(&refs);
+    assert_eq!(outcome(sel(&r, "app/run.go", "obj.Method")), "out_of_scope");
+}
+
+#[test]
+fn external_test_imports_repo_local_package() {
+    // A `foo_test` file explicitly imports the ordinary repo-local package.
+    let files = &[
+        ("go.mod", "module example.com/m\n\ngo 1.22\n"),
+        ("foo/a.go", "package foo\nfunc Helper() {}\n"),
+        (
+            "foo/x_test.go",
+            "package foo_test\nimport \"example.com/m/foo\"\nfunc TestX() { foo.Helper() }\n",
+        ),
+    ];
+    let (_t, r) = go_records(files);
+    assert_eq!(
+        outcome(sel(&r, "foo/x_test.go", "foo.Helper")),
+        "single_candidate"
+    );
+}
+
+#[test]
+fn same_name_package_in_other_dir_not_imported_is_never_borrowed() {
+    // `a/dup` and `b/dup` both exist; `app` imports only `a/dup`. `dup.F()` in
+    // app resolves to `a/dup` only.
+    let files = &[
+        ("go.mod", "module example.com/m\n\ngo 1.22\n"),
+        ("a/dup/x.go", "package dup\nfunc F() {}\n"),
+        ("b/dup/y.go", "package dup\nfunc F() {}\n"),
+        (
+            "app/run.go",
+            "package app\nimport \"example.com/m/a/dup\"\nfunc run() { dup.F() }\n",
+        ),
+    ];
+    let (_t, r) = go_records(files);
+    let c = sel(&r, "app/run.go", "dup.F");
+    assert_eq!(outcome(c), "single_candidate");
+    assert!(single_target(c).starts_with("a/dup/"));
+}
