@@ -37,20 +37,13 @@ pub fn identifier_terms(text: &str) -> Vec<String> {
         let boundary = match prev {
             None => false,
             Some(p) => {
-                let p_alpha = p.is_alphabetic();
-                let c_alpha = c.is_alphabetic();
-                if p_alpha != c_alpha {
-                    true // letter <-> digit
-                } else if p.is_lowercase() && c.is_uppercase() {
-                    true // camel hump
-                } else if p.is_uppercase()
-                    && c.is_uppercase()
-                    && next.is_some_and(|n| n.is_lowercase())
-                {
-                    true // acronym tail: `HTTPRequest` splits before `Request`
-                } else {
-                    false
-                }
+                // letter<->digit | camel hump | acronym tail (`HTTPRequest`
+                // splits before `Request`)
+                (p.is_alphabetic() != c.is_alphabetic())
+                    || (p.is_lowercase() && c.is_uppercase())
+                    || (p.is_uppercase()
+                        && c.is_uppercase()
+                        && next.is_some_and(|n| n.is_lowercase()))
             }
         };
         if boundary {
