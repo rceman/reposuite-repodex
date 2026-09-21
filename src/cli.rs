@@ -2510,6 +2510,7 @@ fn command_query(args: &[String]) -> Result<u8, String> {
         return print_query_explain(&result, options.json);
     }
     if options.json {
+        // JSON remains opt-in.
         print_json(&serde_json::json!({
             "command":"query","query":text,"mode":if options.exhaustive{"exhaustive"}else{"ranked"},
             "intent":plan.intent.as_str(),"terms":plan.terms,
@@ -2517,6 +2518,9 @@ fn command_query(args: &[String]) -> Result<u8, String> {
             "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
             "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
         }))?;
+    } else if !options.human {
+        // Default output is RDX1 — the compact agent-facing protocol (Phase C).
+        print!("{}", crate::rdx1::render(&result));
     } else {
         println!("query: {text}");
         println!(

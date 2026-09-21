@@ -135,6 +135,8 @@ pub struct RelatedHit {
     pub node: GraphNode,
     /// The seed this relation came from.
     pub via: String,
+    /// The candidate-set id for candidate edges (§14).
+    pub candidate_set: Option<String>,
 }
 
 /// The result of a deterministic query.
@@ -343,6 +345,7 @@ impl<'a> QueryEngine<'a> {
                                 evidence: e.evidence_class,
                                 node: src.clone(),
                                 via: s.node.key.clone(),
+                                candidate_set: e.candidate_set_id.clone(),
                             });
                         }
                     }
@@ -355,6 +358,7 @@ impl<'a> QueryEngine<'a> {
                             evidence: cand.evidence_class,
                             node: decl.clone(),
                             via: s.node.key.clone(),
+                            candidate_set: cand.candidate_set_id.clone(),
                         });
                     }
                 }
@@ -370,6 +374,7 @@ impl<'a> QueryEngine<'a> {
                             evidence: n.edge.evidence_class,
                             node: n.node.clone(),
                             via: s.node.key.clone(),
+                            candidate_set: n.edge.candidate_set_id.clone(),
                         });
                     }
                 }

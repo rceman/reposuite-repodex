@@ -36,6 +36,7 @@ pub mod model;
 pub mod parser;
 pub mod paths;
 pub mod query;
+pub mod rdx1;
 pub mod repository;
 pub mod scanner;
 
