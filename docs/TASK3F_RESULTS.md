@@ -12,7 +12,7 @@ resolution. **No call-candidate semantics changed** (TASK 3E rule untouched).
 Base HEAD: `701f17ffa1a845bd063c9f35bb236809cf37ef4b` — clean, `2bbfdee`
 (TASK 3E) is an ancestor.
 
-Implementation commit: recorded below.
+Implementation commit: `8996b37bfefe6a3b12694dc6181f9045db00453e`.
 
 ## 3. Link ABI / policy
 
