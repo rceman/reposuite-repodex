@@ -386,3 +386,124 @@ fn stale_candidate_artifact_is_rejected() {
         .expect_err("stale upstream must be rejected");
     assert!(err.to_string().contains("mismatch") || err.to_string().contains("stale"));
 }
+
+// ---------------------------------------------------------------------------
+// Phase A — deterministic investigation primitives
+// ---------------------------------------------------------------------------
+
+use repodex::graph::{LookupDomain, PathOptions};
+
+#[test]
+fn find_by_exact_name_and_path() {
+    let (_t, g) = graph_of(&fixture());
+    assert_eq!(g.find("Validate", LookupDomain::Name).len(), 1);
+    assert!(!g.find("file:app/run.go", LookupDomain::Id).is_empty());
+    // Path-suffix lookup.
+    let by_suffix = g.find("run.go", LookupDomain::Path);
+    assert_eq!(by_suffix.len(), 1);
+}
+
+#[test]
+fn find_ambiguous_name_returns_all_matches() {
+    let (_t, g) = graph_of(&fixture());
+    // `helper` exists in src/lib.rs, dup/a.go and dup/b.go — all returned.
+    let m = g.find("helper", LookupDomain::Name);
+    assert_eq!(m.len(), 3);
+}
+
+#[test]
+fn callers_returns_candidate_edges() {
+    let (_t, g) = graph_of(&fixture());
+    let validate = g.find("Validate", LookupDomain::Name)[0];
+    let callers = g.callers(&validate.node_id);
+    assert_eq!(callers.len(), 1);
+    assert_eq!(callers[0].kind, "call_candidate");
+    assert_eq!(callers[0].evidence_class, EvidenceClass::Candidate);
+}
+
+#[test]
+fn callees_reaches_call_site_then_candidate() {
+    let (_t, g) = graph_of(&fixture());
+    let run = g
+        .nodes()
+        .iter()
+        .find(|n| n.kind == NodeKind::Declaration && n.label == "run" && n.path == "app/run.go")
+        .expect("run decl");
+    let callees = g.callees(&run.node_id);
+    // `run` calls auth.Validate and x.Do; only auth.Validate has a candidate.
+    let targets: Vec<_> = callees.iter().map(|(_, _, d)| d.label.clone()).collect();
+    assert!(targets.contains(&"Validate".to_string()));
+    // every hop preserves the call-site -> candidate chain
+    for (contains, cand, _) in &callees {
+        assert_eq!(contains.kind, "contains");
+        assert_eq!(cand.kind, "call_candidate");
+        assert_eq!(cand.evidence_class, EvidenceClass::Candidate);
+    }
+}
+
+#[test]
+fn paths_find_mixed_evidence_route() {
+    let (_t, g) = graph_of(&fixture());
+    let file = g.node("file:app/run.go").unwrap();
+    let validate = g.find("Validate", LookupDomain::Name)[0];
+    let opts = PathOptions {
+        max_depth: 4,
+        max_paths: 8,
+        ..Default::default()
+    };
+    let paths = g.paths(&file.node_id, &validate.node_id, &opts);
+    assert!(!paths.is_empty());
+    // path goes file -> call -> decl and contains a candidate edge.
+    let p = &paths[0];
+    assert!(p.has_candidate);
+    assert_eq!(p.evidence_label(), "candidate path");
+    // deterministic: same call twice
+    assert_eq!(
+        paths.len(),
+        g.paths(&file.node_id, &validate.node_id, &opts).len()
+    );
+}
+
+#[test]
+fn paths_respect_depth_and_node_limits() {
+    let (_t, g) = graph_of(&fixture());
+    let file = g.node("file:app/run.go").unwrap();
+    let validate = g.find("Validate", LookupDomain::Name)[0];
+    // depth 1 can't reach a decl 2 hops away.
+    let shallow = g.paths(
+        &file.node_id,
+        &validate.node_id,
+        &PathOptions {
+            max_depth: 1,
+            ..Default::default()
+        },
+    );
+    assert!(shallow.is_empty());
+    let ok = g.paths(
+        &file.node_id,
+        &validate.node_id,
+        &PathOptions {
+            max_depth: 3,
+            max_paths: 4,
+            ..Default::default()
+        },
+    );
+    assert!(!ok.is_empty());
+}
+
+#[test]
+fn paths_on_cyclic_graph_terminate() {
+    // A recursive/self-referential repo must still terminate.
+    let files = vec![
+        ("go.mod", "module example.com/m\n\ngo 1.22\n"),
+        (
+            "p/p.go",
+            "package p\nfunc a() { b() }\nfunc b() { a() }\nfunc c() { c() }\n",
+        ),
+    ];
+    let (_t, g) = graph_of(&files);
+    let a = g.find("a", LookupDomain::Name)[0];
+    let b = g.find("b", LookupDomain::Name)[0];
+    let paths = g.paths(&a.node_id, &b.node_id, &PathOptions::default());
+    assert!(!paths.is_empty()); // terminates despite the a<->b cycle
+}

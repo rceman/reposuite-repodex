@@ -9,6 +9,7 @@
 pub mod artifact;
 pub mod build;
 pub mod index;
+pub mod investigate;
 pub mod model;
 
 use std::path::PathBuf;
@@ -16,6 +17,7 @@ use std::path::PathBuf;
 pub use artifact::{artifact_size, read_edges, read_manifest, read_nodes, verify};
 pub use build::{build_graph, GraphBuildOutcome, GraphBuildStats, GraphPhaseTimings};
 pub use index::{GraphIndex, NeighborFilter, TraverseOptions};
+pub use investigate::{LookupDomain, Path, PathOptions};
 pub use model::{
     EvidenceClass, GraphEdge, GraphFingerprint, GraphManifest, GraphNode, NodeKind,
     GRAPH_MANIFEST_VERSION, GRAPH_POLICY_VERSION, GRAPH_SCHEMA_VERSION,

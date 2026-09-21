@@ -35,6 +35,7 @@ pub mod links;
 pub mod model;
 pub mod parser;
 pub mod paths;
+pub mod query;
 pub mod repository;
 pub mod scanner;
 

@@ -33,7 +33,9 @@ pub const GRAPH_MANIFEST_VERSION: u32 = 1;
 ///   structural-link FACT edges; `call_candidate` CANDIDATE edges with
 ///   `candidate_set_id` grouping; `NoCandidate`/`OutOfScope` kept as node
 ///   dispositions.
-pub const GRAPH_POLICY_VERSION: u32 = 1;
+/// * `2` — added `function/method -> call` `contains` edges via range
+///   containment, so `callees(fn)` can reach the call sites inside a callable.
+pub const GRAPH_POLICY_VERSION: u32 = 2;
 
 /// A graph node kind.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]

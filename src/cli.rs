@@ -143,6 +143,12 @@ struct Options {
     allow_incompatible: bool,
     /// `index find` selectors.
     declaration: Option<String>,
+    /// `graph find`/`query` lookup domain or intent.
+    domain: Option<String>,
+    /// `graph paths`/`query` traversal depth bound.
+    depth: Option<usize>,
+    /// `graph paths`/`query` result-count bound.
+    max_results: Option<usize>,
     import: Option<String>,
     call: Option<String>,
     tests_only: bool,
@@ -179,6 +185,20 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--links" => options.links = Some(value_for(args, &mut index, name, inline_value)?),
             "--candidates" => {
                 options.candidates = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--domain" | "--intent" => {
+                options.domain = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--depth" | "--max-depth" => {
+                let v = value_for(args, &mut index, name, inline_value)?;
+                options.depth = Some(v.parse().map_err(|_| format!("invalid --depth `{v}`"))?);
+            }
+            "--max-results" | "--max-paths" => {
+                let v = value_for(args, &mut index, name, inline_value)?;
+                options.max_results = Some(
+                    v.parse()
+                        .map_err(|_| format!("invalid --max-results `{v}`"))?,
+                );
             }
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
@@ -2018,6 +2038,10 @@ fn command_graph(args: &[String]) -> Result<u8, String> {
         "outgoing" => command_graph_lookup(rest, "outgoing"),
         "incoming" => command_graph_lookup(rest, "incoming"),
         "neighborhood" => command_graph_lookup(rest, "neighborhood"),
+        "find" => command_graph_find(rest),
+        "callers" => command_graph_callers(rest),
+        "callees" => command_graph_callees(rest),
+        "paths" => command_graph_paths(rest),
         other => Err(format!("unknown graph subcommand `{other}`")),
     }
 }
@@ -2230,6 +2254,193 @@ fn command_graph_lookup(args: &[String], mode: &str) -> Result<u8, String> {
             }
         }
         _ => unreachable!(),
+    }
+    Ok(EXIT_OK)
+}
+
+// Phase A deterministic investigation primitives.
+fn graph_index(options: &Options) -> Result<crate::graph::GraphIndex, String> {
+    let dir = require_positional(options, "graph command requires a graph directory")?;
+    crate::graph::GraphIndex::load(Path::new(dir)).map_err(|e| e.to_string())
+}
+
+fn graph_arg(options: &Options, n: usize, what: &str) -> Result<String, String> {
+    options
+        .positional
+        .get(n)
+        .cloned()
+        .ok_or_else(|| format!("missing {what}"))
+}
+
+fn command_graph_find(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let index = graph_index(&options)?;
+    let term = graph_arg(&options, 1, "find term")?;
+    let domain = match options.domain.as_deref() {
+        None | Some("any") => crate::graph::LookupDomain::Any,
+        Some("id") => crate::graph::LookupDomain::Id,
+        Some("name") => crate::graph::LookupDomain::Name,
+        Some("path") => crate::graph::LookupDomain::Path,
+        Some("entity") | Some("package") => crate::graph::LookupDomain::Entity,
+        Some(d) => return Err(format!("unknown find domain `{d}`")),
+    };
+    let matches = index.find(&term, domain);
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"graph find","term":term,"count":matches.len(),
+            "matches":matches.iter().map(|n|serde_json::json!({"id":n.node_id,"key":n.key,"kind":n.kind.as_str(),"label":n.label,"path":n.path})).collect::<Vec<_>>(),
+        }))?;
+    } else {
+        println!("find `{term}`: {} match(es)", matches.len());
+        for n in &matches {
+            println!("  {:<12} {:<40} {}", n.kind.as_str(), n.label, n.key);
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_graph_callers(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let index = graph_index(&options)?;
+    let decl = graph_arg(&options, 1, "declaration id/key/name")?;
+    // Resolve a name to declaration node(s); ambiguous names report ambiguity.
+    let mut targets = index.find(&decl, crate::graph::LookupDomain::Name);
+    if targets.is_empty() {
+        targets = index.find(&decl, crate::graph::LookupDomain::Id);
+    }
+    if targets.is_empty() {
+        return Err(format!("no declaration `{decl}`"));
+    }
+    let mut rows = Vec::new();
+    for t in &targets {
+        for e in index.callers(&t.node_id) {
+            let src = index.node(&e.source);
+            rows.push(serde_json::json!({
+                "declaration": t.label,
+                "caller_call_site": src.map(|n| n.key.clone()),
+                "caller_label": src.map(|n| n.label.clone()),
+                "candidate_set": e.candidate_set_id,
+                "rule": e.rule_id, "evidence": e.evidence_class.as_str(),
+            }));
+        }
+    }
+    if options.json {
+        print_json(
+            &serde_json::json!({"command":"graph callers","target":decl,"count":rows.len(),"candidate_callers":rows}),
+        )?;
+    } else {
+        println!("candidate callers of `{decl}`: {}", rows.len());
+        for (i, _) in rows.iter().enumerate() {
+            let r = &rows[i];
+            println!(
+                "  {} -> {} ({})",
+                r["caller_call_site"].as_str().unwrap_or("?"),
+                decl,
+                r["evidence"].as_str().unwrap_or("candidate")
+            );
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_graph_callees(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let index = graph_index(&options)?;
+    let id = graph_arg(&options, 1, "declaration/file id or key")?;
+    let mut targets = index.find(&id, crate::graph::LookupDomain::Name);
+    if targets.is_empty() {
+        targets = index.find(&id, crate::graph::LookupDomain::Id);
+    }
+    if targets.is_empty() {
+        targets = index.find(&id, crate::graph::LookupDomain::Path);
+    }
+    if targets.is_empty() {
+        return Err(format!("no node `{id}`"));
+    }
+    let mut rows = Vec::new();
+    for t in &targets {
+        for (contains, cand, decl) in index.callees(&t.node_id) {
+            let call = index.node(&contains.target);
+            rows.push(serde_json::json!({
+                "via_call_site": call.map(|n| n.key.clone()),
+                "call": call.map(|n| n.label.clone()),
+                "candidate_target": decl.label,
+                "candidate_path": decl.path,
+                "candidate_set": cand.candidate_set_id,
+                "evidence": cand.evidence_class.as_str(),
+            }));
+        }
+    }
+    if options.json {
+        print_json(
+            &serde_json::json!({"command":"graph callees","node":id,"count":rows.len(),"candidate_callees":rows}),
+        )?;
+    } else {
+        println!("candidate callees of `{id}`: {}", rows.len());
+        for r in &rows {
+            println!(
+                "  {} -[call {}]-> {} ({})",
+                r["via_call_site"].as_str().unwrap_or("?"),
+                r["call"].as_str().unwrap_or("?"),
+                r["candidate_target"].as_str().unwrap_or("?"),
+                r["evidence"].as_str().unwrap_or("candidate")
+            );
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_graph_paths(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let index = graph_index(&options)?;
+    let from = graph_arg(&options, 1, "path source")?;
+    let to = graph_arg(&options, 2, "path target")?;
+    let mut opts = crate::graph::PathOptions::default();
+    if let Some(d) = options.depth {
+        opts.max_depth = d;
+    }
+    if let Some(m) = options.max_results {
+        opts.max_paths = m;
+    }
+    // Resolve endpoints by id/key or unique name.
+    let resolve = |s: &str| -> Option<String> {
+        if let Some(n) = index.node(s) {
+            return Some(n.node_id.clone());
+        }
+        let m = index.find(s, crate::graph::LookupDomain::Name);
+        if m.len() == 1 {
+            return Some(m[0].node_id.clone());
+        }
+        None
+    };
+    let Some(from_id) = resolve(&from) else {
+        return Err(format!("cannot uniquely resolve `{from}`"));
+    };
+    let Some(to_id) = resolve(&to) else {
+        return Err(format!("cannot uniquely resolve `{to}`"));
+    };
+    let paths = index.paths(&from_id, &to_id, &opts);
+    if options.json {
+        let rows: Vec<_> = paths
+            .iter()
+            .map(|p| {
+                serde_json::json!({
+                    "evidence": p.evidence_label(),
+                    "candidate_sets": p.candidate_sets,
+                    "nodes": p.nodes.iter().map(|n| n.key.clone()).collect::<Vec<_>>(),
+                    "edges": p.edges.iter().map(|e| e.kind.clone()).collect::<Vec<_>>(),
+                })
+            })
+            .collect();
+        print_json(
+            &serde_json::json!({"command":"graph paths","from":from,"to":to,"count":paths.len(),"paths":rows}),
+        )?;
+    } else {
+        println!("paths `{from}` -> `{to}`: {}", paths.len());
+        for p in &paths {
+            let route: Vec<_> = p.nodes.iter().map(|n| n.label.clone()).collect();
+            println!("  [{}] {}", p.evidence_label(), route.join(" -> "));
+        }
     }
     Ok(EXIT_OK)
 }

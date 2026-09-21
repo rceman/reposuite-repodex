@@ -152,6 +152,9 @@ pub fn build_graph(
             },
         );
         // Containment: file -> declaration/import/call.
+        // Collect callable (function/method) declarations so a call can be
+        // contained by its innermost enclosing callable (policy v2).
+        let mut callables: Vec<(String, u32, u32)> = Vec::new();
         for d in &a.declarations {
             let id = add_node(
                 &mut nodes,
@@ -171,9 +174,15 @@ pub fn build_graph(
                 EvidenceClass::Fact,
                 "repodex.containment",
                 file_id.clone(),
-                id,
+                id.clone(),
                 EdgeMeta::default(),
             );
+            if matches!(
+                d.kind,
+                crate::model::DeclarationKind::Function | crate::model::DeclarationKind::Method
+            ) {
+                callables.push((id, d.range.byte_start, d.range.byte_end));
+            }
         }
         for i in &a.imports {
             let id = add_node(
@@ -217,9 +226,28 @@ pub fn build_graph(
                 EvidenceClass::Fact,
                 "repodex.containment",
                 file_id.clone(),
-                id,
+                id.clone(),
                 EdgeMeta::default(),
             );
+            // Innermost enclosing function/method -> call containment, so
+            // `callees(fn)` can reach the call sites inside it (policy v2).
+            if let Some((owner, ..)) = callables
+                .iter()
+                .filter(|(_, s, e)| {
+                    *s <= c.expression_range.byte_start && c.expression_range.byte_end <= *e
+                })
+                .min_by_key(|(_, s, e)| e - s)
+            {
+                push_edge(
+                    &mut edges,
+                    "contains",
+                    EvidenceClass::Fact,
+                    "repodex.callable_contains",
+                    owner.clone(),
+                    id,
+                    EdgeMeta::default(),
+                );
+            }
         }
     }
 
@@ -510,7 +538,12 @@ fn push_edge(
     target: String,
     meta: EdgeMeta,
 ) {
-    let edge_id = edge_id_for(kind, &source, &target, meta.upstream_id.as_deref().unwrap_or(""));
+    let edge_id = edge_id_for(
+        kind,
+        &source,
+        &target,
+        meta.upstream_id.as_deref().unwrap_or(""),
+    );
     edges.push(GraphEdge {
         edge_id,
         kind: kind.to_string(),
