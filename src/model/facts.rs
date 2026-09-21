@@ -362,6 +362,31 @@ pub enum BindingKind {
     IfLetPattern,
     /// `while let` pattern binding.
     WhileLetPattern,
+    /// Go `x := ...` short-variable declaration (newly introduced name).
+    ShortVariable,
+    /// Go function-local `var` declaration.
+    Variable,
+    /// Go function-local `const` declaration.
+    Constant,
+    /// Go function-local `type` declaration.
+    LocalType,
+    /// Go named result parameter of a function/method (`(name T)`).
+    FunctionResult,
+    /// Go method receiver variable.
+    MethodReceiver,
+    /// Go `func(...) {...}` literal parameter.
+    FunctionLiteralParameter,
+    /// Go `func(...) (name T) {...}` literal named result.
+    FunctionLiteralResult,
+    /// Go `for k, v := range x` range variable.
+    RangeVariable,
+    /// Go `switch v := x.(type)` type-switch variable.
+    TypeSwitchVariable,
+    /// Go `select { case v := <-ch: }` receive variable.
+    SelectReceiveVariable,
+    /// Go generic type parameter (`func f[T any]`). `T` is a lexical blocker
+    /// because `T(v)` is a `plain_name` call, not a `type_conversion`.
+    TypeParameter,
 }
 
 impl BindingKind {
@@ -374,6 +399,18 @@ impl BindingKind {
             BindingKind::MatchPattern => "match_pattern",
             BindingKind::IfLetPattern => "if_let_pattern",
             BindingKind::WhileLetPattern => "while_let_pattern",
+            BindingKind::ShortVariable => "short_variable",
+            BindingKind::Variable => "variable",
+            BindingKind::Constant => "constant",
+            BindingKind::LocalType => "local_type",
+            BindingKind::FunctionResult => "function_result",
+            BindingKind::MethodReceiver => "method_receiver",
+            BindingKind::FunctionLiteralParameter => "function_literal_parameter",
+            BindingKind::FunctionLiteralResult => "function_literal_result",
+            BindingKind::RangeVariable => "range_variable",
+            BindingKind::TypeSwitchVariable => "type_switch_variable",
+            BindingKind::SelectReceiveVariable => "select_receive_variable",
+            BindingKind::TypeParameter => "type_parameter",
         }
     }
 }

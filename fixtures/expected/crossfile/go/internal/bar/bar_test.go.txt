@@ -1,6 +1,7 @@
-file schema=2 path=crossfile/go/internal/bar/bar_test.go lang=go bytes=46 lines=3 final_newline=true status=clean snapshot=snap-f3435825eba770da
+file schema=3 path=crossfile/go/internal/bar/bar_test.go lang=go bytes=46 lines=3 final_newline=true status=clean snapshot=snap-f3435825eba770da
 scope 0 kind=file parent=- name=- range=0..46 (0:0..3:0) header=- lang=go
 scope 1 kind=function parent=0 name=TestB range=18..45 (2:0..2:27) header=- lang=go
 decl 0 kind=package name=bar_test scope=0 flags=[] range=0..16 (0:0..0:16) name_range=8..16 (0:8..0:16) body=- lang=go path=crossfile/go/internal/bar/bar_test.go snapshot=snap-f3435825eba770da tests=[]
 decl 1 kind=function name=TestB scope=0 flags=[] range=18..45 (2:0..2:27) name_range=23..28 (2:5..2:10) body=43..45 (2:25..2:27) lang=go path=crossfile/go/internal/bar/bar_test.go snapshot=snap-f3435825eba770da tests=[function_name_convention:Test prefix:23..28 (2:5..2:10),signature_shape:single *testing.T parameter:28..42 (2:10..2:24)]
+binding 0 kind=function_parameter name=t scope=1 name_range=29..30 (2:11..2:12) site=29..41 (2:11..2:23) vis=[43..45 (2:25..2:27)] ambiguous=false lang=go path=crossfile/go/internal/bar/bar_test.go snapshot=snap-f3435825eba770da
 file_test kind=file_name_convention detail=_test.go suffix range=0..0 (0:0..0:0)

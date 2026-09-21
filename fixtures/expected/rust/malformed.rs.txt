@@ -1,4 +1,4 @@
-file schema=2 path=rust/malformed.rs lang=rust bytes=589 lines=23 final_newline=true status=recovered snapshot=snap-3c081209804feee6
+file schema=3 path=rust/malformed.rs lang=rust bytes=589 lines=23 final_newline=true status=recovered snapshot=snap-3c081209804feee6
 scope 0 kind=file parent=- name=- range=0..589 (0:0..23:0) header=- lang=rust
 scope 1 kind=function parent=0 name=valid_before range=462..482 (10:0..10:20) header=- lang=rust
 scope 2 kind=struct parent=0 name=Broken range=484..514 (12:0..14:1) header=484..498 (12:0..12:14) lang=rust

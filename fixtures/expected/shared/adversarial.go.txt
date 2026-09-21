@@ -1,4 +1,4 @@
-file schema=2 path=shared/adversarial.go lang=go bytes=991 lines=56 final_newline=true status=clean snapshot=snap-efada90fb0e316e9
+file schema=3 path=shared/adversarial.go lang=go bytes=991 lines=56 final_newline=true status=clean snapshot=snap-efada90fb0e316e9
 scope 0 kind=file parent=- name=- range=0..991 (0:0..56:0) header=- lang=go
 scope 1 kind=struct parent=0 name=Duplicate range=208..226 (7:5..7:23) header=208..218 (7:5..7:15) lang=go
 scope 2 kind=method parent=0 name=Name range=228..281 (9:0..11:1) header=- lang=go
@@ -41,3 +41,10 @@ call 0 form=plain_name callee=level4 scope=9 expr=555..563 (30:4..30:12) callee_
 call 1 form=plain_name callee=level3 scope=8 expr=572..580 (32:3..32:11) callee_range=572..578 (32:3..32:9) type_args=- type_args_range=- dyn=false nullsafe=false
 call 2 form=plain_name callee=level2 scope=7 expr=587..595 (34:2..34:10) callee_range=587..593 (34:2..34:8) type_args=- type_args_range=- dyn=false nullsafe=false
 call 3 form=plain_name callee=level1 scope=6 expr=600..608 (36:1..36:9) callee_range=600..606 (36:1..36:7) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=method_receiver name=d scope=2 name_range=234..235 (9:6..9:7) site=234..245 (9:6..9:17) vis=[261..281 (9:33..11:1)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 1 kind=method_receiver name=o scope=4 name_range=310..311 (15:6..15:7) site=310..317 (15:6..15:13) vis=[333..352 (15:29..17:1)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 2 kind=short_variable name=level1 scope=6 name_range=465..471 (26:1..26:7) site=465..598 (26:1..35:2) vis=[598..610 (35:2..37:1)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 3 kind=short_variable name=level2 scope=7 name_range=486..492 (27:2..27:8) site=486..584 (27:2..33:3) vis=[584..598 (33:3..35:2)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 4 kind=short_variable name=level3 scope=8 name_range=508..514 (28:3..28:9) site=508..568 (28:3..31:4) vis=[568..584 (31:4..33:3)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 5 kind=short_variable name=level4 scope=9 name_range=531..537 (29:4..29:10) site=531..550 (29:4..29:23) vis=[550..568 (29:23..31:4)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9
+binding 6 kind=short_variable name=value scope=11 name_range=729..734 (42:1..42:6) site=729..751 (42:1..42:23) vis=[751..767 (42:23..44:1)] ambiguous=false lang=go path=shared/adversarial.go snapshot=snap-efada90fb0e316e9

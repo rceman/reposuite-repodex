@@ -13,7 +13,12 @@ use super::{
 ///   `references`, `calls`, `diagnostics`, `recovery_regions`).
 /// * `2` — added `bindings` (`LocalBindingOccurrence`), the Rust local
 ///   name-binding facts with bounded visibility ranges.
-pub const SCHEMA_VERSION: u32 = 2;
+/// * `3` — `BindingKind` gained the Go local-binding variants
+///   (`short_variable`, `variable`, `constant`, `local_type`, `function_result`,
+///   `method_receiver`, `function_literal_parameter`, `function_literal_result`,
+///   `range_variable`, `type_switch_variable`, `select_receive_variable`), which
+///   changes the serialized `bindings` schema.
+pub const SCHEMA_VERSION: u32 = 3;
 
 /// The analyzed source snapshot.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

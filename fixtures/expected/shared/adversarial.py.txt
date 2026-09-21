@@ -1,4 +1,4 @@
-file schema=2 path=shared/adversarial.py lang=python bytes=838 lines=62 final_newline=true status=clean snapshot=snap-859f3e7d168d4c60
+file schema=3 path=shared/adversarial.py lang=python bytes=838 lines=62 final_newline=true status=clean snapshot=snap-859f3e7d168d4c60
 scope 0 kind=file parent=- name=- range=0..838 (0:0..62:0) header=- lang=python
 scope 1 kind=function parent=0 name=name range=186..210 (8:0..9:12) header=- lang=python
 scope 2 kind=class parent=0 name=Duplicate range=213..266 (12:0..14:16) header=- lang=python

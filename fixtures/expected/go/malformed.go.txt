@@ -1,4 +1,4 @@
-file schema=2 path=go/malformed.go lang=go bytes=174 lines=12 final_newline=true status=recovered snapshot=snap-7c82827e062c8dd4
+file schema=3 path=go/malformed.go lang=go bytes=174 lines=12 final_newline=true status=recovered snapshot=snap-7c82827e062c8dd4
 scope 0 kind=file parent=- name=- range=0..174 (0:0..12:0) header=- lang=go
 scope 1 kind=function parent=0 name=validBefore range=86..107 (3:0..3:21) header=- lang=go
 scope 2 kind=function parent=0 name=broken range=109..133 (5:0..7:1) header=- lang=go

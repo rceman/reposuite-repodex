@@ -37,7 +37,14 @@ use crate::repository::digest;
 /// * `2` — the Rust adapter now emits `LocalBindingOccurrence` facts for local
 ///   name bindings (`let`, parameters, `for`/`match`/`if let`/`while let`
 ///   patterns) with bounded visibility ranges.
-pub const ANALYSIS_ABI_VERSION: u32 = 2;
+/// * `3` — the Go adapter now emits `LocalBindingOccurrence` facts for
+///   function-local bindings (parameters, named results, method receivers,
+///   function-literal parameters/results, `:=` short variables, `var`/`const`/
+///   `type` declarations, `for`/`range`/`switch`/`select`/`if`/`type-switch`
+///   bindings) with bounded visibility ranges, and now descends into
+///   `var`/`const`/`type` declaration values so nested `func` literals (and the
+///   calls inside them) are reachable everywhere.
+pub const ANALYSIS_ABI_VERSION: u32 = 3;
 
 /// Version of the deterministic discovery/ignore policy.
 ///

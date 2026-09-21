@@ -1,4 +1,4 @@
-file schema=2 path=go/boundaries.go lang=go bytes=1607 lines=57 final_newline=true status=clean snapshot=snap-166ba57d4275ce96
+file schema=3 path=go/boundaries.go lang=go bytes=1607 lines=57 final_newline=true status=clean snapshot=snap-166ba57d4275ce96
 scope 0 kind=file parent=- name=- range=0..1607 (0:0..57:0) header=- lang=go
 scope 1 kind=interface parent=0 name=Handler range=81..111 (5:5..7:1) header=81..89 (5:5..5:13) lang=go
 scope 2 kind=struct parent=0 name=Base range=118..131 (9:5..9:18) header=118..123 (9:5..9:10) lang=go
@@ -26,3 +26,17 @@ call 5 form=type_conversion callee=pkg.Generic[int] scope=5 expr=1280..1303 (38:
 call 6 form=type_conversion callee=obj.Generic[int] scope=5 expr=1315..1338 (39:11..39:34) callee_range=1315..1331 (39:11..39:27) type_args=[int] type_args_range=1326..1331 (39:22..39:27) dyn=false nullsafe=false
 call 7 form=member_selector callee=d.Method scope=6 expr=1523..1533 (48:1..48:11) callee_range=1523..1531 (48:1..48:9) type_args=- type_args_range=- dyn=false nullsafe=false
 call 8 form=member_selector callee=d.Base.Method scope=6 expr=1535..1550 (49:1..49:16) callee_range=1535..1548 (49:1..49:14) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=method_receiver name=b scope=4 name_range=179..180 (16:6..16:7) site=179..185 (16:6..16:12) vis=[196..198 (16:23..16:25)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 1 kind=function_parameter name=value scope=5 name_range=1037..1042 (32:19..32:24) site=1037..1053 (32:19..32:35) vis=[1055..1454 (32:37..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 2 kind=function_parameter name=other scope=5 name_range=1044..1049 (32:26..32:31) site=1037..1053 (32:19..32:35) vis=[1055..1454 (32:37..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 3 kind=short_variable name=converted scope=5 name_range=1058..1067 (33:1..33:10) site=1058..1090 (33:1..33:33) vis=[1090..1454 (33:33..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 4 kind=short_variable name=singleTypeArgCall scope=5 name_range=1092..1109 (34:1..34:18) site=1092..1140 (34:1..34:49) vis=[1140..1454 (34:49..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 5 kind=short_variable name=oneTypeArg scope=5 name_range=1142..1152 (35:1..35:11) site=1142..1182 (35:1..35:41) vis=[1182..1454 (35:41..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 6 kind=short_variable name=twoTypeArgs scope=5 name_range=1184..1195 (36:1..36:12) site=1184..1233 (36:1..36:50) vis=[1233..1454 (36:50..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 7 kind=short_variable name=plainConverted scope=5 name_range=1235..1249 (37:1..37:15) site=1235..1265 (37:1..37:31) vis=[1265..1454 (37:31..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 8 kind=short_variable name=qualified scope=5 name_range=1267..1276 (38:1..38:10) site=1267..1303 (38:1..38:37) vis=[1303..1454 (38:37..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 9 kind=short_variable name=member scope=5 name_range=1305..1311 (39:1..39:7) site=1305..1338 (39:1..39:34) vis=[1338..1454 (39:34..42:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 10 kind=short_variable name=f scope=6 name_range=1483..1484 (45:1..45:2) site=1483..1499 (45:1..45:17) vis=[1499..1606 (45:17..56:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 11 kind=variable name=d scope=6 name_range=1512..1513 (47:5..47:6) site=1512..1521 (47:5..47:14) vis=[1521..1606 (47:14..56:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 12 kind=short_variable name=count scope=6 name_range=1552..1557 (50:1..50:6) site=1552..1562 (50:1..50:11) vis=[1562..1606 (50:11..56:1)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96
+binding 13 kind=short_variable name=count scope=6 name_range=1568..1573 (52:2..52:7) site=1568..1578 (52:2..52:12) vis=[1578..1593 (52:12..54:2)] ambiguous=false lang=go path=go/boundaries.go snapshot=snap-166ba57d4275ce96

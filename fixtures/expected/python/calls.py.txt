@@ -1,4 +1,4 @@
-file schema=2 path=python/calls.py lang=python bytes=315 lines=13 final_newline=true status=clean snapshot=snap-fd3edcbaeb20c0ba
+file schema=3 path=python/calls.py lang=python bytes=315 lines=13 final_newline=true status=clean snapshot=snap-fd3edcbaeb20c0ba
 scope 0 kind=file parent=- name=- range=0..315 (0:0..13:0) header=- lang=python
 scope 1 kind=function parent=0 name=calls range=44..314 (3:0..12:40) header=- lang=python
 decl 0 kind=function name=calls scope=0 flags=[] range=44..314 (3:0..12:40) name_range=48..53 (3:4..3:9) body=61..314 (4:4..12:40) lang=python path=python/calls.py snapshot=snap-fd3edcbaeb20c0ba tests=[]

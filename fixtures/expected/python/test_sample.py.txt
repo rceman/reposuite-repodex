@@ -1,4 +1,4 @@
-file schema=2 path=python/test_sample.py lang=python bytes=535 lines=39 final_newline=true status=clean snapshot=snap-cdb30cee7b4492f5
+file schema=3 path=python/test_sample.py lang=python bytes=535 lines=39 final_newline=true status=clean snapshot=snap-cdb30cee7b4492f5
 scope 0 kind=file parent=- name=- range=0..535 (0:0..39:0) header=- lang=python
 scope 1 kind=function parent=0 name=test_plain range=112..138 (7:0..8:8) header=- lang=python
 scope 2 kind=function parent=0 name=test_parametrized range=141..229 (11:0..13:16) header=- lang=python

@@ -1,4 +1,4 @@
-file schema=2 path=crossfile/go/internal/bar/bar.go lang=go bytes=25 lines=3 final_newline=true status=clean snapshot=snap-195b1d1dc80901a3
+file schema=3 path=crossfile/go/internal/bar/bar.go lang=go bytes=25 lines=3 final_newline=true status=clean snapshot=snap-195b1d1dc80901a3
 scope 0 kind=file parent=- name=- range=0..25 (0:0..3:0) header=- lang=go
 scope 1 kind=function parent=0 name=B range=13..24 (2:0..2:11) header=- lang=go
 decl 0 kind=package name=bar scope=0 flags=[] range=0..11 (0:0..0:11) name_range=8..11 (0:8..0:11) body=- lang=go path=crossfile/go/internal/bar/bar.go snapshot=snap-195b1d1dc80901a3 tests=[]

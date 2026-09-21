@@ -1,4 +1,4 @@
-file schema=2 path=go/sample_test.go lang=go bytes=489 lines=33 final_newline=true status=clean snapshot=snap-3e12eafd4f998cb0
+file schema=3 path=go/sample_test.go lang=go bytes=489 lines=33 final_newline=true status=clean snapshot=snap-3e12eafd4f998cb0
 scope 0 kind=file parent=- name=- range=0..489 (0:0..33:0) header=- lang=go
 scope 1 kind=function parent=0 name=TestSomething range=35..269 (4:0..20:1) header=- lang=go
 scope 2 kind=closure parent=1 name=- range=193..263 (14:17..18:3) header=- lang=go
@@ -19,4 +19,13 @@ decl 7 kind=function name=helperPlain scope=0 flags=[] range=458..488 (32:0..32:
 import 0 form=single module=- module_range=- relative=- scope=0 range=17..33 (2:0..2:16) lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0 text=import "testing" items=[{target=testing target_range=24..33 (2:7..2:16) alias=- alias_range=- wildcard=false cat=normal range=24..33 (2:7..2:16)}]
 call 0 form=member_selector callee=t.Run scope=1 expr=178..264 (14:2..18:4) callee_range=178..183 (14:2..14:7) type_args=- type_args_range=- dyn=false nullsafe=false
 call 1 form=member_selector callee=t.Fatal scope=2 expr=239..254 (16:4..16:19) callee_range=239..246 (16:4..16:11) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=function_parameter name=t scope=1 name_range=54..55 (4:19..4:20) site=54..66 (4:19..4:31) vis=[68..269 (4:33..20:1)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 1 kind=short_variable name=cases scope=1 name_range=71..76 (5:1..5:6) site=71..146 (5:1..11:2) vis=[146..269 (11:2..20:1)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 2 kind=range_variable name=tc scope=1 name_range=156..158 (13:8..13:10) site=153..173 (13:5..13:25) vis=[174..267 (13:26..19:2)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 3 kind=function_literal_parameter name=t scope=2 name_range=198..199 (14:22..14:23) site=198..210 (14:22..14:34) vis=[212..263 (14:36..18:3)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 4 kind=function_parameter name=t scope=3 name_range=291..292 (22:20..22:21) site=291..303 (22:20..22:32) vis=[305..307 (22:34..22:36)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 5 kind=function_parameter name=t scope=4 name_range=342..343 (24:33..24:34) site=342..354 (24:33..24:45) vis=[356..358 (24:47..24:49)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 6 kind=function_parameter name=b scope=5 name_range=384..385 (26:24..26:25) site=384..396 (26:24..26:36) vis=[398..400 (26:38..26:40)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 7 kind=function_parameter name=t scope=6 name_range=421..422 (28:19..28:20) site=421..433 (28:19..28:31) vis=[435..437 (28:33..28:35)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
+binding 8 kind=function_parameter name=value scope=8 name_range=475..480 (32:17..32:22) site=475..484 (32:17..32:26) vis=[486..488 (32:28..32:30)] ambiguous=false lang=go path=go/sample_test.go snapshot=snap-3e12eafd4f998cb0
 file_test kind=file_name_convention detail=_test.go suffix range=0..0 (0:0..0:0)

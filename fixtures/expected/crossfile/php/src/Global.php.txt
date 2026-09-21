@@ -1,4 +1,4 @@
-file schema=2 path=crossfile/php/src/Global.php lang=php bytes=28 lines=3 final_newline=true status=clean snapshot=snap-d98e8a39cfe7940b
+file schema=3 path=crossfile/php/src/Global.php lang=php bytes=28 lines=3 final_newline=true status=clean snapshot=snap-d98e8a39cfe7940b
 scope 0 kind=file parent=- name=- range=0..28 (0:0..3:0) header=- lang=php
 scope 1 kind=class parent=0 name=GlobalThing range=7..27 (2:0..2:20) header=7..25 (2:0..2:18) lang=php
 decl 0 kind=class name=GlobalThing scope=0 flags=[] range=7..27 (2:0..2:20) name_range=13..24 (2:6..2:17) body=25..27 (2:18..2:20) lang=php path=crossfile/php/src/Global.php snapshot=snap-d98e8a39cfe7940b tests=[]

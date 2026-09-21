@@ -1,4 +1,4 @@
-file schema=2 path=rust/bindings.rs lang=rust bytes=1575 lines=82 final_newline=true status=clean snapshot=snap-dcb421f8757480b8
+file schema=3 path=rust/bindings.rs lang=rust bytes=1575 lines=82 final_newline=true status=clean snapshot=snap-dcb421f8757480b8
 scope 0 kind=file parent=- name=- range=0..1575 (0:0..82:0) header=- lang=rust
 scope 1 kind=function parent=0 name=module_helper range=146..167 (3:0..3:21) header=- lang=rust
 scope 2 kind=function parent=0 name=params range=169..268 (5:0..8:1) header=- lang=rust

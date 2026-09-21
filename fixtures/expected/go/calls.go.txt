@@ -1,4 +1,4 @@
-file schema=2 path=go/calls.go lang=go bytes=307 lines=18 final_newline=true status=clean snapshot=snap-fe4c1f59b11f365a
+file schema=3 path=go/calls.go lang=go bytes=307 lines=18 final_newline=true status=clean snapshot=snap-fe4c1f59b11f365a
 scope 0 kind=file parent=- name=- range=0..307 (0:0..18:0) header=- lang=go
 scope 1 kind=function parent=0 name=helper range=52..95 (3:0..5:1) header=- lang=go
 scope 2 kind=function parent=0 name=calls range=97..306 (7:0..17:1) header=- lang=go
@@ -14,3 +14,7 @@ call 5 form=indirect callee=getHandler() scope=2 expr=211..229 (12:1..12:19) cal
 call 6 form=plain_name callee=helper scope=2 expr=234..246 (13:4..13:16) callee_range=234..240 (13:4..13:10) type_args=- type_args_range=- dyn=false nullsafe=false
 call 7 form=plain_name callee=helper scope=2 expr=254..266 (14:7..14:19) callee_range=254..260 (14:7..14:13) type_args=- type_args_range=- dyn=false nullsafe=false
 call 8 form=plain_name callee=int64 scope=2 expr=281..289 (15:14..15:22) callee_range=281..286 (15:14..15:19) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=function_parameter name=a scope=1 name_range=64..65 (3:12..3:13) site=64..72 (3:12..3:20) vis=[78..95 (3:26..5:1)] ambiguous=false lang=go path=go/calls.go snapshot=snap-fe4c1f59b11f365a
+binding 1 kind=function_parameter name=b scope=1 name_range=67..68 (3:15..3:16) site=64..72 (3:12..3:20) vis=[78..95 (3:26..5:1)] ambiguous=false lang=go path=go/calls.go snapshot=snap-fe4c1f59b11f365a
+binding 2 kind=function_parameter name=obj scope=2 name_range=108..111 (7:11..7:14) site=108..119 (7:11..7:22) vis=[121..306 (7:24..17:1)] ambiguous=false lang=go path=go/calls.go snapshot=snap-fe4c1f59b11f365a
+binding 3 kind=short_variable name=converted scope=2 name_range=268..277 (15:1..15:10) site=268..289 (15:1..15:22) vis=[289..306 (15:22..17:1)] ambiguous=false lang=go path=go/calls.go snapshot=snap-fe4c1f59b11f365a

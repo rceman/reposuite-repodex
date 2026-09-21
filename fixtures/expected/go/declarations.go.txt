@@ -1,4 +1,4 @@
-file schema=2 path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
+file schema=3 path=go/declarations.go lang=go bytes=850 lines=65 final_newline=true status=clean snapshot=snap-feedb2825c85c316
 scope 0 kind=file parent=- name=- range=0..850 (0:0..65:0) header=- lang=go
 scope 1 kind=struct parent=0 name=Box range=338..368 (18:5..20:1) header=338..349 (18:5..18:16) lang=go
 scope 2 kind=struct parent=0 name=Pair range=375..449 (22:5..27:1) header=375..401 (22:5..22:31) lang=go
@@ -43,3 +43,9 @@ call 0 form=plain_name callee=string scope=5 expr=715..724 (51:8..51:17) callee_
 call 1 form=plain_name callee=inner scope=7 expr=791..798 (58:1..58:8) callee_range=791..796 (58:1..58:6) type_args=- type_args_range=- dyn=false nullsafe=false
 call 2 form=indirect callee=func() {\n\t\tnested := func() {}\n\t\tnested()\n\t} scope=7 expr=801..847 (60:1..63:4) callee_range=801..845 (60:1..63:2) type_args=- type_args_range=- dyn=false nullsafe=false
 call 3 form=plain_name callee=nested scope=9 expr=834..842 (62:2..62:10) callee_range=834..840 (62:2..62:8) type_args=- type_args_range=- dyn=false nullsafe=false
+binding 0 kind=type_parameter name=T scope=4 name_range=637..638 (46:10..46:11) site=637..642 (46:10..46:15) vis=[627..672 (46:0..48:1)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
+binding 1 kind=function_parameter name=value scope=4 name_range=644..649 (46:17..46:22) site=644..651 (46:17..46:24) vis=[655..672 (46:28..48:1)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
+binding 2 kind=method_receiver name=u scope=5 name_range=680..681 (50:6..50:7) site=680..688 (50:6..50:14) vis=[705..726 (50:31..52:1)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
+binding 3 kind=method_receiver name=u scope=6 name_range=734..735 (54:6..54:7) site=734..743 (54:6..54:15) vis=[751..753 (54:23..54:25)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
+binding 4 kind=short_variable name=inner scope=7 name_range=771..776 (57:1..57:6) site=771..789 (57:1..57:19) vis=[789..849 (57:19..64:1)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
+binding 5 kind=short_variable name=nested scope=9 name_range=812..818 (61:2..61:8) site=812..831 (61:2..61:21) vis=[831..845 (61:21..63:2)] ambiguous=false lang=go path=go/declarations.go snapshot=snap-feedb2825c85c316
