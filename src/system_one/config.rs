@@ -21,8 +21,13 @@ pub fn config_path() -> PathBuf {
 pub enum Auth {
     #[default]
     None,
-    Bearer { token: String },
-    Header { header: String, token: String },
+    Bearer {
+        token: String,
+    },
+    Header {
+        header: String,
+        token: String,
+    },
 }
 
 /// One named model endpoint.
