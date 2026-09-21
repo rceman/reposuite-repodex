@@ -58,7 +58,10 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 ///   the TASK 3F crate/target topology (every `lib`/`bin`/`integration_test`/
 ///   `example`/`bench` target is an independent crate root), not only the
 ///   `lib.rs`/`main.rs` convention.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 5;
+/// * `6` — added `go.call.package_local_function_candidate`: Go `plain_name`
+///   calls may produce `function` candidates from the call's own TASK 4A
+///   `go_package` after local-binding/import/namespace blockers.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 6;
 
 /// Per-language candidate-policy versions.
 ///
@@ -78,6 +81,14 @@ pub const CANDIDATE_RULE_ABI_VERSION: u32 = 5;
 ///   `main.rs`. Falls back to the `lib.rs`/`main.rs` convention only when no
 ///   `rust_crate_target` topology exists.
 pub const POLICY_VERSION_RUST_CALL: u32 = 5;
+
+/// Go candidate-policy version.
+///
+/// * `1` — package-local plain-name function candidates: a `plain_name` call may
+///   name a source-written `function` in the call's own TASK 4A `go_package`,
+///   after local-binding, dot-import, file-import and package-namespace
+///   blockers are applied.
+pub const POLICY_VERSION_GO_CALL: u32 = 1;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -100,10 +111,19 @@ pub mod candidate_rule {
     pub const RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE: &str =
         "rust.call.structural_path_function_candidate";
 
+    /// The bounded Go package-local plain-name function-candidate rule.
+    ///
+    /// A `plain_name` call names a source-written `function` in the call's own
+    /// TASK 4A `go_package` after local-binding, import and package-namespace
+    /// blockers. Never `pkg.Helper()` (member-selector) and never cross-package.
+    pub const GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE: &str =
+        "go.call.package_local_function_candidate";
+
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
         RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
         RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE,
+        GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE,
     ];
 }
 
@@ -397,11 +417,12 @@ pub struct CandidateFingerprint {
 impl CandidateFingerprint {
     pub fn current() -> Self {
         let text = format!(
-            "manifest={} schema={} rule_abi={} rust={}",
+            "manifest={} schema={} rule_abi={} rust={} go={}",
             CANDIDATE_MANIFEST_VERSION,
             CANDIDATE_SCHEMA_VERSION,
             CANDIDATE_RULE_ABI_VERSION,
             POLICY_VERSION_RUST_CALL,
+            POLICY_VERSION_GO_CALL,
         );
         Self {
             digest: digest::sha256_text(&format!("repodex-candidate-fingerprint\n{text}")),
@@ -581,6 +602,44 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "re-export traversal, glob, prelude, cfg evaluation".to_string(),
                 "turbofish-qualified calls (generic arguments not resolved)".to_string(),
                 "closures, function pointers, constructors, enum variants".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE.to_string(),
+            language: "go".to_string(),
+            summary: "Bounded package-local candidate search for Go plain-name \
+                  calls against the call's own TASK 4A package."
+                .to_string(),
+            in_scope_calls: "a Go call-like occurrence with form `plain_name` — a \
+                         callee that is exactly one written identifier."
+                .to_string(),
+            candidate_declarations: "source-written Go `function` declarations in \
+                                 the call's own `go_package` only; never methods, \
+                                 imports, locals, or members of another package."
+                .to_string(),
+            selection_rule: "the call's file resolves to its TASK 4A `go_package` \
+                         identity; collect `function` declarations named after \
+                         the callee across that package's files only. A covering \
+                         same-name `LocalBindingOccurrence`, a dot import, a \
+                         file-block import name, or a same-name non-function \
+                         package declaration suppresses the function candidate."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate under this bounded \
+                                   rule — evidence a declaration could be \
+                                   relevant, NOT proof the call resolves to it."
+                .to_string(),
+            no_candidate_meaning: "no candidate under this rule — shadowed by a \
+                               local binding, blocked by an import, ambiguous in \
+                               the package namespace, or no same-name package \
+                               function. Never 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "pkg.Helper() member-selector calls (package-qualified, not yet modelled)"
+                    .to_string(),
+                "obj.Method() receiver calls (need receiver type resolution)".to_string(),
+                "dot-imported external names (file block not enumerable)".to_string(),
+                "Go builtins (len/cap/make/append/...)".to_string(),
+                "cross-package and cross-module same-name functions".to_string(),
             ],
         },
     ]

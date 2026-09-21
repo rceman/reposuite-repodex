@@ -33,7 +33,7 @@ use super::model::{
     CardinalityCounts, CANDIDATE_MANIFEST_VERSION, CANDIDATE_RULE_ABI_VERSION,
     CANDIDATE_SCHEMA_VERSION,
 };
-use super::rule_rust;
+use super::{rule_go, rule_rust};
 
 /// Wall-clock cost of each candidate-build phase, in milliseconds.
 #[derive(Debug, Clone, Default, PartialEq)]
@@ -146,9 +146,12 @@ pub fn build_candidates(
     })?;
     phases.snapshot_load_ms = elapsed_ms(load_started);
 
-    // 2. Apply the bounded Rust candidate rule.
+    // 2. Apply the bounded per-language candidate rules.
     let derive_started = Instant::now();
     let mut records: Vec<CallCandidateRecord> = rule_rust::candidates(&analyses, &links, &entities);
+    // TASK 4C: Go package-local plain-name function candidates. Reads the same
+    // snapshot facts + the TASK 4A `go_package` entities from the link artifact.
+    records.extend(rule_go::candidates(&analyses, &entities));
     artifact::order_records(&mut records)?;
     phases.derive_ms = elapsed_ms(derive_started);
 
