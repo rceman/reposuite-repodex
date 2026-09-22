@@ -294,6 +294,16 @@ impl<'a> QueryEngine<'a> {
         }
     }
 
+    /// Deterministic top-K lexical seeds (same ordering as `run`), used by the
+    /// System One query role to build bounded target-bound plan alternatives.
+    /// Seeds are real RepoDex identities; no model output is involved.
+    pub fn top_seeds(&self, plan: &QueryPlan, k: usize) -> Vec<ScoredNode> {
+        let mut seeds = self.seed(plan);
+        seeds.sort_by(|a, b| b.score.cmp(&a.score).then(a.node.key.cmp(&b.node.key)));
+        seeds.truncate(k);
+        seeds
+    }
+
     /// Lexical seed lookup + deterministic integer scoring (§21/§22).
     fn seed(&self, plan: &QueryPlan) -> Vec<ScoredNode> {
         let mut scored: BTreeMap<usize, (i64, Vec<String>)> = BTreeMap::new();

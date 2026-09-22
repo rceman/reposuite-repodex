@@ -427,8 +427,7 @@ fn svc(query_model: &str, query_url: &str, rerank_model: &str, rerank_url: &str)
 fn multi_model_routing_custom_urls() {
     // query -> local-a on /custom/systemone; rerank -> local-b on /other/path
     let (a_base, a_seen) = serve(|_| {
-        r#"{"answers":{"intent":{"choice":"find","confidence":0.9,"probabilities":{}}}}"#
-            .to_string()
+        r#"{"answers":{"plan":{"choice":"p0","confidence":0.9,"probabilities":{}}}}"#.to_string()
     });
     let (b_base, b_seen) = serve(|s| {
         // answer a score for every rN question in the request
@@ -452,8 +451,9 @@ fn multi_model_routing_custom_urls() {
     let (_t, g) = engine_of(&graph_fixture());
     let engine = QueryEngine::new(&g);
     let so = svc("local-a", &a_url, "local-b", &b_url);
+    // multi-word query so the exact-match rerank guard does not fire
     let plan = QueryPlan::parse(
-        "ValidateToken",
+        "validate the auth token flow",
         QueryMode::Ranked,
         None,
         None,
@@ -613,4 +613,118 @@ fn explicit_intent_never_overridden_by_query_role() {
                                                  // intent stays find (explicit control wins), query advice never asked
     assert_eq!(res.plan.intent.as_str(), "find");
     assert!(res.so_query.is_none()); // role not exercised
+}
+
+// ---------------------------------------------------------------------------
+// V2: seed-first query role + selective rerank guard (§11-§22)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn exact_identifier_match_skips_rerank() {
+    // a lone exact-name hit at rank #1 must not be reranked (§19).
+    let (base, hits) = serve(|_| r#"{"answers":{}}"#.to_string());
+    let url = format!("{base}/s");
+    let (_t, g) = engine_of(&graph_fixture());
+    let engine = QueryEngine::new(&g);
+    let so = {
+        let mut models = std::collections::BTreeMap::new();
+        models.insert("r".to_string(), model_cfg(&url));
+        SystemOne::new(Some(SystemOneConfig {
+            enabled: true,
+            roles: repodex::system_one::Roles {
+                query: None,
+                rerank: Some("r".into()),
+            },
+            models,
+        }))
+    };
+    let plan = QueryPlan::parse(
+        "ValidateToken",
+        QueryMode::Ranked,
+        None,
+        None,
+        None,
+        50,
+        None,
+    );
+    let (res, _) = so.run(&engine, &plan, false);
+    assert_eq!(res.so_rerank.as_deref(), Some("not_needed_exact_match"));
+    assert!(hits.lock().unwrap().is_empty(), "rerank must not be called");
+    assert_eq!(res.seeds[0].node.label, "ValidateToken");
+}
+
+#[test]
+fn zero_and_single_result_skip_rerank() {
+    let (base, hits) = serve(|_| r#"{"answers":{}}"#.to_string());
+    let url = format!("{base}/s");
+    let (_t, g) = engine_of(&graph_fixture());
+    let engine = QueryEngine::new(&g);
+    let so = {
+        let mut models = std::collections::BTreeMap::new();
+        models.insert("r".to_string(), model_cfg(&url));
+        SystemOne::new(Some(SystemOneConfig {
+            enabled: true,
+            roles: repodex::system_one::Roles {
+                query: None,
+                rerank: Some("r".into()),
+            },
+            models,
+        }))
+    };
+    // zero-result query
+    let plan = QueryPlan::parse(
+        "zzzqznothing",
+        QueryMode::Ranked,
+        None,
+        None,
+        None,
+        50,
+        None,
+    );
+    let (res, _) = so.run(&engine, &plan, false);
+    assert_eq!(res.so_rerank.as_deref(), Some("not_needed_zero_results"));
+    assert!(hits.lock().unwrap().is_empty());
+}
+
+#[test]
+fn seed_first_query_role_offers_target_bound_plans() {
+    // V2: a callers/related/callees option must be offered for a decl seed.
+    let (base, seen) = serve(|_| {
+        r#"{"answers":{"plan":{"choice":"p1","confidence":0.9,"probabilities":{}}}}"#.to_string()
+    });
+    let url = format!("{base}/s");
+    let (_t, g) = engine_of(&graph_fixture());
+    let engine = QueryEngine::new(&g);
+    let so = {
+        let mut models = std::collections::BTreeMap::new();
+        models.insert("q".to_string(), model_cfg(&url));
+        SystemOne::new(Some(SystemOneConfig {
+            enabled: true,
+            roles: repodex::system_one::Roles {
+                query: Some("q".into()),
+                rerank: None,
+            },
+            models,
+        }))
+    };
+    let plan = QueryPlan::parse(
+        "ValidateToken",
+        QueryMode::Ranked,
+        None,
+        None,
+        None,
+        50,
+        None,
+    );
+    let (_res, prov) = so.run(&engine, &plan, false);
+    // query role exercised and produced a valid bounded plan
+    assert!(matches!(
+        prov.query,
+        repodex::system_one::RoleStatus::Used | repodex::system_one::RoleStatus::Other(_)
+    ));
+    let s = seen.lock().unwrap();
+    assert!(!s.is_empty(), "query role should have made a call");
+    // the request body must contain caller/callee/related option descriptions
+    let body = &s[0].body;
+    assert!(body.contains("callers of") || body.contains("related neighborhood"));
 }

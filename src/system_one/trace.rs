@@ -28,6 +28,10 @@ pub struct CallRecord {
     /// Whether the role then fell back to the deterministic baseline.
     pub fallback: bool,
     pub fallback_reason: Option<String>,
+    /// Role-specific detail (e.g. query-role offered plans + chosen option +
+    /// confidence + probabilities). Never contains secrets.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub detail: Option<Value>,
 }
 
 /// The env var that enables tracing.

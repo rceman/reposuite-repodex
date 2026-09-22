@@ -2,7 +2,7 @@
 
 use std::collections::BTreeMap;
 
-use serde_json::json;
+use serde_json::{json, Value};
 
 use super::client::{HttpSystemOneModel, SystemOneModel};
 use super::config::SystemOneConfig;
@@ -18,6 +18,8 @@ pub enum RoleStatus {
     Used,
     /// Model configured but failed -> deterministic baseline used.
     Fallback,
+    /// Deterministically skipped (e.g. `not_needed`, `not_needed_exact_match`).
+    Other(&'static str),
 }
 
 impl RoleStatus {
@@ -26,6 +28,7 @@ impl RoleStatus {
             Self::Disabled => "disabled",
             Self::Used => "used",
             Self::Fallback => "fallback",
+            Self::Other(s) => s,
         }
     }
 }
@@ -53,19 +56,55 @@ impl Default for Provenance {
 /// The optional System One service.
 pub struct SystemOne {
     cfg: Option<SystemOneConfig>,
+    /// Rerank batch size override (default `RERANK_MAX_PER_REQUEST`); used by
+    /// the controlled batching experiment.
+    batch: usize,
 }
 
 /// Max logical results sent to the rerank model in one request (§34).
+/// V2: up to 20 logical results in one request when it fits the 32k-context
+/// soft budget (28k); see `RERANK_MAX_PER_REQUEST`.
 pub const RERANK_BATCH: usize = 16;
+
+/// Max logical results in one rerank request (§22). Soft-bound by context.
+pub const RERANK_MAX_PER_REQUEST: usize = 20;
+
+/// Bounded seed candidates for query-role plan generation (§12).
+pub const SEED_BOUND: usize = 5;
+
+/// The result of the query-role bounded advice.
+pub enum QueryAdviceOutcome {
+    /// Model chose a valid bounded plan.
+    Chosen { plan: QueryPlan, confidence: f64 },
+    /// No meaningful decision (0 or 1 valid plan) — deterministic baseline.
+    NotNeeded,
+    /// Model failed/invalid — deterministic baseline.
+    Fallback,
+}
 
 impl SystemOne {
     /// Build from the loaded `[system_one]` table (None/absent => disabled).
     pub fn new(cfg: Option<SystemOneConfig>) -> Self {
-        Self { cfg }
+        Self {
+            cfg,
+            batch: RERANK_MAX_PER_REQUEST,
+        }
+    }
+
+    /// Override the rerank batch size (batching experiment §23).
+    pub fn with_batch(cfg: Option<SystemOneConfig>, batch: usize) -> Self {
+        Self { cfg, batch }
+    }
+
+    fn batch_size(&self) -> usize {
+        self.batch.max(1)
     }
 
     pub fn disabled() -> Self {
-        Self { cfg: None }
+        Self {
+            cfg: None,
+            batch: RERANK_MAX_PER_REQUEST,
+        }
     }
 
     pub fn is_enabled(&self) -> bool {
@@ -89,31 +128,42 @@ impl SystemOne {
         explicit_intent: bool,
     ) -> (QueryResult, Provenance) {
         let mut prov = Provenance::default();
-        // ---- query role: bounded advice on a *default* intent only ----
+        // ---- query role: seed-first bounded plan advice on default intent ----
         let mut plan = plan.clone();
+        let mut query_status = RoleStatus::Disabled;
         if !explicit_intent {
             if let Some((name, model)) = self.model("query") {
                 prov.query_model = Some(name.clone());
-                match self.query_advice(&model, &plan) {
-                    Some(intent) => {
-                        plan.intent = intent;
-                        prov.query = RoleStatus::Used;
+                match self.query_advice(engine, &model, &plan) {
+                    QueryAdviceOutcome::Chosen { plan: p, .. } => {
+                        plan = p;
+                        query_status = RoleStatus::Used;
                     }
-                    None => prov.query = RoleStatus::Fallback,
+                    QueryAdviceOutcome::NotNeeded => {
+                        query_status = RoleStatus::Other("not_needed");
+                    }
+                    QueryAdviceOutcome::Fallback => {
+                        query_status = RoleStatus::Fallback;
+                    }
                 }
             }
         }
+        prov.query = query_status;
         // ---- deterministic core (unchanged) ----
         let mut result = engine.run(&plan);
-        // ---- rerank role: reorder seeds only ----
+        // ---- rerank role: reorder seeds only, behind the eligibility guard ----
+        let rerank_skip = rerank_skip_reason(&plan, &result.seeds);
         if let Some((name, model)) = self.model("rerank") {
             prov.rerank_model = Some(name.clone());
-            match self.rerank(&model, &plan, &result.seeds) {
-                Some(order) => {
-                    apply_order(&mut result.seeds, order);
-                    prov.rerank = RoleStatus::Used;
-                }
-                None => prov.rerank = RoleStatus::Fallback,
+            match rerank_skip {
+                Some(reason) => prov.rerank = RoleStatus::Other(reason),
+                None => match self.rerank(&model, &plan, &result.seeds) {
+                    Some(order) => {
+                        apply_order(&mut result.seeds, order);
+                        prov.rerank = RoleStatus::Used;
+                    }
+                    None => prov.rerank = RoleStatus::Fallback,
+                },
             }
         }
         // Attach compact provenance (never evidence certainty).
@@ -134,6 +184,7 @@ impl SystemOne {
         batch: usize,
         model: &HttpSystemOneModel,
         req: &SystemOneRequest,
+        detail: Option<Value>,
     ) -> Result<crate::system_one::protocol::SystemOneResponse, crate::system_one::SystemOneError>
     {
         let started = std::time::Instant::now();
@@ -143,6 +194,10 @@ impl SystemOne {
             let (resolved, input_tok, output_tok) = match &out {
                 Ok(r) => super::trace::usage_from_extra(&r.extra),
                 Err(_) => (None, None, None),
+            };
+            let detail = match (detail, &out) {
+                (Some(d), Ok(r)) => Some(json!({"options": d, "answers": r.answers})),
+                (d, _) => d,
             };
             super::trace::record(&super::trace::CallRecord {
                 role: role.to_string(),
@@ -160,58 +215,105 @@ impl SystemOne {
                 },
                 fallback: out.is_err(),
                 fallback_reason: out.as_ref().err().map(|e| e.to_string()),
+                detail,
             });
         }
         out
     }
 
-    /// Query role: offer bounded intent alternatives, let the model `choice`.
-    /// Only intents valid for the plan are offered (§26). The model never
-    /// generates a plan — it picks one of RepoDex's own options.
-    fn query_advice(&self, model: &HttpSystemOneModel, plan: &QueryPlan) -> Option<QueryIntent> {
-        // Build the bounded option set from already-supported intents.
+    /// Seed-first bounded plan alternatives (§11-§17). Deterministic seed
+    /// discovery -> bounded target-bound plans -> Jev `choice` among them.
+    /// The model picks one opaque option id; RepoDex maps it back to a real,
+    /// executable plan. Returns the chosen plan (or None => use baseline).
+    fn query_advice(
+        &self,
+        engine: &QueryEngine,
+        model: &HttpSystemOneModel,
+        plan: &QueryPlan,
+    ) -> QueryAdviceOutcome {
+        // Deterministic seed discovery (≤5 real identities).
+        let seeds = engine.top_seeds(plan, SEED_BOUND);
+        // Build bounded plan alternatives: opaque id -> (intent, target).
         let mut options: BTreeMap<String, String> = BTreeMap::new();
-        options.insert("find".into(), "generic symbol/file lookup".into());
-        options.insert("related".into(), "bounded neighborhood of matches".into());
-        if plan.target.is_some() {
-            options.insert(
-                "callers".into(),
-                "incoming candidate callers of the target".into(),
+        let mut plans: BTreeMap<String, QueryPlan> = BTreeMap::new();
+        let add = |options: &mut BTreeMap<String, String>,
+                   plans: &mut BTreeMap<String, QueryPlan>,
+                   intent: QueryIntent,
+                   target: Option<String>,
+                   desc: String| {
+            let id = format!("p{}", plans.len());
+            let mut p = plan.clone();
+            p.intent = intent;
+            p.target = target;
+            plans.insert(id.clone(), p);
+            options.insert(id, desc);
+        };
+        add(
+            &mut options,
+            &mut plans,
+            QueryIntent::Find,
+            None,
+            "generic lookup".into(),
+        );
+        for s in &seeds {
+            let label = &s.node.label;
+            let path = &s.node.path;
+            // `related` is valid for any seed node.
+            add(
+                &mut options,
+                &mut plans,
+                QueryIntent::Related,
+                Some(label.clone()),
+                format!("related neighborhood of {label} ({path})"),
             );
-            options.insert(
-                "callees".into(),
-                "outgoing candidate callees from the target".into(),
-            );
+            // callers/callees only make sense for declaration targets.
+            if s.node.kind == crate::graph::NodeKind::Declaration {
+                add(
+                    &mut options,
+                    &mut plans,
+                    QueryIntent::Callers,
+                    Some(label.clone()),
+                    format!("callers of {label} ({path})"),
+                );
+                add(
+                    &mut options,
+                    &mut plans,
+                    QueryIntent::Callees,
+                    Some(label.clone()),
+                    format!("callees of {label} ({path})"),
+                );
+            }
+        }
+        // §15: no meaningful decision => no model call.
+        if plans.len() <= 1 {
+            return QueryAdviceOutcome::NotNeeded;
         }
         let mut req = SystemOneRequest::new(
             model.model_id().to_string(),
-            json!({
-                "raw": plan.raw,
-                "terms": plan.terms,
-                "mode": plan.mode.as_str(),
-            }),
+            json!({ "raw": plan.raw, "terms": plan.terms, "mode": plan.mode.as_str() }),
         );
         req.questions.insert(
-            "intent".into(),
+            "plan".into(),
             Question::choice(
-                "Which deterministic lookup best fits the user query?",
+                "Pick the single deterministic lookup plan that best matches the user query intent.",
                 options.clone(),
             ),
         );
-        let resp = self.call("query", 0, model, &req).ok()?;
-        let ans = resp.answers.get("intent")?;
-        let Answer::Choice(c) = ans else {
-            return None;
+        let detail = Some(serde_json::to_value(&options).unwrap_or_default());
+        let Ok(resp) = self.call("query", 0, model, &req, detail) else {
+            return QueryAdviceOutcome::Fallback;
         };
-        // Validate: the chosen option must be one we offered (§29).
-        let chosen = options.get(&c.choice)?;
-        let _ = chosen;
-        Some(match c.choice.as_str() {
-            "related" => QueryIntent::Related,
-            "callers" => QueryIntent::Callers,
-            "callees" => QueryIntent::Callees,
-            _ => QueryIntent::Find,
-        })
+        let Some(Answer::Choice(c)) = resp.answers.get("plan") else {
+            return QueryAdviceOutcome::Fallback;
+        };
+        // Validate the opaque id maps to a plan we built; never invent one.
+        match plans.get(&c.choice) {
+            Some(p) => QueryAdviceOutcome::Chosen {
+                plan: p.clone(),
+                confidence: c.confidence,
+            },
+            None => QueryAdviceOutcome::Fallback,
+        }
     }
 
     /// Rerank role: score each logical result, reorder only (§31-§38).
@@ -232,8 +334,9 @@ impl SystemOne {
             "relevant".to_string(),
             "highly relevant".to_string(),
         ];
+        let bsz = self.batch_size();
         let mut scored: Vec<(usize, f64)> = Vec::with_capacity(seeds.len());
-        for chunk in seeds.chunks(RERANK_BATCH).enumerate() {
+        for chunk in seeds.chunks(bsz).enumerate() {
             let (bi, batch) = chunk;
             let mut req = SystemOneRequest::new(
                 model.model_id().to_string(),
@@ -241,7 +344,7 @@ impl SystemOne {
             );
             for (j, s) in batch.iter().enumerate() {
                 req.questions.insert(
-                    format!("r{}", bi * RERANK_BATCH + j),
+                    format!("r{}", bi * bsz + j),
                     Question::score(
                         format!(
                             "Relevance of {} `{}` to the query",
@@ -252,9 +355,9 @@ impl SystemOne {
                     ),
                 );
             }
-            let resp = self.call("rerank", bi, model, &req).ok()?; // any batch failure -> whole fallback
+            let resp = self.call("rerank", bi, model, &req, None).ok()?; // any batch failure -> whole fallback
             for (j, s) in batch.iter().enumerate() {
-                let id = format!("r{}", bi * RERANK_BATCH + j);
+                let id = format!("r{}", bi * bsz + j);
                 let Some(Answer::Score(a)) = resp.answers.get(&id) else {
                     return None; // missing/invalid answer -> fallback
                 };
@@ -262,7 +365,7 @@ impl SystemOne {
                     return None;
                 }
                 let _ = s;
-                scored.push((bi * RERANK_BATCH + j, a.score));
+                scored.push((bi * bsz + j, a.score));
             }
         }
         // Reorder by model score desc; equal scores keep deterministic order.
@@ -277,6 +380,37 @@ impl SystemOne {
         });
         Some(order)
     }
+}
+
+/// Selective rerank eligibility guard (§18-§20). Returns Some(reason) to skip.
+/// Conservative: skip empty/single results, exhaustive (order-only, no value
+/// for membership), and a single exact-identifier match already at rank #1.
+fn rerank_skip_reason(plan: &QueryPlan, seeds: &[ScoredNode]) -> Option<&'static str> {
+    if seeds.is_empty() {
+        return Some("not_needed_zero_results");
+    }
+    if seeds.len() == 1 {
+        return Some("not_needed_single_result");
+    }
+    if plan.mode == crate::query::QueryMode::Exhaustive {
+        return Some("not_needed_exhaustive");
+    }
+    // Exact-symbol guard (§19): a lone exact-name hit already at rank #1 is the
+    // answer — reranking can only demote it. `is_identifier` = single token.
+    let single_ident = plan.raw.split_whitespace().count() == 1
+        && plan
+            .raw
+            .trim()
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_');
+    if single_ident {
+        let raw = plan.raw.trim();
+        let exact: Vec<&ScoredNode> = seeds.iter().filter(|s| s.node.label == raw).collect();
+        if exact.len() == 1 && seeds[0].node.label == raw {
+            return Some("not_needed_exact_match");
+        }
+    }
+    None
 }
 
 /// Apply a permutation to seeds (reorder only; the set is unchanged).

@@ -2540,7 +2540,7 @@ fn command_query(args: &[String]) -> Result<u8, String> {
         // JSON remains opt-in.
         print_json(&serde_json::json!({
             "command":"query","query":text,"mode":if options.exhaustive{"exhaustive"}else{"ranked"},
-            "intent":plan.intent.as_str(),"terms":plan.terms,
+            "intent":result.plan.intent.as_str(),"terms":plan.terms,
             "total":result.total,"shown":result.shown,"complete":result.complete,
             "so_query":result.so_query,"so_rerank":result.so_rerank,
             "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
