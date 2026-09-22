@@ -1,0 +1,29 @@
+{
+ "note": "offline what-if only; production ranking unchanged",
+ "method": "re-sort frozen deterministic (mode-A) candidate lists per question by one temporal feature; re-grade with frozen gold; MRR/nDCG@10/PrimaryPathRecall@10",
+ "recency_only": {
+  "base_ndcg10": 0.3371,
+  "new_ndcg10": 0.3364,
+  "base_mrr": 0.2469,
+  "new_mrr": 0.1302,
+  "base_prec10": 0.14,
+  "new_prec10": 0.14
+ },
+ "frequency_only": {
+  "base_ndcg10": 0.3371,
+  "new_ndcg10": 0.3993,
+  "base_mrr": 0.2469,
+  "new_mrr": 0.1896,
+  "base_prec10": 0.14,
+  "new_prec10": 0.215
+ },
+ "change_count_only": {
+  "base_ndcg10": 0.3371,
+  "new_ndcg10": 0.4106,
+  "base_mrr": 0.2469,
+  "new_mrr": 0.1596,
+  "base_prec10": 0.14,
+  "new_prec10": 0.235
+ },
+ "verdict": "pure recency is harmful (MRR .247->.130); pure activity lifts recall-in-top10 but not rank-of-first; neither is a viable primary ordering"
+}

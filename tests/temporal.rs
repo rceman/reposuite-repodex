@@ -241,3 +241,52 @@ fn temporal_deterministic() {
     let _ = std::fs::remove_dir_all(&o1);
     let _ = std::fs::remove_dir_all(&o2);
 }
+
+/// §28 lookup benchmark (perf only; skipped unless a GTW temporal index is
+/// present at REPODEX_TEMPORAL_DIR). Loads once, times single/100/1000 lookups.
+#[test]
+fn temporal_lookup_benchmark() {
+    let Ok(dir) = std::env::var("REPODEX_TEMPORAL_DIR") else {
+        return;
+    };
+    let dir = PathBuf::from(dir);
+    if !dir.join("files.jsonl").exists() {
+        return;
+    }
+    let t = std::time::Instant::now();
+    let idx = load(&dir);
+    let load_ms = t.elapsed().as_secs_f64() * 1000.0;
+    let paths: Vec<String> = idx.files().map(|f| f.path.clone()).collect();
+    assert!(!paths.is_empty());
+    // deterministic pseudo-random selection
+    let mut seed = 0x9e3779b9u64;
+    let mut pick = |n: usize| -> String {
+        seed = seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
+        paths[(seed >> 33) as usize % n].clone()
+    };
+    let n = paths.len();
+    // warmup + measure batches
+    let mut times = Vec::new();
+    let reps = 1000usize;
+    let mut hits = 0usize;
+    for _ in 0..reps {
+        let p = pick(n);
+        let t0 = std::time::Instant::now();
+        if idx.file(&p).is_some() {
+            hits += 1;
+        }
+        times.push(t0.elapsed().as_secs_f64() * 1e6);
+    }
+    times.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    let mean = times.iter().sum::<f64>() / times.len() as f64;
+    let p50 = times[times.len() / 2];
+    let p95 = times[(times.len() * 95) / 100];
+    let max = *times.last().unwrap();
+    eprintln!(
+        "LOOKUP_BENCH files={} load_ms={:.1} lookups={} hits={} mean_us={:.2} p50_us={:.2} p95_us={:.2} max_us={:.2}",
+        n, load_ms, reps, hits, mean, p50, p95, max
+    );
+    assert!(hits > 0);
+}

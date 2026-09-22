@@ -1,0 +1,79 @@
+{
+ "corpora": {
+  "gtw": {
+   "repo": "gpt-tunnel-gateway f09d083",
+   "commits": 969,
+   "git_files": 944,
+   "files_tracked": 1486,
+   "change_events": 7025,
+   "build_wall_ms": 875,
+   "build_peak_rss_kb": 15212,
+   "artifact_bytes": 494637,
+   "bytes_per_file": 332.9,
+   "bytes_per_event": 70.4,
+   "events_per_sec": 8029,
+   "git_subprocesses_build": 1
+  },
+  "3dpixels": {
+   "repo": "3dpixels",
+   "commits": 455,
+   "files_tracked": 3550,
+   "change_events": 7390,
+   "build_wall_ms": 919,
+   "build_peak_rss_kb": 8268,
+   "artifact_bytes": 1144532,
+   "bytes_per_file": 322.4,
+   "bytes_per_event": 154.9,
+   "events_per_sec": 8041,
+   "git_subprocesses_build": 1
+  },
+  "bugbounty": {
+   "repo": "bugbounty",
+   "commits": 237,
+   "files_tracked": 4409,
+   "change_events": 7184,
+   "build_wall_ms": 628,
+   "build_peak_rss_kb": 8968,
+   "artifact_bytes": 1445337,
+   "bytes_per_file": 327.8,
+   "bytes_per_event": 201.2,
+   "events_per_sec": 11439,
+   "git_subprocesses_build": 1
+  }
+ },
+ "incremental": {
+  "repo": "bugbounty clone",
+  "indexed_at_commits": 188,
+  "advanced_to_commits": 237,
+  "new_commits_processed": 49,
+  "new_change_events": 828,
+  "wall_ms": 62,
+  "peak_rss_kb": 9480,
+  "files_after": 4409,
+  "note": "scales with new history (49/237 commits), not total"
+ },
+ "lookup": {
+  "files": 1486,
+  "load_ms": 97.0,
+  "lookups": 1000,
+  "mean_us": 1.1,
+  "p50_us": 0.99,
+  "p95_us": 1.65,
+  "max_us": 30.36,
+  "git_subprocesses_per_lookup": 0,
+  "note": "in-memory BTreeMap over persisted artifact; strace shows no git execve"
+ },
+ "disk_accounting": {
+  "gtw_artifact_bytes": 494637,
+  "gtw_bytes_per_file": 333,
+  "gtw_bytes_per_event": 70,
+  "note": "artifact ~0.5-1.4MB for 1.5-4.4k files; tiny vs source tree"
+ },
+ "anti_patterns": {
+  "per_file_git_subprocesses": 0,
+  "full_history_in_memory": 0,
+  "unbounded_event_maps": 0,
+  "duplicate_history_storage": 0,
+  "query_time_git": 0
+ }
+}

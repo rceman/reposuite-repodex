@@ -1,0 +1,181 @@
+{
+ "status": "GIT_TEMPORAL_ACTIVITY_FOUNDATION_COMPLETE",
+ "signal_category": "TEMPORAL_SIGNAL_CONDITIONAL",
+ "impl_commit": "49efbc1",
+ "base": "9762380",
+ "git_semantics": {
+  "change_event": "non-merge name-status diff vs first parent",
+  "timestamp": "committer %ct",
+  "merge": "no per-file events (no double-count)",
+  "rename": "--no-renames, path-centric, no history carried",
+  "delete_recreate": "one path history",
+  "age_anchor": "indexed HEAD committer ts (deterministic)"
+ },
+ "performance": {
+  "corpora": {
+   "gtw": {
+    "repo": "gpt-tunnel-gateway f09d083",
+    "commits": 969,
+    "git_files": 944,
+    "files_tracked": 1486,
+    "change_events": 7025,
+    "build_wall_ms": 875,
+    "build_peak_rss_kb": 15212,
+    "artifact_bytes": 494637,
+    "bytes_per_file": 332.9,
+    "bytes_per_event": 70.4,
+    "events_per_sec": 8029,
+    "git_subprocesses_build": 1
+   },
+   "3dpixels": {
+    "repo": "3dpixels",
+    "commits": 455,
+    "files_tracked": 3550,
+    "change_events": 7390,
+    "build_wall_ms": 919,
+    "build_peak_rss_kb": 8268,
+    "artifact_bytes": 1144532,
+    "bytes_per_file": 322.4,
+    "bytes_per_event": 154.9,
+    "events_per_sec": 8041,
+    "git_subprocesses_build": 1
+   },
+   "bugbounty": {
+    "repo": "bugbounty",
+    "commits": 237,
+    "files_tracked": 4409,
+    "change_events": 7184,
+    "build_wall_ms": 628,
+    "build_peak_rss_kb": 8968,
+    "artifact_bytes": 1445337,
+    "bytes_per_file": 327.8,
+    "bytes_per_event": 201.2,
+    "events_per_sec": 11439,
+    "git_subprocesses_build": 1
+   }
+  },
+  "incremental": {
+   "repo": "bugbounty clone",
+   "indexed_at_commits": 188,
+   "advanced_to_commits": 237,
+   "new_commits_processed": 49,
+   "new_change_events": 828,
+   "wall_ms": 62,
+   "peak_rss_kb": 9480,
+   "files_after": 4409,
+   "note": "scales with new history (49/237 commits), not total"
+  },
+  "lookup": {
+   "files": 1486,
+   "load_ms": 97.0,
+   "lookups": 1000,
+   "mean_us": 1.1,
+   "p50_us": 0.99,
+   "p95_us": 1.65,
+   "max_us": 30.36,
+   "git_subprocesses_per_lookup": 0,
+   "note": "in-memory BTreeMap over persisted artifact; strace shows no git execve"
+  },
+  "disk_accounting": {
+   "gtw_artifact_bytes": 494637,
+   "gtw_bytes_per_file": 333,
+   "gtw_bytes_per_event": 70,
+   "note": "artifact ~0.5-1.4MB for 1.5-4.4k files; tiny vs source tree"
+  },
+  "anti_patterns": {
+   "per_file_git_subprocesses": 0,
+   "full_history_in_memory": 0,
+   "unbounded_event_maps": 0,
+   "duplicate_history_storage": 0,
+   "query_time_git": 0
+  }
+ },
+ "signal": {
+  "spearman": {
+   "recency(age,neg)=more recent->grade": 0.0659,
+   "changes->grade": 0.2289,
+   "freq->grade": 0.0783,
+   "changes_90d->grade": 0.2289
+  },
+  "roc_auc": {
+   "recency(recent=high)": 0.5307,
+   "changes": 0.8261,
+   "freq_per_year": 0.6952,
+   "changes_90d": 0.8261,
+   "changes_365d": 0.8261
+  },
+  "per_level": {
+   "L1": {
+    "n": 100,
+    "recency_spearman": -0.0247,
+    "changes_spearman": 0.1265,
+    "freq_spearman": 0.2109,
+    "recency_auc": 0.5299,
+    "changes_auc": 0.6813
+   },
+   "L2": {
+    "n": 100,
+    "recency_spearman": 0.0761,
+    "changes_spearman": 0.3997,
+    "freq_spearman": 0.0634,
+    "recency_auc": 0.6108,
+    "changes_auc": 0.9305
+   },
+   "L3": {
+    "n": 100,
+    "recency_spearman": -0.0119,
+    "changes_spearman": 0.0695,
+    "freq_spearman": 0.003,
+    "recency_auc": 0.5,
+    "changes_auc": 0.8366
+   },
+   "L4": {
+    "n": 100,
+    "recency_spearman": 0.1226,
+    "changes_spearman": 0.3366,
+    "freq_spearman": 0.2151,
+    "recency_auc": 0.5374,
+    "changes_auc": 0.8408
+   }
+  },
+  "n_candidates": 400,
+  "n_with_history": 400
+ },
+ "offline_sim": {
+  "note": "offline what-if only; production ranking unchanged",
+  "method": "re-sort frozen deterministic (mode-A) candidate lists per question by one temporal feature; re-grade with frozen gold; MRR/nDCG@10/PrimaryPathRecall@10",
+  "recency_only": {
+   "base_ndcg10": 0.3371,
+   "new_ndcg10": 0.3364,
+   "base_mrr": 0.2469,
+   "new_mrr": 0.1302,
+   "base_prec10": 0.14,
+   "new_prec10": 0.14
+  },
+  "frequency_only": {
+   "base_ndcg10": 0.3371,
+   "new_ndcg10": 0.3993,
+   "base_mrr": 0.2469,
+   "new_mrr": 0.1896,
+   "base_prec10": 0.14,
+   "new_prec10": 0.215
+  },
+  "change_count_only": {
+   "base_ndcg10": 0.3371,
+   "new_ndcg10": 0.4106,
+   "base_mrr": 0.2469,
+   "new_mrr": 0.1596,
+   "base_prec10": 0.14,
+   "new_prec10": 0.235
+  },
+  "verdict": "pure recency is harmful (MRR .247->.130); pure activity lifts recall-in-top10 but not rank-of-first; neither is a viable primary ordering"
+ },
+ "acceptance": {
+  "lookup_git_subprocesses": 0,
+  "incremental_scales_with_new_history": true,
+  "deterministic_artifact": true,
+  "ranking_unchanged": true,
+  "all_tests_pass": true
+ },
+ "next_experiment": "bounded deterministic activity prior (secondary signal), offline-evaluated first"
+}
