@@ -1,103 +1,117 @@
-# Jev V2 + Native Agent GTW Benchmark — Report
+# Jev V2 + Instrumented Native-Agent GTW Benchmark — Report
 
 ```text
-JEV_V2_NATIVE_AGENT_GTW_BENCHMARK_COMPLETE
+INSTRUMENTED_NATIVE_AGENT_BENCHMARK_COMPLETE
+REPODEX_SYSTEM_ONE_PRODUCT_DECISION_READY
+ZERO_CONTEXT_AGENT_ISOLATION = PASS
 ```
 
-RepoDex base `ab9038f` → final `ddf4520` (clean). GTW pinned `f09d083` worktree.
-Resolved model `jev-1.13.0` on every call (no drift). 400 retrieval executions,
-403 Jev calls, 0 fallback/error/429. Spec sha `01ed9279`/gold `a721a537`.
+RepoDex HEAD `abd7647`. GTW `f09d083` worktree `/tmp/gtw-bench`. Agent model
+`gpt-5-6-luna-xhigh` (identical all treatments). Jev resolved `jev-1.13.0`.
 
-## PART I — Retrieval V2 (full 400-run benchmark)
+## Isolation provenance (§7)
 
-### Quality matrix (nDCG@10)
+- expected_sessions = 240 · valid_sessions = 240 · context_inheriting = 0 ·
+  reused_sessions = 0 · distinct session_ids = 240 · invalid/rerun = 0.
+- Each run = fresh `devin -p` zero-context process (new session, no parent
+  context). Counterbalanced order, conc=8.
+- Validity audit: across all 240 runs the only tools used were `grep`,
+  `find_file_by_name`, `read` — **0 exec / web / repodex / subagent calls**.
+  E0 never touched RepoDex; E1–E3 made no live RepoDex calls. No gold leaked.
 
-| level | A base | B query | C rerank | D full |
-|-------|--------|---------|----------|--------|
-| L1    | 0.085  | 0.077   | **0.256**| 0.233  |
-| L2    | 0.271  | 0.153   | **0.394**| 0.178  |
-| L3    | 0.316  | 0.086   | **0.396**| 0.064  |
-| L4    | 0.371  | 0.097   | 0.362    | 0.090  |
-| **all** | **0.261** | **0.103** | **0.352** | **0.141** |
+## Telemetry source
 
-Overall: hit@1 A .15 / B .24 / C .28 / D .28; hit@10 A .40 / B .25 / C .50 / D .28;
-MRR A .247 / B .245 / C .364 / D .280; PathRecall@20 A .358 / C .358.
+`devin -p --export` ATIF trajectory: `final_metrics` real prompt/completion/
+cached tokens; `steps[].tool_calls` + `observation` real trace/output bytes;
+`steps[].metrics` per-call tokens; `steps[].timestamp` timing. Harness-measured,
+not self-reported.
 
-### Wins/ties/losses vs A
-- **B: 0/6/14** — the seed-first query role is a net REGRESSION.
-- **C: 12/3/5** — rerank-only remains the clear winner.
-- **D: 2/3/15** — full mode is worse than C (query-role damage not recovered).
+## Headline results (means over 60 runs each)
 
-### V2 query role — now reachable but harmful
-V2 made non-find plans reachable: intents = {find 31, related 62, callers 7}
-(in B). **L2-Q2 correctly chose `callers(ensureWorkerActionableSlot)` conf .91**
-(the critical §17 test passes). But binding plans to lexical seeds collapses
-coverage: the top-5 seeds are often *test functions* (`TestTSK…`,
-`TestProjectOperationalStatus…`), so `related/callers(test_fn)` narrows results
-to the test's neighborhood instead of the implementation. Net nDCG B 0.103.
+| metric | E0 native | E1 RepoDex | E2 +rerank | E3 +full |
+|--------|-----------|------------|------------|----------|
+| RequiredFactRecall | 0.99 | 0.99 | 0.99 | 0.98 |
+| PrimaryEvidenceCov | 0.93 | 0.93 | 0.93 | 0.92 |
+| tool calls | 31.3 | 24.7 | 24.1 | 22.2 |
+| files read | 15.3 | 13.7 | 14.5 | 11.1 |
+| files observed | 193.8 | 75.4 | 76.0 | 87.3 |
+| **input tokens** | **471,852** | **391,013** | **356,234** | **321,750** |
+| output tokens | 4,199 | 4,158 | 3,805 | 3,490 |
+| repo out bytes | 206,047 | 162,893 | 152,163 | 143,025 |
+| wall ms | 42,857 | 40,599 | 37,049 | 38,874 |
 
-### V2 rerank — guard works
-`so_rerank`: 131 used, 69 `not_needed_single_result`/`exact_match`/`exhaustive`.
-**C2 `TaskExecutionDispatch` stays rank #1** (`not_needed_exact_match`) — the V1
-1→6 regression is fixed. Rerank calls dropped 200→131. top-10 Jaccard C .941.
+Totals: input tokens E0 28.3M → E3 19.3M; output ~0.25M each.
 
-### Batching experiment (R1=1×20 vs R2=2×10, 8q×3r)
-Identical quality (nDCG .591 vs .590) but **R1 uses ~18% fewer input tokens
-(1725 vs 2093) and half the calls** → 1×20 is strictly better; confirmed as the
-primary strategy. Both far under 28k soft budget.
+## Deltas
 
-### Latency / cost (retrieval)
-E2E p50: A 590 / B 1353 / C 1346 / D 1369 ms. Per-call ~726ms query, ~743ms rerank.
-$/q: B $0.000045, C $0.000074, D $0.000068 → /1M ≈ $45/$74/$68.
+- **E1 vs E0**: input −80,839 (−17.1%), tool calls −6.6 (−21.0%), files observed
+  −118 (−61%), recall Δ0.00. **RepoDex pays for itself.**
+- **E2 vs E1**: input −34,779 (−8.9%), calls −0.7 — selective Jev rerank adds real
+  incremental savings.
+- **E3 vs E0**: input −150,101 (−31.8%), calls −9.1 (−29%), recall −0.01 —
+  narrowest packet → biggest token cut, tiny recall cost.
+- E0 input-token variance (6.2e10) is ~3× the assisted modes — RepoDex also
+  **stabilizes** investigation.
 
-## PART II — Real-Agent (reduced-scale zero-context)
+## Per-level (input tokens)
 
-24 fresh `run_subagent` agents (subagent_explore; cannot run RepoDex). All
-produced correct, source-cited answers. **All 24 correct (RequiredFactRecall
-~1.0 across every treatment).**
+| level | E0 | E1 | E2 | E3 |
+|-------|----|----|----|----|
+| L1 lookup | 127k | 136k | 171k | 126k |
+| L2 multi-hop | 389k | 318k | 247k | 218k |
+| L3 architectural | 685k | 663k | 583k | 501k |
+| L4 deep | 686k | 447k | 423k | 442k |
 
-Mean self-reported tool calls:
+RepoDex helps on **L2/L3/L4**; on trivial **L1** lookups the packet is pure
+overhead (E2 worst: 171k) — it can't beat an already-cheap native lookup.
 
-| treatment | mean calls | vs E0 |
-|-----------|-----------|-------|
-| E0 native | **13.7** | — |
-| E1 RepoDex(A) | 21.0 | +53% WORSE |
-| E2 +rerank(C) | 14.7 | +7% worse |
-| E3 +full(D) | 18.3 | +34% worse |
+## RDX1 context ROI (agent tokens saved / packet tokens)
 
-Per-question tool calls (E0/E1/E2/E3): L1-Q4 16/12/12/13 · L1-Q5 15/30/9/13 ·
-L2-Q1 12/26/17/18 · L2-Q3 16/13/10/10 · L3-Q2 6/9/16/29 · L4-Q1 17/36/24/27.
+- E1 ≈ **7.4×**, E2 ≈ **10.6×**, E3 ≈ **38.4×** (D packet is ~3.9k tok vs ~10.8k
+  for A/C). The packet decisively pays for itself in input tokens.
 
-**Headline: the ~33KB noisy RDX1 packet did NOT reduce real Agent work on this
-corpus — it often increased it.** RepoDex helps on focused-symbol questions
-(L2-Q3, L1-Q4) but hurts broad architectural questions (L1-Q5, L2-Q1, L3-Q2,
-L4-Q1) where test-heavy seeds send the agent down more paths. Correctness never
-degraded, but efficiency did. The retrieval nDCG gain does NOT translate into
-end-to-end Agent savings here.
+## Jev incremental ROI (E2/E3 over E1)
 
-## Safety / invariants
-- C1 zero-result `total=0` preserved (roles `not_needed`). PASS.
-- C2 `TaskExecutionDispatch` rank #1 preserved via exact-match guard. PASS.
-- C3 exhaustive A==C identical (seeds+related+total+complete+evidence). PASS.
-  (In D the query role legitimately picks a different plan → different set; that
-  is plan-selection, not corruption.)
-- C4 candidate-evidence edges preserved identical A↔D. PASS.
-- All §110 invariant counters = 0. Source-scanning invariant intact (queries use
-  persisted artifacts, no reparse).
+Jev retrieval phase: 331 calls, 446,002 input tok, ~$0.019 total (~$0.00006/q).
+Per assisted run Jev saves a further ~34–70k agent input tokens — an extreme
+token ROI, though Jev *cost* is negligible either way.
+
+## Retrieval-proxy validity (§48/Q10)
+
+Pearson between retrieval `rank-of-first-primary` proxy and actual agent
+`observed-files-to-first-primary` = **0.078** — no meaningful correlation.
+**Cheap retrieval proxies do NOT predict real downstream Agent cost**; the
+240-agent instrumented benchmark cannot be replaced by retrieval metrics alone.
+
+## §56 product decisions
+
+1. RepoDex reduce real input tokens? **YES** −17.1%.
+2. RepoDex reduce tool calls? **YES** −21%.
+3. RepoDex reduce files/source observed? **YES** −61%.
+4. Correctness preserved? **YES** (recall 0.99, −0.00).
+5. Selective Jev rerank beyond RepoDex? **YES** −8.9% further tokens.
+6. Seed-first query role E2E? **reduces tokens most** (−32%) but −1% recall —
+   token-efficient yet slightly less accurate.
+7. RDX1 cost more than it saves? **NO** — ROI 7–38×.
+8. Levels it helps: **L2, L3, L4**.
+9. Levels it hurts: **L1** (packet overhead).
+10. Proxies predictive? **NO** (r=0.078).
+11. RepoDex justified vs native? **YES** on non-trivial questions.
+12. Jev on top of RepoDex? **YES** — rerank adds savings at negligible cost.
+13. Best tradeoff: **E2 (RepoDex + selective Jev rerank)** — best recall (0.99)
+    with −24.5% tokens / −23% calls vs native. E3 saves more tokens but costs
+    recall; E1 is the Jev-free floor.
 
 ## Verdict
-- **Deterministic RepoDex (E1) does not currently pay for itself end-to-end**:
-  it raised mean Agent tool calls (+53%) without hurting correctness.
-- **Jev adds no agent value over RepoDex** (E2/E3 also ≥ E0).
-- **Selective rerank (C) is the only net-positive Jev mode for *retrieval***
-  (nDCG +0.09, exact-match regression fixed) — but that retrieval gain did not
-  reduce real Agent effort in this sample.
-- **Seed-first query role (B/D) is harmful** — keep it off; it needs
-  implementation-kind-aware seed filtering (downweight test files) before it's
-  viable.
 
-## Caveats
-Agent phase is reduced-scale (24/240) and self-reported-tool-metrics only —
-`run_subagent` exposes no tool-trace or token usage, so token/byte metrics and
-repetition variance are unavailable. Full product-decision status is withheld.
-Raw traces `/tmp/repodex-jev-gtw-v2/raw/`; docs `docs/evals/jev-gtw-v2/`.
+The earlier 24-run pilot (self-reported) suggested RepoDex didn't help — that
+was a measurement artifact. With real telemetry, **deterministic RepoDex
+clearly reduces real Agent investigation cost** (−17% input tokens, −21% tool
+calls, −61% files observed) while preserving correctness, and **selective Jev
+rerank adds a further real gain**. RepoDex is justified; keep System One
+available (rerank is the productive role); the seed-first query role trades a
+little correctness for token savings.
+
+Raw: `raw/exports/*.json` (240 ATIF), `agent_run_index.jsonl`,
+`instrumented_agent_{runs,tool_calls,usage,answers,scoring}.jsonl`.
+Orchestration: `driver.py`, `collect.py`, `analyze_agent.py`.
