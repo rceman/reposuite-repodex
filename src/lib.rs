@@ -40,6 +40,7 @@ pub mod rdx1;
 pub mod repository;
 pub mod scanner;
 pub mod system_one;
+pub mod temporal;
 
 pub use model::{
     AnalysisStatus, BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,

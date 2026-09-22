@@ -70,6 +70,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "graph" => command_graph(&rest),
         "query" => command_query(&rest),
         "config" => command_config(&rest),
+        "temporal" => command_temporal(&rest),
         "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
@@ -2756,4 +2757,171 @@ fn command_system_one_probe(args: &[String]) -> Result<u8, String> {
         }
         Err(e) => Err(format!("probe {name}: {e}")),
     }
+}
+
+// ---------------------------------------------------------------------------
+// temporal — Git-derived temporal/activity index (TEMPORAL evidence family).
+// Query/inspection reads only the persisted artifact; no Git runs at lookup.
+// ---------------------------------------------------------------------------
+
+fn command_temporal(args: &[String]) -> Result<u8, String> {
+    let sub = args.first().map(|s| s.as_str()).ok_or_else(|| {
+        "temporal requires a subcommand (build|update|verify|stats|file)".to_string()
+    })?;
+    match sub {
+        "build" => command_temporal_build(&args[1..], false),
+        "update" => command_temporal_build(&args[1..], true),
+        "verify" => command_temporal_verify(&args[1..]),
+        "stats" => command_temporal_stats(&args[1..]),
+        "file" => command_temporal_file(&args[1..]),
+        _ => Err(format!("unknown temporal subcommand `{sub}`")),
+    }
+}
+
+fn command_temporal_build(args: &[String], incremental: bool) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let repo = require_positional(
+        &options,
+        "temporal build/update requires a repository directory",
+    )?;
+    let output = options
+        .output
+        .clone()
+        .ok_or_else(|| "temporal build/update requires --output <dir>".to_string())?;
+    let outcome = if incremental {
+        let prev = options
+            .previous
+            .clone()
+            .ok_or_else(|| "temporal update requires --previous <dir>".to_string())?;
+        crate::temporal::update_temporal(Path::new(repo), Path::new(&prev), Path::new(&output))
+    } else {
+        crate::temporal::build_temporal(Path::new(repo), Path::new(&output))
+    }
+    .map_err(|e| e.to_string())?;
+    let m = &outcome.manifest;
+    if options.json {
+        print_json(&serde_json::json!({
+            "command": if incremental {"temporal update"} else {"temporal build"},
+            "mode": outcome.stats.mode,
+            "output": output,
+            "indexed_head": m.indexed_head,
+            "files_tracked": m.files_tracked,
+            "commits_processed": m.commits_processed,
+            "change_events": m.change_events,
+            "artifact_bytes": m.artifact_bytes,
+            "wall_ms": outcome.stats.wall_ms,
+            "peak_rss_kb": outcome.stats.peak_rss_kb,
+            "content_digest": m.content_digest,
+        }))?;
+    } else {
+        println!("mode:            {}", outcome.stats.mode);
+        println!("head:            {}", m.indexed_head);
+        println!("files:           {}", m.files_tracked);
+        println!("commits:         {}", m.commits_processed);
+        println!("change events:   {}", m.change_events);
+        println!("artifact bytes:  {}", m.artifact_bytes);
+        println!("elapsed:         {:.1} ms", outcome.stats.wall_ms);
+        println!("peak RSS:        {} kB", outcome.stats.peak_rss_kb);
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_temporal_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "temporal verify requires an artifact directory")?;
+    let m = crate::temporal::verify(Path::new(dir)).map_err(|e| e.to_string())?;
+    // Optional: confirm the artifact still binds to this repository's HEAD.
+    let mut head_note = String::new();
+    if let Some(repo) = options.repository.clone() {
+        let head =
+            crate::temporal::collect::head_commit(Path::new(&repo)).map_err(|e| e.to_string())?;
+        if head == m.indexed_head {
+            head_note = "head matches".to_string();
+        } else if crate::temporal::collect::is_ancestor(Path::new(&repo), &m.indexed_head, &head)
+            .map_err(|e| e.to_string())?
+        {
+            head_note = "index is behind HEAD (incremental update available)".to_string();
+        } else {
+            return Err("temporal index HEAD diverged from repository".to_string());
+        }
+    }
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"temporal verify","ok":true,"dir":dir,
+            "schema_version":m.schema_version,"policy_version":m.policy_version,
+            "indexed_head":m.indexed_head,"files_tracked":m.files_tracked,
+            "content_digest":m.content_digest,"head":head_note,
+        }))?;
+    } else {
+        println!("temporal index: valid");
+        println!("  schema/policy: {}/{}", m.schema_version, m.policy_version);
+        println!("  head:          {}", m.indexed_head);
+        println!("  files:         {}", m.files_tracked);
+        if !head_note.is_empty() {
+            println!("  repository:    {head_note}");
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_temporal_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "temporal stats requires an artifact directory")?;
+    let idx = crate::temporal::TemporalIndex::load(Path::new(dir)).map_err(|e| e.to_string())?;
+    let m = &idx.manifest;
+    let mut total_changes = 0u64;
+    let mut max_count = 0u32;
+    let mut hot = String::new();
+    for f in idx.files() {
+        total_changes += u64::from(f.change_commit_count);
+        if f.change_commit_count > max_count {
+            max_count = f.change_commit_count;
+            hot = f.path.clone();
+        }
+    }
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"temporal stats","indexed_head":m.indexed_head,
+            "files_tracked":m.files_tracked,"total_change_events":total_changes,
+            "mean_changes_per_file": if !idx.is_empty() {total_changes as f64/idx.len() as f64} else {0.0},
+            "max_file_changes":max_count,"hottest_file":hot,
+            "commits_processed":m.commits_processed,"artifact_bytes":m.artifact_bytes,
+        }))?;
+    } else {
+        println!("head:            {}", m.indexed_head);
+        println!("files:           {}", m.files_tracked);
+        println!("change events:   {total_changes}");
+        println!(
+            "mean/file:       {:.2}",
+            if !idx.is_empty() {
+                total_changes as f64 / idx.len() as f64
+            } else {
+                0.0
+            }
+        );
+        println!("hottest:         {hot} ({max_count} changes)");
+        println!("commits:         {}", m.commits_processed);
+        println!("artifact bytes:  {}", m.artifact_bytes);
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_temporal_file(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = require_positional(&options, "temporal file requires an artifact directory")?;
+    let path = options
+        .positional
+        .get(1)
+        .cloned()
+        .ok_or_else(|| "temporal file requires a repository-relative path".to_string())?;
+    let idx = crate::temporal::TemporalIndex::load(Path::new(dir)).map_err(|e| e.to_string())?;
+    let Some(d) = idx.describe(&path) else {
+        return Err(format!("no temporal record for `{path}`"));
+    };
+    if options.json {
+        print_json(&d)?;
+    } else {
+        println!("{d}");
+    }
+    Ok(EXIT_OK)
 }
