@@ -1,0 +1,51 @@
+{
+ "note": "REDUCED-SCALE zero-context sample (6 questions x 4 treatments x 1 rep = 24 agents). Tool metrics self-reported by agent (no harness trace available); token usage unavailable (not exposed) -> reported as such. All answers correct=1.",
+ "isolation": "zero-context run_subagent; subagent_explore read-only cannot run repodex",
+ "samples": 24,
+ "per_question": {
+  "L1-Q4": {
+   "E0": 16,
+   "E1": 12,
+   "E2": 12,
+   "E3": 13
+  },
+  "L1-Q5": {
+   "E0": 15,
+   "E1": 30,
+   "E2": 9,
+   "E3": 13
+  },
+  "L2-Q1": {
+   "E0": 12,
+   "E1": 26,
+   "E2": 17,
+   "E3": 18
+  },
+  "L2-Q3": {
+   "E0": 16,
+   "E1": 13,
+   "E2": 10,
+   "E3": 10
+  },
+  "L3-Q2": {
+   "E0": 6,
+   "E1": 9,
+   "E2": 16,
+   "E3": 29
+  },
+  "L4-Q1": {
+   "E0": 17,
+   "E1": 36,
+   "E2": 24,
+   "E3": 27
+  }
+ },
+ "mean_tool_calls": {
+  "E0": 13.7,
+  "E1": 21,
+  "E2": 14.7,
+  "E3": 18.3
+ },
+ "correctness": "24/24 correct",
+ "finding": "RepoDex packet did NOT reduce real agent tool calls on avg; helps focused-symbol Qs, hurts broad architectural Qs"
+}

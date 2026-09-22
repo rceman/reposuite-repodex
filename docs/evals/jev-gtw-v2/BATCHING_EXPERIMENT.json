@@ -1,0 +1,14 @@
+{
+ "R1": {
+  "batch": "1x20",
+  "calls_per_q": 1,
+  "mean_in_tok": 1725,
+  "n": 24
+ },
+ "R2": {
+  "batch": "2x10",
+  "calls_per_q": 2,
+  "mean_in_tok": 2093,
+  "n": 24
+ }
+}

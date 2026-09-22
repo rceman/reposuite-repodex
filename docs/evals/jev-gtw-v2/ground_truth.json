@@ -1,0 +1,134 @@
+{
+  "benchmark": "jev-gtw-v1",
+  "grading": {
+    "3": "exact primary symbol (label matches a primary_symbol AND path in primary_paths)",
+    "2": "primary file/entity (path in primary_paths)",
+    "1": "supporting source/evidence (path in supporting_paths OR label in supporting_symbols)",
+    "0": "unrelated"
+  },
+  "answers": {
+    "L1-Q1": {
+      "primary_paths": ["internal/workflowrole/roles.go"],
+      "primary_symbols": ["RolePlanner","RoleLead","RoleAdvisor","RoleWorker"],
+      "supporting_paths": [],
+      "supporting_symbols": ["workflowrole"]
+    },
+    "L1-Q2": {
+      "primary_paths": ["internal/query/query.go"],
+      "primary_symbols": ["Parse","Query"],
+      "supporting_paths": [],
+      "supporting_symbols": ["Limit"]
+    },
+    "L1-Q3": {
+      "primary_paths": ["internal/service/agent_routing.go"],
+      "primary_symbols": ["ResolveAgent","routingScore"],
+      "supporting_paths": [],
+      "supporting_symbols": []
+    },
+    "L1-Q4": {
+      "primary_paths": ["internal/service/task_execution_lifecycle.go","internal/gitx/task_worktree.go"],
+      "primary_symbols": ["TaskExecutionDispatch","taskExecutionWorktree","CreateTaskWorktree"],
+      "supporting_paths": [],
+      "supporting_symbols": ["TaskWorktreePath"]
+    },
+    "L1-Q5": {
+      "primary_paths": ["internal/hub/ensure.go"],
+      "primary_symbols": ["validateManagedRoot"],
+      "supporting_paths": ["internal/hub"],
+      "supporting_symbols": []
+    },
+
+    "L2-Q1": {
+      "primary_paths": ["internal/mcp/session_authority.go","internal/authority/authority.go"],
+      "primary_symbols": ["resolveTypedSessionAuthority","resolveSessionAuthority","sessionIDFromRaw","Attach","RequireRole","BootstrapSessionAuthority"],
+      "supporting_paths": ["internal/mcp","internal/authority"],
+      "supporting_symbols": ["sessionAuthority","Session"]
+    },
+    "L2-Q2": {
+      "primary_paths": ["internal/service/task_execution_lifecycle.go","internal/service/task_execution_review.go","internal/service/task_execution_submit_async.go"],
+      "primary_symbols": ["ensureWorkerActionableSlot","TaskExecutionDispatch","TaskExecutionReviewDecide","TaskExecutionRework"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": []
+    },
+    "L2-Q3": {
+      "primary_paths": ["internal/service/task_execution_lifecycle.go","internal/gitx/task_worktree.go"],
+      "primary_symbols": ["TaskExecutionDispatch","resolveTaskExecutionAgent","ensureWorkerActionableSlot","CreateTaskWorktree"],
+      "supporting_paths": ["internal/service","internal/gitx"],
+      "supporting_symbols": ["EffectiveProjectConfig","RefreshDefaultBranch","CurrentHead","CreateTaskExecutionState"]
+    },
+    "L2-Q4": {
+      "primary_paths": ["internal/service/task_authoring_dependencies.go"],
+      "primary_symbols": ["validateTaskDependencies","validateTaskDependenciesInWorktree"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["Integrated","Done"]
+    },
+    "L2-Q5": {
+      "primary_paths": ["internal/service/message_lifecycle.go"],
+      "primary_symbols": ["messageActor","MessageCreate","notifyMessage","recordMessageNotificationFailure"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["Session","project"]
+    },
+
+    "L3-Q1": {
+      "primary_paths": ["internal/service/task_execution_lifecycle.go","internal/service/agent_routing.go","internal/gitx/task_worktree.go"],
+      "primary_symbols": ["TaskExecutionDispatch","resolveTaskExecutionAgent","ensureWorkerActionableSlot","ResolveAgent","CreateTaskWorktree","TaskWorktreePath"],
+      "supporting_paths": ["internal/service","internal/gitx"],
+      "supporting_symbols": ["EffectiveProjectConfig","CreateTaskExecutionState"]
+    },
+    "L3-Q2": {
+      "primary_paths": ["internal/service/task_execution_integrate.go","internal/service/task_execution_verification.go","internal/gitx/task_integration.go"],
+      "primary_symbols": ["TaskExecutionIntegrate","PrepareTaskIntegrationCommit","PushTaskIntegrationCAS"],
+      "supporting_paths": ["internal/service","internal/gitx"],
+      "supporting_symbols": ["verification","gate","review"]
+    },
+    "L3-Q3": {
+      "primary_paths": ["internal/service/task_execution_integrate.go","internal/service/task_complete.go"],
+      "primary_symbols": ["TaskExecutionIntegrate","TaskComplete"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["TaskExecutionIntegrated","Done"]
+    },
+    "L3-Q4": {
+      "primary_paths": ["internal/service/workflow_policy.go"],
+      "primary_symbols": ["workflowPolicyFromAuthority","workflowPolicyFromEffectiveRules","workflowPolicyFromConfiguration"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["workflow_stage","integration_branch","wait_for_ci","release","task_merge"]
+    },
+    "L3-Q5": {
+      "primary_paths": ["internal/service/task_execution_submit_async.go","internal/service/task_execution_review.go","internal/service/task_execution_verification.go"],
+      "primary_symbols": ["TaskExecutionSubmitAsync","submitTaskExecution","TaskExecutionReviewDecide","TaskExecutionTestAsync"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["AwaitingReview","ReadyForVerification","Verified"]
+    },
+
+    "L4-Q1": {
+      "primary_paths": ["internal/authority/authority.go","internal/mcp/session_authority.go"],
+      "primary_symbols": ["resolveTypedSessionAuthority","sessionIDFromRaw","resolveSessionAuthority","Attach","RequireRole"],
+      "supporting_paths": ["internal/authority","internal/mcp"],
+      "supporting_symbols": ["authority","Session"]
+    },
+    "L4-Q2": {
+      "primary_paths": ["internal/service/task_execution_integrate.go","internal/gitx/task_integration.go"],
+      "primary_symbols": ["TaskExecutionIntegrate","PrepareTaskIntegrationCommit","PushTaskIntegrationCAS"],
+      "supporting_paths": ["internal/service/task_execution_verification.go","internal/service"],
+      "supporting_symbols": ["verification","expected-old","CAS"]
+    },
+    "L4-Q3": {
+      "primary_paths": ["internal/service/task_execution_submit_async.go"],
+      "primary_symbols": ["reconcileTaskExecutionSubmitOperation","TaskExecutionSubmitOperationStatus","TaskExecutionSubmitAsync"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["TaskExecutionPhase","submit"]
+    },
+    "L4-Q4": {
+      "primary_paths": ["internal/service/workflow_policy.go"],
+      "primary_symbols": ["workflowPolicyFromAuthority","workflowPolicyFromEffectiveRules"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["workflow_stage","integration_branch"]
+    },
+    "L4-Q5": {
+      "primary_paths": ["internal/service/project_operational_status_project_status.go"],
+      "primary_symbols": ["ProjectOperationalStatus"],
+      "supporting_paths": ["internal/service"],
+      "supporting_symbols": ["runtime_unavailable","project_rules_stale"]
+    }
+  }
+}
