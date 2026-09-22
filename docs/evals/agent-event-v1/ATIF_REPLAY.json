@@ -1,0 +1,45 @@
+{
+ "atif_sessions_expected": 240,
+ "atif_sessions_replayed": 240,
+ "canonical_events_total": 31814,
+ "prompt_token_mismatch_sessions": 0,
+ "completion_token_mismatch_sessions": 0,
+ "tool_call_count_mismatch_sessions": 0,
+ "sequence_anomaly_sessions": 0,
+ "duplicate_id_sessions": 0,
+ "missing_final_answer_sessions": 0,
+ "total_input_tokens": 92450895,
+ "total_output_tokens": 939108,
+ "tool_by_native_name": {
+  "grep": 2257,
+  "read": 3271,
+  "find_file_by_name": 606
+ },
+ "tool_by_category": {
+  "search": 2863,
+  "file_read": 3271
+ },
+ "source_files_observed_total": 685,
+ "source_observed_vs_prior": {
+  "note": "prior unique_files_observed counted name-only discovery too; canonical source_observed counts only content delivered to model",
+  "prior_mean_per_run": {
+   "E0": 193.8,
+   "E1": 75.4,
+   "E2": 76.0,
+   "E3": 87.3
+  },
+  "canonical_mean_per_run": {
+   "E0": 56.3,
+   "E1": 35.6,
+   "E2": 32.8,
+   "E3": 34.7
+  }
+ },
+ "manual_source_validation": {
+  "sessions_checked": 16,
+  "coverage": "E0-E3 x L1-L4",
+  "false_source_observed": 0,
+  "missed_source_observed": 1,
+  "missed_note": "1 = tool-truncated path (/tmp/gt..) + external non-repo wiki path correctly left path-less per \u00a719"
+ }
+}

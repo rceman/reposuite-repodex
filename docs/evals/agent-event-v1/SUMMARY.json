@@ -1,0 +1,89 @@
+{
+ "status": "AGENT_EVENT_TELEMETRY_FOUNDATION_COMPLETE",
+ "pipeline": "INVESTIGATION_EVENT_PIPELINE_READY",
+ "schema": "reposuite.agent-event.v1",
+ "harness_neutral": true,
+ "acceptance": {
+  "AGENT_EVENT_SCHEMA_V1_VALID": true,
+  "ATIF_ADAPTER_DEVIN_READY": true,
+  "INGEST_IDEMPOTENCY_PASS": true,
+  "CONFLICTING_DUPLICATE_REJECTED": true,
+  "STORE_VERIFY_PASS": true,
+  "QUERY_RANKING_UNCHANGED": true,
+  "TEMPORAL_RANKING_UNCHANGED": true,
+  "SYSTEM_ONE_BEHAVIOR_UNCHANGED": true
+ },
+ "replay": {
+  "atif_sessions_expected": 240,
+  "atif_sessions_replayed": 240,
+  "canonical_events_total": 31814,
+  "prompt_token_mismatch_sessions": 0,
+  "completion_token_mismatch_sessions": 0,
+  "tool_call_count_mismatch_sessions": 0,
+  "sequence_anomaly_sessions": 0,
+  "duplicate_id_sessions": 0,
+  "missing_final_answer_sessions": 0,
+  "total_input_tokens": 92450895,
+  "total_output_tokens": 939108,
+  "tool_by_native_name": {
+   "grep": 2257,
+   "read": 3271,
+   "find_file_by_name": 606
+  },
+  "tool_by_category": {
+   "search": 2863,
+   "file_read": 3271
+  },
+  "source_files_observed_total": 685,
+  "source_observed_vs_prior": {
+   "note": "prior unique_files_observed counted name-only discovery too; canonical source_observed counts only content delivered to model",
+   "prior_mean_per_run": {
+    "E0": 193.8,
+    "E1": 75.4,
+    "E2": 76.0,
+    "E3": 87.3
+   },
+   "canonical_mean_per_run": {
+    "E0": 56.3,
+    "E1": 35.6,
+    "E2": 32.8,
+    "E3": 34.7
+   }
+  },
+  "manual_source_validation": {
+   "sessions_checked": 16,
+   "coverage": "E0-E3 x L1-L4",
+   "false_source_observed": 0,
+   "missed_source_observed": 1,
+   "missed_note": "1 = tool-truncated path (/tmp/gt..) + external non-repo wiki path correctly left path-less per \u00a719"
+  }
+ },
+ "performance": {
+  "conversion_ingest": {
+   "per_file_cli": "240 ATIF files in 20.4s (~85ms/file incl. process spawn)",
+   "single_process_events_per_sec": 38330,
+   "peak_rss_kb": 172068,
+   "peak_rss_note": "dominated by CLI buffering the whole input file into memory; the store itself is per-session bounded (no full-store load)"
+  },
+  "query": {
+   "stats_ms": 172,
+   "verify_ms": 176,
+   "export_ms": 273,
+   "session_lookup": "per-session file read, bounded"
+  },
+  "storage": {
+   "raw_atif_bytes": 71079121,
+   "store_bytes": 30037917,
+   "events": 31814,
+   "store_bytes_per_event": 944,
+   "duplication_ratio_store_over_raw": 0.423,
+   "note": "canonical store is 42% of raw ATIF - drops full tool output, keeps digest+bytes+derived source_observed; final_answer retained"
+  },
+  "anti_patterns": {
+   "full_store_in_memory": false,
+   "per_session_bounded_dedup": true,
+   "full_tool_output_duplicated": false
+  }
+ },
+ "cli": "agent-events ingest|verify|stats|session|export"
+}

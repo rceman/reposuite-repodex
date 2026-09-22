@@ -1,0 +1,27 @@
+{
+ "conversion_ingest": {
+  "per_file_cli": "240 ATIF files in 20.4s (~85ms/file incl. process spawn)",
+  "single_process_events_per_sec": 38330,
+  "peak_rss_kb": 172068,
+  "peak_rss_note": "dominated by CLI buffering the whole input file into memory; the store itself is per-session bounded (no full-store load)"
+ },
+ "query": {
+  "stats_ms": 172,
+  "verify_ms": 176,
+  "export_ms": 273,
+  "session_lookup": "per-session file read, bounded"
+ },
+ "storage": {
+  "raw_atif_bytes": 71079121,
+  "store_bytes": 30037917,
+  "events": 31814,
+  "store_bytes_per_event": 944,
+  "duplication_ratio_store_over_raw": 0.423,
+  "note": "canonical store is 42% of raw ATIF - drops full tool output, keeps digest+bytes+derived source_observed; final_answer retained"
+ },
+ "anti_patterns": {
+  "full_store_in_memory": false,
+  "per_session_bounded_dedup": true,
+  "full_tool_output_duplicated": false
+ }
+}
