@@ -11,6 +11,7 @@ pub mod client;
 pub mod config;
 pub mod protocol;
 pub mod service;
+pub mod trace;
 
 pub use client::{HttpSystemOneModel, SystemOneError, SystemOneModel};
 pub use config::{Auth, ModelConfig, RepoDexConfig, Roles, SystemOneConfig};

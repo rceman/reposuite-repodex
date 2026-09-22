@@ -126,6 +126,45 @@ impl SystemOne {
         (result, prov)
     }
 
+    /// Timed + traced `decide` (§6 observability). Records one `CallRecord`
+    /// per attempt when `REPODEX_SO_TRACE` is set; never alters the result.
+    fn call(
+        &self,
+        role: &str,
+        batch: usize,
+        model: &HttpSystemOneModel,
+        req: &SystemOneRequest,
+    ) -> Result<crate::system_one::protocol::SystemOneResponse, crate::system_one::SystemOneError>
+    {
+        let started = std::time::Instant::now();
+        let out = model.decide(req);
+        let ms = started.elapsed().as_secs_f64() * 1000.0;
+        if super::trace::trace_path().is_some() {
+            let (resolved, input_tok, output_tok) = match &out {
+                Ok(r) => super::trace::usage_from_extra(&r.extra),
+                Err(_) => (None, None, None),
+            };
+            super::trace::record(&super::trace::CallRecord {
+                role: role.to_string(),
+                batch,
+                configured_model: model.name().to_string(),
+                resolved_model: resolved,
+                wall_latency_ms: ms,
+                input_tokens: input_tok,
+                output_tokens: output_tok,
+                question_count: req.questions.len(),
+                state_bytes: req.state.to_string().len(),
+                status: match &out {
+                    Ok(_) => "ok".to_string(),
+                    Err(e) => format!("{e:?}"),
+                },
+                fallback: out.is_err(),
+                fallback_reason: out.as_ref().err().map(|e| e.to_string()),
+            });
+        }
+        out
+    }
+
     /// Query role: offer bounded intent alternatives, let the model `choice`.
     /// Only intents valid for the plan are offered (§26). The model never
     /// generates a plan — it picks one of RepoDex's own options.
@@ -159,7 +198,7 @@ impl SystemOne {
                 options.clone(),
             ),
         );
-        let resp = model.decide(&req).ok()?;
+        let resp = self.call("query", 0, model, &req).ok()?;
         let ans = resp.answers.get("intent")?;
         let Answer::Choice(c) = ans else {
             return None;
@@ -213,7 +252,7 @@ impl SystemOne {
                     ),
                 );
             }
-            let resp = model.decide(&req).ok()?; // any batch failure -> whole fallback
+            let resp = self.call("rerank", bi, model, &req).ok()?; // any batch failure -> whole fallback
             for (j, s) in batch.iter().enumerate() {
                 let id = format!("r{}", bi * RERANK_BATCH + j);
                 let Some(Answer::Score(a)) = resp.answers.get(&id) else {

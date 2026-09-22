@@ -76,10 +76,12 @@ impl Question {
     }
 }
 
-/// A `system-one-v1` request.
+/// A `system-one-v1` request body: `{model, state, questions}`.
+///
+/// The protocol version is a client-side dispatch concern (the client chooses
+/// the `system-one-v1` wire format from config) — it is NOT a wire field.
 #[derive(Debug, Clone, Serialize)]
 pub struct SystemOneRequest {
-    pub protocol: String,
     pub model: String,
     pub state: Value,
     /// question-id -> typed question.
@@ -89,7 +91,6 @@ pub struct SystemOneRequest {
 impl SystemOneRequest {
     pub fn new(model: impl Into<String>, state: Value) -> Self {
         Self {
-            protocol: PROTOCOL_V1.to_string(),
             model: model.into(),
             state,
             questions: BTreeMap::new(),

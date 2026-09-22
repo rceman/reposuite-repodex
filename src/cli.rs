@@ -175,6 +175,8 @@ struct Options {
     import: Option<String>,
     call: Option<String>,
     tests_only: bool,
+    /// `config --unset <key>` removes a config key.
+    unset: bool,
 }
 
 fn parse_options(args: &[String]) -> Result<Options, String> {
@@ -195,6 +197,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--no-gitignore" => options.respect_gitignore = false,
             "--allow-incompatible" => options.allow_incompatible = true,
             "--test" | "--tests" => options.tests_only = true,
+            "--unset" => options.unset = true,
             "--output" => options.output = Some(value_for(args, &mut index, name, inline_value)?),
             "--previous" => {
                 options.previous = Some(value_for(args, &mut index, name, inline_value)?)
@@ -2647,6 +2650,12 @@ fn command_config(args: &[String]) -> Result<u8, String> {
     let value = options.positional.get(1).cloned();
     let path = crate::system_one::config::config_path();
     let mut doc = crate::system_one::config::load_value(&path)?;
+    if options.unset {
+        crate::system_one::config::remove_key(&mut doc, &key)?;
+        crate::system_one::config::save_value(&path, &doc)?;
+        println!("{key} <removed>");
+        return Ok(EXIT_OK);
+    }
     match value {
         Some(v) => {
             crate::system_one::config::set_key(&mut doc, &key, &v)?;

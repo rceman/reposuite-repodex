@@ -152,6 +152,25 @@ pub fn set_key(doc: &mut toml::Value, key: &str, value: &str) -> Result<(), Stri
     Ok(())
 }
 
+/// Remove a `system-one.*` key from a raw document (no-op if absent).
+pub fn remove_key(doc: &mut toml::Value, key: &str) -> Result<(), String> {
+    let parts: Vec<String> = key.split('.').map(|p| p.replace('-', "_")).collect();
+    if parts.is_empty() {
+        return Err("empty key".to_string());
+    }
+    let mut node = doc;
+    for part in &parts[..parts.len() - 1] {
+        match node.get_mut(part) {
+            Some(n) => node = n,
+            None => return Ok(()), // absent -> nothing to remove
+        }
+    }
+    if let Some(t) = node.as_table_mut() {
+        t.remove(parts.last().unwrap());
+    }
+    Ok(())
+}
+
 impl SystemOneConfig {
     /// Validate role bindings + model endpoints (§12). Errors never corrupt
     /// artifacts — they only gate whether System One may be used.
