@@ -71,6 +71,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "query" => command_query(&rest),
         "config" => command_config(&rest),
         "temporal" => command_temporal(&rest),
+        "agent-events" | "agent_events" => command_agent_events(&rest),
         "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
@@ -175,6 +176,10 @@ struct Options {
     to: Option<String>,
     import: Option<String>,
     call: Option<String>,
+    /// `agent-events ingest --format` input format.
+    format: Option<String>,
+    /// `agent-events ingest` repository checkout root for path normalization.
+    repo_root: Option<String>,
     tests_only: bool,
     /// `config --unset <key>` removes a config key.
     unset: bool,
@@ -242,6 +247,10 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             }
             "--import" => options.import = Some(value_for(args, &mut index, name, inline_value)?),
             "--call" => options.call = Some(value_for(args, &mut index, name, inline_value)?),
+            "--format" => options.format = Some(value_for(args, &mut index, name, inline_value)?),
+            "--repo-root" | "--root" => {
+                options.repo_root = Some(value_for(args, &mut index, name, inline_value)?)
+            }
             "--max-file-size" => {
                 let value = value_for(args, &mut index, name, inline_value)?;
                 options.max_file_size = Some(
@@ -2922,6 +2931,243 @@ fn command_temporal_file(args: &[String]) -> Result<u8, String> {
         print_json(&d)?;
     } else {
         println!("{d}");
+    }
+    Ok(EXIT_OK)
+}
+
+// ---------------------------------------------------------------------------
+// agent-events — canonical AgentEvent v1 telemetry ingest + store.
+// Harness-neutral contract; `devin-atif` is only an adapter into it.
+// ---------------------------------------------------------------------------
+
+fn command_agent_events(args: &[String]) -> Result<u8, String> {
+    let sub = args.first().map(|s| s.as_str()).ok_or_else(|| {
+        "agent-events requires a subcommand (ingest|verify|stats|session|export)".to_string()
+    })?;
+    match sub {
+        "ingest" => command_agent_events_ingest(&args[1..]),
+        "verify" => command_agent_events_verify(&args[1..]),
+        "stats" => command_agent_events_stats(&args[1..]),
+        "session" => command_agent_events_session(&args[1..]),
+        "export" => command_agent_events_export(&args[1..]),
+        _ => Err(format!("unknown agent-events subcommand `{sub}`")),
+    }
+}
+
+fn agent_events_store_dir(options: &Options) -> Result<String, String> {
+    options
+        .output
+        .clone()
+        .or(options.snapshot.clone())
+        .ok_or_else(|| "requires --output <store-dir>".to_string())
+}
+
+fn command_agent_events_ingest(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let format = options
+        .format
+        .clone()
+        .unwrap_or_else(|| "reposuite-v1".to_string());
+    let file: Option<String> = options.positional.first().cloned();
+    let dir = agent_events_store_dir(&options)?;
+    let mut store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    // read source text (stdin `-` or file)
+    let text = match file.as_deref() {
+        Some("-") | None => {
+            use std::io::Read;
+            let mut s = String::new();
+            std::io::stdin()
+                .read_to_string(&mut s)
+                .map_err(|e| e.to_string())?;
+            s
+        }
+        Some(f) => std::fs::read_to_string(f).map_err(|e| format!("read {f}: {e}"))?,
+    };
+    let events: Vec<crate::agent_event::AgentEvent> = match format.as_str() {
+        "devin-atif" | "atif" => {
+            let traj: serde_json::Value =
+                serde_json::from_str(&text).map_err(|e| format!("atif parse: {e}"))?;
+            let ctx = crate::agent_event::devin_atif::AtifContext {
+                investigation_id: options.import.clone(),
+                project_id: None,
+                repository_id: options.repository.clone(),
+                repo_head: options.target.clone(),
+                repo_root: options.repo_root.clone().or(options.repository.clone()),
+            };
+            crate::agent_event::devin_atif::from_atif(&traj, &ctx).map_err(|e| e.to_string())?
+        }
+        "reposuite-v1" | "v1" => {
+            let mut evs = Vec::new();
+            for (n, line) in text.lines().enumerate() {
+                if line.trim().is_empty() {
+                    continue;
+                }
+                evs.push(
+                    serde_json::from_str::<crate::agent_event::AgentEvent>(line)
+                        .map_err(|e| format!("event line {}: {e}", n + 1))?,
+                );
+            }
+            evs
+        }
+        other => return Err(format!("unknown ingest format `{other}`")),
+    };
+    let mut sink = crate::agent_event::StoreSink { store: &mut store };
+    let report = crate::agent_event::AgentEventSink::ingest_batch(&mut sink, &events)
+        .map_err(|e| e.to_string())?;
+    store.update_manifest().map_err(|e| e.to_string())?;
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"agent-events ingest","format":format,
+            "accepted":report.accepted,"duplicates":report.duplicates,
+            "rejected":report.rejected,"errors":report.errors,
+        }))?;
+    } else {
+        println!(
+            "ingest: accepted={} duplicates={} rejected={}",
+            report.accepted, report.duplicates, report.rejected
+        );
+        for e in &report.errors {
+            println!("  error: {e}");
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = agent_events_store_dir(&options)?;
+    let store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    let sids = store.sessions().map_err(|e| e.to_string())?;
+    let mut events = 0u64;
+    let mut seq_anom = 0u64;
+    let mut dup_ids = 0u64;
+    for sid in &sids {
+        let evs = store.session_events(sid).map_err(|e| e.to_string())?;
+        let mut last: i64 = -1;
+        let mut seen = std::collections::HashSet::new();
+        for e in &evs {
+            crate::agent_event::validate_event(e).map_err(|e| e.to_string())?;
+            if !seen.insert(e.event_id.clone()) {
+                dup_ids += 1;
+            }
+            if e.sequence as i64 <= last {
+                seq_anom += 1;
+            }
+            last = e.sequence as i64;
+            events += 1;
+        }
+    }
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"agent-events verify","ok":seq_anom==0&&dup_ids==0,
+            "sessions":sids.len(),"events":events,
+            "sequence_anomalies":seq_anom,"duplicate_ids":dup_ids,
+        }))?;
+    } else {
+        println!(
+            "sessions={} events={} seq_anomalies={} dup_ids={}",
+            sids.len(),
+            events,
+            seq_anom,
+            dup_ids
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_stats(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = agent_events_store_dir(&options)?;
+    let store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    let sids = store.sessions().map_err(|e| e.to_string())?;
+    let mut by_type: std::collections::BTreeMap<String, u64> = std::collections::BTreeMap::new();
+    let mut events = 0u64;
+    let mut in_tok = 0u64;
+    let mut out_tok = 0u64;
+    let mut src_files = std::collections::HashSet::new();
+    for sid in &sids {
+        for e in store.session_events(sid).map_err(|e| e.to_string())? {
+            *by_type.entry(e.event_type.clone()).or_insert(0) += 1;
+            events += 1;
+            if e.event_type == "model_call_completed" {
+                if let Some(v) = e.data.get("input_tokens").and_then(|v| v.as_u64()) {
+                    in_tok += v;
+                }
+                if let Some(v) = e.data.get("output_tokens").and_then(|v| v.as_u64()) {
+                    out_tok += v;
+                }
+            }
+            if e.event_type == "source_observed" {
+                if let Some(p) = e.data.get("path").and_then(|v| v.as_str()) {
+                    src_files.insert(p.to_string());
+                }
+            }
+        }
+    }
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"agent-events stats","sessions":sids.len(),"events":events,
+            "by_type":by_type,"input_tokens":in_tok,"output_tokens":out_tok,
+            "source_files_observed":src_files.len(),
+        }))?;
+    } else {
+        println!(
+            "sessions={} events={} input_tokens={} output_tokens={} src_files={}",
+            sids.len(),
+            events,
+            in_tok,
+            out_tok,
+            src_files.len()
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_session(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = agent_events_store_dir(&options)?;
+    let sid = options
+        .positional
+        .first()
+        .cloned()
+        .ok_or_else(|| "session <id> requires a session id".to_string())?;
+    let store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    let evs = store.session_events(&sid).map_err(|e| e.to_string())?;
+    if evs.is_empty() {
+        return Err(format!("no session `{sid}`"));
+    }
+    if options.json {
+        print_json(&serde_json::json!({"session_id":sid,"events":evs}))?;
+    } else {
+        for e in &evs {
+            println!("#{} {} {}", e.sequence, e.event_type, e.timestamp);
+        }
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_export(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = agent_events_store_dir(&options)?;
+    let store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    let sids = store.sessions().map_err(|e| e.to_string())?;
+    use std::io::Write;
+    let stdout = std::io::stdout();
+    let mut w = stdout.lock();
+    for sid in &sids {
+        for e in store.session_events(sid).map_err(|e| e.to_string())? {
+            writeln!(
+                w,
+                "{}",
+                serde_json::to_string(&e).map_err(|e| e.to_string())?
+            )
+            .map_err(|e| e.to_string())?;
+        }
     }
     Ok(EXIT_OK)
 }

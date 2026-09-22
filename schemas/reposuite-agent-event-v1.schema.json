@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reposuite.dev/schemas/reposuite-agent-event-v1.schema.json",
+  "title": "RepoSuite AgentEvent v1",
+  "description": "Canonical harness-neutral agent telemetry event envelope (reposuite.agent-event.v1). RepoSuite-level contract; intended to be emitted natively by RepoSuite Relay without semantic redesign. See docs/AGENT_EVENT_V1.md.",
+  "type": "object",
+  "required": ["schema", "event_id", "session_id", "sequence", "timestamp", "source", "type"],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "reposuite.agent-event.v1",
+      "description": "Canonical schema identifier. Other values fail validation."
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Idempotency authority, '{session_id}:{sequence}'. Replay reproduces the same id."
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One concrete agent/runtime session."
+    },
+    "investigation_id": {
+      "type": "string",
+      "description": "Logical investigation/task id; may span multiple sessions. NOT a synonym of session_id."
+    },
+    "project_id": {"type": "string"},
+    "repository_id": {
+      "type": "string",
+      "description": "Stable repository identity."
+    },
+    "repo_head": {
+      "type": "string",
+      "description": "Git commit the agent investigated (memory staleness anchor)."
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonic order within the session; primary ordering authority."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC3339/ISO-8601 UTC. For wall-time analysis, not ordering."
+    },
+    "source": {
+      "type": "object",
+      "required": ["runtime", "adapter", "adapter_version"],
+      "properties": {
+        "runtime": {"type": "string", "description": "e.g. devin, codex, opencode. Consumers must not branch on it."},
+        "adapter": {"type": "string", "description": "e.g. devin-atif, codex-app-server, acp."},
+        "adapter_version": {"type": "string"},
+        "native_session_id": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Event family. Known V1 families: session_started, session_completed, model_call_started, model_call_completed, tool_call_started, tool_call_completed, source_observed, agent_message, final_answer, task_outcome. Unknown future types are preserved verbatim (forward-compat)."
+    },
+    "data": {
+      "type": "object",
+      "description": "Typed payload; opaque for unknown types."
+    },
+    "content_digest": {
+      "type": "string",
+      "description": "sha256 of canonical semantic content (event minus content_digest); conflict detection for a repeated event_id."
+    }
+  },
+  "additionalProperties": false
+}

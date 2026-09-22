@@ -25,6 +25,7 @@
 //!       -> FUTURE navigator
 //! ```
 
+pub mod agent_event;
 pub mod candidates;
 pub mod canonical;
 pub mod cli;
