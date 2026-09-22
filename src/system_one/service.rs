@@ -72,6 +72,14 @@ pub const RERANK_MAX_PER_REQUEST: usize = 20;
 /// Bounded seed candidates for query-role plan generation (§12).
 pub const SEED_BOUND: usize = 5;
 
+/// Optional rerank batch-size override via `REPODEX_SO_BATCH` (experiment only).
+fn batch_env() -> Option<usize> {
+    std::env::var("REPODEX_SO_BATCH")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .filter(|&n| n >= 1)
+}
+
 /// The result of the query-role bounded advice.
 pub enum QueryAdviceOutcome {
     /// Model chose a valid bounded plan.
@@ -87,7 +95,7 @@ impl SystemOne {
     pub fn new(cfg: Option<SystemOneConfig>) -> Self {
         Self {
             cfg,
-            batch: RERANK_MAX_PER_REQUEST,
+            batch: batch_env().unwrap_or(RERANK_MAX_PER_REQUEST),
         }
     }
 
