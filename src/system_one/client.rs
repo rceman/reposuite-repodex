@@ -12,7 +12,10 @@ use super::protocol::{validate_response, SystemOneRequest, SystemOneResponse};
 /// A typed decision request/response abstraction (§13).
 pub trait SystemOneModel {
     fn decide(&self, request: &SystemOneRequest) -> Result<SystemOneResponse, SystemOneError>;
+    /// The config instance name (`[models.<name>]`).
     fn name(&self) -> &str;
+    /// The provider model id sent on the wire (`model` field).
+    fn model_id(&self) -> &str;
 }
 
 /// System One failure taxonomy feeding deterministic fallback (§21).
@@ -79,6 +82,10 @@ impl HttpSystemOneModel {
 impl SystemOneModel for HttpSystemOneModel {
     fn name(&self) -> &str {
         &self.name
+    }
+
+    fn model_id(&self) -> &str {
+        &self.cfg.model
     }
 
     fn decide(&self, request: &SystemOneRequest) -> Result<SystemOneResponse, SystemOneError> {

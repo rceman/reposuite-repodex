@@ -184,7 +184,7 @@ impl SystemOne {
             );
         }
         let mut req = SystemOneRequest::new(
-            model.name().to_string(),
+            model.model_id().to_string(),
             json!({
                 "raw": plan.raw,
                 "terms": plan.terms,
@@ -236,7 +236,7 @@ impl SystemOne {
         for chunk in seeds.chunks(RERANK_BATCH).enumerate() {
             let (bi, batch) = chunk;
             let mut req = SystemOneRequest::new(
-                model.name().to_string(),
+                model.model_id().to_string(),
                 json!({ "raw": plan.raw, "terms": plan.terms }),
             );
             for (j, s) in batch.iter().enumerate() {

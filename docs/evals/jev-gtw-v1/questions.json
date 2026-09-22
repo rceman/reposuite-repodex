@@ -1,0 +1,29 @@
+{
+  "benchmark": "jev-gtw-v1",
+  "corpus": "gpt-tunnel-gateway@f09d0834d125362d63e1d12b361ad34c63e50d8d",
+  "questions": [
+    {"id":"L1-Q1","level":1,"query":"Where are the workflow roles planner, lead, advisor, and worker defined, and what compact code does each role use?","expected_intent":"find","acceptable_intents":["find","related"]},
+    {"id":"L1-Q2","level":1,"query":"Which function parses the <entity>.list(...) query DSL, and what default result limit does it apply?","expected_intent":"find","acceptable_intents":["find"]},
+    {"id":"L1-Q3","level":1,"query":"Which function selects a usable project coding agent, and how are reasoning levels ranked when choosing candidates?","expected_intent":"find","acceptable_intents":["find","related"]},
+    {"id":"L1-Q4","level":1,"query":"Where is a Task worktree created during dispatch, and how is its public worktree label formed?","expected_intent":"find","acceptable_intents":["find","related"]},
+    {"id":"L1-Q5","level":1,"query":"What checks must a managed Hub root pass before the Gateway accepts it?","expected_intent":"find","acceptable_intents":["find","related"]},
+
+    {"id":"L2-Q1","level":2,"query":"How does a typed MCP action turn session_id into workflow authority, and why is the session identifier itself not authority?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L2-Q2","level":2,"query":"Which code paths call ensureWorkerActionableSlot, and what are they preventing?","expected_intent":"callers","acceptable_intents":["callers","related"]},
+    {"id":"L2-Q3","level":2,"query":"What does TaskExecutionDispatch call to resolve the Worker and create and validate the Task worktree?","expected_intent":"callees","acceptable_intents":["callees","related","find"]},
+    {"id":"L2-Q4","level":2,"query":"When is a Task dependency considered integrated enough for a dependent Task to proceed?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L2-Q5","level":2,"query":"How is a PLAW message's project and sender authority derived, and what happens if delivery notification fails after persistence?","expected_intent":"related","acceptable_intents":["related","find"]},
+
+    {"id":"L3-Q1","level":3,"query":"Trace a canonical Task dispatch from Task ID to a validated runnable worktree and attached Worker.","expected_intent":"related","acceptable_intents":["related","find","callees"]},
+    {"id":"L3-Q2","level":3,"query":"What exact evidence is revalidated before a verified Task candidate may be integrated into canonical main?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L3-Q3","level":3,"query":"Why is an integrated Task not yet a completed Task, and what additional operation makes it done?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L3-Q4","level":3,"query":"Under shared durability, where do effective workflow-policy machine settings come from, and how does that differ from the legacy path?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L3-Q5","level":3,"query":"Trace a Worker code submission through review and verification until it reaches the verified state.","expected_intent":"related","acceptable_intents":["related","find"]},
+
+    {"id":"L4-Q1","level":4,"query":"What prevents a client from impersonating planner, lead, advisor, or worker authority by sending role-looking or session-looking request data?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L4-Q2","level":4,"query":"If canonical main advances after Task verification but before integration publication, what prevents the stale candidate from being landed?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L4-Q3","level":4,"query":"How can the Gateway determine whether a Worker submission actually landed when the original submission operation has an uncertain outcome?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L4-Q4","level":4,"query":"Why can a Shared-durability project not silently run with a partially missing workflow policy?","expected_intent":"related","acceptable_intents":["related","find"]},
+    {"id":"L4-Q5","level":4,"query":"What is the precedence of project-status blockers when the runtime is unavailable, project rules are stale, and the Agent is unavailable?","expected_intent":"related","acceptable_intents":["related","find"]}
+  ]
+}
