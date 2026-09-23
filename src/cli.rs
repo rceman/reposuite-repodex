@@ -74,6 +74,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "agent-events" | "agent_events" => command_agent_events(&rest),
         "investigations" => command_investigations(&rest),
         "agent-activity" | "agent_activity" => command_agent_activity(&rest),
+        "memory" => command_memory(&rest),
         "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
@@ -3393,6 +3394,159 @@ fn command_agent_activity(args: &[String]) -> Result<u8, String> {
             }
         }
         _ => return Err(format!("unknown agent-activity subcommand `{sub}`")),
+    }
+    Ok(EXIT_OK)
+}
+
+// ---------------------------------------------------------------------------
+// memory — Investigation Memory: rebuildable navigation priors derived from
+// InvestigationEpisodes. Observational; no ranking/usefulness score (§16-§38).
+// ---------------------------------------------------------------------------
+
+fn memory_dir(options: &Options) -> Result<String, String> {
+    options
+        .output
+        .clone()
+        .ok_or_else(|| "memory requires --output <memory-dir>".to_string())
+}
+
+fn command_memory(args: &[String]) -> Result<u8, String> {
+    let sub = args.first().map(|s| s.as_str()).ok_or_else(|| {
+        "memory requires a subcommand (build|verify|stats|query|show)".to_string()
+    })?;
+    let options = parse_options(&args[1..])?;
+    let mdir = memory_dir(&options)?;
+    match sub {
+        "build" | "update" => {
+            // derived store is --store; memory output is --output
+            let sdir = options
+                .store
+                .clone()
+                .ok_or_else(|| "memory build requires --store <derived-dir>".to_string())?;
+            let ds =
+                crate::derived::DerivedStore::load(Path::new(&sdir)).map_err(|e| e.to_string())?;
+            let known = known_repo_paths(options.repo_root.as_deref());
+            let (ms, rep) = crate::memory::build_memory(
+                &ds,
+                Path::new(&mdir),
+                options.full,
+                &known,
+                &known, // remembered snapshot == current (static benchmark repo)
+            )
+            .map_err(|e| e.to_string())?;
+            ms.save(Path::new(&mdir)).map_err(|e| e.to_string())?;
+            let m = ms
+                .write_manifest(Path::new(&mdir))
+                .map_err(|e| e.to_string())?;
+            if options.json {
+                print_json(
+                    &serde_json::json!({"command":"memory build","full":options.full,
+                    "investigations":rep["investigations"],"rebuilt":rep["rebuilt"],
+                    "posting_terms":rep["posting_terms"],"artifact_bytes":m.artifact_bytes}),
+                )?;
+            } else {
+                println!(
+                    "memory: {} investigations ({} rebuilt), {} posting terms",
+                    rep["investigations"], rep["rebuilt"], rep["posting_terms"]
+                );
+            }
+        }
+        "verify" => {
+            let ms =
+                crate::memory::MemoryStore::load(Path::new(&mdir)).map_err(|e| e.to_string())?;
+            let mpath = Path::new(&mdir).join("manifest.json");
+            let mut anomalies = Vec::new();
+            if !mpath.exists() {
+                anomalies.push("missing manifest.json");
+            } else {
+                let m: serde_json::Value =
+                    serde_json::from_str(&std::fs::read_to_string(&mpath).unwrap_or_default())
+                        .map_err(|e| e.to_string())?;
+                if m["schema_version"].as_u64().unwrap_or(0)
+                    != crate::memory::MEMORY_SCHEMA_VERSION as u64
+                {
+                    anomalies.push("schema_version mismatch");
+                }
+            }
+            if options.json {
+                print_json(
+                    &serde_json::json!({"command":"memory verify","ok":anomalies.is_empty(),
+                    "investigations":ms.entries.len(),"anomalies":anomalies}),
+                )?;
+            } else {
+                println!(
+                    "memory verify: {} investigations, {} anomalies",
+                    ms.entries.len(),
+                    anomalies.len()
+                );
+            }
+            if !anomalies.is_empty() {
+                return Ok(EXIT_ANALYSIS_FAILURES);
+            }
+        }
+        "stats" => {
+            let ms =
+                crate::memory::MemoryStore::load(Path::new(&mdir)).map_err(|e| e.to_string())?;
+            if options.json {
+                print_json(&serde_json::json!({"command":"memory stats",
+                    "investigations":ms.entries.len(),"posting_terms":ms.postings.len()}))?;
+            } else {
+                println!(
+                    "memory: {} investigations, {} posting terms",
+                    ms.entries.len(),
+                    ms.postings.len()
+                );
+            }
+        }
+        "query" => {
+            let q = options.positional.join(" ");
+            if q.is_empty() {
+                return Err("memory query requires a query (positional text)".to_string());
+            }
+            let known = known_repo_paths(options.repo_root.as_deref());
+            let ms =
+                crate::memory::MemoryStore::load(Path::new(&mdir)).map_err(|e| e.to_string())?;
+            let limit = options.max_results.unwrap_or(10);
+            let matches = ms.query(&q, &known, limit, 64);
+            if options.json {
+                let arr: Vec<serde_json::Value> = matches
+                    .iter()
+                    .map(|m| {
+                        serde_json::json!({
+                            "investigation_id": m.investigation_id,
+                            "similarity": m.similarity,
+                            "components": m.components,
+                            "paths": m.paths.iter().take(limit).map(|p| serde_json::json!({
+                                "path": p.path, "evidence": format!("{:?}", p.strongest()),
+                                "freshness": p.freshness.map(|f| format!("{f:?}")),
+                                "surfaced": p.surfaced, "observed": p.observed,
+                                "explicitly_read": p.explicitly_read,
+                                "mentioned": p.mentioned_in_final_answer,
+                            })).collect::<Vec<_>>(),
+                        })
+                    })
+                    .collect();
+                print_json(&serde_json::json!({"command":"memory query","query":q,"matches":arr}))?;
+            } else {
+                for m in &matches {
+                    println!("{:.3} {}", m.similarity, m.investigation_id);
+                }
+            }
+        }
+        "show" => {
+            let inv = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "memory show requires <investigation_id>".to_string())?;
+            let ms =
+                crate::memory::MemoryStore::load(Path::new(&mdir)).map_err(|e| e.to_string())?;
+            match ms.entries.get(&inv) {
+                Some(e) => print_json(e)?,
+                None => return Err(format!("no memory entry for `{inv}`")),
+            }
+        }
+        _ => return Err(format!("unknown memory subcommand `{sub}`")),
     }
     Ok(EXIT_OK)
 }

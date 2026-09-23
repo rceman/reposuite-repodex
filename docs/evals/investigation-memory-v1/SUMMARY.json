@@ -1,0 +1,40 @@
+{
+ "status": "INVESTIGATION_MEMORY_FOUNDATION_COMPLETE",
+ "signal": "INVESTIGATION_MEMORY_SIGNAL_CONDITIONAL",
+ "next": "MEMORY_AWARE_AGENT_BENCHMARK_READY",
+ "boundary": {
+  "HARNESS_SPECIFIC_PRODUCTION_DEPENDENCIES": 0,
+  "DEVIN_ATIF_PRODUCTION_MODULE_REMOVED": true,
+  "PROTOTYPE_ADAPTER_PATH": "scripts/adapters/devin-atif.py",
+  "REPODEX_CANONICAL_INGEST_ONLY": true,
+  "RUNTIME_PROVENANCE_OPAQUE": true,
+  "REPOSUITE_RELAY_FUTURE_BOUNDARY_DOCUMENTED": true
+ },
+ "acceptance": {
+  "QUERY_RANKING_UNCHANGED": true,
+  "RDX1_UNCHANGED": true,
+  "TEMPORAL_RANKING_UNCHANGED": true,
+  "SYSTEM_ONE_BEHAVIOR_UNCHANGED": true,
+  "AGENT_EVENT_V1_UNCHANGED": true
+ },
+ "tracks": {
+  "A_exact_repeat": {
+   "P@10": 0.975,
+   "MRR": 0.468
+  },
+  "B_leave_question_out": {
+   "P@10": 0.3,
+   "MRR": 0.126
+  },
+  "C_paraphrase": {
+   "P@10": 0.85,
+   "MRR": 0.377
+  }
+ },
+ "memory_opportunity": "packet missed gold in 135 runs; prior-rep memory recovered it top-10 in 82/90 (91%)",
+ "stores": {
+  "memory": "/tmp/memory",
+  "derived": "/tmp/derived2",
+  "canonical": "/tmp/aes2/store"
+ }
+}

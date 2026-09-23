@@ -1,0 +1,47 @@
+{
+ "context_artifact_presented_events": 180,
+ "definition": "RDX1 retrieval packet presented to E1/E2/E3 (E0=absent). Surfaced != observed != read.",
+ "per_treatment": {
+  "E1": {
+   "surfaced": 1251,
+   "observed_pct": 33,
+   "read_pct": 20,
+   "mentioned_pct": 8,
+   "evidence_pct": 8
+  },
+  "E2": {
+   "surfaced": 1251,
+   "observed_pct": 33,
+   "read_pct": 22,
+   "mentioned_pct": 9,
+   "evidence_pct": 9
+  },
+  "E3": {
+   "surfaced": 456,
+   "observed_pct": 37,
+   "read_pct": 23,
+   "mentioned_pct": 11,
+   "evidence_pct": 11
+  }
+ },
+ "non_surfaced_discoveries": {
+  "E1": {
+   "discovered": 473,
+   "mentioned": 211
+  },
+  "E2": {
+   "discovered": 491,
+   "mentioned": 211
+  },
+  "E3": {
+   "discovered": 491,
+   "mentioned": 218
+  }
+ },
+ "memory_opportunity": {
+  "packet_missed_gold_runs": 135,
+  "with_earlier_memory": 90,
+  "recovered_gold_at_10": 82,
+  "pct": 91
+ }
+}

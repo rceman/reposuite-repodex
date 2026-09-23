@@ -53,11 +53,11 @@ impl ActivityIndex {
         let bytes = e.data.get("bytes").and_then(|v| v.as_u64()).unwrap_or(0);
         // distinct membership (exact) in the contribution index
         let cm = self.contrib.entry(k.clone()).or_default();
-        if !cm.session_ids.iter().any(|s| *s == e.session_id) {
+        if !cm.session_ids.contains(&e.session_id) {
             cm.session_ids.push(e.session_id.clone());
         }
         if let Some(inv) = investigation_id {
-            if !cm.investigation_ids.iter().any(|x| *x == inv) {
+            if !cm.investigation_ids.iter().any(|x| x.as_str() == inv) {
                 cm.investigation_ids.push(inv.to_string());
             }
         }
@@ -95,7 +95,7 @@ impl ActivityIndex {
             b.explicit_reads += 1;
         }
         if let Some(inv) = investigation_id {
-            if !b.investigation_ids.iter().any(|x| *x == inv) {
+            if !b.investigation_ids.iter().any(|x| x.as_str() == inv) {
                 b.investigation_ids.push(inv.to_string());
             }
         }
@@ -109,7 +109,11 @@ impl ActivityIndex {
     pub fn add_mention(&mut self, repo: &str, path: &str, session_id: &str) {
         let k = key(repo, path);
         let cm = self.contrib.entry(k.clone()).or_default();
-        if !cm.mention_session_ids.iter().any(|s| *s == session_id) {
+        if !cm
+            .mention_session_ids
+            .iter()
+            .any(|s| s.as_str() == session_id)
+        {
             cm.mention_session_ids.push(session_id.to_string());
             let n = cm.mention_session_ids.len() as u64;
             let a = self.paths.entry(k).or_insert_with(|| PathActivity {
@@ -125,7 +129,11 @@ impl ActivityIndex {
     pub fn add_evidence_mention(&mut self, repo: &str, path: &str, session_id: &str) {
         let k = key(repo, path);
         let cm = self.contrib.entry(k.clone()).or_default();
-        if !cm.evidence_session_ids.iter().any(|s| *s == session_id) {
+        if !cm
+            .evidence_session_ids
+            .iter()
+            .any(|s| s.as_str() == session_id)
+        {
             cm.evidence_session_ids.push(session_id.to_string());
             let a = self.paths.entry(k).or_insert_with(|| PathActivity {
                 repository_id: repo.to_string(),

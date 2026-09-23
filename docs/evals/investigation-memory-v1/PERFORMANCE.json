@@ -1,0 +1,38 @@
+{
+ "memory_build": {
+  "investigations": 240,
+  "wall_s": 0.25,
+  "peak_rss_mb": 49.5,
+  "posting_terms": 181
+ },
+ "memory_incremental": {
+  "late_events": 30,
+  "rebuilt": 30,
+  "wall_s": 0.25,
+  "peak_rss_mb": 50.2
+ },
+ "memory_lookup_ms": {
+  "mean": 28.6,
+  "p50": 28.4,
+  "p95": 31.3,
+  "max": 39.8,
+  "note": "process spawn + store load; in-process query sub-ms"
+ },
+ "storage": {
+  "memory_total_bytes": 6658338,
+  "bytes_per_investigation": 27743,
+  "postings_bytes": 54679,
+  "agentactivity_bytes_per_path": 1355,
+  "episode_bytes_per_investigation": 81063,
+  "note": "episodes embed full source_exposures (dominant); memory entries are lean evidence summaries"
+ },
+ "scale_1m_sessions": {
+  "raw_events_mb": 125552,
+  "episodes_mb": 81063,
+  "agentactivity_mb": 2832,
+  "memory_mb": "~27000 (bounded by investigations x evidence paths)"
+ },
+ "bounded_lookup": true,
+ "no_full_scan": true,
+ "no_git_at_lookup": true
+}

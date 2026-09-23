@@ -221,8 +221,8 @@ fn out_of_order_accepted() {
     let _ = std::fs::remove_dir_all(&d);
 }
 
-/// §68 repository path normalization is an adapter concern; covered by
-/// `scripts/adapters/` tests. RepoDex sees canonical repo-relative `path` only.
+// §68 repository path normalization is an adapter concern; covered by
+// `scripts/adapters/` tests. RepoDex sees canonical repo-relative `path` only.
 
 /// §69 large batch streaming ingest — no O(N^2); bounded memory.
 #[test]

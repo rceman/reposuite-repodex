@@ -1,0 +1,16 @@
+{
+ "track": "leave-question-out",
+ "memory": "all other 19 questions",
+ "result": {
+  "n": 240,
+  "P@1": 0.05,
+  "P@3": 0.1,
+  "P@5": 0.25,
+  "P@10": 0.3,
+  "R@5": 0.14166666666666666,
+  "R@10": 0.23333333333333334,
+  "MRR": 0.1260948876441163,
+  "avg_candidates": 83.4
+ },
+ "note": "cross-question transfer; weaker but non-trivial (shared entities across codebase)"
+}

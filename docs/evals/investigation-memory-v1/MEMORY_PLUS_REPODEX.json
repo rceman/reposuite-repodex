@@ -1,0 +1,26 @@
+{
+ "repodex_only": {
+  "P@5": 0.25,
+  "P@10": 0.3,
+  "R@5": 0.11666666666666667,
+  "R@10": 0.16666666666666666,
+  "MRR": 0.14635868517447465
+ },
+ "repodex_plus_memory": {
+  "P@5": 0.25,
+  "P@10": 0.3,
+  "R@5": 0.11666666666666667,
+  "R@10": 0.16666666666666666,
+  "MRR": 0.16937472937839743
+ },
+ "note": "E1 packet=surfaced set; exact-repeat memory mostly overlaps surfaced paths; memory still recovers packet-missed gold in 91% of prior-rep cases (see CONTEXT_ARTIFACT_REPLAY.memory_opportunity)",
+ "baseline_popularity": {
+  "P@1": 0.0,
+  "P@3": 0.0,
+  "P@5": 0.2,
+  "P@10": 0.5,
+  "R@5": 0.117,
+  "R@10": 0.325,
+  "MRR": 0.098
+ }
+}
