@@ -45,6 +45,7 @@ pub mod scanner;
 pub mod symbol_exposure;
 pub mod system_one;
 pub mod temporal;
+pub mod view;
 
 pub use model::{
     AnalysisStatus, BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,

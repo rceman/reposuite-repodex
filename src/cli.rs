@@ -69,6 +69,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "candidates" => command_candidates(&rest),
         "graph" => command_graph(&rest),
         "query" => command_query(&rest),
+        "project" => command_project(&rest),
         "config" => command_config(&rest),
         "temporal" => command_temporal(&rest),
         "agent-events" | "agent_events" => command_agent_events(&rest),
@@ -124,6 +125,13 @@ USAGE:
     reposuite-repodex query --graph <graph-dir> <text> [--intent find|callers|callees|related]
         [--target <node>] [--to <node>] [--depth N] [--max-results N] [--tokens N]
         [--exhaustive] [--explain] [--json | --human]
+    reposuite-repodex query --root <view-path> --query <text> [--human] [--intent ...]
+        [--depth N] [--max-results N] [--tokens N] [--state-dir <dir>]
+    reposuite-repodex query --project <alias> [--view <name>] --query <text> [...]
+    reposuite-repodex query --json            (reads a request object from stdin; see below)
+    reposuite-repodex project register <alias> --root <default-checkout> --views-root <dir>...
+    reposuite-repodex project show|remove <alias> | list [--json]
+    reposuite-repodex project resolve <alias> [--view <name>]
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -182,8 +190,19 @@ struct Options {
     call: Option<String>,
     /// `agent-events ingest --format` input format.
     format: Option<String>,
-    /// `agent-events ingest` repository checkout root for path normalization.
+    /// `agent-events ingest` repository checkout root for path normalization;
+    /// also the `--root` explicit RepositoryView locator.
     repo_root: Option<String>,
+    /// `query --query <text>` query text (alternative to positional).
+    query_text: Option<String>,
+    /// `query`/`project` registered project alias locator.
+    project: Option<String>,
+    /// `query --view <name>` / `project resolve --view` named view inside a project.
+    view: Option<String>,
+    /// `project register --views-root <dir>` (repeatable) view-root directories.
+    views_roots: Vec<String>,
+    /// `query`/`project` RepoDex state dir override (tests/isolation).
+    state_dir: Option<String>,
     /// `agent-events derive` source event-store directory.
     store: Option<String>,
     /// `memory build` SymbolExposure store for symbol-level evidence (§38).
@@ -260,6 +279,19 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--format" => options.format = Some(value_for(args, &mut index, name, inline_value)?),
             "--repo-root" | "--root" => {
                 options.repo_root = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--query" => {
+                options.query_text = Some(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--project" => options.project = Some(value_for(args, &mut index, name, inline_value)?),
+            "--view" => options.view = Some(value_for(args, &mut index, name, inline_value)?),
+            "--views-root" | "--view-root" | "--views" => {
+                options
+                    .views_roots
+                    .push(value_for(args, &mut index, name, inline_value)?)
+            }
+            "--state-dir" | "--repodex-state" => {
+                options.state_dir = Some(value_for(args, &mut index, name, inline_value)?)
             }
             "--store" => options.store = Some(value_for(args, &mut index, name, inline_value)?),
             "--symbol-exposure" | "--sexp" => {
@@ -2509,14 +2541,19 @@ fn command_graph_paths(args: &[String]) -> Result<u8, String> {
 // `query` — the deterministic textual query engine (Phase B).
 fn command_query(args: &[String]) -> Result<u8, String> {
     let options = parse_options(args)?;
+    // RepositoryView locator mode: --root | --project [--view], or --json stdin.
+    // --graph remains the direct prebuilt-index path (existing behavior).
+    if options.graph.is_none() {
+        return command_query_view(&options);
+    }
     let graph_dir = options
         .graph
         .clone()
         .ok_or_else(|| "query requires --graph <graph-dir>".to_string())?;
     let text = options
-        .positional
-        .first()
-        .cloned()
+        .query_text
+        .clone()
+        .or_else(|| options.positional.first().cloned())
         .ok_or_else(|| "query requires a query string".to_string())?;
     let index = crate::graph::GraphIndex::load(Path::new(&graph_dir)).map_err(|e| e.to_string())?;
     let engine = crate::query::QueryEngine::new(&index);
@@ -2616,6 +2653,282 @@ fn command_query(args: &[String]) -> Result<u8, String> {
                 );
             }
         }
+    }
+    Ok(EXIT_OK)
+}
+
+// ---- RepositoryView query (Part III-XVI) ----
+
+/// Serialize a deterministic QueryResult into the canonical machine `result`
+/// object (§33) — the same structured shape as `query --graph --json`, built
+/// directly from the result (never RDX round-tripped).
+fn query_result_json(
+    result: &crate::query::QueryResult,
+    plan_terms: &[String],
+) -> serde_json::Value {
+    serde_json::json!({
+        "intent":result.plan.intent.as_str(),"target":result.plan.target,
+        "terms":plan_terms,"total":result.total,"shown":result.shown,
+        "complete":result.complete,
+        "so_query":result.so_query,"so_rerank":result.so_rerank,
+        "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
+        "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
+    })
+}
+
+/// `query` in RepositoryView locator mode (§4-§9):
+///   flags:  --root <path> | --project <alias> [--view <name>] + --query <text>
+///   machine: --json reads one request object from stdin -> JSON to stdout.
+fn command_query_view(options: &Options) -> Result<u8, String> {
+    use crate::view as v;
+    let state = options.state_dir.as_deref().map(PathBuf::from);
+    // Machine stdin mode (§30-§31): --json + a request object on stdin.
+    if options.json {
+        let mut buf = String::new();
+        std::io::Read::read_to_string(&mut std::io::stdin(), &mut buf)
+            .map_err(|e| format!("read stdin: {e}"))?;
+        let req: v::QueryRequest = serde_json::from_str(buf.trim()).map_err(|e| {
+            machine_error(
+                &v::ViewError::InvalidRequest,
+                &format!("malformed request JSON: {e}"),
+            );
+            format!("INVALID_REQUEST: malformed request JSON: {e}")
+        })?;
+        // On any failure emit the structured error to stdout + stderr and exit
+        // non-zero (§44-§45).
+        let locator = match v::service::locator_from_request(&req) {
+            Ok(l) => l,
+            Err((k, m)) => {
+                machine_error(&k, &m);
+                return Ok(k.exit_code());
+            }
+        };
+        let text = match req.query.clone() {
+            Some(t) => t,
+            None => {
+                machine_error(&v::ViewError::InvalidRequest, "request missing `query`");
+                return Ok(v::ViewError::InvalidRequest.exit_code());
+            }
+        };
+        let intent = req
+            .intent
+            .as_deref()
+            .and_then(crate::query::QueryIntent::parse);
+        let params = v::service::ViewQueryParams {
+            query_text: &text,
+            mode: crate::query::QueryMode::Ranked,
+            intent,
+            max_results: req.max_results.unwrap_or(50),
+            token_budget: None,
+            depth: 4,
+            state_override: state.as_deref(),
+        };
+        let outcome = match v::run_view_query(&locator, &params) {
+            Ok(o) => o,
+            Err((k, m)) => {
+                machine_error(&k, &m);
+                return Ok(k.exit_code());
+            }
+        };
+        // machine-readable JSON only on stdout (§31).
+        let body = serde_json::json!({
+            "schema": v::QUERY_RESPONSE_SCHEMA,
+            "repository_view": view_meta_json(&outcome.view),
+            "query": text,
+            "result": query_result_json(&outcome.result, &outcome.result.plan.terms),
+            "index": {"fingerprint":outcome.ensure.fingerprint,
+                      "reused":outcome.ensure.index_reused,
+                      "analyses_reused":outcome.ensure.analyses_reused,
+                      "analyses_parsed":outcome.ensure.analyses_parsed},
+            "ensure_ms":outcome.ensure.ensure_ms,
+        });
+        print_json(&body)?;
+        return Ok(EXIT_OK);
+    }
+    // Flag mode (§34): locator + query text -> RDX (default) or human.
+    let locator = v::locator_from_flags(
+        options.repo_root.as_deref(),
+        options.project.as_deref(),
+        options.view.as_deref(),
+    )
+    .map_err(|(k, m)| machine_err_string(&k, &m))?;
+    let text = options
+        .query_text
+        .clone()
+        .or_else(|| options.positional.first().cloned())
+        .ok_or_else(|| "query requires a query string (--query <text>)".to_string())?;
+    let intent = match options.domain.as_deref() {
+        None => None,
+        Some(d) => match crate::query::QueryIntent::parse(d) {
+            Some(i) => Some(i),
+            None => return Err(format!("unknown query intent `{d}`")),
+        },
+    };
+    let mode = if options.exhaustive {
+        crate::query::QueryMode::Exhaustive
+    } else {
+        crate::query::QueryMode::Ranked
+    };
+    let params = v::service::ViewQueryParams {
+        query_text: &text,
+        mode,
+        intent,
+        max_results: options.max_results.unwrap_or(50),
+        token_budget: options.tokens,
+        depth: options.depth.unwrap_or(4),
+        state_override: state.as_deref(),
+    };
+    let outcome =
+        v::run_view_query(&locator, &params).map_err(|(k, m)| machine_err_string(&k, &m))?;
+    if options.human {
+        println!("view: {}", outcome.view.canonical_root.display());
+        println!("fingerprint: {}", outcome.ensure.fingerprint);
+        println!("query: {text}");
+        println!(
+            "seeds: {} (total {} {})",
+            outcome.result.shown,
+            outcome.result.total,
+            if outcome.result.complete {
+                "complete"
+            } else {
+                "truncated"
+            }
+        );
+        for s in &outcome.result.seeds {
+            println!(
+                "  {:<12} {:<32} {}",
+                s.node.kind.as_str(),
+                s.node.label,
+                s.node.path
+            );
+        }
+    } else {
+        // Default agent-facing output: RDX1 (consistent with `query --graph`).
+        print!("{}", crate::rdx1::render(&outcome.result));
+    }
+    Ok(EXIT_OK)
+}
+
+/// RepositoryView metadata for the machine response (§33).
+fn view_meta_json(view: &crate::view::RepositoryView) -> serde_json::Value {
+    serde_json::json!({
+        "repository_id":view.repository_id,"view_id":view.view_id,
+        "root":view.canonical_root,"head":view.head,"branch":view.branch,
+        "detached":view.detached,"dirty":view.dirty,
+        "git_common_dir":view.git_common_dir,
+        "view_fingerprint":view.view_fingerprint,"locator":view.locator,
+    })
+}
+
+/// Print a machine error object to stdout + the message to stderr (§44-§45).
+fn machine_error(kind: &crate::view::ViewError, msg: &str) {
+    let _ = print_json(&serde_json::json!({
+        "schema": crate::view::QUERY_RESPONSE_SCHEMA,
+        "error": {"code": kind.as_str(), "message": msg},
+    }));
+    eprintln!("{}: {msg}", kind.as_str());
+}
+fn machine_err_string(kind: &crate::view::ViewError, msg: &str) -> String {
+    eprintln!("{}: {msg}", kind.as_str());
+    format!("{}: {msg}", kind.as_str())
+}
+
+// ---- `project` registry commands (Part V, XVII) ----
+fn command_project(args: &[String]) -> Result<u8, String> {
+    use crate::view as v;
+    let sub = args
+        .first()
+        .ok_or_else(|| {
+            "project requires a subcommand (register|show|list|remove|resolve)".to_string()
+        })?
+        .as_str();
+    let options = parse_options(&args[1..])?;
+    let mut reg = v::ProjectRegistry::load();
+    match sub {
+        "register" | "add" => {
+            let alias = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "project register requires an alias".to_string())?;
+            let p = reg
+                .register(&alias, options.repo_root.as_deref(), &options.views_roots)
+                .map_err(|(k, m)| format!("{}: {m}", k.as_str()))?;
+            println!(
+                "registered {} (root={:?}, view_roots={})",
+                p.alias,
+                p.root,
+                p.view_roots.len()
+            );
+        }
+        "show" => {
+            let alias = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "project show requires an alias".to_string())?;
+            let p = reg
+                .get(&alias)
+                .ok_or_else(|| format!("project `{alias}` not found"))?;
+            if options.json {
+                print_json(&serde_json::json!(p))?;
+            } else {
+                println!("alias: {}", p.alias);
+                println!(
+                    "root:  {}",
+                    p.root
+                        .as_ref()
+                        .map(|x| x.display().to_string())
+                        .unwrap_or_else(|| "(none)".into())
+                );
+                for vr in &p.view_roots {
+                    println!("view_root: {}", vr.display());
+                }
+            }
+        }
+        "list" => {
+            if options.json {
+                print_json(&serde_json::json!(reg.list()))?;
+            } else {
+                for p in reg.list() {
+                    println!(
+                        "{:<12} root={} view_roots={}",
+                        p.alias,
+                        p.root
+                            .as_ref()
+                            .map(|x| x.display().to_string())
+                            .unwrap_or_else(|| "-".into()),
+                        p.view_roots.len()
+                    );
+                }
+            }
+        }
+        "remove" | "rm" | "unregister" => {
+            let alias = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "project remove requires an alias".to_string())?;
+            reg.remove(&alias)
+                .map_err(|(k, m)| format!("{}: {m}", k.as_str()))?;
+            println!("removed {alias}");
+        }
+        "resolve" => {
+            // Show canonical RepositoryView metadata for project [--view] or --root.
+            let alias = options
+                .positional
+                .first()
+                .cloned()
+                .or_else(|| options.project.clone())
+                .ok_or_else(|| "project resolve requires an alias or --project".to_string())?;
+            let locator = v::ViewLocator::Project {
+                project: alias,
+                view: options.view.clone(),
+            };
+            let view = v::resolve(&locator).map_err(|(k, m)| format!("{}: {m}", k.as_str()))?;
+            print_json(&view_meta_json(&view))?;
+        }
+        other => return Err(format!("unknown project subcommand `{other}`")),
     }
     Ok(EXIT_OK)
 }

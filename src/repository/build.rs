@@ -341,7 +341,7 @@ fn run_into(
 }
 
 /// Analyze one file from bytes already read.
-fn analyze(
+pub(crate) fn analyze(
     analyzer: &Analyzer,
     relative: &str,
     language: LanguageId,
@@ -361,7 +361,7 @@ fn analyze(
 }
 
 /// Build the manifest record for one analyzed file.
-fn index_file(
+pub(crate) fn index_file(
     analysis: &FileAnalysis,
     content_digest: &str,
     source_bytes: u64,
