@@ -248,6 +248,16 @@ impl AgentEventStore {
         })?;
         Ok(m)
     }
+
+    /// The persisted manifest `content_digest` ("" if absent) — binds derived
+    /// state to the event-store snapshot it was built from (§31).
+    pub fn manifest_digest(&self) -> String {
+        fs::read_to_string(self.dir.join(MANIFEST_FILE))
+            .ok()
+            .and_then(|t| serde_json::from_str::<StoreManifest>(&t).ok())
+            .map(|m| m.content_digest)
+            .unwrap_or_default()
+    }
 }
 
 /// Batch ingest report (§28).

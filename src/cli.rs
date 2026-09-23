@@ -72,6 +72,8 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "config" => command_config(&rest),
         "temporal" => command_temporal(&rest),
         "agent-events" | "agent_events" => command_agent_events(&rest),
+        "investigations" => command_investigations(&rest),
+        "agent-activity" | "agent_activity" => command_agent_activity(&rest),
         "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
@@ -180,6 +182,10 @@ struct Options {
     format: Option<String>,
     /// `agent-events ingest` repository checkout root for path normalization.
     repo_root: Option<String>,
+    /// `agent-events derive` source event-store directory.
+    store: Option<String>,
+    /// `derived` full rebuild flag.
+    full: bool,
     tests_only: bool,
     /// `config --unset <key>` removes a config key.
     unset: bool,
@@ -251,6 +257,8 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--repo-root" | "--root" => {
                 options.repo_root = Some(value_for(args, &mut index, name, inline_value)?)
             }
+            "--store" => options.store = Some(value_for(args, &mut index, name, inline_value)?),
+            "--full" => options.full = true,
             "--max-file-size" => {
                 let value = value_for(args, &mut index, name, inline_value)?;
                 options.max_file_size = Some(
@@ -2950,6 +2958,8 @@ fn command_agent_events(args: &[String]) -> Result<u8, String> {
         "stats" => command_agent_events_stats(&args[1..]),
         "session" => command_agent_events_session(&args[1..]),
         "export" => command_agent_events_export(&args[1..]),
+        "derive" => command_agent_events_derive(&args[1..]),
+        "derive-verify" | "derive_verify" => command_agent_events_derive_verify(&args[1..]),
         _ => Err(format!("unknown agent-events subcommand `{sub}`")),
     }
 }
@@ -3168,6 +3178,222 @@ fn command_agent_events_export(args: &[String]) -> Result<u8, String> {
             )
             .map_err(|e| e.to_string())?;
         }
+    }
+    Ok(EXIT_OK)
+}
+
+// ---------------------------------------------------------------------------
+// Derived layer — InvestigationEpisode + SourceExposure + AgentActivity.
+// Rebuildable from the raw Agent Event Store; observational only (no ranking).
+// ---------------------------------------------------------------------------
+
+/// Canonical repo path set for final-answer mention extraction (§18) via
+/// `git ls-files` at build time (not a lookup-time dependency).
+fn known_repo_paths(repo_root: Option<&str>) -> std::collections::BTreeSet<String> {
+    let mut set = std::collections::BTreeSet::new();
+    if let Some(root) = repo_root {
+        if let Ok(out) = std::process::Command::new("git")
+            .args(["-C", root, "ls-files"])
+            .output()
+        {
+            for l in String::from_utf8_lossy(&out.stdout).lines() {
+                if !l.trim().is_empty() {
+                    set.insert(l.trim().to_string());
+                }
+            }
+        }
+    }
+    set
+}
+
+fn derived_dir(options: &Options) -> Result<String, String> {
+    options
+        .output
+        .clone()
+        .or(options.snapshot.clone())
+        .ok_or_else(|| "requires --output <derived-dir>".to_string())
+}
+
+fn command_agent_events_derive(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let store_dir = options
+        .store
+        .clone()
+        .ok_or_else(|| "derive requires --store <event-store-dir>".to_string())?;
+    let out = derived_dir(&options)?;
+    let store = crate::agent_event::AgentEventStore::open(Path::new(&store_dir))
+        .map_err(|e| e.to_string())?;
+    let known = known_repo_paths(options.repo_root.as_deref());
+    let (ds, rep) = crate::derived::derive(
+        &store,
+        Path::new(&out),
+        options.full,
+        &known,
+        options.repo_root.as_deref(),
+    )
+    .map_err(|e| e.to_string())?;
+    ds.save(Path::new(&out)).map_err(|e| e.to_string())?;
+    let m = ds
+        .write_manifest(Path::new(&out))
+        .map_err(|e| e.to_string())?;
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"agent-events derive","full":options.full,
+            "sessions_processed":rep.sessions_processed,"sessions_changed":rep.sessions_changed,
+            "new_events_folded":rep.new_events_folded,
+            "investigations_rebuilt":rep.investigations_rebuilt,
+            "episodes":rep.episodes,"activity_paths":rep.activity_paths,
+            "artifact_bytes":m.artifact_bytes,
+        }))?;
+    } else {
+        println!(
+            "derive: sessions={} changed={} new_events={} investigations_rebuilt={} episodes={} paths={}",
+            rep.sessions_processed, rep.sessions_changed, rep.new_events_folded,
+            rep.investigations_rebuilt, rep.episodes, rep.activity_paths
+        );
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_derive_verify(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let out = derived_dir(&options)?;
+    let ds = crate::derived::DerivedStore::load(Path::new(&out)).map_err(|e| e.to_string())?;
+    let bad = crate::derived::verify(&ds);
+    if options.json {
+        print_json(&serde_json::json!({
+            "command":"derive-verify","ok":bad.is_empty(),"anomalies":bad,
+            "episodes":ds.episodes.len(),"sessions":ds.parts.len(),
+            "activity_paths":ds.activity.paths.len(),
+        }))?;
+    } else {
+        println!("verify: ok={} anomalies={}", bad.is_empty(), bad.len());
+        for b in &bad {
+            println!("  {b}");
+        }
+    }
+    Ok(if bad.is_empty() {
+        EXIT_OK
+    } else {
+        EXIT_ANALYSIS_FAILURES
+    })
+}
+
+fn command_investigations(args: &[String]) -> Result<u8, String> {
+    let sub = args
+        .first()
+        .map(|s| s.as_str())
+        .ok_or_else(|| "investigations requires a subcommand (show|list|stats)".to_string())?;
+    let options = parse_options(&args[1..])?;
+    let out = derived_dir(&options)?;
+    let ds = crate::derived::DerivedStore::load(Path::new(&out)).map_err(|e| e.to_string())?;
+    match sub {
+        "show" => {
+            let id = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "investigations show <id>".to_string())?;
+            let ep = ds
+                .episodes
+                .get(&id)
+                .ok_or_else(|| format!("no investigation `{id}`"))?;
+            print_json(&serde_json::to_value(ep).map_err(|e| e.to_string())?)?;
+        }
+        "list" => {
+            let ids: Vec<&String> = ds.episodes.keys().collect();
+            if options.json {
+                print_json(&serde_json::json!({"investigations":ids}))?;
+            } else {
+                for i in ids {
+                    println!("{i}");
+                }
+            }
+        }
+        "stats" => {
+            let mut in_tok = 0u64;
+            let mut out_tok = 0u64;
+            let mut tools = 0u64;
+            let mut src_events = 0u64;
+            for ep in ds.episodes.values() {
+                in_tok += ep.input_tokens.unwrap_or(0);
+                out_tok += ep.output_tokens.unwrap_or(0);
+                tools += ep.tools.tool_calls_total;
+                src_events += ep.source_observation_events;
+            }
+            if options.json {
+                print_json(&serde_json::json!({
+                    "investigations":ds.episodes.len(),"sessions":ds.parts.len(),
+                    "activity_paths":ds.activity.paths.len(),
+                    "input_tokens":in_tok,"output_tokens":out_tok,
+                    "tool_calls":tools,"source_observation_events":src_events,
+                }))?;
+            } else {
+                println!(
+                    "investigations={} sessions={} paths={} in_tok={} out_tok={} tools={}",
+                    ds.episodes.len(),
+                    ds.parts.len(),
+                    ds.activity.paths.len(),
+                    in_tok,
+                    out_tok,
+                    tools
+                );
+            }
+        }
+        _ => return Err(format!("unknown investigations subcommand `{sub}`")),
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_activity(args: &[String]) -> Result<u8, String> {
+    let sub = args
+        .first()
+        .map(|s| s.as_str())
+        .ok_or_else(|| "agent-activity requires a subcommand (file|stats)".to_string())?;
+    let options = parse_options(&args[1..])?;
+    let out = derived_dir(&options)?;
+    let ds = crate::derived::DerivedStore::load(Path::new(&out)).map_err(|e| e.to_string())?;
+    match sub {
+        "file" => {
+            let path = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "agent-activity file <path>".to_string())?;
+            // find by path across repositories (observational, no ranking)
+            let found: Vec<&crate::derived::PathActivity> = ds
+                .activity
+                .paths
+                .values()
+                .filter(|a| a.path == path)
+                .collect();
+            if found.is_empty() {
+                return Err(format!("no activity for `{path}`"));
+            }
+            if options.json {
+                print_json(&serde_json::json!({"path":path,"records":found}))?;
+            } else {
+                for a in found {
+                    println!(
+                        "{}: obs={} reads={} sessions={} investigations={} mentions={}",
+                        a.path,
+                        a.observation_event_count_total,
+                        a.explicit_read_count_total,
+                        a.sessions_observed_count(),
+                        a.investigations_observed_count(),
+                        a.final_answer_mention_count()
+                    );
+                }
+            }
+        }
+        "stats" => {
+            if options.json {
+                print_json(&serde_json::json!({"activity_paths":ds.activity.paths.len()}))?;
+            } else {
+                println!("activity_paths={}", ds.activity.paths.len());
+            }
+        }
+        _ => return Err(format!("unknown agent-activity subcommand `{sub}`")),
     }
     Ok(EXIT_OK)
 }
