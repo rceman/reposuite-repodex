@@ -1,0 +1,15 @@
+{
+ "activity_paths": 685,
+ "answers_with_path_mentions": 239,
+ "total_path_mentions": 1197,
+ "unique_mentioned_paths": 107,
+ "mentions_observed": 1196,
+ "mentions_explicitly_read": 1176,
+ "mentions_not_observed": 1,
+ "unresolved_path_mentions": 44,
+ "not_observed_cases": [
+  "scripts/test-fast.py (L3-Q5__E0__r2) - real repo path cited but never tool-observed; likely inferred/from-packet"
+ ],
+ "unresolved_note": "mostly symbol refs (internal/query.Parse), template fragments (<Hub.Branch), one fabricated path (durable_mutation_mutation_execution.go)",
+ "leakage_caveat_55": "corpus repeats 20 questions x3 reps x4 treatments; high counts reflect benchmark repetition, not universal usefulness. Schema/behavior validation only."
+}

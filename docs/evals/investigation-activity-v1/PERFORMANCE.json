@@ -1,0 +1,69 @@
+{
+ "full_rebuild": {
+  "events": 31814,
+  "wall_s": 0.37,
+  "events_per_sec": 85984,
+  "peak_rss_mb": 41.6,
+  "episodes": 240,
+  "activity_paths": 685
+ },
+ "incremental": {
+  "50_late_events": "50 sessions changed, 50 folded, 50 investigations rebuilt in 0.34s",
+  "no_change": "0 folded, 0 rebuilt",
+  "peak_rss_mb": 44.4
+ },
+ "lookup": {
+  "episode_lookup_ms": {
+   "mean": 74.9,
+   "p50": 69.2,
+   "p95": 95.5,
+   "max": 492.6,
+   "note": "dominated by process spawn + full derived-store load; in-process map get is sub-ms"
+  },
+  "activity_lookup_ms": {
+   "mean": 80.1,
+   "p50": 73.0,
+   "p95": 110.7,
+   "max": 168.4,
+   "note": "same process-spawn bound; index load ~1MB"
+  }
+ },
+ "storage": {
+  "raw_canonical_bytes": 30037917,
+  "derived_total_bytes": 34066640,
+  "derived_over_raw": 1.13,
+  "episode_bytes": 19455185,
+  "bytes_per_investigation": 81063,
+  "session_part_bytes_per_session": 57014,
+  "activity_bytes": 928099,
+  "bytes_per_path": 1355,
+  "note": "episodes embed full per-path source_exposures (dominant cost); a leaner variant could reference activity"
+ },
+ "scale_estimate_72": {
+  "assumptions": "~133 events/session, ~2.9 distinct paths/session observed, 1 investigation/session",
+  "10k_sessions": {
+   "raw_events_mb": 1256,
+   "episodes_mb": 811,
+   "activity_mb": 28
+  },
+  "100k_sessions": {
+   "raw_events_mb": 12555,
+   "episodes_mb": 8106,
+   "activity_mb": 283
+  },
+  "1m_sessions": {
+   "raw_events_mb": 125552,
+   "episodes_mb": 81063,
+   "activity_mb": 2832
+  }
+ },
+ "anti_patterns": {
+  "full_store_in_ram_for_update": false,
+  "raw_scan_for_lookup": false,
+  "atif_at_lookup": false,
+  "repo_scan_at_lookup": false,
+  "git_at_lookup": false,
+  "ranking_modified": false,
+  "system_one_modified": false
+ }
+}

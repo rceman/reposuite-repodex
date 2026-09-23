@@ -1,0 +1,21 @@
+{
+ "status": "INVESTIGATION_ACTIVITY_FOUNDATION_COMPLETE",
+ "memory": "INVESTIGATION_MEMORY_FOUNDATION_READY",
+ "schemas": {
+  "episode": "reposuite.investigation-episode.v1",
+  "derived": "reposuite.derived-agent-activity.v1"
+ },
+ "acceptance": {
+  "QUERY_RANKING_UNCHANGED": true,
+  "TEMPORAL_RANKING_UNCHANGED": true,
+  "SYSTEM_ONE_BEHAVIOR_UNCHANGED": true,
+  "AGENT_EVENT_V1_UNCHANGED": true,
+  "EPISODE_INPUT_TOKEN_MISMATCH": 0,
+  "EPISODE_OUTPUT_TOKEN_MISMATCH": 0,
+  "EPISODE_TOOL_CALL_MISMATCH": 0,
+  "FULL_VS_INCREMENTAL_STATE_MISMATCH": 0,
+  "RUNTIME_SPECIFIC_DERIVED_DEPENDENCY": 0
+ },
+ "replay": "240 sessions -> 240 episodes, 685 activity paths; tokens/tools/exposure reconcile exactly",
+ "derived_store": "/tmp/derived (replay) ; layout sessions/ episodes/ activity/ checkpoint.json manifest.json"
+}

@@ -1,0 +1,40 @@
+{
+ "investigations": 240,
+ "sessions": 240,
+ "EPISODE_INPUT_TOKEN_MISMATCH": 0,
+ "EPISODE_OUTPUT_TOKEN_MISMATCH": 0,
+ "EPISODE_TOOL_CALL_MISMATCH": 0,
+ "total_input_tokens": 92450895,
+ "total_output_tokens": 939108,
+ "total_tool_calls": 6134,
+ "per_treatment": {
+  "E0": {
+   "n": 60,
+   "files_observed_mean": 56.3,
+   "explicit_reads_mean": 13.8,
+   "src_events_mean": 86.2,
+   "src_bytes_mean": 162157
+  },
+  "E1": {
+   "n": 60,
+   "files_observed_mean": 35.6,
+   "explicit_reads_mean": 12.2,
+   "src_events_mean": 58.4,
+   "src_bytes_mean": 140860
+  },
+  "E2": {
+   "n": 60,
+   "files_observed_mean": 32.8,
+   "explicit_reads_mean": 12.7,
+   "src_events_mean": 52.2,
+   "src_bytes_mean": 131774
+  },
+  "E3": {
+   "n": 60,
+   "files_observed_mean": 34.7,
+   "explicit_reads_mean": 9.8,
+   "src_events_mean": 57.4,
+   "src_bytes_mean": 118910
+  }
+ }
+}

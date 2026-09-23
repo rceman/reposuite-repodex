@@ -1,0 +1,46 @@
+{
+ "definition": "source content actually delivered to model via tool result (read file-view, grep content); excludes name-only discovery and RDX1-packet paths",
+ "prior_benchmark_files_observed_mean": {
+  "E0": 193.8,
+  "E1": 75.4,
+  "E2": 76.0,
+  "E3": 87.3
+ },
+ "canonical_source_files_observed_mean": {
+  "E0": 56.3,
+  "E1": 35.6,
+  "E2": 32.8,
+  "E3": 34.7
+ },
+ "delta_note": "prior counted filename discovery (find_file_by_name/files_with_matches); canonical counts content-delivered only (AgentEvent SourceObserved \u00a750). Canonical is the tighter, correct definition.",
+ "per_treatment": {
+  "E0": {
+   "n": 60,
+   "files_observed_mean": 56.3,
+   "explicit_reads_mean": 13.8,
+   "src_events_mean": 86.2,
+   "src_bytes_mean": 162157
+  },
+  "E1": {
+   "n": 60,
+   "files_observed_mean": 35.6,
+   "explicit_reads_mean": 12.2,
+   "src_events_mean": 58.4,
+   "src_bytes_mean": 140860
+  },
+  "E2": {
+   "n": 60,
+   "files_observed_mean": 32.8,
+   "explicit_reads_mean": 12.7,
+   "src_events_mean": 52.2,
+   "src_bytes_mean": 131774
+  },
+  "E3": {
+   "n": 60,
+   "files_observed_mean": 34.7,
+   "explicit_reads_mean": 9.8,
+   "src_events_mean": 57.4,
+   "src_bytes_mean": 118910
+  }
+ }
+}
