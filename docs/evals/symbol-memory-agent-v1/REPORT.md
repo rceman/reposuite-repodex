@@ -143,6 +143,30 @@ RUNS, QUALITY, TELEMETRY, FILE_MEMORY_FOLLOW_THROUGH,
 SYMBOL_MEMORY_FOLLOW_THROUGH, PAIRWISE_COMPARISONS, PERFORMANCE, SUMMARY,
 REPORT. Raw exports/canon/sexp under `/tmp/repodex-symbol-memory-agent-v1/`.
 
+## POST-HOC COST/TIME SUMMARY (§64)
+
+Derived from existing canonical telemetry only — **no Agent reruns, no treatment
+changes, no verdict change**. See `COST_TIME_POSTHOC.json`. Now that
+`output_tokens` and time are first-class KPIs (`../BENCHMARK_METRICS.md`):
+
+| | in tok | **out tok** | total tok | tools | wall s | t→1st primary | t→sufficient |
+|--|--------|-------------|-----------|-------|--------|---------------|--------------|
+| T0 | 467,485 | 3,958 | 471,443 | 31.5 | 37.9 | 10.0 | 11.9 |
+| T1 | 441,294 | 4,067 | 445,361 | 26.8 | 32.0 | 5.4 | 7.4 |
+| T2 | 383,757 | 3,942 | 387,699 | 26.1 | 30.3 | 4.0 | 6.6 |
+| T3 | 355,722 | 3,781 | 359,503 | 23.9 | 26.9 | 4.4 | 5.4 |
+| T4 | 354,265 | 3,747 | 358,012 | 24.1 | 27.4 | 4.4 | 5.5 |
+
+**Output tokens are ~flat across all treatments** (~3.7–4.1K): the navigation
+help reduces *input context + exploration work + wall time*, not the Agent's
+output/reasoning volume. Output-token deltas are within noise (T3 vs T2 −161,
+CI[−517,+203]). Time-to-first-primary improves sharply (T0 10.0s → T1 5.4s →
+T2 4.0s) and wall time drops ~29% (T0→T3). `reasoning_tokens` = unavailable
+(provider does not expose it); `estimated_model_cost` = unavailable (no pricing
+snapshot — raw token categories reported per §53). **The accepted verdict is
+unchanged**: symbol-aware memory remains the best cost-efficiency point; these
+metrics reinforce, not alter, that conclusion.
+
 ## Gates (§92)
 
 `cargo fmt --check` ✓ · `cargo check --locked` ✓ · `cargo test --locked` ✓ ·

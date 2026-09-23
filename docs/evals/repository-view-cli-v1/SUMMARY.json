@@ -1,0 +1,32 @@
+{
+ "prompt_id": "REPODEX-REPOSITORY-VIEW-GATEWAY-CLI-FOUNDATION-V1",
+ "status": "REPOSITORY_VIEW_GATEWAY_CLI_FOUNDATION_COMPLETE",
+ "classification": "REPOSITORY_VIEW_GATEWAY_CLI_READY",
+ "recommended_next": "GTW_REPODEX_TASK_CODE_INTEGRATION (do not implement)",
+ "execution": {
+  "fixture": "main + work-a/b/c/d multi-branch git worktrees",
+  "tests": "tests/view_cli.rs 7/7",
+  "views_queried": 5,
+  "concurrent_processes": 4,
+  "cross_view_contamination": 0
+ },
+ "invariants": {
+  "CWD_INDEPENDENT_QUERY": true,
+  "EXPLICIT_ROOT_SUPPORTED": true,
+  "PROJECT_VIEW_SUPPORTED": true,
+  "MACHINE_JSON_QUERY_SUPPORTED": true,
+  "ROOT_PROJECT_LOCATORS_MUTUALLY_EXCLUSIVE": true,
+  "DIRTY_WORKTREE_SUPPORTED": true,
+  "DIFFERENT_BRANCH_VIEWS_SUPPORTED": true,
+  "CROSS_VIEW_CONTAMINATION": 0,
+  "CONTENT_ADDRESSED_ANALYSIS_REUSE": true,
+  "SYMBOL_EXPOSURE_EXACT_VERSION_PRESERVED": true,
+  "PRODUCTION_QUERY_RANKING_UNCHANGED": true,
+  "MEMORY_SCORING_UNCHANGED": true,
+  "JEV_BEHAVIOR_UNCHANGED": true,
+  "HARNESS_SPECIFIC_PRODUCTION_DEPENDENCIES": 0,
+  "REPODEX_MCP_SERVER_ADDED": false,
+  "GATEWAY_CODE_MODIFIED": false,
+  "BENCHMARK_KPI_CONTRACT_DOCUMENTED": true
+ }
+}

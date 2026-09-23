@@ -1,0 +1,27 @@
+{
+ "schema": "repodex.eval.correctness.v1",
+ "note": "non-Agent benchmark (\u00a768)",
+ "assertions": {
+  "exact_view_selected": true,
+  "cross_view_contamination": 0,
+  "dirty_edit_visibility": true,
+  "added_source_visible": true,
+  "deleted_source_absent": true,
+  "explicit_root_eq_project_view": true,
+  "symbol_exposure_exact_version_preserved": true,
+  "unrelated_cwd_independent": true,
+  "interleaved_views_correct": true,
+  "concurrent_no_corruption": true,
+  "view_traversal_rejected": true,
+  "symlink_containment_enforced": true,
+  "locator_mutually_exclusive": true
+ },
+ "per_view_symbols": {
+  "main": "SharedMain",
+  "work-a": "SharedA",
+  "work-b": "SharedB",
+  "work-c": "SharedMain",
+  "work-d": "SharedMain"
+ },
+ "note_detail": "Each view resolves its own (path,digest) FileAnalysis; identical content dedupes to one fingerprint; dirty edits produce a new fingerprint + fresh index."
+}

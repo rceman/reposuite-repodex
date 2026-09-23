@@ -1,0 +1,25 @@
+{
+ "schema": "repodex.eval.performance.v1",
+ "note": "edit->visible latency = one manifest recompute (~ms on small repos) + incremental rebuild of changed files only; no daemon.",
+ "timings_ms": {
+  "cold_first_query": 36,
+  "warm_repeated_query": [
+   28,
+   27
+  ],
+  "switch_A_B_A": 28,
+  "dirty_one_file_refresh": 32,
+  "added_file_refresh": 32,
+  "deleted_file_refresh": "same as recompute (~30ms)",
+  "view_resolution": "<1",
+  "new_content_parse": "included in ensure",
+  "same_content_reuse": "~28 (manifest stat, no reparse)"
+ },
+ "work": {
+  "files_examined_per_query": "all source files (walk+stat; rehash only changed)",
+  "digests_checked": "per file",
+  "file_analysis_cache": "objects/{object_key(path,digest)}",
+  "analysis_cache_hit": "objects present",
+  "analysis_cache_miss": "parse"
+ }
+}

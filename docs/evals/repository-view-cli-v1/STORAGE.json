@@ -1,0 +1,19 @@
+{
+ "schema": "repodex.eval.storage.v1",
+ "note": "5 views (main,work-a,work-b,work-c,work-d) on fixture (\u00a775-\u00a776)",
+ "repository_files_per_view": "~4 source files",
+ "file_analysis_objects_total": 9,
+ "file_instances_across_views": "~16 (5 views x ~3-4 files)",
+ "index_dirs": 3,
+ "index_dir_keys": [
+  "d5e137e (main+work-c+work-d, identical)",
+  "b3589af (work-a)",
+  "28ccfa3 (work-b)"
+ ],
+ "objects_bytes": 45056,
+ "indexes_bytes": 237568,
+ "analyses_reused": "work-a reused serve.go object; work-c/work-d reused ENTIRE index (0 parse)",
+ "incremental_disk_for_identical_worktree": "~5 KB manifest cache only; index + objects shared (idx_reused=True)",
+ "does_N_worktrees_multiply_disk_by_N": "NO \u2014 identical content shares one digest-keyed index + content-addressed objects; incremental cost is a per-root manifest cache (~KB), not a multiplied index.",
+ "peak_rss": "bounded by analyzer.max_file_size + pipeline; small on fixture"
+}

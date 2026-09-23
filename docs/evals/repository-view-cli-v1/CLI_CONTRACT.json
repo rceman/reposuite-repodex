@@ -1,0 +1,30 @@
+{
+ "schema": "repodex.eval.cli_contract.v1",
+ "locator_forms": {
+  "root": "--root <abs path> (exact view; unrelated cwd ok)",
+  "project_view": "--project <alias> [--view <name>] via registry",
+  "default_view": "--project <alias> resolves registered root checkout",
+  "machine_stdin": "echo '{\"root\":...,\"query\":...}' | repodex query --json"
+ },
+ "request_schema": "reposuite.repodex.query.request.v1",
+ "response_schema": "reposuite.repodex.query.response.v1",
+ "registry_commands": [
+  "project register <alias> --root <dir> --views-root <dir>...",
+  "project show|list|remove",
+  "project resolve <alias> [--view]"
+ ],
+ "machine_errors": [
+  "INVALID_REQUEST",
+  "LOCATOR_CONFLICT",
+  "PROJECT_NOT_FOUND",
+  "VIEW_NOT_FOUND",
+  "VIEW_PATH_ESCAPE",
+  "ROOT_NOT_FOUND",
+  "NOT_A_REPOSITORY",
+  "QUERY_FAILED"
+ ],
+ "stdout_stderr": "machine JSON/errors -> stdout; diagnostics -> stderr; non-zero exit codes",
+ "registry_file": "$REPODEX_STATE_DIR|~/reposuite/repodex/projects.json (atomic temp+rename)",
+ "mutual_exclusion": "root XOR project; --view requires --project",
+ "equivalence": "--root <path> == --project <alias> --view <name> when resolving to same path"
+}
