@@ -1,0 +1,17 @@
+{
+ "source_observed_events": 15223,
+ "resolution_states": {
+  "resolved": 14455,
+  "unresolved_no_symbol_overlap": 768
+ },
+ "resolution_source": {
+  "indexed_hit": 14532,
+  "unresolved": 691
+ },
+ "unique_file_content_digests": 675,
+ "indexed_digest_hit_rate": 0.9546,
+ "new_parse": 0,
+ "cached_version": 0,
+ "assumed_indexed": 0,
+ "unresolved": 691
+}

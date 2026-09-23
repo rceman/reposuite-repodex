@@ -201,6 +201,28 @@ pub enum ObservationKind {
     Other,
 }
 
+impl ObservationKind {
+    pub fn parse(s: &str) -> Self {
+        match s {
+            "explicit_read" => Self::ExplicitRead,
+            "search_snippet" => Self::SearchSnippet,
+            "symbol_preview" => Self::SymbolPreview,
+            "diff" => Self::Diff,
+            _ => Self::Other,
+        }
+    }
+
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::ExplicitRead => "explicit_read",
+            Self::SearchSnippet => "search_snippet",
+            Self::SymbolPreview => "symbol_preview",
+            Self::Diff => "diff",
+            Self::Other => "other",
+        }
+    }
+}
+
 /// `source_observed` (§17-19): repository source content actually delivered to
 /// the model via a tool result. Never emitted for path-argument-only exposure
 /// (§50).
@@ -221,8 +243,20 @@ pub struct SourceObserved {
     pub line_start: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub line_end: Option<u64>,
+    /// Digest of the source fragment delivered to the agent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_digest: Option<String>,
+    /// Authoritative whole-file content version (`sha256:` content digest of
+    /// the source bytes the agent observed). Binds the observation to an exact
+    /// file version for SymbolExposure (symbol-exposure §6). Absent when the
+    /// version could not be captured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file_content_digest: Option<String>,
+    /// Optional byte range when the observation is byte-precise (§8).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub byte_start: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub byte_end: Option<u64>,
 }
 
 /// One repository reference inside a presented context artifact (§5).

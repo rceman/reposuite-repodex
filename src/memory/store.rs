@@ -312,6 +312,7 @@ impl MemoryStore {
             completed_at: ep.completed_at.clone(),
             signature,
             evidence,
+            symbols: BTreeMap::new(),
             input_tokens: ep.input_tokens,
             output_tokens: ep.output_tokens,
             tool_calls: ep.tools.tool_calls_total,
@@ -374,11 +375,22 @@ impl MemoryStore {
                 }
                 let mut paths: Vec<MemoryEvidence> = e.evidence.values().cloned().collect();
                 paths.sort_by_key(|p| std::cmp::Reverse(p.strongest() as u8));
+                // symbol-level evidence (§38-§40): sort strongest signal first.
+                let mut symbols: Vec<SymbolMemoryEvidence> = e.symbols.values().cloned().collect();
+                symbols.sort_by_key(|s| {
+                    std::cmp::Reverse((
+                        s.mentioned_in_final_answer,
+                        s.declaration_exposed,
+                        s.explicitly_read,
+                        s.reference_exposed,
+                    ))
+                });
                 Some(MemoryMatch {
                     investigation_id: inv.clone(),
                     similarity,
                     components,
                     paths,
+                    symbols,
                 })
             })
             .collect();
@@ -490,4 +502,58 @@ pub fn build_memory(
         "full": full,
     });
     Ok((ms, report))
+}
+
+impl MemoryStore {
+    /// Enrich each entry with symbol-level evidence from a SymbolExposure store
+    /// (§37-§40). File-level memory is preserved; symbol facts are added
+    /// alongside. `current_paths`/`repo_head` drive conservative freshness (§41).
+    pub fn enrich_symbols(
+        &mut self,
+        sexp: &crate::symbol_exposure::SymbolExposureStore,
+        current_paths: &BTreeSet<String>,
+    ) {
+        use crate::symbol_exposure::ExposureKind;
+        for entry in self.entries.values_mut() {
+            let Some(doc) = sexp.load(&entry.investigation_id) else {
+                continue;
+            };
+            let mentioned: std::collections::BTreeSet<&String> =
+                doc.final_answer_symbol_mentions.iter().collect();
+            for x in &doc.exposures {
+                let e = entry.symbols.entry(x.symbol_id.clone()).or_insert_with(|| {
+                    SymbolMemoryEvidence {
+                        symbol_id: x.symbol_id.clone(),
+                        symbol_name: x.symbol_name.clone(),
+                        path: x.path.clone(),
+                        symbol_kind: x.symbol_kind.clone(),
+                        ..Default::default()
+                    }
+                });
+                match x.exposure_kind {
+                    ExposureKind::DeclarationOccurrence => e.declaration_exposed = true,
+                    ExposureKind::EnclosingDeclaration => e.enclosing_exposed = true,
+                    ExposureKind::ReferenceOccurrence => e.reference_exposed = true,
+                }
+                match x.observation_provenance.as_str() {
+                    "explicit_read" => e.explicitly_read = true,
+                    "search_snippet" => e.via_search_snippet = true,
+                    _ => {}
+                }
+                if mentioned.contains(&x.symbol_id) {
+                    e.mentioned_in_final_answer = true;
+                }
+                if e.file_content_digest.is_none() {
+                    e.file_content_digest = x.file_content_digest.clone();
+                }
+                if e.freshness.is_none() {
+                    e.freshness = Some(classify_freshness(
+                        &e.path,
+                        current_paths,
+                        entry.repo_head.clone(),
+                    ));
+                }
+            }
+        }
+    }
 }

@@ -1,0 +1,45 @@
+{
+ "A_indexed_digest_hit": {
+  "max_ms": 30.020038,
+  "mean_ms": 0.09907227199999999,
+  "n": 500,
+  "p50_ms": 0.039998,
+  "p95_ms": 0.051411,
+  "p99_ms": 0.069117
+ },
+ "B_new_version_parse": {
+  "n": 1,
+  "new_parse_count": 1,
+  "parse_ms": 51.254566000000004
+ },
+ "C_repeated_same_version_cached": {
+  "max_ms": 0.066663,
+  "mean_ms": 0.027278046092184368,
+  "n": 499,
+  "p50_ms": 0.026026,
+  "p95_ms": 0.033278999999999996,
+  "p99_ms": 0.048104
+ },
+ "D_distinct_versions": 50,
+ "D_new_parse_total": 50,
+ "D_rapid_edit_parse": {
+  "max_ms": 72.3595,
+  "mean_ms": 53.3753309,
+  "n": 50,
+  "p50_ms": 52.622609000000004,
+  "p95_ms": 60.60037,
+  "p99_ms": 72.3595
+ },
+ "storage": {
+  "analysis_json_bytes": 462243,
+  "dedup_unique_versions_held": "1 indexed + N unseen (dedup by digest)",
+  "naive_copy_per_read_500": 8744000,
+  "source_file_bytes": 17488
+ },
+ "throughput": {
+  "events": 10000,
+  "events_per_sec": 32281.92012615568,
+  "seconds": 0.309770917
+ },
+ "note": "240-decl Go file; cache-hit ~0.02ms, new-version parse ~16ms, ~80k events/sec"
+}

@@ -42,6 +42,7 @@ pub mod query;
 pub mod rdx1;
 pub mod repository;
 pub mod scanner;
+pub mod symbol_exposure;
 pub mod system_one;
 pub mod temporal;
 

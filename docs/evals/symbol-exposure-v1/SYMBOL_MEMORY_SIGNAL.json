@@ -1,0 +1,11 @@
+{
+ "gold_symbol": {
+  "invs_reaching_gold_symbol_any": 1.0,
+  "invs_reaching_gold_symbol_declaration": 1.0,
+  "invs_reaching_gold_symbol_reference": 0.9
+ },
+ "final_answer": {
+  "invs_with_exposed_symbol_in_answer": 1.0,
+  "mean_exposed_symbols_mentioned": 29.44
+ }
+}

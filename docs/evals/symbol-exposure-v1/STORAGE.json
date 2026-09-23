@@ -1,0 +1,26 @@
+{
+ "raw_agent_events_bytes": 40066076,
+ "symbol_exposure_normalized_bytes": 620166851,
+ "symbol_activity_bytes": 162877733,
+ "symbol_exposure_per_inv_bytes": 2584028,
+ "symbol_exposure_bytes_per_record": 922.1,
+ "records_per_investigation": 2802.0,
+ "compact_memory_symbols_per_inv": 634.0,
+ "dominant_component": "normalized per-(observation,symbol) provenance records (verbose JSON)",
+ "scale_projection": {
+  "10k_sessions": {
+   "sexp_records": 28023166,
+   "sexp_bytes_est": 25840285458
+  },
+  "100k_sessions": {
+   "sexp_records": 280231666,
+   "sexp_bytes_est": 258402854583
+  },
+  "1M_sessions": {
+   "sexp_records": 2802316666,
+   "sexp_bytes_est": 2584028545833
+  }
+ },
+ "dedup": "content-digest keyed; indexed versions not re-snapshotted; unseen versions parsed once and cached by digest",
+ "recommendation": "detailed per-observation provenance is debug/audit data; the operational memory layer uses the compact aggregated (inv,symbol) evidence map (~333/inv). Intern repeated strings (path/symbol_id/digest) or use columnar/binary encoding to cut ~5x."
+}

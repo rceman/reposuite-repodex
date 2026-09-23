@@ -1,0 +1,52 @@
+{
+  "prompt_id": "REPODEX-SYMBOL-EXPOSURE-FOUNDATION-V1",
+  "previous_prompt_id": "REPODEX-INVESTIGATION-MEMORY-HARNESS-NEUTRAL-ADAPTER-ADDENDUM-V1",
+  "status": "SYMBOL_EXPOSURE_FOUNDATION_COMPLETE",
+  "classification": "SYMBOL_EXPOSURE_SIGNAL_CONDITIONAL",
+  "next_task": "MEMORY_AWARE_ZERO_CONTEXT_AGENT_BENCHMARK",
+  "benchmark_executed": false,
+  "head": "9dc6d78",
+  "replay": {
+    "sessions": 240,
+    "source_observed_events": 15256,
+    "resolved_via_indexed_digest": 14532,
+    "indexed_digest_hit_rate": 0.9546,
+    "new_version_parses": 0,
+    "cached_version_reuse": 0,
+    "assumed_indexed": 0,
+    "unresolved": 691,
+    "unique_file_content_digests": 675,
+    "symbol_exposure_records": 672556,
+    "unique_symbols": 769,
+    "by_kind": {
+      "declaration_occurrence": 84260,
+      "enclosing_declaration": 8823,
+      "reference_occurrence": 579473
+    }
+  },
+  "signal": {
+    "invs_reaching_gold_symbol_declaration": 1.0,
+    "invs_reaching_gold_symbol_reference": 0.9,
+    "invs_reaching_gold_symbol_any": 1.0,
+    "invs_with_exposed_symbol_in_final_answer": 1.0,
+    "mean_exposed_symbols_mentioned_in_answer": 29.4,
+    "unique_symbols_per_investigation": 634.1,
+    "declaration_occurrence_symbols_per_investigation": 270.4
+  },
+  "performance": {
+    "indexed_hit_mean_ms": 0.019,
+    "indexed_hit_p95_ms": 0.016,
+    "new_version_parse_ms": 16.0,
+    "repeated_cached_mean_ms": 0.011,
+    "throughput_events_per_sec": 80000
+  },
+  "invariants": {
+    "QUERY_RANKING_UNCHANGED": true,
+    "RDX1_UNCHANGED": true,
+    "TEMPORAL_RANKING_UNCHANGED": true,
+    "SYSTEM_ONE_BEHAVIOR_UNCHANGED": true,
+    "MEMORY_SCORING_UNCHANGED": true,
+    "AGENT_EVENT_BACKWARD_COMPATIBLE": true,
+    "HARNESS_SPECIFIC_PRODUCTION_DEPENDENCIES": 0
+  }
+}

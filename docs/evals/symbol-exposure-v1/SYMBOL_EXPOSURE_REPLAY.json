@@ -1,0 +1,56 @@
+{
+ "investigations": 240,
+ "symbol_exposure_records": 672556,
+ "unique_symbols_globally": 769,
+ "exposures_by_kind": {
+  "declaration_occurrence": 84260,
+  "reference_occurrence": 579473,
+  "enclosing_declaration": 8823
+ },
+ "exposures_by_certainty": {
+  "fact": 105971,
+  "candidate": 566585
+ },
+ "per_investigation_mean": {
+  "unique_symbols": 634.1,
+  "declaration_occurrences": 351.1,
+  "reference_occurrences": 2414.5,
+  "enclosing": 36.8,
+  "symbols_explicitly_read": 352.9,
+  "symbols_via_search_snippet": 428.2
+ },
+ "by_treatment": {
+  "E0": {
+   "unique_symbols_exposed": 763.3,
+   "declarations_exposed": 425.2,
+   "references_exposed": 2947.5,
+   "enclosing_exposed": 47.8,
+   "symbols_explicitly_read": 378.8,
+   "symbols_via_search_snippet": 549.8
+  },
+  "E1": {
+   "unique_symbols_exposed": 603.8,
+   "declarations_exposed": 338.8,
+   "references_exposed": 2328.3,
+   "enclosing_exposed": 33.6,
+   "symbols_explicitly_read": 360,
+   "symbols_via_search_snippet": 397.6
+  },
+  "E2": {
+   "unique_symbols_exposed": 610.7,
+   "declarations_exposed": 335.6,
+   "references_exposed": 2138.2,
+   "enclosing_exposed": 29.4,
+   "symbols_explicitly_read": 383.1,
+   "symbols_via_search_snippet": 367.8
+  },
+  "E3": {
+   "unique_symbols_exposed": 558.8,
+   "declarations_exposed": 304.8,
+   "references_exposed": 2243.9,
+   "enclosing_exposed": 36.2,
+   "symbols_explicitly_read": 289.9,
+   "symbols_via_search_snippet": 397.6
+  }
+ }
+}

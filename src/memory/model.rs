@@ -109,6 +109,40 @@ impl MemoryEvidence {
     }
 }
 
+/// Symbol-level memory evidence (§38) — a remembered (investigation, symbol)
+/// navigation fact. Factual only; no ranking weight is attached here.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct SymbolMemoryEvidence {
+    /// Stable RepoDex symbol identity (`decl:{path}#{id}`) or a referenced name.
+    pub symbol_id: String,
+    pub symbol_name: String,
+    pub path: String,
+    pub symbol_kind: String,
+    /// The declaration source itself was exposed (§20).
+    #[serde(default)]
+    pub declaration_exposed: bool,
+    /// Source inside the declaration was exposed (§19).
+    #[serde(default)]
+    pub enclosing_exposed: bool,
+    /// The symbol appeared as a reference/call occurrence in exposed source.
+    #[serde(default)]
+    pub reference_exposed: bool,
+    /// Exposed via an explicit file read (§33).
+    #[serde(default)]
+    pub explicitly_read: bool,
+    /// Exposed via a search snippet (§33).
+    #[serde(default)]
+    pub via_search_snippet: bool,
+    /// The symbol name was mentioned in the investigation's final answer (§36).
+    #[serde(default)]
+    pub mentioned_in_final_answer: bool,
+    /// The content version the exposure was bound to (`sha256:` digest).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file_content_digest: Option<String>,
+    #[serde(default)]
+    pub freshness: Option<Freshness>,
+}
+
 /// One remembered investigation: its query signature + per-path evidence.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MemoryEntry {
@@ -126,6 +160,10 @@ pub struct MemoryEntry {
     /// path -> factual evidence
     #[serde(default)]
     pub evidence: BTreeMap<String, MemoryEvidence>,
+    /// symbol_id -> factual symbol evidence (§38). Populated when
+    /// SymbolExposure data is available for the investigation.
+    #[serde(default)]
+    pub symbols: BTreeMap<String, SymbolMemoryEvidence>,
     /// investigation-level cost (§26)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub input_tokens: Option<u64>,
@@ -146,6 +184,10 @@ pub struct MemoryMatch {
     pub components: BTreeMap<String, f64>,
     /// Remembered paths sorted by evidence strength.
     pub paths: Vec<MemoryEvidence>,
+    /// Remembered symbols sorted by signal strength (§38-§40). Navigation aid
+    /// only — no ranking weight.
+    #[serde(default)]
+    pub symbols: Vec<SymbolMemoryEvidence>,
 }
 
 /// Memory store manifest.

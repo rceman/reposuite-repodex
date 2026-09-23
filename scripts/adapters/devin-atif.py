@@ -16,6 +16,7 @@ Options supply canonical identity (benchmark replay):
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 
@@ -111,6 +112,24 @@ def parse_rdx1_packet(text):
     return (refs, block) if refs else None
 
 
+def file_content_digest(repo_root, path):
+    """Whole-file content digest (sha256) of the version observed.
+
+    Valid for a pinned read-only corpus (the benchmark worktree is immutable,
+    so the file on disk == the version the Agent saw). For mutable working
+    trees a streaming adapter/harness must supply the digest at observation
+    time; this offline adapter assumes the pinned-corpus invariant (§45-§46).
+    """
+    if not repo_root or not path:
+        return None
+    try:
+        p = path if os.path.isabs(path) else os.path.join(repo_root, path)
+        with open(p, "rb") as f:
+            return "sha256:" + hashlib.sha256(f.read()).hexdigest()
+    except OSError:
+        return None
+
+
 def emit_source_observed(out, sid, inv, ts, tool_name, args, tool_call_id,
                          content, seq, repo_root, mk):
     """read -> explicit_read; grep content -> search_snippet per file."""
@@ -118,13 +137,15 @@ def emit_source_observed(out, sid, inv, ts, tool_name, args, tool_call_id,
         fv = parse_file_view(content)
         if fv:
             path, sl, el = fv
+            rp = to_repo_path(path, repo_root)
             mk(out, sid, inv, ts, seq, "source_observed", {
-                "path": to_repo_path(path, repo_root),
+                "path": rp,
                 "observation_kind": "explicit_read",
                 "tool_call_id": tool_call_id,
                 "bytes": len(content),
                 "line_start": sl, "line_end": el,
                 "content_digest": "sha256:" + sha(content),
+                "file_content_digest": file_content_digest(repo_root, rp),
             })
             return seq + 1
     elif tool_name in ("grep", "search"):
@@ -153,11 +174,13 @@ def emit_source_observed(out, sid, inv, ts, tool_name, args, tool_call_id,
         for path, by, mn, mx in per_file:
             if by == 0:
                 continue
+            rp = to_repo_path(path, repo_root)
             mk(out, sid, inv, ts, seq, "source_observed", {
-                "path": to_repo_path(path, repo_root),
+                "path": rp,
                 "observation_kind": "search_snippet",
                 "tool_call_id": tool_call_id, "bytes": by,
                 "line_start": mn, "line_end": mx,
+                "file_content_digest": file_content_digest(repo_root, rp),
             })
             seq += 1
     return seq

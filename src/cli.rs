@@ -75,6 +75,7 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "investigations" => command_investigations(&rest),
         "agent-activity" | "agent_activity" => command_agent_activity(&rest),
         "memory" => command_memory(&rest),
+        "symbol-exposure" | "symbol_exposure" => command_symbol_exposure(&rest),
         "system-one" | "system_one" => command_system_one(&rest),
         "help" | "--help" | "-h" => {
             print_usage();
@@ -185,6 +186,8 @@ struct Options {
     repo_root: Option<String>,
     /// `agent-events derive` source event-store directory.
     store: Option<String>,
+    /// `memory build` SymbolExposure store for symbol-level evidence (§38).
+    symbol_exposure: Option<String>,
     /// `derived` full rebuild flag.
     full: bool,
     tests_only: bool,
@@ -259,6 +262,9 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
                 options.repo_root = Some(value_for(args, &mut index, name, inline_value)?)
             }
             "--store" => options.store = Some(value_for(args, &mut index, name, inline_value)?),
+            "--symbol-exposure" | "--sexp" => {
+                options.symbol_exposure = Some(value_for(args, &mut index, name, inline_value)?)
+            }
             "--full" => options.full = true,
             "--max-file-size" => {
                 let value = value_for(args, &mut index, name, inline_value)?;
@@ -3426,7 +3432,7 @@ fn command_memory(args: &[String]) -> Result<u8, String> {
             let ds =
                 crate::derived::DerivedStore::load(Path::new(&sdir)).map_err(|e| e.to_string())?;
             let known = known_repo_paths(options.repo_root.as_deref());
-            let (ms, rep) = crate::memory::build_memory(
+            let (mut ms, rep) = crate::memory::build_memory(
                 &ds,
                 Path::new(&mdir),
                 options.full,
@@ -3434,6 +3440,11 @@ fn command_memory(args: &[String]) -> Result<u8, String> {
                 &known, // remembered snapshot == current (static benchmark repo)
             )
             .map_err(|e| e.to_string())?;
+            // Optional symbol-level enrichment from a SymbolExposure store (§38).
+            if let Some(sxdir) = options.symbol_exposure.clone() {
+                let sexp = crate::symbol_exposure::SymbolExposureStore::open(Path::new(&sxdir));
+                ms.enrich_symbols(&sexp, &known);
+            }
             ms.save(Path::new(&mdir)).map_err(|e| e.to_string())?;
             let m = ms
                 .write_manifest(Path::new(&mdir))
@@ -3523,6 +3534,17 @@ fn command_memory(args: &[String]) -> Result<u8, String> {
                                 "explicitly_read": p.explicitly_read,
                                 "mentioned": p.mentioned_in_final_answer,
                             })).collect::<Vec<_>>(),
+                            "symbols": m.symbols.iter().take(limit).map(|s| serde_json::json!({
+                                "symbol_id": s.symbol_id, "symbol": s.symbol_name,
+                                "kind": s.symbol_kind, "path": s.path,
+                                "declaration_exposed": s.declaration_exposed,
+                                "enclosing_exposed": s.enclosing_exposed,
+                                "reference_exposed": s.reference_exposed,
+                                "explicitly_read": s.explicitly_read,
+                                "via_search_snippet": s.via_search_snippet,
+                                "final_answer_mentioned": s.mentioned_in_final_answer,
+                                "freshness": s.freshness.map(|f| format!("{f:?}")),
+                            })).collect::<Vec<_>>(),
                         })
                     })
                     .collect();
@@ -3547,6 +3569,187 @@ fn command_memory(args: &[String]) -> Result<u8, String> {
             }
         }
         _ => return Err(format!("unknown memory subcommand `{sub}`")),
+    }
+    Ok(EXIT_OK)
+}
+
+fn command_symbol_exposure(args: &[String]) -> Result<u8, String> {
+    use crate::symbol_exposure as sx;
+    let sub = args.first().map(|s| s.as_str()).ok_or_else(|| {
+        "symbol-exposure requires a subcommand (derive|investigation|source|activity|stats)"
+            .to_string()
+    })?;
+    let options = parse_options(&args[1..])?;
+    let out_dir = options
+        .output
+        .clone()
+        .ok_or_else(|| "symbol-exposure requires --output <symbol-exposure-dir>".to_string())?;
+    match sub {
+        "derive" => {
+            let store_dir = options.store.clone().ok_or_else(|| {
+                "symbol-exposure derive requires --store <agent-event-dir>".to_string()
+            })?;
+            let snap_dir = options.snapshot.clone().ok_or_else(|| {
+                "symbol-exposure derive requires --snapshot <index-dir>".to_string()
+            })?;
+            let estore = crate::agent_event::AgentEventStore::open(Path::new(&store_dir))
+                .map_err(|e| e.to_string())?;
+            let manifest = crate::repository::artifact::read_manifest(Path::new(&snap_dir))
+                .map_err(|e| e.to_string())?;
+            let sources = sx::SourceStore::default();
+            let provider = sx::SymbolMapProvider::new(Path::new(&snap_dir), &manifest, &sources);
+            let mut store = sx::SymbolExposureStore::open(Path::new(&out_dir));
+            // Fold all sessions' events (background enrichment — synchronous for CLI).
+            for sid in estore.sessions().map_err(|e| e.to_string())? {
+                let events = estore.session_events(&sid).map_err(|e| e.to_string())?;
+                sx::store::derive_symbol_exposures(&events, &provider, &mut store);
+            }
+            store.save().map_err(|e| e.to_string())?;
+            // symbol activity
+            let mut act = sx::SymbolActivityStore::open(&Path::new(&out_dir).join("activity"));
+            std::fs::create_dir_all(act.contrib_path().parent().unwrap())
+                .map_err(|e| e.to_string())?;
+            let mut contrib =
+                std::fs::File::create(act.contrib_path()).map_err(|e| e.to_string())?;
+            for doc in store.docs.values() {
+                for x in &doc.exposures {
+                    act.fold(x, &doc.investigation_id, &mut contrib);
+                }
+            }
+            act.save().map_err(|e| e.to_string())?;
+            let d = &store.diag;
+            let pd = provider.diag.borrow();
+            let rep = serde_json::json!({
+                "command": "symbol-exposure derive",
+                "investigations": store.docs.len(),
+                "source_observed_events": d.source_observed_events,
+                "exposures": d.exposures,
+                "unique_symbols": d.unique_symbols,
+                "resolved_indexed_hit": d.resolved_indexed_hit,
+                "resolved_cached_version": d.resolved_cached_version,
+                "resolved_new_parse": d.resolved_new_parse,
+                "resolved_assumed_indexed": d.resolved_assumed_indexed,
+                "unresolved": d.unresolved,
+                "unresolved_missing_source_version": d.unresolved_missing_source_version,
+                "unresolved_unsupported_language": d.unresolved_unsupported_language,
+                "unresolved_no_symbol_overlap": d.unresolved_no_symbol_overlap,
+            });
+            drop(pd);
+            if options.json {
+                print_json(&rep)?;
+            } else {
+                println!(
+                    "symbol-exposure: {} investigations, {} exposures, {} unique symbols",
+                    store.docs.len(),
+                    d.exposures,
+                    d.unique_symbols
+                );
+            }
+        }
+        "investigation" | "inv" => {
+            let inv = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "symbol-exposure investigation requires <id>".to_string())?;
+            let store = sx::SymbolExposureStore::open(Path::new(&out_dir));
+            match store.load(&inv) {
+                Some(doc) => {
+                    if options.json {
+                        print_json(&serde_json::to_value(&doc).map_err(|e| e.to_string())?)?;
+                    } else {
+                        for x in &doc.exposures {
+                            println!(
+                                "{} {} {} [{}] {}",
+                                x.exposure_kind.as_str(),
+                                x.symbol_id,
+                                x.symbol_name,
+                                x.observation_provenance.as_str(),
+                                x.overlap.as_str()
+                            );
+                        }
+                    }
+                }
+                None => return Err(format!("no symbol-exposure doc for `{inv}`")),
+            }
+        }
+        "source" => {
+            // exposures for one source_observed event (session:seq)
+            let key = options
+                .positional
+                .first()
+                .cloned()
+                .ok_or_else(|| "symbol-exposure source requires <session:seq>".to_string())?;
+            let store = sx::SymbolExposureStore::open(Path::new(&out_dir));
+            let mut hits = Vec::new();
+            for id in store.investigation_ids() {
+                if let Some(doc) = store.load(&id) {
+                    for x in &doc.exposures {
+                        if format!("{}:{}", x.session_id, x.source_event_sequence) == key {
+                            hits.push(serde_json::to_value(x).map_err(|e| e.to_string())?);
+                        }
+                    }
+                }
+            }
+            print_json(&serde_json::json!({"source_event": key, "exposures": hits}))?;
+        }
+        "activity" => {
+            // symbol activity by symbol id (or top-N summary)
+            let adir = Path::new(&out_dir).join("activity").join("symbols.jsonl");
+            let target = options.positional.first().cloned();
+            let mut rows = Vec::new();
+            if let Ok(s) = std::fs::read_to_string(&adir) {
+                for line in s.lines() {
+                    if let Ok(a) = serde_json::from_str::<sx::SymbolActivity>(line) {
+                        if target
+                            .as_deref()
+                            .map(|t| a.symbol_id.contains(t) || a.symbol_name == t)
+                            .unwrap_or(true)
+                        {
+                            rows.push(a);
+                        }
+                    }
+                }
+            }
+            rows.sort_by(|a, b| {
+                b.observation_event_count_total
+                    .cmp(&a.observation_event_count_total)
+            });
+            let lim = options.max_results.unwrap_or(20);
+            if options.json {
+                let v: Vec<_> = rows.iter().take(lim).collect();
+                print_json(&serde_json::json!({"command":"symbol-exposure activity","symbols":v}))?;
+            } else {
+                for a in rows.iter().take(lim) {
+                    println!(
+                        "{:>5} {} {} ({} reads)",
+                        a.observation_event_count_total,
+                        a.symbol_id,
+                        a.symbol_name,
+                        a.explicit_read_exposure_count
+                    );
+                }
+            }
+        }
+        "stats" => {
+            let store = sx::SymbolExposureStore::open(Path::new(&out_dir));
+            let ids = store.investigation_ids();
+            let mut tot = 0u64;
+            let mut kinds = std::collections::BTreeMap::new();
+            for id in &ids {
+                if let Some(d) = store.load(id) {
+                    tot += d.exposures.len() as u64;
+                    for x in &d.exposures {
+                        *kinds
+                            .entry(x.exposure_kind.as_str().to_string())
+                            .or_insert(0u64) += 1;
+                    }
+                }
+            }
+            print_json(&serde_json::json!({"command":"symbol-exposure stats",
+                "investigations": ids.len(), "exposures": tot, "by_kind": kinds}))?;
+        }
+        _ => return Err(format!("unknown symbol-exposure subcommand `{sub}`")),
     }
     Ok(EXIT_OK)
 }
