@@ -27,7 +27,7 @@ use super::AgentEventError;
 pub const MANIFEST_FILE: &str = "manifest.json";
 pub const STORE_VERSION: u32 = 1;
 
-/// Sanitize a session id into a safe filename (Devin ids are word-safe, but be
+/// Sanitize a session id into a safe filename (producer ids are word-safe, but be
 /// strict anyway; fall back to a hash for hostile ids).
 fn safe_session_file(sid: &str) -> String {
     let ok: String = sid

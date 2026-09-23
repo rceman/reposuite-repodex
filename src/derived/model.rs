@@ -180,6 +180,9 @@ pub struct InvestigationEpisode {
     /// Path-like strings not resolvable to known repo paths.
     #[serde(default)]
     pub unresolved_path_mentions: Vec<String>,
+    /// Paths surfaced via `context_artifact_presented` (path, rank) — §7.
+    #[serde(default)]
+    pub surfaced_paths: Vec<(String, Option<u64>)>,
     // outcomes (§22) — neutral, no correctness invention
     #[serde(default)]
     pub session_outcomes: Vec<String>,
@@ -215,17 +218,14 @@ pub struct PathActivity {
     pub diff_observation_count_total: u64,
     pub other_observation_count_total: u64,
     pub exposed_bytes_total: u64,
-    /// Distinct sessions whose final answer mentioned this path (idempotent).
-    #[serde(default)]
-    pub mention_session_ids: Vec<String>,
-    /// Distinct sessions whose structured EVIDENCE block mentioned this path.
-    #[serde(default)]
-    pub structured_evidence_session_ids: Vec<String>,
-    // distinct identities (§26)
-    #[serde(default)]
-    pub session_ids: Vec<String>,
-    #[serde(default)]
-    pub investigation_ids: Vec<String>,
+    /// Distinct sessions that mentioned this path in a final answer.
+    pub final_answer_mention_count: u64,
+    /// Distinct sessions whose structured EVIDENCE block named this path.
+    pub structured_evidence_mention_count: u64,
+    // distinct counts (§26) — COUNTS only; the member ids live in the
+    // disk-backed contribution index (§12-§13), not in this hot record.
+    pub sessions_observed_count: u64,
+    pub investigations_observed_count: u64,
     pub first_observed_at: String,
     pub last_observed_at: String,
     /// Bounded recent-window buckets: day-index -> bucket (§27-§28).
@@ -233,21 +233,22 @@ pub struct PathActivity {
     pub daily: std::collections::BTreeMap<i64, DailyBucket>,
 }
 
+/// Disk-backed contribution membership for one (repo,path) — the exact
+/// distinct-identity evidence kept OUT of the hot `PathActivity` record
+/// (§12-§13). Persisted separately; used only during build/incremental.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ContribMembership {
+    #[serde(default)]
+    pub session_ids: Vec<String>,
+    #[serde(default)]
+    pub investigation_ids: Vec<String>,
+    #[serde(default)]
+    pub mention_session_ids: Vec<String>,
+    #[serde(default)]
+    pub evidence_session_ids: Vec<String>,
+}
+
 impl PathActivity {
-    pub fn sessions_observed_count(&self) -> u64 {
-        self.session_ids.len() as u64
-    }
-    /// Distinct sessions that mentioned this path in a final answer.
-    pub fn final_answer_mention_count(&self) -> u64 {
-        self.mention_session_ids.len() as u64
-    }
-    /// Distinct sessions whose structured EVIDENCE block named this path.
-    pub fn structured_evidence_mention_count(&self) -> u64 {
-        self.structured_evidence_session_ids.len() as u64
-    }
-    pub fn investigations_observed_count(&self) -> u64 {
-        self.investigation_ids.len() as u64
-    }
     /// Distinct investigations observed within the last `days` before `now_day`.
     pub fn investigations_window(&self, now_day: i64, days: i64) -> u64 {
         let cutoff = now_day - days;

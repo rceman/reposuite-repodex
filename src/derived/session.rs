@@ -75,6 +75,10 @@ pub struct SessionPart {
     // outcomes
     pub session_outcomes: Vec<String>,
     pub task_outcomes: Vec<String>,
+    /// Paths surfaced via `context_artifact_presented` (path, rank). Surfaced
+    /// is NOT observed/read (§7).
+    #[serde(default)]
+    pub surfaced_paths: Vec<(String, Option<u64>)>,
     // for merge
     pub max_sequence: u64,
     pub event_count: u64,
@@ -300,6 +304,19 @@ pub fn derive_session(events: &[AgentEvent]) -> SessionPart {
                         .unwrap_or("unknown")
                         .to_string(),
                 );
+            }
+            "context_artifact_presented" => {
+                // surfaced repository references (§3-§7) — NOT observed/read.
+                if let Some(refs) = e.data.get("references").and_then(|v| v.as_array()) {
+                    for r in refs {
+                        if let Some(path) = r.get("path").and_then(|v| v.as_str()) {
+                            let rank = r.get("rank").and_then(|v| v.as_u64());
+                            if !p.surfaced_paths.iter().any(|(x, _)| *x == path) {
+                                p.surfaced_paths.push((path.to_string(), rank));
+                            }
+                        }
+                    }
+                }
             }
             _ => {}
         }

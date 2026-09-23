@@ -1,5 +1,5 @@
 //! Canonical AgentEvent v1 — a **RepoSuite-level**, harness-neutral telemetry
-//! contract (§2). This is NOT a Devin/RepoDex/Codex event: the envelope and
+//! contract (§2). Harness-neutral: the envelope and
 //! semantics are runtime-agnostic so RepoSuite Relay can emit the same events
 //! natively without changing consumers (§40/§86).
 //!
@@ -17,9 +17,9 @@ pub const AGENT_EVENT_VERSION: u32 = 1;
 /// event semantics.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SourceProvenance {
-    /// Agent runtime, e.g. `devin`, `codex`, `opencode`.
+    /// Agent runtime (opaque producer metadata — RepoDex never branches on it).
     pub runtime: String,
-    /// Adapter/normalizer, e.g. `devin-atif`, `codex-app-server`, `acp`.
+    /// Adapter/normalizer name (opaque provenance, e.g. a Relay-side adapter).
     pub adapter: String,
     /// Adapter contract version.
     pub adapter_version: String,
@@ -223,6 +223,51 @@ pub struct SourceObserved {
     pub line_end: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_digest: Option<String>,
+}
+
+/// One repository reference inside a presented context artifact (§5).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ArtifactReference {
+    /// e.g. "path" | "entity" | "symbol"
+    pub reference_kind: String,
+    /// Canonical repository-relative path (absent for non-repo references).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Entity/symbol identity when available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entity: Option<String>,
+    /// Presentation rank/position when meaningful.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rank: Option<u64>,
+    /// Relation/reason metadata when supplied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub relation: Option<String>,
+}
+
+/// `context_artifact_presented` (§3-§6): external/precomputed context supplied
+/// to the Agent before/during investigation — RepoDex RDX packet, retrieval
+/// bundle, planner context. Harness-neutral; distinct from `source_observed`
+/// (tool-delivered) — a surfaced path is NOT an observed one (§7).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ContextArtifactPresented {
+    /// Stable artifact identity (e.g. packet digest).
+    pub artifact_id: String,
+    /// e.g. "rdx1_packet" | "retrieval_bundle" | "document_context"
+    pub artifact_kind: String,
+    /// Producing system, e.g. "repodex".
+    pub producer: String,
+    /// Digest of the full artifact payload.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_digest: Option<String>,
+    /// Artifact payload bytes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_bytes: Option<u64>,
+    /// When presented (RFC3339); sequence provides order authority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub presented_at: Option<String>,
+    /// Structured repository references (paths/entities, with rank).
+    #[serde(default)]
+    pub references: Vec<ArtifactReference>,
 }
 
 /// `agent_message` (§20).

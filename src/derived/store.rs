@@ -152,7 +152,7 @@ impl DerivedStore {
                 }
             }
         }
-        // activity
+        // activity hot records (bounded; no id sets — §12)
         let ap = dir.join("activity").join("paths.jsonl");
         if ap.exists() {
             let t = std::fs::read_to_string(&ap).map_err(|e| DerivedError::Io {
@@ -172,6 +172,29 @@ impl DerivedStore {
                     .insert((rec.repository_id.clone(), rec.path.clone()), rec);
             }
         }
+        // contribution membership index (§13) — loaded only for derive, never
+        // for a hot lookup.
+        let cp2 = dir.join("activity").join("contrib.jsonl");
+        if cp2.exists() {
+            let t = std::fs::read_to_string(&cp2).map_err(|e| DerivedError::Io {
+                path: cp2.clone(),
+                reason: e.to_string(),
+            })?;
+            for line in t.lines() {
+                if line.trim().is_empty() {
+                    continue;
+                }
+                let rec: serde_json::Value =
+                    serde_json::from_str(line).map_err(|e| DerivedError::Corrupt {
+                        reason: format!("contrib: {e}"),
+                    })?;
+                let repo = rec["repository_id"].as_str().unwrap_or("").to_string();
+                let path = rec["path"].as_str().unwrap_or("").to_string();
+                let cm: ContribMembership =
+                    serde_json::from_value(rec["membership"].clone()).unwrap_or_default();
+                ds.activity.contrib.insert((repo, path), cm);
+            }
+        }
         Ok(ds)
     }
 
@@ -189,7 +212,7 @@ impl DerivedStore {
         for ep in self.episodes.values() {
             write_json(&Self::dir_episode(dir, &ep.investigation_id), ep)?;
         }
-        // activity jsonl
+        // activity hot jsonl (bounded records) + contribution membership index
         let mut lines = String::new();
         for a in self.activity.paths.values() {
             lines.push_str(&serde_json::to_string(a).unwrap_or_default());
@@ -197,7 +220,22 @@ impl DerivedStore {
         }
         let ap = dir.join("activity").join("paths.jsonl");
         std::fs::write(&ap, lines).map_err(|e| DerivedError::Io {
-            path: ap,
+            path: ap.clone(),
+            reason: e.to_string(),
+        })?;
+        let mut clines = String::new();
+        for ((repo, path), cm) in &self.activity.contrib {
+            clines.push_str(
+                &serde_json::json!({
+                    "repository_id":repo,"path":path,"membership":cm
+                })
+                .to_string(),
+            );
+            clines.push('\n');
+        }
+        let cpath = dir.join("activity").join("contrib.jsonl");
+        std::fs::write(&cpath, clines).map_err(|e| DerivedError::Io {
+            path: cpath,
             reason: e.to_string(),
         })?;
         write_json(&dir.join("checkpoint.json"), &self.checkpoint)?;

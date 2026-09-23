@@ -2945,7 +2945,9 @@ fn command_temporal_file(args: &[String]) -> Result<u8, String> {
 
 // ---------------------------------------------------------------------------
 // agent-events — canonical AgentEvent v1 telemetry ingest + store.
-// Harness-neutral contract; `devin-atif` is only an adapter into it.
+// Harness-neutral contract. RepoDex ingests ONLY canonical
+// `reposuite.agent-event.v1` JSONL; native harness formats are converted by an
+// external adapter (`scripts/adapters/` or future RepoSuite Relay), never here.
 // ---------------------------------------------------------------------------
 
 fn command_agent_events(args: &[String]) -> Result<u8, String> {
@@ -2994,19 +2996,10 @@ fn command_agent_events_ingest(args: &[String]) -> Result<u8, String> {
         }
         Some(f) => std::fs::read_to_string(f).map_err(|e| format!("read {f}: {e}"))?,
     };
+    // RepoDex ingests canonical `reposuite.agent-event.v1` JSONL only. Native
+    // harness formats are converted externally by
+    // scripts/adapters/* or future RepoSuite Relay — never parsed here (§3).
     let events: Vec<crate::agent_event::AgentEvent> = match format.as_str() {
-        "devin-atif" | "atif" => {
-            let traj: serde_json::Value =
-                serde_json::from_str(&text).map_err(|e| format!("atif parse: {e}"))?;
-            let ctx = crate::agent_event::devin_atif::AtifContext {
-                investigation_id: options.import.clone(),
-                project_id: None,
-                repository_id: options.repository.clone(),
-                repo_head: options.target.clone(),
-                repo_root: options.repo_root.clone().or(options.repository.clone()),
-            };
-            crate::agent_event::devin_atif::from_atif(&traj, &ctx).map_err(|e| e.to_string())?
-        }
         "reposuite-v1" | "v1" => {
             let mut evs = Vec::new();
             for (n, line) in text.lines().enumerate() {
@@ -3020,7 +3013,13 @@ fn command_agent_events_ingest(args: &[String]) -> Result<u8, String> {
             }
             evs
         }
-        other => return Err(format!("unknown ingest format `{other}`")),
+        other => {
+            return Err(format!(
+                "unknown ingest format `{other}`; RepoDex accepts canonical \
+                 reposuite.agent-event.v1 JSONL only — convert native harness \
+                 formats with scripts/adapters/ first"
+            ))
+        }
     };
     let mut sink = crate::agent_event::StoreSink { store: &mut store };
     let report = crate::agent_event::AgentEventSink::ingest_batch(&mut sink, &events)
@@ -3379,9 +3378,9 @@ fn command_agent_activity(args: &[String]) -> Result<u8, String> {
                         a.path,
                         a.observation_event_count_total,
                         a.explicit_read_count_total,
-                        a.sessions_observed_count(),
-                        a.investigations_observed_count(),
-                        a.final_answer_mention_count()
+                        a.sessions_observed_count,
+                        a.investigations_observed_count,
+                        a.final_answer_mention_count
                     );
                 }
             }

@@ -105,8 +105,8 @@ fn multi_session_investigation() {
         .paths
         .get(&("repo".into(), "a/b.go".into()))
         .unwrap();
-    assert_eq!(act.sessions_observed_count(), 2);
-    assert_eq!(act.investigations_observed_count(), 1);
+    assert_eq!(act.sessions_observed_count, 2);
+    assert_eq!(act.investigations_observed_count, 1);
     assert_eq!(act.observation_event_count_total, 2);
     let _ = std::fs::remove_dir_all(&sd);
     let _ = std::fs::remove_dir_all(&dd);
@@ -167,8 +167,8 @@ fn repeated_read_counts() {
     let a = &ds.activity.paths[&("repo".into(), "a/b.go".into())];
     assert_eq!(a.observation_event_count_total, 4);
     assert_eq!(a.explicit_read_count_total, 4);
-    assert_eq!(a.sessions_observed_count(), 2);
-    assert_eq!(a.investigations_observed_count(), 1);
+    assert_eq!(a.sessions_observed_count, 2);
+    assert_eq!(a.investigations_observed_count, 1);
     let ex = &ds.episodes["inv"].source_exposures[0];
     assert_eq!(ex.observation_event_count, 4);
     assert_eq!(ex.first_observed_sequence, 1);

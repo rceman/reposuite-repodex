@@ -2,12 +2,13 @@
 //!
 //! Canonical RepoSuite-level telemetry contract (harness-neutral), a durable
 //! append-oriented Agent Event Store, a generic ingest boundary, and the first
-//! producer adapter (`devin_atif`). The ingest layer records observations —
-//! it never decides useful/irrelevant/correct (§4).
+//! external producer adapter (e.g. `scripts/adapters/` or RepoSuite Relay).
+//! The ingest layer records observations — it never decides
+//! useful/irrelevant/correct (§4). All modules here are harness-neutral.
 
 use std::path::PathBuf;
 
-pub mod devin_atif;
+pub mod context;
 pub mod ingest;
 pub mod model;
 pub mod store;
@@ -32,7 +33,7 @@ pub enum AgentEventError {
     Corrupt {
         reason: String,
     },
-    /// ATIF adapter problem.
+    /// Adapter/producer problem.
     Adapter {
         reason: String,
     },

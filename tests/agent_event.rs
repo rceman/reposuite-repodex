@@ -5,7 +5,6 @@
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 
-use repodex::agent_event::devin_atif::{from_atif, AtifContext};
 use repodex::agent_event::*;
 use repodex::agent_event::{AgentEventSink, StoreSink};
 
@@ -222,36 +221,8 @@ fn out_of_order_accepted() {
     let _ = std::fs::remove_dir_all(&d);
 }
 
-/// §68 repository path normalization: relative/absolute-in-repo map to
-/// canonical repo-relative; traversal/external do not escape.
-#[test]
-fn repo_path_normalization() {
-    // Build an ATIF trace with a read tool call for a repo file, an absolute
-    // in-repo path is normalized; an external path is not claimed as repo.
-    let traj = serde_json::json!({
-        "session_id":"s-p","steps":[
-            {"step_id":0,"timestamp":"2026-01-01T00:00:00Z","source":"user","message":"t"},
-            {"step_id":1,"timestamp":"2026-01-01T00:00:01Z","source":"agent","message":"",
-             "metrics":{"prompt_tokens":1,"completion_tokens":1},
-             "tool_calls":[{"tool_call_id":"t1","function_name":"read","arguments":{"file_path":"/repo/src/a.go"}}],
-             "observation":{"results":[{"source_call_id":"t1","content":"<file-view path=\"/repo/src/a.go\" start_line=\"1\" end_line=\"2\">\n 1|package a\n"}]}},
-            {"step_id":2,"timestamp":"2026-01-01T00:00:02Z","source":"agent","message":"ans"}
-        ],
-        "final_metrics":{"total_prompt_tokens":1,"total_completion_tokens":1,"total_steps":3}
-    });
-    let ctx = AtifContext {
-        repo_root: Some("/repo".into()),
-        ..Default::default()
-    };
-    let events = from_atif(&traj, &ctx).unwrap();
-    let so: Vec<&AgentEvent> = events
-        .iter()
-        .filter(|e| e.event_type == "source_observed")
-        .collect();
-    assert_eq!(so.len(), 1);
-    assert_eq!(so[0].data["path"], serde_json::json!("src/a.go"));
-    assert!(!so[0].data["path"].as_str().unwrap().contains(".."));
-}
+/// §68 repository path normalization is an adapter concern; covered by
+/// `scripts/adapters/` tests. RepoDex sees canonical repo-relative `path` only.
 
 /// §69 large batch streaming ingest — no O(N^2); bounded memory.
 #[test]

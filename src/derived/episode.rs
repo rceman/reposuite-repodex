@@ -136,6 +136,7 @@ pub fn merge_episode(
         final_answer_path_mentions: Vec::new(),
         evidence_path_mentions: Vec::new(),
         unresolved_path_mentions: Vec::new(),
+        surfaced_paths: Vec::new(),
         session_outcomes: Vec::new(),
         task_outcomes: Vec::new(),
         quality_outcome: None,
@@ -279,6 +280,19 @@ pub fn merge_episode(
         ep.session_outcomes
             .extend(p.session_outcomes.iter().cloned());
         ep.task_outcomes.extend(p.task_outcomes.iter().cloned());
+        // surfaced paths (§7) — dedup by path, keep best (lowest) rank
+        for (path, rank) in &p.surfaced_paths {
+            match ep.surfaced_paths.iter_mut().find(|(x, _)| x == path) {
+                Some(existing) => {
+                    if let (Some(new), Some(old)) = (rank, &mut existing.1) {
+                        if *new < *old {
+                            *old = *new;
+                        }
+                    }
+                }
+                None => ep.surfaced_paths.push((path.clone(), *rank)),
+            }
+        }
         all_completed &= p.completed;
         any_completed |= p.completed;
         if p.task_outcomes

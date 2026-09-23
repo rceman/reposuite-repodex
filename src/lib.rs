@@ -34,6 +34,7 @@ pub mod graph;
 pub mod incremental;
 pub mod input;
 pub mod links;
+pub mod memory;
 pub mod model;
 pub mod parser;
 pub mod paths;

@@ -1,6 +1,6 @@
 //! Generic Agent Telemetry Ingest boundary (§27).
 //!
-//! `producer/adapter -> AgentEvent[] -> generic sink`. No Devin/ATIF types
+//! `producer/adapter -> AgentEvent[] -> generic sink`. No harness-specific types
 //! cross this boundary. Validation enforces the canonical envelope; unknown
 //! future event types are preserved, not rejected (§11).
 
