@@ -1,0 +1,32 @@
+{
+ "schema": "repodex.eval.storage-layout.v1",
+ "events": {
+  "dir": "events/segments/seg-NNNNNN.jsonl (append-only)",
+  "cursor": "events/cursor.json atomic durable boundary {segment,offset,committed_events}",
+  "rotation": "segment_max_bytes (default 64MB)",
+  "publication": "batch write -> fsync -> atomic cursor rename; partial tails truncated on recovery"
+ },
+ "derived": {
+  "checkpoint": "derived/checkpoint.json atomic; applied_events watermark; restart replays committed tail"
+ },
+ "authoritative": [
+  "canonical AgentEvent segments",
+  "service/project config",
+  "ingest cursor/checkpoint metadata"
+ ],
+ "rebuildable": [
+  "InvestigationEpisode",
+  "SourceExposure",
+  "SymbolExposure",
+  "AgentActivity",
+  "InvestigationMemory",
+  "view indexes"
+ ],
+ "cache": [
+  "RAM FileAnalysis",
+  "query result cache",
+  "hot view manifests",
+  "dedup index",
+  "graph indexes"
+ ]
+}

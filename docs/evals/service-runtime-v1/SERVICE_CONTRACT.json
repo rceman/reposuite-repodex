@@ -1,0 +1,28 @@
+{
+ "schema": "repodex.eval.service-contract.v1",
+ "lifecycle": {
+  "serve": "foreground",
+  "start": "spawn detached `repodex serve` + wait ready (idempotent)",
+  "stop": "graceful authenticated /v1/shutdown",
+  "restart": "stop+start",
+  "status": "live-probe /v1/status",
+  "daemon_installer": "none (\u00a72)"
+ },
+ "transport": {
+  "http": "loopback 127.0.0.1 only (\u00a78)",
+  "port": "0 = OS-assigned ephemeral, discovered via service.runtime.json (\u00a79); fixed port optional + fails if unavailable (\u00a710)",
+  "discovery": "service.runtime.json atomic publish, stale-PID detection (\u00a711-\u00a712)"
+ },
+ "auth": {
+  "token": "256-bit CSPRNG in service.token (0600 unix), never in descriptor/logs (\u00a713-\u00a716)",
+  "scheme": "Authorization: Bearer <token> on all /v1/* (\u00a715)",
+  "unauthenticated": "none (\u00a779)"
+ },
+ "api": {
+  "GET /v1/status": "authenticated status",
+  "POST /v1/query": "reposuite.repodex.query.request.v1 (root | project[+view])",
+  "POST /v1/events + /v1/events/batch": "canonical reposuite.agent-event.v1 only (\u00a741-\u00a742)",
+  "POST /v1/shutdown": "graceful stop"
+ },
+ "single_instance": "service.lock + live-PID check (\u00a75)"
+}

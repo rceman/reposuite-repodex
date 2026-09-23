@@ -1,0 +1,39 @@
+{
+ "schema": "repodex.eval.write-amplification.v1",
+ "definition": "RepoDex logical durable bytes / canonical telemetry bytes (application-level, \u00a769)",
+ "per_level": {
+  "1": {
+   "write_amplification": 1.016,
+   "fsyncs_per_1000": 20.0,
+   "logical_bytes": 75780
+  },
+  "5": {
+   "write_amplification": 1.016,
+   "fsyncs_per_1000": 6.67,
+   "logical_bytes": 454680
+  },
+  "10": {
+   "write_amplification": 1.023,
+   "fsyncs_per_1000": 5.0,
+   "logical_bytes": 1220480
+  },
+  "25": {
+   "write_amplification": 1.026,
+   "fsyncs_per_1000": 4.39,
+   "logical_bytes": 2180980
+  },
+  "50": {
+   "write_amplification": 1.029,
+   "fsyncs_per_1000": 3.93,
+   "logical_bytes": 4105980
+  }
+ },
+ "components": {
+  "segment_bytes": "dominant (== canonical input bytes, append-only)",
+  "cursor_bytes": "~150B per durable batch (amortized)",
+  "checkpoint_bytes": "periodic derived snapshots"
+ },
+ "fsyncs_per_1000_events": "3.9 (P=50) to 20 (P=1) \u2014 group commit amortizes",
+ "durable_batches_per_1000": "== fsyncs/1000",
+ "note": "NOT physical NAND amplification \u2014 no device metrics claimed (\u00a769)"
+}

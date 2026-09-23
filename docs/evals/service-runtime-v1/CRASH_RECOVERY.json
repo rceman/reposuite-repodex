@@ -1,0 +1,9 @@
+{
+ "schema": "repodex.eval.crash-recovery.v1",
+ "kill_during_ingest": "kill -9 during a 2000-event batch; restart replayed 2500 committed events; derived rebuilt (sessions=6)",
+ "accepted_event_loss": 0,
+ "corruption": 0,
+ "partial_segment": "bytes past cursor offset truncated on open (never ACKed)",
+ "replay_equivalence": "recovered derived == full committed replay (deterministic add_event)",
+ "mechanism": "durable boundary = fsync + atomic cursor; only cursor-committed events are authoritative"
+}

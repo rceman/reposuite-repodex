@@ -1,0 +1,113 @@
+{
+ "schema": "repodex.eval.ingest-performance.v1",
+ "note": "synthetic canonical events; ACK waits for durable group-commit",
+ "producer_levels": {
+  "1": {
+   "producers": 1,
+   "events": 200,
+   "wall_s": 0.209,
+   "events_per_s": 959.2,
+   "ingest_latency_ms": {
+    "p50": 60.4,
+    "p95": 60.8,
+    "p99": 60.8,
+    "mean": 51.9
+   },
+   "fsyncs_cum": 4,
+   "fsyncs_per_1000": 20.0,
+   "write_amplification": 1.016,
+   "logical_bytes": 75780,
+   "segments": 1,
+   "peak_rss_mb": 11.0
+  },
+  "5": {
+   "producers": 5,
+   "events": 1000,
+   "wall_s": 0.265,
+   "events_per_s": 3769.9,
+   "ingest_latency_ms": {
+    "p50": 64.9,
+    "p95": 71.5,
+    "p99": 71.5,
+    "mean": 65.5
+   },
+   "fsyncs_cum": 8,
+   "fsyncs_per_1000": 6.67,
+   "write_amplification": 1.016,
+   "logical_bytes": 454680,
+   "segments": 1,
+   "peak_rss_mb": 15.3
+  },
+  "10": {
+   "producers": 10,
+   "events": 2000,
+   "wall_s": 0.185,
+   "events_per_s": 10818.6,
+   "ingest_latency_ms": {
+    "p50": 29.5,
+    "p95": 55.5,
+    "p99": 76.0,
+    "mean": 33.0
+   },
+   "fsyncs_cum": 16,
+   "fsyncs_per_1000": 5.0,
+   "write_amplification": 1.023,
+   "logical_bytes": 1220480,
+   "segments": 1,
+   "peak_rss_mb": 16.1
+  },
+  "25": {
+   "producers": 25,
+   "events": 2500,
+   "wall_s": 0.176,
+   "events_per_s": 14166.0,
+   "ingest_latency_ms": {
+    "p50": 45.2,
+    "p95": 61.3,
+    "p99": 74.2,
+    "mean": 46.3
+   },
+   "fsyncs_cum": 25,
+   "fsyncs_per_1000": 4.39,
+   "write_amplification": 1.026,
+   "logical_bytes": 2180980,
+   "segments": 1,
+   "peak_rss_mb": 16.8
+  },
+  "50": {
+   "producers": 50,
+   "events": 5000,
+   "wall_s": 0.265,
+   "events_per_s": 18863.8,
+   "ingest_latency_ms": {
+    "p50": 46.7,
+    "p95": 67.0,
+    "p99": 71.2,
+    "mean": 46.9
+   },
+   "fsyncs_cum": 42,
+   "fsyncs_per_1000": 3.93,
+   "write_amplification": 1.029,
+   "logical_bytes": 4105980,
+   "segments": 1,
+   "peak_rss_mb": 18.1
+  }
+ },
+ "burst": {
+  "10": {
+   "events": 1000,
+   "wall_s": 0.124,
+   "ev_per_s": 8096
+  },
+  "25": {
+   "events": 2500,
+   "wall_s": 0.179,
+   "ev_per_s": 13972
+  },
+  "50": {
+   "events": 5000,
+   "wall_s": 0.282,
+   "ev_per_s": 17714
+  }
+ }
+}

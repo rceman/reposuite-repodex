@@ -70,6 +70,9 @@ fn dispatch(args: &[String]) -> Result<u8, String> {
         "graph" => command_graph(&rest),
         "query" => command_query(&rest),
         "project" => command_project(&rest),
+        "serve" | "start" | "stop" | "restart" | "status" => {
+            command_service(command.as_str(), &rest)
+        }
         "config" => command_config(&rest),
         "temporal" => command_temporal(&rest),
         "agent-events" | "agent_events" => command_agent_events(&rest),
@@ -132,6 +135,9 @@ USAGE:
     reposuite-repodex project register <alias> --root <default-checkout> --views-root <dir>...
     reposuite-repodex project show|remove <alias> | list [--json]
     reposuite-repodex project resolve <alias> [--view <name>]
+    reposuite-repodex serve [--state-dir <dir>]            run service in foreground
+    reposuite-repodex start|stop|restart|status [--json] [--state-dir <dir>]
+    reposuite-repodex query ... --service | --direct       route via service or offline
 
 EXIT CODES:
     0  completed without analysis or recovery errors
@@ -212,6 +218,10 @@ struct Options {
     tests_only: bool,
     /// `config --unset <key>` removes a config key.
     unset: bool,
+    /// `query --service` route via the running RepoDex service (§20).
+    service: bool,
+    /// `query --direct` force process-local (no service) (§20).
+    direct: bool,
 }
 
 fn parse_options(args: &[String]) -> Result<Options, String> {
@@ -228,6 +238,8 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
         };
         match name {
             "--json" => options.json = true,
+            "--service" => options.service = true,
+            "--direct" => options.direct = true,
             "--include-facts" | "--facts" => options.include_facts = true,
             "--no-gitignore" => options.respect_gitignore = false,
             "--allow-incompatible" => options.allow_incompatible = true,
@@ -2757,6 +2769,18 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         .clone()
         .or_else(|| options.positional.first().cloned())
         .ok_or_else(|| "query requires a query string (--query <text>)".to_string())?;
+    // Service routing (§20): --service forces it; --direct forces offline;
+    // default = use the running service when one is live, else direct.
+    let use_service = if options.direct {
+        false
+    } else if options.service {
+        true
+    } else {
+        service_running(&state)
+    };
+    if use_service {
+        return query_via_service(&state, &locator, &text, options);
+    }
     let intent = match options.domain.as_deref() {
         None => None,
         Some(d) => match crate::query::QueryIntent::parse(d) {
@@ -2805,6 +2829,91 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
     } else {
         // Default agent-facing output: RDX1 (consistent with `query --graph`).
         print!("{}", crate::rdx1::render(&outcome.result));
+    }
+    Ok(EXIT_OK)
+}
+
+/// Is a RepoDex service live for this state dir? (§20 auto-routing)
+fn service_running(state_override: &Option<PathBuf>) -> bool {
+    let state = state_override
+        .clone()
+        .unwrap_or_else(crate::view::registry::state_dir);
+    crate::service::runtime::live(&state).is_some()
+}
+
+/// Route a flag-mode query through the running service's /v1/query (§20).
+fn query_via_service(
+    state_override: &Option<PathBuf>,
+    locator: &crate::view::ViewLocator,
+    text: &str,
+    options: &Options,
+) -> Result<u8, String> {
+    use crate::service::{http, runtime, token};
+    let state = state_override
+        .clone()
+        .unwrap_or_else(crate::view::registry::state_dir);
+    let desc = runtime::live(&state).ok_or_else(|| {
+        "no running RepoDex service (--service requires `repodex start`)".to_string()
+    })?;
+    let token = token::load_or_generate(&state)?;
+    // Build the request matching the request.v1 locator semantics.
+    let req = match locator {
+        crate::view::ViewLocator::Root(p) => serde_json::json!({
+            "schema": crate::view::QUERY_REQUEST_SCHEMA,
+            "root": p, "query": text,
+            "max_results": options.max_results,
+        }),
+        crate::view::ViewLocator::Project { project, view } => serde_json::json!({
+            "schema": crate::view::QUERY_REQUEST_SCHEMA,
+            "project": project, "view": view, "query": text,
+            "max_results": options.max_results,
+        }),
+    };
+    let (st, body) = http::post_json(
+        &desc.host,
+        desc.port,
+        "/v1/query",
+        Some(&token),
+        &req,
+        30000,
+    )
+    .map_err(|e| format!("service query failed: {e}"))?;
+    if st != 200 {
+        let code = body["error"]["code"].as_str().unwrap_or("QUERY_FAILED");
+        let msg = body["error"]["message"].as_str().unwrap_or("query failed");
+        return Err(format!("{code}: {msg}"));
+    }
+    // Render service result in the same RDX/human style as a direct query.
+    if options.json {
+        print_json(&body)?;
+    } else if options.human {
+        println!(
+            "view: {}",
+            body["repository_view"]["root"].as_str().unwrap_or("")
+        );
+        println!("query: {text}");
+        if let Some(seeds) = body["result"]["seeds"].as_array() {
+            println!("seeds: {}", seeds.len());
+            for s in seeds.iter().take(50) {
+                println!(
+                    "  {:<12} {:<32} {}",
+                    s["kind"].as_str().unwrap_or(""),
+                    s["label"].as_str().unwrap_or(""),
+                    s["path"].as_str().unwrap_or("")
+                );
+            }
+        }
+    } else {
+        // RDX-ish compact output.
+        if let Some(seeds) = body["result"]["seeds"].as_array() {
+            for s in seeds.iter().take(50) {
+                println!(
+                    "{}\t{}",
+                    s["kind"].as_str().unwrap_or(""),
+                    s["label"].as_str().unwrap_or("")
+                );
+            }
+        }
     }
     Ok(EXIT_OK)
 }
@@ -2931,6 +3040,25 @@ fn command_project(args: &[String]) -> Result<u8, String> {
         other => return Err(format!("unknown project subcommand `{other}`")),
     }
     Ok(EXIT_OK)
+}
+
+// ---- service lifecycle (Part I, VI) ----
+fn command_service(cmd: &str, args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let state = options
+        .state_dir
+        .as_deref()
+        .map(PathBuf::from)
+        .unwrap_or_else(crate::view::registry::state_dir);
+    use crate::service::lifecycle as lc;
+    match cmd {
+        "serve" => lc::serve(&state),
+        "start" => lc::start(&state),
+        "stop" => lc::stop(&state),
+        "restart" => lc::restart(&state),
+        "status" => lc::status(&state, options.json),
+        _ => Err(format!("unknown service command `{cmd}`")),
+    }
 }
 
 fn print_query_explain(result: &crate::query::QueryResult, json: bool) -> Result<u8, String> {

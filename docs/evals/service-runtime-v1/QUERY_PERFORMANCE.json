@@ -1,0 +1,56 @@
+{
+ "schema": "repodex.eval.query-performance.v1",
+ "under_load": {
+  "10": {
+   "query_clients": 5,
+   "n_queries": 14,
+   "latency_ms": {
+    "p50": 36.99,
+    "p95": 206.21,
+    "p99": 206.21,
+    "mean": 85.9
+   }
+  },
+  "25": {
+   "query_clients": 5,
+   "n_queries": 48,
+   "latency_ms": {
+    "p50": 32.42,
+    "p95": 72.11,
+    "p99": 80.1,
+    "mean": 41.87
+   }
+  },
+  "50": {
+   "query_clients": 5,
+   "n_queries": 35,
+   "latency_ms": {
+    "p50": 75.21,
+    "p95": 115.84,
+    "p99": 140.73,
+    "mean": 70.26
+   }
+  }
+ },
+ "corruption": 0,
+ "cross_view_contamination": 0,
+ "direct_vs_service": {
+  "direct_ms": [
+   31.9,
+   26.3,
+   25.3,
+   26.3,
+   25.9
+  ],
+  "service_ms": [
+   25.5,
+   21.1,
+   20.3,
+   19.5,
+   23.7
+  ],
+  "direct_mean": 27.1,
+  "service_mean": 22.0,
+  "warm_benefit_x": 1.2
+ }
+}

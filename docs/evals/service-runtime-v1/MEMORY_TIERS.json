@@ -1,0 +1,11 @@
+{
+ "schema": "repodex.eval.memory-tiers.v1",
+ "HOT": "explicit process memory: dedup index, FileAnalysis SegmentedCache, view manifest cache, graph-index cache, ActivityIndex/derived aggregates, ingest latency histograms \u2014 native Rust structures, no in-memory SQL",
+ "WARM": "durable immutable content-addressed FileAnalysis objects + derived indexes on disk via OS page cache (not forced into heap)",
+ "COLD": "historical event segments, older episodes/exposures/snapshots \u2014 no permanent hot RAM",
+ "memory_budget": {
+  "config": "memory.max_mb (default 2048)",
+  "enforcement": "RSS probe vs budget; deterministic eviction: probationary FileAnalysis -> view manifests -> graph indexes; authoritative evidence never evictable"
+ },
+ "cache_policy": "2-segment (probation+protected) LRU \u2014 a one-time scan evicts only probationary entries, not the protected working set"
+}
