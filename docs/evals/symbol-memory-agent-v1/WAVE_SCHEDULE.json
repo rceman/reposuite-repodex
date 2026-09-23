@@ -1,0 +1,667 @@
+{
+ "total_waves": 60,
+ "treatments_per_wave": 5,
+ "concurrency": 5,
+ "waves": [
+  {
+   "question": "L1-Q1",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q1",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q1",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q2",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q2",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q2",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q3",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q3",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q3",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q4",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q4",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q4",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q5",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q5",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L1-Q5",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q1",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q1",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q1",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q2",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q2",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q2",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q3",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q3",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q3",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q4",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q4",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q4",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q5",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q5",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L2-Q5",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q1",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q1",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q1",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q2",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q2",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q2",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q3",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q3",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q3",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q4",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q4",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q4",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q5",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q5",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L3-Q5",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q1",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q1",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q1",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q2",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q2",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q2",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q3",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q3",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q3",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q4",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q4",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q4",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q5",
+   "rep": 0,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q5",
+   "rep": 1,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  },
+  {
+   "question": "L4-Q5",
+   "rep": 2,
+   "treatments": [
+    "T0",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+   ]
+  }
+ ]
+}

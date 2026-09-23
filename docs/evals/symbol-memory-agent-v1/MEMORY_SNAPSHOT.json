@@ -1,0 +1,11 @@
+{
+ "memory_store": "/tmp/sym-memory",
+ "schema_version": 1,
+ "source": "Investigation Memory from 240 historical zero-context runs (E0-E3), enriched by SymbolExposure docs",
+ "memory_paths_per_question": 10,
+ "historical_episode_source": "240 sessions / 31994 canonical AgentEvents",
+ "symbol_exposure_source": "15256 source_observed -> 672556 SymbolExposure",
+ "repository_head": "f09d0834d125362d63e1d12b361ad34c63e50d8d",
+ "online_learning": false,
+ "note": "frozen before scored execution; identical snapshot for all 300 runs (\u00a75,\u00a76)"
+}

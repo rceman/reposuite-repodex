@@ -1,0 +1,57 @@
+{
+ "prompt_id": "REPODEX-SYMBOL-AWARE-MEMORY-ZERO-CONTEXT-AGENT-BENCHMARK-V2",
+ "status": "SYMBOL_AWARE_MEMORY_AGENT_BENCHMARK_COMPLETE",
+ "execution": {
+  "mode": "MATCHED_PARALLEL_WAVES",
+  "concurrency": 5,
+  "waves": 60,
+  "expected_runs": 300,
+  "valid_runs": 300,
+  "distinct_sessions": 300
+ },
+ "treatment_means": {
+  "T0": {
+   "input_tokens": 467484.8,
+   "tool_calls": 31.5,
+   "recall": 0.99
+  },
+  "T1": {
+   "input_tokens": 441294.2,
+   "tool_calls": 26.8,
+   "recall": 0.976
+  },
+  "T2": {
+   "input_tokens": 383756.9,
+   "tool_calls": 26.1,
+   "recall": 0.986
+  },
+  "T3": {
+   "input_tokens": 355721.7,
+   "tool_calls": 23.9,
+   "recall": 0.99
+  },
+  "T4": {
+   "input_tokens": 354265.2,
+   "tool_calls": 24.1,
+   "recall": 0.982
+  }
+ },
+ "invariants": {
+  "PRODUCTION_QUERY_RANKING_UNCHANGED": true,
+  "RDX1_PRODUCTION_SEMANTICS_UNCHANGED": true,
+  "TEMPORAL_RANKING_UNCHANGED": true,
+  "MEMORY_SCORING_UNCHANGED": true,
+  "MEMORY_PATH_SELECTION_IDENTICAL_T2_T3": true,
+  "MEMORY_PATH_SELECTION_IDENTICAL_T3_T4": true,
+  "SYMBOL_SELECTION_RULE_FROZEN_PRE_RUN": true,
+  "JEV_RERANK_SEMANTICS_UNCHANGED": true,
+  "SEED_FIRST_QUERY_ROLE_NOT_USED": true,
+  "AGENT_EVENT_BACKWARD_COMPATIBLE": true,
+  "HARNESS_SPECIFIC_PRODUCTION_DEPENDENCIES": 0,
+  "MEMORY_ONLINE_LEAKAGE": 0,
+  "MEMORY_GOLD_LEAKAGE": 0,
+  "SYMBOL_GOLD_LEAKAGE": 0,
+  "REUSED_SESSIONS": 0,
+  "CONTEXT_INHERITING_SESSIONS": 0
+ }
+}

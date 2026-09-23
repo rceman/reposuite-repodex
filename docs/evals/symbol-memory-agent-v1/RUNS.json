@@ -1,0 +1,2706 @@
+{
+ "runs": [
+  {
+   "run_id": "L1-Q1__T0__r0",
+   "qid": "L1-Q1",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "cuboid-politician",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T0__r1",
+   "qid": "L1-Q1",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "gilded-edam",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T0__r2",
+   "qid": "L1-Q1",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "ultra-century",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T1__r0",
+   "qid": "L1-Q1",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "foremost-curtain",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T1__r1",
+   "qid": "L1-Q1",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "cypress-carrot",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T1__r2",
+   "qid": "L1-Q1",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "toothsome-wildebeest",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T2__r0",
+   "qid": "L1-Q1",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "shaded-punch",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T2__r1",
+   "qid": "L1-Q1",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "chivalrous-saffron",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T2__r2",
+   "qid": "L1-Q1",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "hollow-butterkase",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T3__r0",
+   "qid": "L1-Q1",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "bottled-trollius",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T3__r1",
+   "qid": "L1-Q1",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "shocking-soursop",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T3__r2",
+   "qid": "L1-Q1",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "marked-lobster",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T4__r0",
+   "qid": "L1-Q1",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "walnut-wedge",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T4__r1",
+   "qid": "L1-Q1",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "honored-computer",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q1__T4__r2",
+   "qid": "L1-Q1",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "tinted-journey",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T0__r0",
+   "qid": "L1-Q2",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "bemused-longan",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T0__r1",
+   "qid": "L1-Q2",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "soft-cotton",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T0__r2",
+   "qid": "L1-Q2",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "slimy-iron",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T1__r0",
+   "qid": "L1-Q2",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "vaulted-composer",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T1__r1",
+   "qid": "L1-Q2",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "locrian-chartreuse",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T1__r2",
+   "qid": "L1-Q2",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "sudden-sauce",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T2__r0",
+   "qid": "L1-Q2",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "changeable-coriander",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T2__r1",
+   "qid": "L1-Q2",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "roomy-breath",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T2__r2",
+   "qid": "L1-Q2",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "hissing-cardamom",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T3__r0",
+   "qid": "L1-Q2",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "factual-hydrofoil",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T3__r1",
+   "qid": "L1-Q2",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "deserted-amount",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T3__r2",
+   "qid": "L1-Q2",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "lydian-edge",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T4__r0",
+   "qid": "L1-Q2",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "band-harp",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T4__r1",
+   "qid": "L1-Q2",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "south-tire",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q2__T4__r2",
+   "qid": "L1-Q2",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "decorous-pressure",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T0__r0",
+   "qid": "L1-Q3",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "potent-sailboat",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T0__r1",
+   "qid": "L1-Q3",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "evening-hemisphere",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T0__r2",
+   "qid": "L1-Q3",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "tranquil-anglerfish",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T1__r0",
+   "qid": "L1-Q3",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "smoggy-spring",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T1__r1",
+   "qid": "L1-Q3",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "humane-celery",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T1__r2",
+   "qid": "L1-Q3",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "outrageous-amaryllis",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T2__r0",
+   "qid": "L1-Q3",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "alert-pickup",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T2__r1",
+   "qid": "L1-Q3",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "brass-diplodocus",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T2__r2",
+   "qid": "L1-Q3",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "piquant-cast",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T3__r0",
+   "qid": "L1-Q3",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "sassy-salmon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T3__r1",
+   "qid": "L1-Q3",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "spiced-larch",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T3__r2",
+   "qid": "L1-Q3",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "ablaze-foxtail",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T4__r0",
+   "qid": "L1-Q3",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "scratched-raven",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T4__r1",
+   "qid": "L1-Q3",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "leaf-chicory",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q3__T4__r2",
+   "qid": "L1-Q3",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "hardly-glider",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T0__r0",
+   "qid": "L1-Q4",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "mini-seashore",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T0__r1",
+   "qid": "L1-Q4",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "placid-bread",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T0__r2",
+   "qid": "L1-Q4",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "dapper-oriole",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T1__r0",
+   "qid": "L1-Q4",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "earthy-screen",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T1__r1",
+   "qid": "L1-Q4",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "golden-keeper",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T1__r2",
+   "qid": "L1-Q4",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "boulder-carp",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T2__r0",
+   "qid": "L1-Q4",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "spangle-texture",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T2__r1",
+   "qid": "L1-Q4",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "brook-sawfish",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T2__r2",
+   "qid": "L1-Q4",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "casual-rugby",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T3__r0",
+   "qid": "L1-Q4",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "clever-dogsled",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T3__r1",
+   "qid": "L1-Q4",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "voltaic-jitterbug",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T3__r2",
+   "qid": "L1-Q4",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "steel-bait",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T4__r0",
+   "qid": "L1-Q4",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "distinct-culotte",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T4__r1",
+   "qid": "L1-Q4",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "immediate-carver",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q4__T4__r2",
+   "qid": "L1-Q4",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "woolen-hawk",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T0__r0",
+   "qid": "L1-Q5",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "light-provelone",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T0__r1",
+   "qid": "L1-Q5",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "shrub-income",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T0__r2",
+   "qid": "L1-Q5",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "polyester-william",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T1__r0",
+   "qid": "L1-Q5",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "tremendous-platinum",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T1__r1",
+   "qid": "L1-Q5",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "catkin-sailor",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T1__r2",
+   "qid": "L1-Q5",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "broken-bubbler",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T2__r0",
+   "qid": "L1-Q5",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "careful-earwig",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T2__r1",
+   "qid": "L1-Q5",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "lead-seashore",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T2__r2",
+   "qid": "L1-Q5",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "nebula-treatment",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T3__r0",
+   "qid": "L1-Q5",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "northern-wave",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T3__r1",
+   "qid": "L1-Q5",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "ionized-edge",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T3__r2",
+   "qid": "L1-Q5",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "alluring-energy",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T4__r0",
+   "qid": "L1-Q5",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "fossil-terrier",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T4__r1",
+   "qid": "L1-Q5",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "south-girdle",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L1-Q5__T4__r2",
+   "qid": "L1-Q5",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "puddle-ferry",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T0__r0",
+   "qid": "L2-Q1",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "blush-baron",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T0__r1",
+   "qid": "L2-Q1",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "sheer-nutmeg",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T0__r2",
+   "qid": "L2-Q1",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "tulip-spruce",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T1__r0",
+   "qid": "L2-Q1",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "superb-subject",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T1__r1",
+   "qid": "L2-Q1",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "foremost-supply",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T1__r2",
+   "qid": "L2-Q1",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "blue-gopher",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T2__r0",
+   "qid": "L2-Q1",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "shadowed-teacher",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T2__r1",
+   "qid": "L2-Q1",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "invited-parrot",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T2__r2",
+   "qid": "L2-Q1",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "dashing-barbecue",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T3__r0",
+   "qid": "L2-Q1",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "verdant-melon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T3__r1",
+   "qid": "L2-Q1",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "flawless-statistic",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T3__r2",
+   "qid": "L2-Q1",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "pickled-breakfast",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T4__r0",
+   "qid": "L2-Q1",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "poised-faucet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T4__r1",
+   "qid": "L2-Q1",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "navy-clematis",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q1__T4__r2",
+   "qid": "L2-Q1",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "zesty-robe",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T0__r0",
+   "qid": "L2-Q2",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "speckle-pail",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T0__r1",
+   "qid": "L2-Q2",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "nebula-tanker",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T0__r2",
+   "qid": "L2-Q2",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "catkin-anger",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T1__r0",
+   "qid": "L2-Q2",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "rain-dirigible",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T1__r1",
+   "qid": "L2-Q2",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "jeweled-cotton",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T1__r2",
+   "qid": "L2-Q2",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "furtive-agreement",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T2__r0",
+   "qid": "L2-Q2",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "innovative-moat",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T2__r1",
+   "qid": "L2-Q2",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "short-stealer",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T2__r2",
+   "qid": "L2-Q2",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "sable-slouch",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T3__r0",
+   "qid": "L2-Q2",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "nickel-bedbug",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T3__r1",
+   "qid": "L2-Q2",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "neighborly-bearberry",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T3__r2",
+   "qid": "L2-Q2",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "pineapple-rayon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T4__r0",
+   "qid": "L2-Q2",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "carnelian-fireman",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T4__r1",
+   "qid": "L2-Q2",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "available-wednesday",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q2__T4__r2",
+   "qid": "L2-Q2",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "splendid-trombone",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T0__r0",
+   "qid": "L2-Q3",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "olivine-kitten",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T0__r1",
+   "qid": "L2-Q3",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "familiar-fascinator",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T0__r2",
+   "qid": "L2-Q3",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "majestic-fedora",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T1__r0",
+   "qid": "L2-Q3",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "speckle-block",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T1__r1",
+   "qid": "L2-Q3",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "fresh-gold",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T1__r2",
+   "qid": "L2-Q3",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "peaceful-wedge",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T2__r0",
+   "qid": "L2-Q3",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "locrian-arch",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T2__r1",
+   "qid": "L2-Q3",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "square-crow",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T2__r2",
+   "qid": "L2-Q3",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "axiomatic-kitchen",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T3__r0",
+   "qid": "L2-Q3",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "quilled-jitterbug",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T3__r1",
+   "qid": "L2-Q3",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "brass-typhoon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T3__r2",
+   "qid": "L2-Q3",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "tinted-insect",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T4__r0",
+   "qid": "L2-Q3",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "elated-meter",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T4__r1",
+   "qid": "L2-Q3",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "candied-handle",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q3__T4__r2",
+   "qid": "L2-Q3",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "lowly-raven",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T0__r0",
+   "qid": "L2-Q4",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "carbonated-crater",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T0__r1",
+   "qid": "L2-Q4",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "water-tilapia",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T0__r2",
+   "qid": "L2-Q4",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "dark-wildebeest",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T1__r0",
+   "qid": "L2-Q4",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "peppermint-utensil",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T1__r1",
+   "qid": "L2-Q4",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "obsidian-crafter",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T1__r2",
+   "qid": "L2-Q4",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "vivacious-squirrel",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T2__r0",
+   "qid": "L2-Q4",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "carpal-freckle",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T2__r1",
+   "qid": "L2-Q4",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "clear-close",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T2__r2",
+   "qid": "L2-Q4",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "atlantic-rook",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T3__r0",
+   "qid": "L2-Q4",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "cotton-omelet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T3__r1",
+   "qid": "L2-Q4",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "cumbersome-position",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T3__r2",
+   "qid": "L2-Q4",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "achieved-roll",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T4__r0",
+   "qid": "L2-Q4",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "scythe-error",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T4__r1",
+   "qid": "L2-Q4",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "nimble-lingo",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q4__T4__r2",
+   "qid": "L2-Q4",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "repeated-garlic",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T0__r0",
+   "qid": "L2-Q5",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "mahogany-stream",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T0__r1",
+   "qid": "L2-Q5",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "stitch-bosworth",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T0__r2",
+   "qid": "L2-Q5",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "pyrite-burglar",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T1__r0",
+   "qid": "L2-Q5",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "thinkable-nasturtium",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T1__r1",
+   "qid": "L2-Q5",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "complete-lunch",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T1__r2",
+   "qid": "L2-Q5",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "kind-function",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T2__r0",
+   "qid": "L2-Q5",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "aeolian-antique",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T2__r1",
+   "qid": "L2-Q5",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "rhetorical-dahlia",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T2__r2",
+   "qid": "L2-Q5",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "clear-grenadilla",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T3__r0",
+   "qid": "L2-Q5",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "respected-ocelot",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T3__r1",
+   "qid": "L2-Q5",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "married-heron",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T3__r2",
+   "qid": "L2-Q5",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "wind-chocolate",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T4__r0",
+   "qid": "L2-Q5",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "cerulean-widget",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T4__r1",
+   "qid": "L2-Q5",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "five-mandarin",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L2-Q5__T4__r2",
+   "qid": "L2-Q5",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "darkened-monitor",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T0__r0",
+   "qid": "L3-Q1",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "vivid-trouser",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T0__r1",
+   "qid": "L3-Q1",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "resonant-stew",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T0__r2",
+   "qid": "L3-Q1",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "able-anemone",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T1__r0",
+   "qid": "L3-Q1",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "forested-yarrow",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T1__r1",
+   "qid": "L3-Q1",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "nettle-crown",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T1__r2",
+   "qid": "L3-Q1",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "round-ferret",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T2__r0",
+   "qid": "L3-Q1",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "maddening-hornet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T2__r1",
+   "qid": "L3-Q1",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "obtainable-blossom",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T2__r2",
+   "qid": "L3-Q1",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "heliotrope-palladium",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T3__r0",
+   "qid": "L3-Q1",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "desert-breakfast",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T3__r1",
+   "qid": "L3-Q1",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "cosmic-magnolia",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T3__r2",
+   "qid": "L3-Q1",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "angry-roarer",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T4__r0",
+   "qid": "L3-Q1",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "cake-bronze",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T4__r1",
+   "qid": "L3-Q1",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "rainy-straw",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q1__T4__r2",
+   "qid": "L3-Q1",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "road-cephalopod",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T0__r0",
+   "qid": "L3-Q2",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "grizzly-spoon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T0__r1",
+   "qid": "L3-Q2",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "mildly-gram",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T0__r2",
+   "qid": "L3-Q2",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "truthful-cobbler",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T1__r0",
+   "qid": "L3-Q2",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "quilled-linen",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T1__r1",
+   "qid": "L3-Q2",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "estimated-climb",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T1__r2",
+   "qid": "L3-Q2",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "cactus-team",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T2__r0",
+   "qid": "L3-Q2",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "infrequent-nail",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T2__r1",
+   "qid": "L3-Q2",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "water-puppet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T2__r2",
+   "qid": "L3-Q2",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "tree-arthropod",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T3__r0",
+   "qid": "L3-Q2",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "thoughtful-throat",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T3__r1",
+   "qid": "L3-Q2",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "smooth-microwave",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T3__r2",
+   "qid": "L3-Q2",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "brawny-quince",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T4__r0",
+   "qid": "L3-Q2",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "lava-mail",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T4__r1",
+   "qid": "L3-Q2",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "peppered-snow",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q2__T4__r2",
+   "qid": "L3-Q2",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "lean-dish",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T0__r0",
+   "qid": "L3-Q3",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "certain-butter",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T0__r1",
+   "qid": "L3-Q3",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "proud-balloon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T0__r2",
+   "qid": "L3-Q3",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "stirring-celsius",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T1__r0",
+   "qid": "L3-Q3",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "flax-literature",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T1__r1",
+   "qid": "L3-Q3",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "noiseless-hemisphere",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T1__r2",
+   "qid": "L3-Q3",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "bald-technician",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T2__r0",
+   "qid": "L3-Q3",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "water-effect",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T2__r1",
+   "qid": "L3-Q3",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "momentous-neptune",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T2__r2",
+   "qid": "L3-Q3",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "judicious-soil",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T3__r0",
+   "qid": "L3-Q3",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "quixotic-raptorex",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T3__r1",
+   "qid": "L3-Q3",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "waiting-game",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T3__r2",
+   "qid": "L3-Q3",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "notch-doom",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T4__r0",
+   "qid": "L3-Q3",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "rainy-aftermath",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T4__r1",
+   "qid": "L3-Q3",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "circular-roar",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q3__T4__r2",
+   "qid": "L3-Q3",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "admitted-samba",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T0__r0",
+   "qid": "L3-Q4",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "friendly-cricket",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T0__r1",
+   "qid": "L3-Q4",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "rune-kileskus",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T0__r2",
+   "qid": "L3-Q4",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "billowy-building",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T1__r0",
+   "qid": "L3-Q4",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "saber-desert",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T1__r1",
+   "qid": "L3-Q4",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "thirsty-space",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T1__r2",
+   "qid": "L3-Q4",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "butternut-cicada",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T2__r0",
+   "qid": "L3-Q4",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "factual-syrup",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T2__r1",
+   "qid": "L3-Q4",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "spice-brownie",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T2__r2",
+   "qid": "L3-Q4",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "slow-hunter",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T3__r0",
+   "qid": "L3-Q4",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "ultra-bistro",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T3__r1",
+   "qid": "L3-Q4",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "chivalrous-existence",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T3__r2",
+   "qid": "L3-Q4",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "discovered-walnut",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T4__r0",
+   "qid": "L3-Q4",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "likeable-beast",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T4__r1",
+   "qid": "L3-Q4",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "useful-narcissus",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q4__T4__r2",
+   "qid": "L3-Q4",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "humorous-sombrero",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T0__r0",
+   "qid": "L3-Q5",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "robust-aurora",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T0__r1",
+   "qid": "L3-Q5",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "slender-nurse",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T0__r2",
+   "qid": "L3-Q5",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "amusing-belief",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T1__r0",
+   "qid": "L3-Q5",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "spangled-tailor",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T1__r1",
+   "qid": "L3-Q5",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "foam-bearskin",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T1__r2",
+   "qid": "L3-Q5",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "summer-bracket",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T2__r0",
+   "qid": "L3-Q5",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "quiet-houseboat",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T2__r1",
+   "qid": "L3-Q5",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "polite-cloud",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T2__r2",
+   "qid": "L3-Q5",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "wirehaired-muskmelon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T3__r0",
+   "qid": "L3-Q5",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "broken-hyacinth",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T3__r1",
+   "qid": "L3-Q5",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "cotton-beanie",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T3__r2",
+   "qid": "L3-Q5",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "ossified-kingfisher",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T4__r0",
+   "qid": "L3-Q5",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "gorgeous-raisin",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T4__r1",
+   "qid": "L3-Q5",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "walnut-onyx",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L3-Q5__T4__r2",
+   "qid": "L3-Q5",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "glaze-mustang",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T0__r0",
+   "qid": "L4-Q1",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "chisel-liquid",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T0__r1",
+   "qid": "L4-Q1",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "auspicious-moat",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T0__r2",
+   "qid": "L4-Q1",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "empty-bath",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T1__r0",
+   "qid": "L4-Q1",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "disco-slider",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T1__r1",
+   "qid": "L4-Q1",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "kindly-whitefish",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T1__r2",
+   "qid": "L4-Q1",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "bronzed-cake",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T2__r0",
+   "qid": "L4-Q1",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "resisted-relative",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T2__r1",
+   "qid": "L4-Q1",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "mahogany-october",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T2__r2",
+   "qid": "L4-Q1",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "laser-fiber",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T3__r0",
+   "qid": "L4-Q1",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "cloudy-aluminum",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T3__r1",
+   "qid": "L4-Q1",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "bouncy-cupboard",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T3__r2",
+   "qid": "L4-Q1",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "giddy-brook",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T4__r0",
+   "qid": "L4-Q1",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "almond-note",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T4__r1",
+   "qid": "L4-Q1",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "internal-roundworm",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q1__T4__r2",
+   "qid": "L4-Q1",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "electric-tuck",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T0__r0",
+   "qid": "L4-Q2",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "holistic-saffron",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T0__r1",
+   "qid": "L4-Q2",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "scented-parka",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T0__r2",
+   "qid": "L4-Q2",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "aloud-continent",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T1__r0",
+   "qid": "L4-Q2",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "goofy-plywood",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T1__r1",
+   "qid": "L4-Q2",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "impossible-zebu",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T1__r2",
+   "qid": "L4-Q2",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "tabby-article",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T2__r0",
+   "qid": "L4-Q2",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "crystal-bike",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T2__r1",
+   "qid": "L4-Q2",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "five-healer",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T2__r2",
+   "qid": "L4-Q2",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "serious-braid",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T3__r0",
+   "qid": "L4-Q2",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "candied-tabletop",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T3__r1",
+   "qid": "L4-Q2",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "nonstop-bean",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T3__r2",
+   "qid": "L4-Q2",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "zircon-sink",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T4__r0",
+   "qid": "L4-Q2",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "harmonious-moon",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T4__r1",
+   "qid": "L4-Q2",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "oxidized-peridot",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q2__T4__r2",
+   "qid": "L4-Q2",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "iris-garnet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T0__r0",
+   "qid": "L4-Q3",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "dark-peak",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T0__r1",
+   "qid": "L4-Q3",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "worried-pantry",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T0__r2",
+   "qid": "L4-Q3",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "leaf-freighter",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T1__r0",
+   "qid": "L4-Q3",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "pouncing-bench",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T1__r1",
+   "qid": "L4-Q3",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "meowing-nation",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T1__r2",
+   "qid": "L4-Q3",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "educated-check",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T2__r0",
+   "qid": "L4-Q3",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "uneven-value",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T2__r1",
+   "qid": "L4-Q3",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "beautiful-zenobia",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T2__r2",
+   "qid": "L4-Q3",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "hill-bucket",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T3__r0",
+   "qid": "L4-Q3",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "comet-jumpsuit",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T3__r1",
+   "qid": "L4-Q3",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "fortunate-elderberry",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T3__r2",
+   "qid": "L4-Q3",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "gregarious-door",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T4__r0",
+   "qid": "L4-Q3",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "possible-macadamia",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T4__r1",
+   "qid": "L4-Q3",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "sulfuric-board",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q3__T4__r2",
+   "qid": "L4-Q3",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "earthy-rule",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T0__r0",
+   "qid": "L4-Q4",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "sneaky-lung",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T0__r1",
+   "qid": "L4-Q4",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "flowery-magazine",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T0__r2",
+   "qid": "L4-Q4",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "candy-variety",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T1__r0",
+   "qid": "L4-Q4",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "lapis-lunge",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T1__r1",
+   "qid": "L4-Q4",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "caring-cloudberry",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T1__r2",
+   "qid": "L4-Q4",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "sustaining-baritone",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T2__r0",
+   "qid": "L4-Q4",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "watery-cake",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T2__r1",
+   "qid": "L4-Q4",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "boulder-kicker",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T2__r2",
+   "qid": "L4-Q4",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "voltaic-morning",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T3__r0",
+   "qid": "L4-Q4",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "seed-substance",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T3__r1",
+   "qid": "L4-Q4",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "shocking-television",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T3__r2",
+   "qid": "L4-Q4",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "mirror-dolphin",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T4__r0",
+   "qid": "L4-Q4",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "tranquil-visitor",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T4__r1",
+   "qid": "L4-Q4",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "unusual-barn",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q4__T4__r2",
+   "qid": "L4-Q4",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "wooded-scorpion",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T0__r0",
+   "qid": "L4-Q5",
+   "treatment": "T0",
+   "rep": 0,
+   "session_id": "spiky-mouse",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T0__r1",
+   "qid": "L4-Q5",
+   "treatment": "T0",
+   "rep": 1,
+   "session_id": "delirious-carpet",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T0__r2",
+   "qid": "L4-Q5",
+   "treatment": "T0",
+   "rep": 2,
+   "session_id": "prickle-cyclone",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T1__r0",
+   "qid": "L4-Q5",
+   "treatment": "T1",
+   "rep": 0,
+   "session_id": "wool-acrylic",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T1__r1",
+   "qid": "L4-Q5",
+   "treatment": "T1",
+   "rep": 1,
+   "session_id": "workable-mouse",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T1__r2",
+   "qid": "L4-Q5",
+   "treatment": "T1",
+   "rep": 2,
+   "session_id": "puzzling-title",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T2__r0",
+   "qid": "L4-Q5",
+   "treatment": "T2",
+   "rep": 0,
+   "session_id": "organic-revolve",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T2__r1",
+   "qid": "L4-Q5",
+   "treatment": "T2",
+   "rep": 1,
+   "session_id": "endurable-beam",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T2__r2",
+   "qid": "L4-Q5",
+   "treatment": "T2",
+   "rep": 2,
+   "session_id": "eight-client",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T3__r0",
+   "qid": "L4-Q5",
+   "treatment": "T3",
+   "rep": 0,
+   "session_id": "piquant-platypus",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T3__r1",
+   "qid": "L4-Q5",
+   "treatment": "T3",
+   "rep": 1,
+   "session_id": "puzzled-swim",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T3__r2",
+   "qid": "L4-Q5",
+   "treatment": "T3",
+   "rep": 2,
+   "session_id": "lopsided-skate",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T4__r0",
+   "qid": "L4-Q5",
+   "treatment": "T4",
+   "rep": 0,
+   "session_id": "level-hamburger",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T4__r1",
+   "qid": "L4-Q5",
+   "treatment": "T4",
+   "rep": 1,
+   "session_id": "nervous-governor",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  },
+  {
+   "run_id": "L4-Q5__T4__r2",
+   "qid": "L4-Q5",
+   "treatment": "T4",
+   "rep": 2,
+   "session_id": "quixotic-catsup",
+   "model": "gpt-5-6-luna-xhigh-priority",
+   "valid": true
+  }
+ ],
+ "total": 300,
+ "distinct_sessions": 300
+}

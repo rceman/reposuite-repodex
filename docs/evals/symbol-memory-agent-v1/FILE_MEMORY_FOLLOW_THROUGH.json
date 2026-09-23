@@ -1,0 +1,19 @@
+{
+ "total_file_hints": 1800,
+ "later_observed": 882,
+ "later_read": 798,
+ "later_mentioned": 413,
+ "novel_vs_packet": 1422,
+ "by_treatment": {
+  "T2": {
+   "n": 1800
+  },
+  "T3": {
+   "n": 1800
+  },
+  "T4": {
+   "n": 1800
+  }
+ },
+ "per_hint": []
+}
