@@ -3,6 +3,7 @@
 
 pub mod engine;
 pub mod normalize;
+pub mod projection;
 
 pub use engine::{
     QueryEngine, QueryIntent, QueryMode, QueryPlan, QueryResult, RelatedHit, ScoredNode,

@@ -43,6 +43,15 @@ pub struct QueryRequest {
     pub query: Option<String>,
     #[serde(default)]
     pub intent: Option<String>,
+    /// `callers`/`callees`/`paths` first endpoint (target symbol/name/key).
+    #[serde(default)]
+    pub target: Option<String>,
+    /// `paths` second endpoint — enables the bounded two-endpoint query (§23).
+    #[serde(default)]
+    pub to: Option<String>,
+    /// `paths` traversal depth bound (connector cap is min(depth,3)).
+    #[serde(default)]
+    pub depth: Option<usize>,
     #[serde(default)]
     pub max_results: Option<usize>,
 }

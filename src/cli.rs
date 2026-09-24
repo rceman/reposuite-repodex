@@ -2610,61 +2610,23 @@ fn command_query(args: &[String]) -> Result<u8, String> {
     if options.explain {
         return print_query_explain(&result, options.json);
     }
+    // ONE canonical projection for all transports (§6). `--graph` has no
+    // co-located snapshot, so current ranges are omitted (not invented, §13).
+    let proj = crate::query::projection::build(&result, None);
     if options.json {
-        // JSON remains opt-in.
-        print_json(&serde_json::json!({
-            "command":"query","query":text,"mode":if options.exhaustive{"exhaustive"}else{"ranked"},
-            "intent":result.plan.intent.as_str(),"target":result.plan.target,"terms":plan.terms,
-            "total":result.total,"shown":result.shown,"complete":result.complete,
-            "so_query":result.so_query,"so_rerank":result.so_rerank,
-            "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
-            "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
-        }))?;
+        let mut body = proj.to_json();
+        body["command"] = serde_json::json!("query");
+        body["mode"] = serde_json::json!(if options.exhaustive {
+            "exhaustive"
+        } else {
+            "ranked"
+        });
+        print_json(&body)?;
     } else if !options.human {
-        // Default output is RDX1 — the compact agent-facing protocol (Phase C).
-        print!("{}", crate::rdx1::render(&result));
+        // Default output is RDX — the compact agent-facing protocol (Phase C).
+        print!("{}", proj.to_rdx());
     } else {
-        println!("query: {text}");
-        println!(
-            "intent: {}  mode: {}",
-            plan.intent.as_str(),
-            if options.exhaustive {
-                "exhaustive"
-            } else {
-                "ranked"
-            }
-        );
-        println!(
-            "seeds: {} (total {} {})",
-            result.shown,
-            result.total,
-            if result.complete {
-                "complete"
-            } else {
-                "truncated"
-            }
-        );
-        for s in &result.seeds {
-            println!(
-                "  {:<12} {:<32} {}  [score {}]",
-                s.node.kind.as_str(),
-                s.node.label,
-                s.node.path,
-                s.score
-            );
-        }
-        if !result.related.is_empty() {
-            println!("related: {}", result.related.len());
-            for r in result.related.iter().take(32) {
-                println!(
-                    "  {} {:<16} {:<10} {}",
-                    r.direction,
-                    r.kind,
-                    r.evidence.as_str(),
-                    r.node.label
-                );
-            }
-        }
+        print!("{}", proj.to_human());
     }
     Ok(EXIT_OK)
 }
@@ -2672,20 +2634,14 @@ fn command_query(args: &[String]) -> Result<u8, String> {
 // ---- RepositoryView query (Part III-XVI) ----
 
 /// Serialize a deterministic QueryResult into the canonical machine `result`
-/// object (§33) — the same structured shape as `query --graph --json`, built
-/// directly from the result (never RDX round-tripped).
+/// object — built from the ONE canonical EvidenceProjection (§6). `index_dir`
+/// (the view's `indexes/{key}` dir) enables current-range materialization; the
+/// projection is a backward-compatible superset (legacy fields retained, §38).
 fn query_result_json(
     result: &crate::query::QueryResult,
-    plan_terms: &[String],
+    index_dir: Option<&Path>,
 ) -> serde_json::Value {
-    serde_json::json!({
-        "intent":result.plan.intent.as_str(),"target":result.plan.target,
-        "terms":plan_terms,"total":result.total,"shown":result.shown,
-        "complete":result.complete,
-        "so_query":result.so_query,"so_rerank":result.so_rerank,
-        "seeds":result.seeds.iter().map(|s|serde_json::json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score,"factors":s.factors})).collect::<Vec<_>>(),
-        "related":result.related.iter().map(|r|serde_json::json!({"direction":r.direction,"kind":r.kind,"evidence":r.evidence.as_str(),"node":r.node.key,"label":r.node.label,"via":r.via})).collect::<Vec<_>>(),
-    })
+    crate::query::projection::build(result, index_dir).to_json()
 }
 
 /// `query` in RepositoryView locator mode (§4-§9):
@@ -2730,9 +2686,11 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             query_text: &text,
             mode: crate::query::QueryMode::Ranked,
             intent,
+            target: req.target.clone(),
+            to: req.to.clone(),
             max_results: req.max_results.unwrap_or(50),
             token_budget: None,
-            depth: 4,
+            depth: req.depth.unwrap_or(4),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2747,7 +2705,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             "schema": v::QUERY_RESPONSE_SCHEMA,
             "repository_view": view_meta_json(&outcome.view),
             "query": text,
-            "result": query_result_json(&outcome.result, &outcome.result.plan.terms),
+            "result": query_result_json(&outcome.result, Some(&outcome.ensure.index_dir())),
             "index": {"fingerprint":outcome.ensure.fingerprint,
                       "reused":outcome.ensure.index_reused,
                       "analyses_reused":outcome.ensure.analyses_reused,
@@ -2797,6 +2755,8 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         query_text: &text,
         mode,
         intent,
+        target: options.target.clone(),
+        to: options.to.clone(),
         max_results: options.max_results.unwrap_or(50),
         token_budget: options.tokens,
         depth: options.depth.unwrap_or(4),
@@ -2804,31 +2764,14 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
     };
     let outcome =
         v::run_view_query(&locator, &params).map_err(|(k, m)| machine_err_string(&k, &m))?;
+    let proj = crate::query::projection::build(&outcome.result, Some(&outcome.ensure.index_dir()));
     if options.human {
         println!("view: {}", outcome.view.canonical_root.display());
         println!("fingerprint: {}", outcome.ensure.fingerprint);
-        println!("query: {text}");
-        println!(
-            "seeds: {} (total {} {})",
-            outcome.result.shown,
-            outcome.result.total,
-            if outcome.result.complete {
-                "complete"
-            } else {
-                "truncated"
-            }
-        );
-        for s in &outcome.result.seeds {
-            println!(
-                "  {:<12} {:<32} {}",
-                s.node.kind.as_str(),
-                s.node.label,
-                s.node.path
-            );
-        }
+        print!("{}", proj.to_human());
     } else {
-        // Default agent-facing output: RDX1 (consistent with `query --graph`).
-        print!("{}", crate::rdx1::render(&outcome.result));
+        // Default agent-facing output: RDX2 (faithful: rank/path/range/via, §39).
+        print!("{}", proj.to_rdx());
     }
     Ok(EXIT_OK)
 }
@@ -2883,39 +2826,118 @@ fn query_via_service(
         let msg = body["error"]["message"].as_str().unwrap_or("query failed");
         return Err(format!("{code}: {msg}"));
     }
-    // Render service result in the same RDX/human style as a direct query.
+    // Render the service's canonical projection faithfully (§36): the service
+    // already returned the full EvidenceProjection JSON, so rank/path/locator/
+    // evidence/via/candidate_set/ranges are all preserved — no lossy re-render.
     if options.json {
         print_json(&body)?;
-    } else if options.human {
-        println!(
-            "view: {}",
-            body["repository_view"]["root"].as_str().unwrap_or("")
-        );
-        println!("query: {text}");
-        if let Some(seeds) = body["result"]["seeds"].as_array() {
-            println!("seeds: {}", seeds.len());
-            for s in seeds.iter().take(50) {
-                println!(
-                    "  {:<12} {:<32} {}",
-                    s["kind"].as_str().unwrap_or(""),
-                    s["label"].as_str().unwrap_or(""),
-                    s["path"].as_str().unwrap_or("")
-                );
-            }
-        }
     } else {
-        // RDX-ish compact output.
-        if let Some(seeds) = body["result"]["seeds"].as_array() {
-            for s in seeds.iter().take(50) {
-                println!(
-                    "{}\t{}",
-                    s["kind"].as_str().unwrap_or(""),
-                    s["label"].as_str().unwrap_or("")
-                );
+        print!("{}", render_projection_text(&body["result"], options.human));
+    }
+    Ok(EXIT_OK)
+}
+
+/// Render a service-returned EvidenceProjection JSON to RDX-ish compact or human
+/// text without dropping Agent-relevant fields (§36). Mirrors `to_rdx`/`to_human`.
+fn render_projection_text(r: &serde_json::Value, human: bool) -> String {
+    use std::fmt::Write;
+    let mut out = String::new();
+    let seeds = r["seeds"].as_array().cloned().unwrap_or_default();
+    let related = r["related"].as_array().cloned().unwrap_or_default();
+    if human {
+        let _ = writeln!(out, "query: {}", r["query"].as_str().unwrap_or(""));
+        let _ = writeln!(
+            out,
+            "seeds: {} of {} matching ({})",
+            r["emitted_seed_count"]
+                .as_u64()
+                .unwrap_or(seeds.len() as u64),
+            r["eligible_seed_count"].as_u64().unwrap_or(0),
+            if r["seed_selection_complete"].as_bool().unwrap_or(true) {
+                "all matching seeds emitted"
+            } else {
+                "truncated"
+            }
+        );
+        for s in &seeds {
+            let _ = writeln!(
+                out,
+                "  #{:<3} {:<12} {:<30} {}",
+                s["rank"].as_u64().unwrap_or(0),
+                s["kind"].as_str().unwrap_or(""),
+                s["label"].as_str().unwrap_or(""),
+                s["path"].as_str().unwrap_or("")
+            );
+        }
+        for rel in &related {
+            let _ = writeln!(
+                out,
+                "  {} -[{}:{}]-> {}",
+                rel["from_label"].as_str().unwrap_or(""),
+                rel["kind"].as_str().unwrap_or(""),
+                rel["evidence"].as_str().unwrap_or(""),
+                rel["to_label"].as_str().unwrap_or("")
+            );
+        }
+        return out;
+    }
+    // Compact faithful: rank + kind + path + locator + ranges per seed.
+    let _ = writeln!(out, "#RDX1 v2 (service)");
+    for s in &seeds {
+        let mut line = format!(
+            "S{} {} {} {}",
+            s["rank"].as_u64().unwrap_or(0),
+            s["kind"].as_str().unwrap_or(""),
+            s["path"].as_str().unwrap_or(""),
+            s["label"].as_str().unwrap_or("")
+        );
+        if let Some(dr) = s["declaration_range"].as_object() {
+            let _ = write!(
+                line,
+                " decl={}:{}-{}",
+                dr["start_line"], dr["byte_start"], dr["byte_end"]
+            );
+        }
+        out.push_str(&line);
+        out.push('\n');
+    }
+    for rel in &related {
+        let mut line = format!(
+            "R {} {} -> {} {}",
+            rel["kind"].as_str().unwrap_or(""),
+            rel["from_label"].as_str().unwrap_or(""),
+            rel["to_label"].as_str().unwrap_or(""),
+            rel["evidence"].as_str().unwrap_or("")
+        );
+        if let Some(cs) = rel["candidate_set"].as_str() {
+            let _ = write!(line, " cs={cs}");
+        }
+        out.push_str(&line);
+        out.push('\n');
+    }
+    if let Some(c) = r["connector"].as_object() {
+        if c["found"].as_bool() == Some(false) {
+            out.push_str("P none bounded_no_route depth<=3\n");
+        } else if let Some(routes) = c["routes"].as_array() {
+            for (i, rt) in routes.iter().enumerate() {
+                let mut p = format!("P {}", i + 1);
+                if let Some(steps) = rt["steps"].as_array() {
+                    for st in steps {
+                        let _ = write!(
+                            p,
+                            " | {} {} {}",
+                            st["from_label"].as_str().unwrap_or(""),
+                            st["relation"].as_str().unwrap_or(""),
+                            st["to_label"].as_str().unwrap_or("")
+                        );
+                    }
+                }
+                out.push_str(&p);
+                out.push('\n');
             }
         }
     }
-    Ok(EXIT_OK)
+    out
 }
 
 /// RepositoryView metadata for the machine response (§33).

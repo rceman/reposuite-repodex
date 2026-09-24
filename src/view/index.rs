@@ -45,6 +45,17 @@ pub struct EnsureOutcome {
     pub ensure_ms: f64,
 }
 
+impl EnsureOutcome {
+    /// The `indexes/{key}` dir holding snapshot/links/candidates/graph — used to
+    /// materialize current declaration ranges from the stored snapshot (§11).
+    pub fn index_dir(&self) -> PathBuf {
+        self.graph_dir
+            .parent()
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(|| self.graph_dir.clone())
+    }
+}
+
 fn objects_dir(state: &Path) -> PathBuf {
     state.join("objects")
 }

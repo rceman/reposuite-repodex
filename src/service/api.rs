@@ -3,6 +3,7 @@
 //! reuse them (§60). Harness-neutral — no Task/Gateway knowledge (§41-§42).
 
 use serde_json::json;
+use std::path::Path;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Instant;
@@ -145,9 +146,11 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         query_text: &text,
         mode: crate::query::QueryMode::Ranked,
         intent,
+        target: qreq.target.clone(),
+        to: qreq.to.clone(),
         max_results: qreq.max_results.unwrap_or(50),
         token_budget: None,
-        depth: 4,
+        depth: qreq.depth.unwrap_or(4),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {
@@ -167,7 +170,7 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         "schema": v::QUERY_RESPONSE_SCHEMA,
         "repository_view": view_meta_json(&outcome.view),
         "query": text,
-        "result": query_result_json(&outcome.result),
+        "result": query_result_json(&outcome.result, Some(&outcome.ensure.index_dir())),
         "index": {"fingerprint":outcome.ensure.fingerprint,
                   "reused":outcome.ensure.index_reused,
                   "analyses_reused":outcome.ensure.analyses_reused,
@@ -187,13 +190,11 @@ fn view_meta_json(view: &v::RepositoryView) -> serde_json::Value {
     })
 }
 
-fn query_result_json(r: &crate::query::QueryResult) -> serde_json::Value {
-    json!({
-        "intent":r.plan.intent.as_str(),"target":r.plan.target,
-        "terms":r.plan.terms,"total":r.total,"shown":r.shown,"complete":r.complete,
-        "seeds":r.seeds.iter().map(|s|json!({"key":s.node.key,"kind":s.node.kind.as_str(),"label":s.node.label,"path":s.node.path,"score":s.score})).collect::<Vec<_>>(),
-        "related":r.related.iter().map(|x|json!({"direction":x.direction,"kind":x.kind,"evidence":x.evidence.as_str(),"node":x.node.key,"label":x.node.label})).collect::<Vec<_>>(),
-    })
+/// Canonical machine `result` = the ONE EvidenceProjection (§6) — same shape as
+/// direct `--json`, with rank/path/ranges/provenance preserved (no parallel
+/// service renderer). `index_dir` enables current-range materialization.
+fn query_result_json(r: &crate::query::QueryResult, index_dir: Option<&Path>) -> serde_json::Value {
+    crate::query::projection::build(r, index_dir).to_json()
 }
 
 // ---- /v1/events + /v1/events/batch (§41-§45) --------------------------------

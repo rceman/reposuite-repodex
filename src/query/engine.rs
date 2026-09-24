@@ -189,6 +189,8 @@ pub struct RelatedHit {
     pub via: String,
     /// The candidate-set id for candidate edges (§14).
     pub candidate_set: Option<String>,
+    /// The upstream rule that produced this edge (provenance, §19).
+    pub rule_id: Option<String>,
 }
 
 /// The result of a deterministic query.
@@ -205,6 +207,10 @@ pub struct QueryResult {
     pub complete: bool,
     /// `budget`/`limit` when output was truncated.
     pub truncated_reason: Option<String>,
+    /// Bounded two-endpoint path routes for `intent=paths` (§22-§28). Empty for
+    /// other intents. `paths.is_empty()` on a paths query means "no route found
+    /// within the bounded search" — NOT global absence (§27).
+    pub paths: Vec<crate::graph::investigate::Path>,
     /// Optional System One provenance (§30/§43): `disabled`/`used`/`fallback`
     /// for each role. Never affects evidence, completeness or totals.
     pub so_query: Option<String>,
@@ -278,8 +284,19 @@ impl<'a> QueryEngine<'a> {
                 reason = Some("budget".to_string());
             }
         }
-        // 5. Expand related edges from the emitted seeds only.
-        let related = self.expand(plan, &seeds);
+        // 5. Two-endpoint bounded path search for `paths` intent (§22-§24) —
+        //    a real traversal, not the one-hop neighborhood fallback.
+        let paths = if plan.intent == QueryIntent::Paths {
+            self.run_paths(plan)
+        } else {
+            Vec::new()
+        };
+        // 6. Expand related edges from the emitted seeds only (not for paths).
+        let related = if plan.intent == QueryIntent::Paths {
+            Vec::new()
+        } else {
+            self.expand(plan, &seeds)
+        };
         let shown = seeds.len();
         QueryResult {
             plan: plan.clone(),
@@ -289,9 +306,42 @@ impl<'a> QueryEngine<'a> {
             shown,
             complete,
             truncated_reason: reason,
+            paths,
             so_query: None,
             so_rerank: None,
         }
+    }
+
+    /// Bounded two-endpoint path search. Resolves the `target`/`to` endpoints to
+    /// node ids, then runs the real bounded `index.paths` traversal. Returns an
+    /// empty vec when endpoints don't resolve or no route fits the bound — a
+    /// "no route found" result, never a global-absence claim (§27).
+    fn run_paths(&self, plan: &QueryPlan) -> Vec<crate::graph::investigate::Path> {
+        let (Some(t), Some(o)) = (plan.target.as_deref(), plan.to.as_deref()) else {
+            return Vec::new();
+        };
+        let resolve = |s: &str| -> Option<String> {
+            if let Some(n) = self.index.node(s) {
+                return Some(n.node_id.clone());
+            }
+            let m = self.index.find(s, crate::graph::LookupDomain::Name);
+            if m.len() == 1 {
+                return Some(m[0].node_id.clone());
+            }
+            None
+        };
+        let (Some(from), Some(to)) = (resolve(t), resolve(o)) else {
+            return Vec::new();
+        };
+        let opts = crate::graph::PathOptions {
+            // Connector bound (§25): <=2 routes, <=3 depth for the V1 pilot.
+            max_depth: plan.max_depth.min(3),
+            max_paths: 2,
+            max_nodes: 4096,
+            kinds: Vec::new(),
+            evidence: None,
+        };
+        self.index.paths(&from, &to, &opts)
     }
 
     /// Deterministic top-K lexical seeds (same ordering as `run`), used by the
@@ -431,6 +481,7 @@ impl<'a> QueryEngine<'a> {
                                 node: src.clone(),
                                 via: s.node.key.clone(),
                                 candidate_set: e.candidate_set_id.clone(),
+                                rule_id: Some(e.rule_id.clone()),
                             });
                         }
                     }
@@ -444,6 +495,7 @@ impl<'a> QueryEngine<'a> {
                             node: decl.clone(),
                             via: s.node.key.clone(),
                             candidate_set: cand.candidate_set_id.clone(),
+                            rule_id: Some(cand.rule_id.clone()),
                         });
                     }
                 }
@@ -460,6 +512,7 @@ impl<'a> QueryEngine<'a> {
                             node: n.node.clone(),
                             via: s.node.key.clone(),
                             candidate_set: n.edge.candidate_set_id.clone(),
+                            rule_id: Some(n.edge.rule_id.clone()),
                         });
                     }
                 }
@@ -473,6 +526,9 @@ impl<'a> QueryEngine<'a> {
             ))
         });
         out.dedup_by(|a, b| a.node.node_id == b.node.node_id && a.kind == b.kind);
+        // §32: a highly-connected seed must not grow the relation set without
+        // bound — hard cap after dedup/sort (deterministic canonical order).
+        out.truncate(256);
         out
     }
 }

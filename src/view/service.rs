@@ -28,6 +28,10 @@ pub struct ViewQueryParams<'a> {
     pub query_text: &'a str,
     pub mode: QueryMode,
     pub intent: Option<QueryIntent>,
+    /// `callers`/`callees`/`paths` first endpoint (target symbol/name/key).
+    pub target: Option<String>,
+    /// `paths` second endpoint — bounded two-endpoint connector query (§23).
+    pub to: Option<String>,
     pub max_results: usize,
     pub token_budget: Option<usize>,
     pub depth: usize,
@@ -55,8 +59,8 @@ pub fn run_view_query(
         params.query_text,
         params.mode,
         params.intent,
-        None,
-        None,
+        params.target.clone(),
+        params.to.clone(),
         params.max_results,
         params.token_budget,
     );

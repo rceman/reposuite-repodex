@@ -168,8 +168,11 @@ pub fn parse(text: &str) -> Result<Rdx1Doc, String> {
             continue;
         }
         if line.starts_with("#RDX1") {
-            // Reject an unsupported version rather than mis-parsing it (§13).
-            if line != "#RDX1 v1" {
+            // Accept v1 and the faithful v2 extension (§39). v2 adds `D` (seed
+            // rank/locator/range) and `P` (connector route) lines, which a v1
+            // reader tolerates via the catch-all arm — the F/R/S evidence lines
+            // are unchanged, so old fixtures still round-trip.
+            if line != "#RDX1 v1" && line != "#RDX1 v2" {
                 return Err(format!("unsupported RDX1 version: `{line}`"));
             }
             saw_header = true;
