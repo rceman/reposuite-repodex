@@ -1,0 +1,12 @@
+{
+  "anchor_absent": "fell_back=true; recipe produces nothing; deterministic query intact",
+  "anchor_ambiguous": "candidate-only / fallback — never a single fact",
+  "new_caller_added": "membership re-derived from current view — new caller obtained (not replayed)",
+  "removed_caller": "absent from current relation set",
+  "old_caller_set_replayed": false,
+  "old_test_set_replayed": false,
+  "old_source_replayed": false,
+  "old_range_replayed": false,
+  "cross_project_recipe_use": 0,
+  "membership_completeness_config": "inherit the current validated view + dependency-validity gate (no second dependency engine)"
+}

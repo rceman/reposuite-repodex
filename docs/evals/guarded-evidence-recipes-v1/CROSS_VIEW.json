@@ -1,0 +1,6 @@
+{
+  "binding": "recipe execution binds to the validated target RepositoryView; anchor resolved fresh, selectors run the current engine — a recipe authored on branch-A re-derives branch-B evidence",
+  "anchor_states": "reuses the rebinding taxonomy conceptually: absent anchor -> fell_back; ambiguous -> candidate-only",
+  "old_collection_replay": "never — CallersOf/TestCandidatesOf always run the current relation/test query",
+  "test_coverage": "tests/recipes.rs: current-caller execution, off/no-match safety, min-support mining"
+}

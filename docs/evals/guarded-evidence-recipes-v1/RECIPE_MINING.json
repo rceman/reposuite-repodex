@@ -1,0 +1,8 @@
+{
+  "input": ["InvestigationEpisode.query_text","SymbolExposure evidence roles","evidence_path_mentions"],
+  "method": "group episodes by (evidence-role motif, sorted shared query identifier-terms); emit a parameterized recipe when >= MIN_SUPPORT episodes share it",
+  "MIN_SUPPORT": 2,
+  "generalization": "concrete entities -> parameterized selectors (ResolveAnchor -> CallersOf), not memorized paths",
+  "never_from": ["a single lucky episode","final natural-language answers","semantic/business recipe classes"],
+  "idempotent": true
+}

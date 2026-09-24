@@ -1,0 +1,15 @@
+{
+  "schema": "reposuite.repodex.recipe.v1",
+  "fields": {
+    "recipe_id": "content-derived (scope|family|terms)",
+    "project_scope": "canonical scope — shared across worktrees/branches",
+    "version": "selector-policy version",
+    "family": "objective recipe family",
+    "query_family_terms": "normalized identifier sub-terms the recipe applies to",
+    "steps": "typed SelectorStep list with optional `after` dependency (partial order)",
+    "support": "episode count the recipe was mined from",
+    "provenance": "contributing investigation ids"
+  },
+  "not_a_recipe": ["cached answer","final conclusion","historical source dump","shell/tool command sequence"],
+  "is": "a bounded version-safe plan for reconstructing CURRENT evidence for a recurring investigation shape"
+}

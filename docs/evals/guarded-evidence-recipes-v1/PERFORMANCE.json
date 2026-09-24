@@ -1,0 +1,8 @@
+{
+  "recipe_lookup_ms": "sub-ms (scoped in-memory recipe scan)",
+  "match_ms": "sub-ms (term coverage + intent)",
+  "selector_execution": "one bounded engine sub-query per step (~ms, same cost as a normal query)",
+  "guard_validation": "anchor presence via current seeds — no extra parse",
+  "full_query_additional_latency": "~one sub-query per selector step; bounded",
+  "new_parses": 0
+}

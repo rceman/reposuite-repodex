@@ -1,0 +1,14 @@
+{
+  "selector_ops": ["resolve_anchor","resolve_memory_anchor","callers_of","callees_of","related_of","path_to","test_candidates_of","owning_module_of"],
+  "properties": {
+    "read_only": true,
+    "typed_enum": true,
+    "bounded_args": true,
+    "arbitrary_shell": false,
+    "arbitrary_code": false,
+    "sql": false,
+    "network": false,
+    "filesystem_traversal": false
+  },
+  "execution": "each selector runs the existing deterministic query engine against the CURRENT validated view — the recipe duplicates no graph/query logic and caches nothing"
+}

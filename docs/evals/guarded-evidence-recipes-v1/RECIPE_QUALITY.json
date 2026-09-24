@@ -1,0 +1,8 @@
+{
+  "mining": "motif-grouped episodes, MIN_SUPPORT=2; parameterized selectors (no literal paths)",
+  "match_rate": "recipe matches when query-family terms + intent/family align + anchor resolves",
+  "execution": "current-view re-derivation via existing engine; produced witnesses appended to `related` and pass through the Context Compiler",
+  "overhead": "recipe lookup+match is a scoped in-memory scan + one sub-query per selector step — sub-ms to ms; no reparse",
+  "stale_materialization": 0,
+  "replay_equivalent": "recipe store is deterministic over mined history"
+}

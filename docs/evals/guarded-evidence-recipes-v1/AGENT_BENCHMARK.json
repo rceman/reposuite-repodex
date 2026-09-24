@@ -1,0 +1,18 @@
+{
+  "design": "R0 recipes=off vs R1 recipes=auto. memory=off, compiler static — identical config except recipe admission. Serial, counterbalanced, conc=1, real devin -p.",
+  "sessions": 32, "questions": 8, "reps": 2,
+  "results_mean": {
+    "R0": {"n":16,"correct":16,"in_tok":34061,"out_tok":483,"steps":9.5,"wall_s":13.7},
+    "R1": {"n":16,"correct":16,"in_tok":37152,"out_tok":533,"steps":9.7,"wall_s":15.7}
+  },
+  "cohorts": {
+    "recipe_family": {"R0":{"in":38266,"steps":9.8,"wall":15.1},"R1":{"in":38933,"steps":9.8,"wall":17.5}},
+    "paraphrase":   {"R0":{"in":33860,"steps":9.5,"wall":14.9},"R1":{"in":41719,"steps":10.0,"wall":18.6}},
+    "control":      {"R0":{"in":29989,"steps":9.2,"wall":11.5},"R1":{"in":32326,"steps":9.3,"wall":12.0}}
+  },
+  "cross_view_stale_fact_contamination": 0,
+  "cross_project_recipe_contamination": 0,
+  "honest_conclusion": "Recipes are SAFE (current-view revalidation, project isolation, fallback) but produced NO measured agent-work reduction on this small repo — R1 was neutral-to-slightly-worse because the recipe-produced caller evidence was already cheaply reachable and added tokens without removing steps.",
+  "classification": "GUARDED_EVIDENCE_RECIPES_OPT_IN",
+  "caveats": ["small repo","n=32 screening pilot","recipe value needs larger/deeper investigations to manifest"]
+}

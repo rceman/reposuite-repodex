@@ -1,0 +1,6 @@
+{
+  "match_states": ["match","ambiguous","no_match"],
+  "signals": ["query-family identifier-term coverage","intent/family consistency","project scope","anchor resolvable+unique in current view"],
+  "conservative": "term coverage is necessary, not sufficient — >1 candidate => ambiguous; anchor absent => fallback",
+  "no_model": true
+}
