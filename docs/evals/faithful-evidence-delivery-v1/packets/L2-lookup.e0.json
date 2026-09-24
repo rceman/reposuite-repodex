@@ -1,0 +1,34 @@
+[
+ {
+  "kind": "declaration",
+  "label": "run_view_query"
+ },
+ {
+  "kind": "declaration",
+  "label": "ViewQueryOutcome"
+ },
+ {
+  "kind": "declaration",
+  "label": "ViewQueryParams"
+ },
+ {
+  "kind": "declaration",
+  "label": "command_query_view"
+ },
+ {
+  "kind": "declaration",
+  "label": "run"
+ },
+ {
+  "kind": "declaration",
+  "label": "QUERY_POLICY_VERSION"
+ },
+ {
+  "kind": "declaration",
+  "label": "QueryPlan"
+ },
+ {
+  "kind": "declaration",
+  "label": "QueryMode"
+ }
+]

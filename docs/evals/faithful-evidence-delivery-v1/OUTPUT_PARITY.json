@@ -1,0 +1,23 @@
+{
+  "schema": "repodex.output-parity.v1",
+  "canonical_projection": "src/query/projection.rs :: EvidenceProjection (build once, render to machine JSON / RDX / human)",
+  "transports": {
+    "direct_machine_json": "cli.rs query_result_json -> projection.to_json()",
+    "service_v1_query": "service/api.rs query_result_json -> projection.to_json() (identical fn)",
+    "cli_routed_via_service_compact": "render_projection_text(body.result) — faithful rank/path/range/rel, no drop",
+    "rdx": "projection.to_rdx() -> #RDX1 v2 (D rank/locator/range + R endpoints/cs/rule + P routes)",
+    "human": "projection.to_human() — rank, fact/candidate, completeness not misstated"
+  },
+  "parity_invariants_verified": [
+    "explicit seed rank == 1..n in seeds[] order on every machine transport",
+    "local F<n> id != rank (rank is explicit on D line / rank field)",
+    "repo-relative path + canonical key on every seed",
+    "same-named decls distinguishable by key+path",
+    "fact/candidate preserved, never promoted",
+    "relationship from/to endpoints + via + rule_id + candidate_set preserved",
+    "current declaration_range/body_range materialized for decl seeds",
+    "service /v1/query result identical schema to direct --json"
+  ],
+  "service_parity_test": "tests/evidence_projection.rs::service_query_uses_same_projection",
+  "documented_noncritical_omissions": ["human omits candidate_set/rule_id detail (not Agent-critical); machine+RDX retain all"]
+}

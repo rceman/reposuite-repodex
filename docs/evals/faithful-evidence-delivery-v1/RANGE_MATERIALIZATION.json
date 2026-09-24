@@ -1,0 +1,11 @@
+{
+  "schema": "repodex.range-materialization.v1",
+  "source": "stored FileAnalysis in the validated view index snapshot (indexes/{key}/snapshot/files/{object_key}.json)",
+  "method": "decl seed key `decl:path#id` -> FileAnalysis.declarations[declaration_id] -> range/body_range",
+  "reparse": false,
+  "file_analysis_reads_per_query": "bounded by emitted decl seeds (<=50); lazy + cached per path",
+  "omitted_when": ["snapshot not co-located (direct --graph)", "decl id not resolvable -> range omitted, never invented"],
+  "current_view_only": "ranges come from the snapshot captured under the validated index — always the current content version",
+  "example": {"key":"decl:a/foo.go#1","declaration_range":{"path":"a/foo.go","start_line":2,"byte_start":10,"byte_end":40}},
+  "not_source_exposure": "a range locator is navigation metadata; bytes were NOT delivered to the model (§55-56)"
+}

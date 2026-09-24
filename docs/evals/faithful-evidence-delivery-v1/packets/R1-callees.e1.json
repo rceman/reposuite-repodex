@@ -1,0 +1,109 @@
+{
+ "query": "x",
+ "intent": "callees",
+ "emitted_seed_count": 1,
+ "eligible_seed_count": 1,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 35094,
+    "byte_start": 34478,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "declaration_range": {
+    "byte_end": 35094,
+    "byte_start": 34422,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "key": "decl:src/cli.rs#142",
+   "kind": "declaration",
+   "label": "command_index",
+   "language": "rust",
+   "path": "src/cli.rs",
+   "rank": 1,
+   "score": 20
+  }
+ ],
+ "related": [
+  {
+   "candidate_set": "cand-816bcbcd4ada0871",
+   "direction": "outgoing",
+   "evidence": "candidate",
+   "from_key": "decl:src/cli.rs#142",
+   "from_label": "",
+   "kind": "call_candidate",
+   "label": "command_index_build",
+   "node": "decl:src/cli.rs#168",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#168",
+   "to_label": "command_index_build",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#142"
+  },
+  {
+   "candidate_set": "cand-15683844be2b426a",
+   "direction": "outgoing",
+   "evidence": "candidate",
+   "from_key": "decl:src/cli.rs#142",
+   "from_label": "",
+   "kind": "call_candidate",
+   "label": "command_index_update",
+   "node": "decl:src/cli.rs#169",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#169",
+   "to_label": "command_index_update",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#142"
+  },
+  {
+   "candidate_set": "cand-edfee8d0d973887a",
+   "direction": "outgoing",
+   "evidence": "candidate",
+   "from_key": "decl:src/cli.rs#142",
+   "from_label": "",
+   "kind": "call_candidate",
+   "label": "command_index_verify",
+   "node": "decl:src/cli.rs#182",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#182",
+   "to_label": "command_index_verify",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#142"
+  },
+  {
+   "candidate_set": "cand-92681e4f3b0a37e8",
+   "direction": "outgoing",
+   "evidence": "candidate",
+   "from_key": "decl:src/cli.rs#142",
+   "from_label": "",
+   "kind": "call_candidate",
+   "label": "command_index_stats",
+   "node": "decl:src/cli.rs#204",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#204",
+   "to_label": "command_index_stats",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#142"
+  },
+  {
+   "candidate_set": "cand-6e1fe960894c0e26",
+   "direction": "outgoing",
+   "evidence": "candidate",
+   "from_key": "decl:src/cli.rs#142",
+   "from_label": "",
+   "kind": "call_candidate",
+   "label": "command_index_find",
+   "node": "decl:src/cli.rs#215",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#215",
+   "to_label": "command_index_find",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#142"
+  }
+ ]
+}

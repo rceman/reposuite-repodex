@@ -1,0 +1,24 @@
+{
+  "schema": "repodex.field-survival-matrix.v1",
+  "note": "Per-field survival across output paths BEFORE the fix vs AFTER (canonical EvidenceProjection).",
+  "fields": {
+    "seed_rank":            {"before": "LOST (array order only; RDX F-id was key-sorted, ambiguous)", "after": "explicit `rank` (1=highest) on every machine transport + RDX `D` line", "class": "LOSSY_AGENT_RELEVANT"},
+    "seed_score":           {"before": "machine yes; service yes; RDX lost; compact lost", "after": "preserved (ordering metadata, not certainty)", "class": "LOSSY_AGENT_RELEVANT"},
+    "entity_kind":          {"before": "all paths", "after": "all paths", "class": "ok"},
+    "entity_label":         {"before": "all paths", "after": "all paths", "class": "ok"},
+    "repo_relative_path":   {"before": "machine/service yes; service-compact LOST; RDX via key only; human yes", "after": "all paths incl. compact", "class": "LOSSY_AGENT_RELEVANT"},
+    "entity_locator_key":   {"before": "machine/service yes; compact LOST", "after": "all paths", "class": "LOSSY_AGENT_RELEVANT"},
+    "fact_candidate_status":{"before": "machine/service yes (related); compact LOST; human partial", "after": "all paths, never promoted", "class": "LOSSY_AGENT_RELEVANT"},
+    "relationship_source":  {"before": "implied by via+direction", "after": "explicit `from_*` direction-resolved", "class": "LOSSY_AGENT_RELEVANT"},
+    "relationship_destination":{"before": "node key only", "after": "explicit `to_*`", "class": "LOSSY_AGENT_RELEVANT"},
+    "relationship_type":    {"before": "kind preserved", "after": "preserved", "class": "ok"},
+    "relationship_via":     {"before": "machine yes; service DROPPED; compact LOST; RDX used as endpoint", "after": "explicit `via` + endpoint fields everywhere", "class": "BUG_SEMANTIC_MISMATCH"},
+    "relationship_rule":    {"before": "DROPPED at QueryResult (edge.rule_id not surfaced)", "after": "rule_id on every relation + RDX rule=", "class": "LOSSY_AGENT_RELEVANT"},
+    "candidate_set_identity":{"before": "RDX cs= only; machine/service/compact/human LOST", "after": "candidate_set on every relation", "class": "LOSSY_AGENT_RELEVANT"},
+    "disposition":          {"before": "DROPPED everywhere", "after": "disposition on seeds+related", "class": "LOSSY_AGENT_RELEVANT"},
+    "completeness":         {"before": "complete/total/shown (ambiguous scope)", "after": "explicit emitted_seed_count/eligible_seed_count/seed_selection_complete + bounds", "class": "LOSSY_AGENT_RELEVANT"},
+    "declaration_range":    {"before": "ABSENT (FileAnalysis had it, never surfaced)", "after": "declaration_range on decl seeds (current view, no reparse)", "class": "LOSSY_AGENT_RELEVANT"},
+    "body_range":           {"before": "ABSENT", "after": "body_range when the decl has a body", "class": "LOSSY_AGENT_RELEVANT"},
+    "two_endpoint_path":    {"before": "UNREACHABLE (intent=paths degraded to one-hop neighborhood; request lacked target/to)", "after": "real bounded paths(); connector packet <=2 routes <=3 depth", "class": "BUG_SEMANTIC_MISMATCH"}
+  }
+}

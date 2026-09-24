@@ -1,0 +1,48 @@
+{
+ "bounds": {
+  "connector_max_depth": 3,
+  "connector_max_routes": 2,
+  "max_related": 256,
+  "max_seeds": 50
+ },
+ "complete": true,
+ "eligible_seed_count": 1,
+ "emitted_seed_count": 1,
+ "intent": "callers",
+ "query": "x",
+ "related": [],
+ "relationship_limit_reached": false,
+ "schema": "reposuite.repodex.query-projection.v1",
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 14685,
+    "byte_start": 9883,
+    "end_line": 346,
+    "path": "src/view/index.rs",
+    "start_line": 225
+   },
+   "declaration_range": {
+    "byte_end": 14685,
+    "byte_start": 9736,
+    "end_line": 346,
+    "path": "src/view/index.rs",
+    "start_line": 221
+   },
+   "key": "decl:src/view/index.rs#20",
+   "kind": "declaration",
+   "label": "ensure_index",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 1,
+   "score": 20
+  }
+ ],
+ "shown": 1,
+ "target": "ensure_index",
+ "terms": [
+  "x"
+ ],
+ "total": 1
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "repodex.connector-validation.v1",
+  "bounds": {"max_routes": 2, "max_depth": 3, "deterministic": true},
+  "dispatch": "QueryIntent::Paths -> index.paths(from,to,PathOptions{max_depth<=3,max_paths=2}) — real BFS, not neighborhood",
+  "reachability": "QueryRequest now carries target+to+depth; ViewQueryParams plumbs to QueryPlan (was hardcoded None)",
+  "no_route_semantics": "found:false + no_route_meaning='bounded search, not global absence' (§27)",
+  "step_fields": ["from_key","from_label","relation","to_key","to_label","evidence","rule_id","to_path"],
+  "verified": {
+    "real_route": "command_index -[contains:fact]-> callsite -[call_candidate:candidate]-> command_index_build",
+    "ambiguous_endpoint_resolves_bounded_no_route": "paths target=Helper (2 decls) -> found:false",
+    "no_route_is_bounded_not_global": "decl:a/foo.go#1 -> decl:b/bar.go#1 -> found:false + meaning string"
+  },
+  "tests": ["two_endpoint_path_reaches_real_traversal","no_route_means_bounded_absence_not_global"]
+}

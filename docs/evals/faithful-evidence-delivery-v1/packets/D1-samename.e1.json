@@ -1,0 +1,567 @@
+{
+ "query": "object_key",
+ "intent": "find",
+ "emitted_seed_count": 8,
+ "eligible_seed_count": 40,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 5954,
+    "byte_start": 5894,
+    "end_line": 166,
+    "path": "src/repository/artifact.rs",
+    "start_line": 164
+   },
+   "declaration_range": {
+    "byte_end": 5954,
+    "byte_start": 5823,
+    "end_line": 166,
+    "path": "src/repository/artifact.rs",
+    "start_line": 164
+   },
+   "factors": [
+    "exact",
+    "all_terms",
+    "term_hits=2"
+   ],
+   "key": "decl:src/repository/artifact.rs#24",
+   "kind": "declaration",
+   "label": "object_key",
+   "language": "rust",
+   "path": "src/repository/artifact.rs",
+   "rank": 1,
+   "score": 1620
+  },
+  {
+   "declaration_range": {
+    "byte_end": 1579,
+    "byte_start": 1557,
+    "end_line": 35,
+    "path": "src/repository/manifest.rs",
+    "start_line": 35
+   },
+   "factors": [
+    "exact",
+    "all_terms",
+    "term_hits=2"
+   ],
+   "key": "decl:src/repository/manifest.rs#8",
+   "kind": "declaration",
+   "label": "object_key",
+   "language": "rust",
+   "path": "src/repository/manifest.rs",
+   "rank": 2,
+   "score": 1620
+  },
+  {
+   "body_range": {
+    "byte_end": 7056,
+    "byte_start": 6461,
+    "end_line": 195,
+    "path": "src/repository/artifact.rs",
+    "start_line": 177
+   },
+   "declaration_range": {
+    "byte_end": 7056,
+    "byte_start": 6345,
+    "end_line": 195,
+    "path": "src/repository/artifact.rs",
+    "start_line": 173
+   },
+   "factors": [
+    "all_terms",
+    "term_hits=2"
+   ],
+   "key": "decl:src/repository/artifact.rs#25",
+   "kind": "declaration",
+   "label": "object_key_scoped",
+   "language": "rust",
+   "path": "src/repository/artifact.rs",
+   "rank": 3,
+   "score": 620
+  },
+  {
+   "body_range": {
+    "byte_end": 3898,
+    "byte_start": 3807,
+    "end_line": 116,
+    "path": "tests/task3_snapshot.rs",
+    "start_line": 112
+   },
+   "declaration_range": {
+    "byte_end": 3898,
+    "byte_start": 3765,
+    "end_line": 116,
+    "path": "tests/task3_snapshot.rs",
+    "start_line": 112
+   },
+   "factors": [
+    "all_terms",
+    "term_hits=2"
+   ],
+   "key": "decl:tests/task3_snapshot.rs#10",
+   "kind": "declaration",
+   "label": "first_object_key",
+   "language": "rust",
+   "path": "tests/task3_snapshot.rs",
+   "rank": 4,
+   "score": 620
+  },
+  {
+   "declaration_range": {
+    "byte_end": 418,
+    "byte_start": 411,
+    "end_line": 24,
+    "path": "fixtures/go/declarations.go",
+    "start_line": 24
+   },
+   "factors": [
+    "term_hits=1"
+   ],
+   "key": "decl:fixtures/go/declarations.go#6",
+   "kind": "declaration",
+   "label": "Key",
+   "language": "go",
+   "path": "fixtures/go/declarations.go",
+   "rank": 5,
+   "score": 120
+  },
+  {
+   "declaration_range": {
+    "byte_end": 547,
+    "byte_start": 531,
+    "end_line": 30,
+    "path": "fixtures/php/declarations.php",
+    "start_line": 30
+   },
+   "factors": [
+    "term_hits=1"
+   ],
+   "key": "decl:fixtures/php/declarations.php#8",
+   "kind": "declaration",
+   "label": "cacheKey",
+   "language": "php",
+   "path": "fixtures/php/declarations.php",
+   "rank": 6,
+   "score": 120
+  },
+  {
+   "body_range": {
+    "byte_end": 1469,
+    "byte_start": 1441,
+    "end_line": 79,
+    "path": "fixtures/rust/boundaries.rs",
+    "start_line": 77
+   },
+   "declaration_range": {
+    "byte_end": 1469,
+    "byte_start": 1379,
+    "end_line": 79,
+    "path": "fixtures/rust/boundaries.rs",
+    "start_line": 77
+   },
+   "factors": [
+    "term_hits=1"
+   ],
+   "key": "decl:fixtures/rust/boundaries.rs#16",
+   "kind": "declaration",
+   "label": "dynamic_object",
+   "language": "rust",
+   "path": "fixtures/rust/boundaries.rs",
+   "rank": 7,
+   "score": 120
+  },
+  {
+   "body_range": {
+    "byte_end": 2581,
+    "byte_start": 2375,
+    "end_line": 81,
+    "path": "scripts/task3b_perf.py",
+    "start_line": 76
+   },
+   "declaration_range": {
+    "byte_end": 2581,
+    "byte_start": 2343,
+    "end_line": 81,
+    "path": "scripts/task3b_perf.py",
+    "start_line": 75
+   },
+   "factors": [
+    "term_hits=1"
+   ],
+   "key": "decl:scripts/task3b_perf.py#6",
+   "kind": "declaration",
+   "label": "parse_key_values",
+   "language": "python",
+   "path": "scripts/task3b_perf.py",
+   "rank": 8,
+   "score": 120
+  }
+ ],
+ "related": [
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `macro_invocation` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:fixtures/rust/boundaries.rs#16",
+   "from_label": "",
+   "kind": "contains",
+   "label": "format",
+   "node": "call:fixtures/rust/boundaries.rs#3",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:fixtures/rust/boundaries.rs#3",
+   "to_label": "format",
+   "to_path": "fixtures/rust/boundaries.rs",
+   "via": "decl:fixtures/rust/boundaries.rs#16"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/task3b_perf.py#6",
+   "from_label": "",
+   "kind": "contains",
+   "label": "text.splitlines",
+   "node": "call:scripts/task3b_perf.py#21",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/task3b_perf.py#21",
+   "to_label": "text.splitlines",
+   "to_path": "scripts/task3b_perf.py",
+   "via": "decl:scripts/task3b_perf.py#6"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/task3b_perf.py#6",
+   "from_label": "",
+   "kind": "contains",
+   "label": "re.match",
+   "node": "call:scripts/task3b_perf.py#22",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/task3b_perf.py#22",
+   "to_label": "re.match",
+   "to_path": "scripts/task3b_perf.py",
+   "via": "decl:scripts/task3b_perf.py#6"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/task3b_perf.py#6",
+   "from_label": "",
+   "kind": "contains",
+   "label": "match.group",
+   "node": "call:scripts/task3b_perf.py#23",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/task3b_perf.py#23",
+   "to_label": "match.group",
+   "to_path": "scripts/task3b_perf.py",
+   "via": "decl:scripts/task3b_perf.py#6"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/task3b_perf.py#6",
+   "from_label": "",
+   "kind": "contains",
+   "label": "match.group(2).strip",
+   "node": "call:scripts/task3b_perf.py#24",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/task3b_perf.py#24",
+   "to_label": "match.group(2).strip",
+   "to_path": "scripts/task3b_perf.py",
+   "via": "decl:scripts/task3b_perf.py#6"
+  },
+  {
+   "candidate_set": "cand-f448e096a75e9d52",
+   "direction": "incoming",
+   "disposition": "single_candidate",
+   "evidence": "candidate",
+   "from_key": "call:src/repository/artifact.rs#12",
+   "from_label": "object_key_scoped",
+   "from_path": "src/repository/artifact.rs",
+   "kind": "call_candidate",
+   "label": "object_key_scoped",
+   "node": "call:src/repository/artifact.rs#12",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/repository/artifact.rs#25",
+   "to_label": "",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "single_candidate",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#24",
+   "from_label": "",
+   "kind": "contains",
+   "label": "object_key_scoped",
+   "node": "call:src/repository/artifact.rs#12",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#12",
+   "to_label": "object_key_scoped",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#24"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:qualified path root `String` is not a proven repository module",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "String::with_capacity",
+   "node": "call:src/repository/artifact.rs#13",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#13",
+   "to_label": "String::with_capacity",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "relative_path.len",
+   "node": "call:src/repository/artifact.rs#14",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#14",
+   "to_label": "relative_path.len",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "content_digest.len",
+   "node": "call:src/repository/artifact.rs#15",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#15",
+   "to_label": "content_digest.len",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "analyzer_digest.len",
+   "node": "call:src/repository/artifact.rs#16",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#16",
+   "to_label": "analyzer_digest.len",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push_str",
+   "node": "call:src/repository/artifact.rs#17",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#17",
+   "to_label": "seed.push_str",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push_str",
+   "node": "call:src/repository/artifact.rs#18",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#18",
+   "to_label": "seed.push_str",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push",
+   "node": "call:src/repository/artifact.rs#19",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#19",
+   "to_label": "seed.push",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push_str",
+   "node": "call:src/repository/artifact.rs#20",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#20",
+   "to_label": "seed.push_str",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "analyzer_digest.is_empty",
+   "node": "call:src/repository/artifact.rs#21",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#21",
+   "to_label": "analyzer_digest.is_empty",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push",
+   "node": "call:src/repository/artifact.rs#22",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#22",
+   "to_label": "seed.push",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "seed.push_str",
+   "node": "call:src/repository/artifact.rs#23",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#23",
+   "to_label": "seed.push_str",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate:path root `digest` is shadowed by a nearer binding",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "digest::sha256_text",
+   "node": "call:src/repository/artifact.rs#24",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#24",
+   "to_label": "digest::sha256_text",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "digest\n        .strip_prefix",
+   "node": "call:src/repository/artifact.rs#25",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#25",
+   "to_label": "digest\n        .strip_prefix",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "digest\n        .strip_prefix(\"sha256:\")\n        .unwrap_or",
+   "node": "call:src/repository/artifact.rs#26",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#26",
+   "to_label": "digest\n        .strip_prefix(\"sha256:\")\n        .unwrap_or",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/repository/artifact.rs#25",
+   "from_label": "",
+   "kind": "contains",
+   "label": "digest\n        .strip_prefix(\"sha256:\")\n        .unwrap_or(&digest)\n        .to_string",
+   "node": "call:src/repository/artifact.rs#27",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/repository/artifact.rs#27",
+   "to_label": "digest\n        .strip_prefix(\"sha256:\")\n        .unwrap_or(&digest)\n        .to_string",
+   "to_path": "src/repository/artifact.rs",
+   "via": "decl:src/repository/artifact.rs#25"
+  },
+  {
+   "candidate_set": "cand-b0ec816cbf12972c",
+   "direction": "incoming",
+   "disposition": "single_candidate",
+   "evidence": "candidate",
+   "from_key": "call:tests/task3_snapshot.rs#106",
+   "from_label": "first_object_key",
+   "from_path": "tests/task3_snapshot.rs",
+   "kind": "call_candidate",
+   "label": "first_object_key",
+   "node": "call:tests/task3_snapshot.rs#106",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:tests/task3_snapshot.rs#10",
+   "to_label": "",
+   "via": "decl:tests/task3_snapshot.rs#10"
+  },
+  {
+   "candidate_set": "cand-cd433f07e31a24d5",
+   "direction": "incoming",
+   "disposition": "single_candidate",
+   "evidence": "candidate",
+   "from_key": "call:tests/task3_snapshot.rs#476",
+   "from_label": "first_object_key",
+   "from_path": "tests/task3_snapshot.rs",
+   "kind": "call_candidate",
+   "label": "first_object_key",
+   "node": "call:tests/task3_snapshot.rs#476",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:tests/task3_snapshot.rs#10",
+   "to_label": "",
+   "via": "decl:tests/task3_snapshot.rs#10"
+  }
+ ]
+}

@@ -1,0 +1,34 @@
+[
+ {
+  "kind": "declaration",
+  "label": "ensure_index"
+ },
+ {
+  "kind": "declaration",
+  "label": "GraphIndex"
+ },
+ {
+  "kind": "declaration",
+  "label": "RepositoryFactIndex"
+ },
+ {
+  "kind": "declaration",
+  "label": "TemporalIndex"
+ },
+ {
+  "kind": "declaration",
+  "label": "EnsureOutcome"
+ },
+ {
+  "kind": "declaration",
+  "label": "index_valid"
+ },
+ {
+  "kind": "declaration",
+  "label": "index_reused"
+ },
+ {
+  "kind": "declaration",
+  "label": "ensure_ms"
+ }
+]

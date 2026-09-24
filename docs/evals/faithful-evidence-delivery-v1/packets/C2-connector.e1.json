@@ -1,0 +1,40 @@
+{
+ "query": "x",
+ "intent": "paths",
+ "emitted_seed_count": 1,
+ "eligible_seed_count": 1,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 35094,
+    "byte_start": 34478,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "declaration_range": {
+    "byte_end": 35094,
+    "byte_start": 34422,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "key": "decl:src/cli.rs#142",
+   "kind": "declaration",
+   "label": "command_index",
+   "language": "rust",
+   "path": "src/cli.rs",
+   "rank": 1,
+   "score": 20
+  }
+ ],
+ "related": [],
+ "connector": {
+  "found": false,
+  "max_depth": 3,
+  "max_routes": 2,
+  "no_route_meaning": "no route found within this bounded search (depth<=3); not a global-absence claim",
+  "routes": []
+ }
+}

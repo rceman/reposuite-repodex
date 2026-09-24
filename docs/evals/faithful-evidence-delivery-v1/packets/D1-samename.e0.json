@@ -1,0 +1,34 @@
+[
+ {
+  "kind": "declaration",
+  "label": "object_key"
+ },
+ {
+  "kind": "declaration",
+  "label": "object_key"
+ },
+ {
+  "kind": "declaration",
+  "label": "object_key_scoped"
+ },
+ {
+  "kind": "declaration",
+  "label": "first_object_key"
+ },
+ {
+  "kind": "declaration",
+  "label": "Key"
+ },
+ {
+  "kind": "declaration",
+  "label": "cacheKey"
+ },
+ {
+  "kind": "declaration",
+  "label": "dynamic_object"
+ },
+ {
+  "kind": "declaration",
+  "label": "parse_key_values"
+ }
+]

@@ -1,0 +1,30 @@
+{
+  "schema": "repodex.agent-pilot.v1",
+  "AGENT_PILOT_RUN": true,
+  "design": {
+    "harness": "devin -p --export (real zero-context agent sessions)",
+    "schedule": "2 treatments x 8 questions x 4 reps = 64 sessions, concurrency 1, counterbalanced",
+    "repository": "reposuite-repodex (Rust)",
+    "E0": "control packet = prior lossy projection (kind+label only)",
+    "E1": "faithful bounded projection (rank/path/locator/ranges/endpoints/via/rule/candidate_set/connector)",
+    "same_retrieval_same_entities": true,
+    "frozen_model_config": "single devin agent revision; no System One / Memory / model-generated semantics"
+  },
+  "aggregate_medians": {
+    "E0": {"n":32,"correct":28,"correct_rate":0.875,"in_tok":61270,"out_tok":1257,"tool_calls":4.0,"search":2.0,"reads":2.0,"wall_ms":30346},
+    "E1": {"n":32,"correct":29,"correct_rate":0.906,"in_tok":48916,"out_tok":778,"tool_calls":2.5,"search":1.0,"reads":2.0,"wall_ms":17604}
+  },
+  "deltas_E1_minus_E0": {
+    "correctness": "+3.1pp (29 vs 28 correct) — non-inferior, slightly better",
+    "input_tokens_median": "-20.2% (48916 vs 61270); mean -51% (64744 vs 132858)",
+    "output_tokens_median": "-38.1% (778 vs 1257)",
+    "tool_calls_median": "-37.5% (2.5 vs 4.0); mean -45% (4.0 vs 7.3)",
+    "searches_median": "-50% (1 vs 2)",
+    "reads_median": "unchanged (2 vs 2)",
+    "wall_time_median": "-42.0% (17.6s vs 30.3s); mean -37% (29.2s vs 46.0s)"
+  },
+  "biggest_win": "C2-connector (bounded no-route): E1 used 12.5 tool calls vs E0's 27; 186K vs 545K input tokens; 93s vs 152s wall — the explicit 'no route within depth<=3, not global absence' stops exhaustive searching.",
+  "metric_that_got_worse": "L2-lookup: E1 +15.3K median input tokens — the faithful packet is larger than needed for a trivial single-match lookup; a bounded/minimal packet would fix it.",
+  "hypothesis": "CONFIRMED — faithful bounded evidence delivery reduces Agent searches/tool-calls/tokens/wall while keeping correctness non-inferior; cheaper than a better retriever.",
+  "artifacts": {"runs":"pilot_runs.jsonl","scored":"pilot_scored_rows.json","summary":"pilot_summary.json"}
+}

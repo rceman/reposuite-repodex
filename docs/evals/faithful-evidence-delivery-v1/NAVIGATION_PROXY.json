@@ -1,0 +1,11 @@
+{
+  "schema": "repodex.navigation-proxy.v1",
+  "note": "Deterministic proxy (not an Agent claim): extra mechanical navigation steps the control output forces vs the faithful projection, per fixture.",
+  "cases": {
+    "label_only_no_path":      {"control_steps": "1 name->file search + 1 read-location", "faithful_steps": 0, "why": "path+decl_range delivered"},
+    "same_name_no_locator":    {"control_steps": "N searches + N reads to disambiguate", "faithful_steps": 0, "why": "distinct key+path per seed"},
+    "relationship_no_via":     {"control_steps": "1 lookup to recover endpoint/via", "faithful_steps": 0, "why": "from/to/via/rule delivered"},
+    "path_query_unreachable":  {"control_steps": "agent reconstructs traversal by hand", "faithful_steps": 0, "why": "bounded connector routes delivered"}
+  },
+  "measured_agent_pilot": "see AGENT_PILOT.json (real tool-call counts)"
+}

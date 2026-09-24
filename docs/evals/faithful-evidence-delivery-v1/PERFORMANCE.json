@@ -1,0 +1,31 @@
+{
+  "schema": "repodex.faithful-delivery.performance.v1",
+  "fixtures": {
+    "small": "2-file Go module (a/foo.go, b/bar.go, go.mod)",
+    "real": "reposuite-repodex itself (Rust, ~hundreds of source files)"
+  },
+  "small_repo": {
+    "note": "ensure_ms ~26ms includes index build on the tiny fixture; warm reuse parsed=0",
+    "cases": {
+      "simple_lookup":   {"warm_ensure_ms": 26.2, "faithful_bytes": 1427, "control_compact_bytes": 44,  "seeds": 1, "related": 2, "parsed": 0},
+      "ambiguous_same":  {"warm_ensure_ms": 26.5, "faithful_bytes": 2597, "control_compact_bytes": 88,  "seeds": 2, "related": 4, "parsed": 0},
+      "relationship":    {"warm_ensure_ms": 26.0, "faithful_bytes": 1910, "control_compact_bytes": 88,  "seeds": 2, "related": 2, "parsed": 0},
+      "bounded_path":    {"warm_ensure_ms": 27.7, "faithful_bytes": 1387, "control_compact_bytes": 44,  "seeds": 1, "related": 0, "routes": 0}
+    }
+  },
+  "real_repo_warm": {
+    "note": "ensure_ms = index-ensure+manifest; wall includes manifest recompute + graph load + query + projection build + serialize. related hard-capped at 256 (§32).",
+    "cases": {
+      "simple_lookup": {"ensure_ms": 11.6, "faithful_bytes": 135814, "control_machine_bytes": 44245, "control_compact_bytes": 2665, "seeds": 50, "related": 256, "decl_ranges_materialized": 40, "new_parses": 0},
+      "same_name":     {"ensure_ms": 8.8,  "faithful_bytes": 137047, "control_machine_bytes": 42462, "control_compact_bytes": 2521, "seeds": 50, "related": 256, "decl_ranges_materialized": 45, "new_parses": 0},
+      "relationship":  {"ensure_ms": 17.1, "faithful_bytes": 831,   "control_machine_bytes": 160,   "control_compact_bytes": 52,   "seeds": 1,  "related": 0},
+      "bounded_path":  {"ensure_ms": 11.0, "faithful_bytes": 1009,  "control_machine_bytes": 157,   "control_compact_bytes": 49,   "seeds": 1,  "related": 0}
+    }
+  },
+  "key_findings": [
+    "Faithful projection ~3x the legacy machine bytes (added rank/ranges/endpoints/rule/cs), still bounded: seeds<=50, related<=256, ranges<=seeds, routes<=2.",
+    "Current-range materialization performs ZERO reparses (BROAD_REPARSING_FOR_RANGE_MATERIALIZATION=false): it reads stored FileAnalysis JSON, bounded by decl-seed count.",
+    "Warm ensure latency unchanged (~9-17ms real repo); the gate adds no index work — projection+serialize is the only added cost, proportional to emitted records.",
+    "Focused queries (relationship/path) produce tiny faithful packets (<1-2KB); broad lexical queries bound at 50 seeds / 256 relations."
+  ]
+}

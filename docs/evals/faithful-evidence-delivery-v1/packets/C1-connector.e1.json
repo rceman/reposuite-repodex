@@ -1,0 +1,68 @@
+{
+ "query": "x",
+ "intent": "paths",
+ "emitted_seed_count": 1,
+ "eligible_seed_count": 1,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 35094,
+    "byte_start": 34478,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "declaration_range": {
+    "byte_end": 35094,
+    "byte_start": 34422,
+    "end_line": 914,
+    "path": "src/cli.rs",
+    "start_line": 897
+   },
+   "key": "decl:src/cli.rs#142",
+   "kind": "declaration",
+   "label": "command_index",
+   "language": "rust",
+   "path": "src/cli.rs",
+   "rank": 1,
+   "score": 20
+  }
+ ],
+ "related": [],
+ "connector": {
+  "found": true,
+  "max_depth": 3,
+  "max_routes": 2,
+  "routes": [
+   {
+    "candidate_sets": [
+     "cand-816bcbcd4ada0871"
+    ],
+    "evidence_label": "candidate path",
+    "steps": [
+     {
+      "evidence": "fact",
+      "from_key": "decl:src/cli.rs#142",
+      "from_label": "command_index",
+      "relation": "contains",
+      "rule_id": "repodex.callable_contains",
+      "to_key": "call:src/cli.rs#315",
+      "to_label": "command_index_build",
+      "to_path": "src/cli.rs"
+     },
+     {
+      "evidence": "candidate",
+      "from_key": "call:src/cli.rs#315",
+      "from_label": "command_index_build",
+      "relation": "call_candidate",
+      "rule_id": "rust.call.local_function_candidate",
+      "to_key": "decl:src/cli.rs#168",
+      "to_label": "command_index_build",
+      "to_path": "src/cli.rs"
+     }
+    ]
+   }
+  ]
+ }
+}

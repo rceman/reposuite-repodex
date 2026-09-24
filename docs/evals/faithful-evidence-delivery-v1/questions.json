@@ -1,0 +1,44 @@
+{
+ "questions": [
+  {
+   "id": "L1-lookup",
+   "question": "In which file is the function `ensure_index` defined, and on which line does its declaration start?",
+   "gold": "src/view/index.rs + correct decl start line"
+  },
+  {
+   "id": "L2-lookup",
+   "question": "In which file is the function `run_view_query` defined?",
+   "gold": "src/view/service.rs"
+  },
+  {
+   "id": "D1-samename",
+   "question": "Two declarations are named `object_key`. Give the repository-relative file path of EACH.",
+   "gold": "src/repository/artifact.rs AND src/repository/manifest.rs"
+  },
+  {
+   "id": "D2-samename",
+   "question": "Several declarations are named `build`. Name two distinct repository-relative files each containing a `build`.",
+   "gold": "any two of src/graph/build.rs src/links/build.rs src/candidates/build.rs etc."
+  },
+  {
+   "id": "R1-callees",
+   "question": "What does the function `command_index` call or dispatch to? Name the candidate callees and mark whether each is a confirmed (fact) call or a bounded candidate.",
+   "gold": "candidate callees command_index_build/_update/_verify/_stats/_find (candidate class)"
+  },
+  {
+   "id": "R2-related",
+   "question": "What is `command_index_build` related to \u2014 which entity contains it and what does it contain? Give relations + endpoints.",
+   "gold": "contains/member edges + call sites; endpoints with paths"
+  },
+  {
+   "id": "C1-connector",
+   "question": "Describe the route from `command_index` to `command_index_build` (relation by relation), or state none found within depth<=3.",
+   "gold": "route: command_index -[contains]-> call site -[call_candidate]-> command_index_build"
+  },
+  {
+   "id": "C2-connector",
+   "question": "Describe the route from `command_index` to `object_key`, or state that no route exists within depth<=3 (not a global-absence claim).",
+   "gold": "bounded no-route OR a <=3-hop route; must not claim 'no relationship exists'"
+  }
+ ]
+}

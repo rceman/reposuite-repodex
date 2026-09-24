@@ -1,0 +1,582 @@
+{
+ "query": "run_view_query",
+ "intent": "find",
+ "emitted_seed_count": 8,
+ "eligible_seed_count": 183,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 2687,
+    "byte_start": 1645,
+    "end_line": 78,
+    "path": "src/view/service.rs",
+    "start_line": 46
+   },
+   "declaration_range": {
+    "byte_end": 2687,
+    "byte_start": 1527,
+    "end_line": 78,
+    "path": "src/view/service.rs",
+    "start_line": 43
+   },
+   "factors": [
+    "exact",
+    "all_terms",
+    "term_hits=3",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/service.rs#15",
+   "kind": "declaration",
+   "label": "run_view_query",
+   "language": "rust",
+   "path": "src/view/service.rs",
+   "rank": 1,
+   "score": 1750
+  },
+  {
+   "body_range": {
+    "byte_end": 788,
+    "byte_start": 601,
+    "end_line": 22,
+    "path": "src/view/service.rs",
+    "start_line": 16
+   },
+   "declaration_range": {
+    "byte_end": 788,
+    "byte_start": 573,
+    "end_line": 22,
+    "path": "src/view/service.rs",
+    "start_line": 16
+   },
+   "factors": [
+    "term_hits=2",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/service.rs#0",
+   "kind": "declaration",
+   "label": "ViewQueryOutcome",
+   "language": "rust",
+   "path": "src/view/service.rs",
+   "rank": 2,
+   "score": 250
+  },
+  {
+   "body_range": {
+    "byte_end": 1392,
+    "byte_start": 951,
+    "end_line": 39,
+    "path": "src/view/service.rs",
+    "start_line": 27
+   },
+   "declaration_range": {
+    "byte_end": 1392,
+    "byte_start": 920,
+    "end_line": 39,
+    "path": "src/view/service.rs",
+    "start_line": 27
+   },
+   "factors": [
+    "term_hits=2",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/service.rs#5",
+   "kind": "declaration",
+   "label": "ViewQueryParams",
+   "language": "rust",
+   "path": "src/view/service.rs",
+   "rank": 3,
+   "score": 250
+  },
+  {
+   "body_range": {
+    "byte_end": 104571,
+    "byte_start": 99604,
+    "end_line": 2777,
+    "path": "src/cli.rs",
+    "start_line": 2650
+   },
+   "declaration_range": {
+    "byte_end": 104571,
+    "byte_start": 99541,
+    "end_line": 2777,
+    "path": "src/cli.rs",
+    "start_line": 2650
+   },
+   "factors": [
+    "term_hits=2"
+   ],
+   "key": "decl:src/cli.rs#288",
+   "kind": "declaration",
+   "label": "command_query_view",
+   "language": "rust",
+   "path": "src/cli.rs",
+   "rank": 4,
+   "score": 220
+  },
+  {
+   "body_range": {
+    "byte_end": 679,
+    "byte_start": 540,
+    "end_line": 25,
+    "path": "scripts/query_bench.py",
+    "start_line": 23
+   },
+   "declaration_range": {
+    "byte_end": 679,
+    "byte_start": 521,
+    "end_line": 25,
+    "path": "scripts/query_bench.py",
+    "start_line": 22
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:scripts/query_bench.py#3",
+   "kind": "declaration",
+   "label": "run",
+   "language": "python",
+   "path": "scripts/query_bench.py",
+   "rank": 5,
+   "score": 150
+  },
+  {
+   "declaration_range": {
+    "byte_end": 1224,
+    "byte_start": 1184,
+    "end_line": 27,
+    "path": "src/query/engine.rs",
+    "start_line": 27
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/query/engine.rs#0",
+   "kind": "declaration",
+   "label": "QUERY_POLICY_VERSION",
+   "language": "rust",
+   "path": "src/query/engine.rs",
+   "rank": 6,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 4043,
+    "byte_start": 3518,
+    "end_line": 113,
+    "path": "src/query/engine.rs",
+    "start_line": 98
+   },
+   "declaration_range": {
+    "byte_end": 4043,
+    "byte_start": 3497,
+    "end_line": 113,
+    "path": "src/query/engine.rs",
+    "start_line": 98
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/query/engine.rs#16",
+   "kind": "declaration",
+   "label": "QueryPlan",
+   "language": "rust",
+   "path": "src/query/engine.rs",
+   "rank": 7,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 1930,
+    "byte_start": 1714,
+    "end_line": 47,
+    "path": "src/query/engine.rs",
+    "start_line": 41
+   },
+   "declaration_range": {
+    "byte_end": 1930,
+    "byte_start": 1695,
+    "end_line": 47,
+    "path": "src/query/engine.rs",
+    "start_line": 41
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/query/engine.rs#4",
+   "kind": "declaration",
+   "label": "QueryMode",
+   "language": "rust",
+   "path": "src/query/engine.rs",
+   "rank": 8,
+   "score": 150
+  }
+ ],
+ "related": [
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/query_bench.py#3",
+   "from_label": "",
+   "kind": "contains",
+   "label": "time.perf_counter",
+   "node": "call:scripts/query_bench.py#1",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/query_bench.py#1",
+   "to_label": "time.perf_counter",
+   "to_path": "scripts/query_bench.py",
+   "via": "decl:scripts/query_bench.py#3"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/query_bench.py#3",
+   "from_label": "",
+   "kind": "contains",
+   "label": "subprocess.run",
+   "node": "call:scripts/query_bench.py#2",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/query_bench.py#2",
+   "to_label": "subprocess.run",
+   "to_path": "scripts/query_bench.py",
+   "via": "decl:scripts/query_bench.py#3"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate_rule",
+   "evidence": "fact",
+   "from_key": "decl:scripts/query_bench.py#3",
+   "from_label": "",
+   "kind": "contains",
+   "label": "time.perf_counter",
+   "node": "call:scripts/query_bench.py#3",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:scripts/query_bench.py#3",
+   "to_label": "time.perf_counter",
+   "to_path": "scripts/query_bench.py",
+   "via": "decl:scripts/query_bench.py#3"
+  },
+  {
+   "candidate_set": "cand-377a4ab8cf5531f2",
+   "direction": "incoming",
+   "disposition": "single_candidate",
+   "evidence": "candidate",
+   "from_key": "call:src/cli.rs#1034",
+   "from_label": "command_query_view",
+   "from_path": "src/cli.rs",
+   "kind": "call_candidate",
+   "label": "command_query_view",
+   "node": "call:src/cli.rs#1034",
+   "rule_id": "rust.call.local_function_candidate",
+   "to_key": "decl:src/cli.rs#288",
+   "to_label": "",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "options.state_dir.as_deref",
+   "node": "call:src/cli.rs#1080",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1080",
+   "to_label": "options.state_dir.as_deref",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "options.state_dir.as_deref().map",
+   "node": "call:src/cli.rs#1081",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1081",
+   "to_label": "options.state_dir.as_deref().map",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:qualified path root `String` is not a proven repository module",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "String::new",
+   "node": "call:src/cli.rs#1082",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1082",
+   "to_label": "String::new",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:qualified path root `std` is not a proven repository module",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "std::io::Read::read_to_string",
+   "node": "call:src/cli.rs#1083",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1083",
+   "to_label": "std::io::Read::read_to_string",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "std::io::Read::read_to_string(&mut std::io::stdin(), &mut buf)\n            .map_err",
+   "node": "call:src/cli.rs#1084",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1084",
+   "to_label": "std::io::Read::read_to_string(&mut std::io::stdin(), &mut buf)\n            .map_err",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:qualified path root `std` is not a proven repository module",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "std::io::stdin",
+   "node": "call:src/cli.rs#1085",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1085",
+   "to_label": "std::io::stdin",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `macro_invocation` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "format",
+   "node": "call:src/cli.rs#1086",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1086",
+   "to_label": "format",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:qualified path root `serde_json` is not a proven repository module",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "serde_json::from_str",
+   "node": "call:src/cli.rs#1087",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1087",
+   "to_label": "serde_json::from_str",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "serde_json::from_str(buf.trim()).map_err",
+   "node": "call:src/cli.rs#1088",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1088",
+   "to_label": "serde_json::from_str(buf.trim()).map_err",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "buf.trim",
+   "node": "call:src/cli.rs#1089",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1089",
+   "to_label": "buf.trim",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "single_candidate",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "machine_error",
+   "node": "call:src/cli.rs#1090",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1090",
+   "to_label": "machine_error",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `macro_invocation` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "format",
+   "node": "call:src/cli.rs#1091",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1091",
+   "to_label": "format",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `macro_invocation` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "format",
+   "node": "call:src/cli.rs#1092",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1092",
+   "to_label": "format",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate:path root `v` is shadowed by a nearer binding",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "v::service::locator_from_request",
+   "node": "call:src/cli.rs#1093",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1093",
+   "to_label": "v::service::locator_from_request",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "single_candidate",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "machine_error",
+   "node": "call:src/cli.rs#1094",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1094",
+   "to_label": "machine_error",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate:no `function` declaration named `Ok` in `file`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "Ok",
+   "node": "call:src/cli.rs#1095",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1095",
+   "to_label": "Ok",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "k.exit_code",
+   "node": "call:src/cli.rs#1096",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1096",
+   "to_label": "k.exit_code",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "out_of_scope:call form `member_selector` is not `plain_name`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "req.query.clone",
+   "node": "call:src/cli.rs#1097",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1097",
+   "to_label": "req.query.clone",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "single_candidate",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "machine_error",
+   "node": "call:src/cli.rs#1098",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1098",
+   "to_label": "machine_error",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  },
+  {
+   "direction": "outgoing",
+   "disposition": "no_candidate:no `function` declaration named `Ok` in `file`",
+   "evidence": "fact",
+   "from_key": "decl:src/cli.rs#288",
+   "from_label": "",
+   "kind": "contains",
+   "label": "Ok",
+   "node": "call:src/cli.rs#1099",
+   "rule_id": "repodex.callable_contains",
+   "to_key": "call:src/cli.rs#1099",
+   "to_label": "Ok",
+   "to_path": "src/cli.rs",
+   "via": "decl:src/cli.rs#288"
+  }
+ ]
+}

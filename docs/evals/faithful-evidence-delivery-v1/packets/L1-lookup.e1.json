@@ -1,0 +1,214 @@
+{
+ "query": "ensure_index",
+ "intent": "find",
+ "emitted_seed_count": 8,
+ "eligible_seed_count": 63,
+ "seed_selection_complete": true,
+ "seeds": [
+  {
+   "body_range": {
+    "byte_end": 14685,
+    "byte_start": 9883,
+    "end_line": 346,
+    "path": "src/view/index.rs",
+    "start_line": 225
+   },
+   "declaration_range": {
+    "byte_end": 14685,
+    "byte_start": 9736,
+    "end_line": 346,
+    "path": "src/view/index.rs",
+    "start_line": 221
+   },
+   "factors": [
+    "exact",
+    "all_terms",
+    "term_hits=2",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/index.rs#20",
+   "kind": "declaration",
+   "label": "ensure_index",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 1,
+   "score": 1650
+  },
+  {
+   "body_range": {
+    "byte_end": 999,
+    "byte_start": 644,
+    "end_line": 26,
+    "path": "src/graph/index.rs",
+    "start_line": 16
+   },
+   "declaration_range": {
+    "byte_end": 999,
+    "byte_start": 622,
+    "end_line": 26,
+    "path": "src/graph/index.rs",
+    "start_line": 16
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/graph/index.rs#0",
+   "kind": "declaration",
+   "label": "GraphIndex",
+   "language": "rust",
+   "path": "src/graph/index.rs",
+   "rank": 2,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 2439,
+    "byte_start": 2133,
+    "end_line": 71,
+    "path": "src/repository/index.rs",
+    "start_line": 63
+   },
+   "declaration_range": {
+    "byte_end": 2439,
+    "byte_start": 2102,
+    "end_line": 71,
+    "path": "src/repository/index.rs",
+    "start_line": 63
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/repository/index.rs#27",
+   "kind": "declaration",
+   "label": "RepositoryFactIndex",
+   "language": "rust",
+   "path": "src/repository/index.rs",
+   "rank": 3,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 444,
+    "byte_start": 362,
+    "end_line": 15,
+    "path": "src/temporal/index.rs",
+    "start_line": 12
+   },
+   "declaration_range": {
+    "byte_end": 444,
+    "byte_start": 337,
+    "end_line": 15,
+    "path": "src/temporal/index.rs",
+    "start_line": 12
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/temporal/index.rs#0",
+   "kind": "declaration",
+   "label": "TemporalIndex",
+   "language": "rust",
+   "path": "src/temporal/index.rs",
+   "rank": 4,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 1802,
+    "byte_start": 1229,
+    "end_line": 46,
+    "path": "src/view/index.rs",
+    "start_line": 31
+   },
+   "declaration_range": {
+    "byte_end": 1802,
+    "byte_start": 1204,
+    "end_line": 46,
+    "path": "src/view/index.rs",
+    "start_line": 31
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/index.rs#0",
+   "kind": "declaration",
+   "label": "EnsureOutcome",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 5,
+   "score": 150
+  },
+  {
+   "body_range": {
+    "byte_end": 9510,
+    "byte_start": 9065,
+    "end_line": 216,
+    "path": "src/view/index.rs",
+    "start_line": 205
+   },
+   "declaration_range": {
+    "byte_end": 9510,
+    "byte_start": 8999,
+    "end_line": 216,
+    "path": "src/view/index.rs",
+    "start_line": 205
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/index.rs#19",
+   "kind": "declaration",
+   "label": "index_valid",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 6,
+   "score": 150
+  },
+  {
+   "declaration_range": {
+    "byte_end": 1470,
+    "byte_start": 1448,
+    "end_line": 37,
+    "path": "src/view/index.rs",
+    "start_line": 37
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/index.rs#3",
+   "kind": "declaration",
+   "label": "index_reused",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 7,
+   "score": 150
+  },
+  {
+   "declaration_range": {
+    "byte_end": 1799,
+    "byte_start": 1781,
+    "end_line": 45,
+    "path": "src/view/index.rs",
+    "start_line": 45
+   },
+   "factors": [
+    "term_hits=1",
+    "path_hits=1"
+   ],
+   "key": "decl:src/view/index.rs#7",
+   "kind": "declaration",
+   "label": "ensure_ms",
+   "language": "rust",
+   "path": "src/view/index.rs",
+   "rank": 8,
+   "score": 150
+  }
+ ],
+ "related": []
+}
