@@ -1,0 +1,23 @@
+{
+  "schema": "repodex.view-validity.performance.v1",
+  "fixture": "200-file Go module + go.mod (synthetic medium); measurements via ensure_ms in the machine query response",
+  "timings_ms": {
+    "cold_ensure_index": 90.4,
+    "warm_unchanged_ensure_index": 4.8,
+    "one_file_dirty_refresh": 4.8,
+    "metadata_only_refresh": 4.8,
+    "nested_metadata_inventory_change": "~5 (index rebuild, 0 reparse)",
+    "cross_worktree_identical_input_reuse": 6.7
+  },
+  "work_metrics": {
+    "warm_unchanged": {"files_examined_stat": 200, "files_hashed": 0, "bytes_hashed": 0, "note": "stat-only fast path preserved; unchanged files are not rehashed"},
+    "one_file_dirty": {"files_examined_stat": 200, "files_hashed": 1, "fileanalysis_cache_hits": 199, "fileanalysis_parsed": 1, "links": "rebuilt", "candidates": "rebuilt", "graph": "rebuilt"},
+    "metadata_only": {"files_examined_stat": 200, "source_files_hashed": 0, "metadata_hashed": "go.mod+Cargo.toml set", "fileanalysis_reused": 200, "derived": "links+candidates+graph rebuilt"},
+    "cold": {"files_hashed": 200, "fileanalysis_parsed": 200}
+  },
+  "notes": [
+    "Warm unchanged cost is stat-only (mtime_ns+size+ctime_ns all match -> skip rehash); no correctness weakening.",
+    "A metadata-only change rebuilds derived artifacts but reuses every FileAnalysis (object store is content+analyzer keyed).",
+    "An analyzer fingerprint bump re-keys FileAnalysis objects -> full reparse (correct: incompatible extraction must not share analyses)."
+  ]
+}

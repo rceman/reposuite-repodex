@@ -1,0 +1,19 @@
+{
+  "schema": "repodex.view-validity.matrix.v1",
+  "oracle": "warm/reused result must be semantically equivalent to an independent fresh rebuild of the same captured view",
+  "cases": {
+    "A_unchanged_source_unchanged_metadata": {"cache": "hit", "reason": "VALID", "files_reused": "all", "files_reparsed": 0, "derived": "reused", "fresh_equiv": true},
+    "B_source_change_detected": {"cache": "miss", "reason": "SOURCE_CHANGED", "files_reparsed": "changed only", "derived": "rebuilt", "fresh_equiv": true},
+    "C_same_size_dirty_edit": {"cache": "miss", "reason": "SOURCE_CHANGED (ctime_ns detects same-size same-second)", "files_reparsed": 1, "derived": "rebuilt", "fresh_equiv": true},
+    "D_metadata_only_change": {"cache": "miss", "reason": "METADATA_CHANGED", "files_reparsed": 0, "derived": "rebuilt (FileAnalysis reused)", "fresh_equiv": true},
+    "E_nested_metadata_addition": {"cache": "miss", "reason": "METADATA_INVENTORY_CHANGED", "files_reparsed": 0, "derived": "rebuilt", "fresh_equiv": true},
+    "F_metadata_removal": {"cache": "miss", "reason": "METADATA_INVENTORY_CHANGED", "files_reparsed": 0, "derived": "rebuilt", "fresh_equiv": true},
+    "G_analyzer_mismatch": {"cache": "miss", "reason": "ANALYZER_CHANGED", "files_reparsed": "all (analyzer-scoped object key)", "derived": "rebuilt", "fresh_equiv": true},
+    "H_snapshot_config_mismatch": {"cache": "miss", "reason": "CONFIG_CHANGED", "files_reparsed": "re-derived", "derived": "rebuilt", "fresh_equiv": true},
+    "I_link_policy_mismatch": {"cache": "miss", "reason": "LINK_POLICY_CHANGED", "derived": "links+candidates+graph rebuilt", "fresh_equiv": true},
+    "J_candidate_policy_mismatch": {"cache": "miss", "reason": "CANDIDATE_POLICY_CHANGED", "derived": "candidates+graph rebuilt", "fresh_equiv": true},
+    "K_graph_policy_mismatch": {"cache": "miss", "reason": "GRAPH_POLICY_CHANGED", "derived": "graph rebuilt", "fresh_equiv": true},
+    "L_source_changes_during_capture": {"cache": "coherent", "reason": "UNSTABLE_SOURCE_CAPTURE -> publish under actual captured fingerprint", "fresh_equiv": true},
+    "M_identical_inputs_two_worktrees": {"cache": "hit", "reason": "VALID (identical inputs -> identical validity key)", "files_reused": "all", "derived": "shared index", "fresh_equiv": true}
+  }
+}

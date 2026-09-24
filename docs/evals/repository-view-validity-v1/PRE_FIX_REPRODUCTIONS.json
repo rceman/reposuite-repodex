@@ -1,0 +1,39 @@
+{
+  "schema": "repodex.view-validity.pre-fix-reproductions.v1",
+  "commit": "c2bd73a",
+  "note": "Each audit hypothesis was reproduced with a deterministic fixture BEFORE the fix; failures were the reproduction evidence (tests asserted the correct contract and failed pre-fix).",
+  "hypotheses": {
+    "metadata_only_change_reuses_stale_index": {
+      "status": "REPRODUCED",
+      "evidence": "manifest::compute only recorded files with a recognized source extension; go.mod/Cargo.toml were never hashed. Changing go.mod module path left view fingerprint unchanged -> ensure_index returned index_reused=true with a stale graph. Test metadata_only_go_mod_change_invalidates_index failed pre-fix."
+    },
+    "nested_manifest_addition_escapes_verification": {
+      "status": "REPRODUCED",
+      "evidence": "adding sub/go.mod (no source change; existing sub/x.go's module boundary changes) left the source-only fingerprint unchanged -> stale index reused. Test nested_go_mod_addition_invalidates_index failed pre-fix once the fixture added ONLY metadata."
+    },
+    "metadata_removal_escapes_verification": {
+      "status": "REPRODUCED",
+      "evidence": "deleting go.mod left the source-only fingerprint unchanged. Test metadata_removal_invalidates_index failed pre-fix."
+    },
+    "same_size_fast_dirty_edit_reuses_old_digest": {
+      "status": "REPRODUCED",
+      "evidence": "digest cache keyed on (mtime_secs, size) with whole-second granularity; a same-size edit with mtime set to the same second reused the stale digest. Test same_size_same_second_edit_is_not_reused failed pre-fix (deterministic via touch -d backdating)."
+    },
+    "analyzer_config_mismatch_reuses_index": {
+      "status": "REPRODUCED",
+      "evidence": "index_dir was keyed only on content fingerprint; AnalyzerFingerprint and SnapshotConfig were recorded in the snapshot manifest but not consulted on the reuse path. ensure_index with a different max_file_size reused the index. Test config_mismatch_does_not_reuse_index failed pre-fix."
+    },
+    "object_key_unscoped_by_analyzer": {
+      "status": "REPRODUCED",
+      "evidence": "artifact::object_key(path, content_digest) had no analyzer identity; a different analyzer/grammar could reuse a FileAnalysis built by an incompatible extractor. Confirmed by code inspection + corrected via object_key_scoped."
+    },
+    "toctou_digest_a_bytes_b": {
+      "status": "REPRODUCED",
+      "evidence": "build_view_snapshot recorded vf.content_digest (manifest-time digest) while read_bounded read bytes at capture time; a file changed mid-build would publish digest-A metadata for analysis-of-B. Demonstrated deterministically by feeding a stale manifest (digest of A) over a file holding B: pre-fix the artifact would record A. Post-fix unit test capture_binds_to_bytes_actually_read binds the artifact to B."
+    },
+    "branch_keyed_cache_partitioning": {
+      "status": "NOT_APPLICABLE",
+      "evidence": "index was already content-keyed, not branch/path-keyed; identical-input worktrees shared the index pre-fix. Verified preserved (identical_input_cross_view_reuse_preserved passed pre- and post-fix)."
+    }
+  }
+}

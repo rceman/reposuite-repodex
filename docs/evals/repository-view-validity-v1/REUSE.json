@@ -1,0 +1,20 @@
+{
+  "schema": "repodex.view-validity.reuse.v1",
+  "content_addressed_file_analysis": {
+    "object_key": "object_key_scoped(relative_path, content_digest, analyzer_fingerprint)",
+    "shared_across": ["views", "worktrees", "agents", "sessions"],
+    "reused_when": "content digest AND analyzer identity match",
+    "per_unique_source_version": "one parse"
+  },
+  "index_sharing": {
+    "index_key": "validity_fingerprint = hash(content+metadata, analyzer, snapshot_config, link_fp, candidate_fp, graph_fp)",
+    "identical_complete_inputs_share_index": true,
+    "branch_keyed_cache_partitioning": false,
+    "incremental_storage_for_identical_second_view": "~0 (shared index dir; ~KB manifest cache only)"
+  },
+  "measurement": {
+    "identical_worktree_ensure_ms": 6.7,
+    "identical_worktree_index_reused": true,
+    "identical_worktree_analyses_parsed": 0
+  }
+}
