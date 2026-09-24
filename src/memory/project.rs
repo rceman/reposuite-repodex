@@ -23,9 +23,12 @@ pub fn project_scope(view: &RepositoryView) -> String {
     // identical across all linked worktrees and branches, and distinct for
     // unrelated repositories regardless of how the view was located.
     if let Some(cd) = &view.git_common_dir {
+        // Canonicalize so equivalent spellings of the same common dir digest
+        // identically across worktrees/symlinks.
+        let canon = cd.canonicalize().unwrap_or_else(|_| cd.clone());
         return format!(
             "repo:{}",
-            digest::content_digest(cd.to_string_lossy().as_bytes())
+            digest::content_digest(canon.to_string_lossy().as_bytes())
         );
     }
     if view.repository_id != "root" {

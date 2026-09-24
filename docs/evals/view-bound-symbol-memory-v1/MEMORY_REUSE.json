@@ -1,0 +1,17 @@
+{
+  "experiment": "deterministic memory-reuse across views (§54) — same fixture/history, three scopes",
+  "modes": {
+    "A_view_local": "memory only valid in the originating view — no transfer",
+    "B_project_file": "project-wide path hints transfer across worktrees (§3)",
+    "C_project_symbol_bound": "project-wide + target-view symbol rebinding -> current path/range (this mission)"
+  },
+  "measurements": {
+    "eligible_anchors_transferred": "Foo (unchanged) transfers branch-A->branch-B (ExactFresh); FeatureA correctly Absent in branch-B",
+    "binding_success": "ExactFresh / MovedButSame achieved on unchanged+moved symbols",
+    "ambiguous_bindings": "duplicate same-name without facets -> Ambiguous (never a single fact)",
+    "absent_bindings": "removed / not-yet-merged -> Absent",
+    "unsafe_bindings": 0,
+    "current_ranges_correct": "always materialized from the target view snapshot, never replayed (verified: foo.go path+range on move)",
+    "validation_cost": "snapshot FileAnalysis load + decl byte-slice digest per symbol — bounded, no reparse of unchanged index"
+  }
+}

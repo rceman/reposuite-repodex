@@ -1,0 +1,14 @@
+{
+  "fixture": "one logical git project, 3 worktrees: main / branch-a / branch-b",
+  "base": {"main.go": ["Foo","Bar"]},
+  "branch-a": "adds fa.go:FeatureA", "branch-b": "adds fb.go:FeatureB",
+  "assertions": {
+    "same_logical_project_same_scope": "worktrees share repo:{common_dir} scope",
+    "unchanged_symbol_transfers": "Foo (recorded in branch-A) rebinds ExactFresh in branch-B with branch-B path/range",
+    "not_merged_feature_absent": "FeatureA rebinds Absent in branch-B — never appears as current evidence there",
+    "dirty_overrides_head": "uncommitted body edit -> changed_implementation",
+    "cross_project_contamination": 0,
+    "cross_view_stale_fact_contamination": 0
+  },
+  "test": "tests/view_bound_memory.rs::worktrees_share_scope_and_rebind_across_branches"
+}

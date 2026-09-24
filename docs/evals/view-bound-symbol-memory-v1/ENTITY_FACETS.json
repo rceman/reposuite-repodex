@@ -1,0 +1,14 @@
+{
+  "policy": "repodex.rebind.v1",
+  "locator": "{lang}:{path}:{kind}:{qualified_name}  (qualified_name from FileAnalysis::scope_path + decl name; preserves impl/receiver context)",
+  "facets": {
+    "name_digest": "sha256 over the declaration name — always present",
+    "header_digest": "sha256 over the header/signature text (decl.range minus body) — signature/interface facet",
+    "body_digest": "sha256 over body_range bytes — implementation facet; absent when no body",
+    "policy": "extraction/rebinding policy identity"
+  },
+  "facets_prove": "only equality of the selected source facets",
+  "facets_do_not_prove": ["semantic_equivalence","runtime_behavior","same_callers","config_equality","complete_implementation_set"],
+  "missing_historical_bytes": "facets = None (UNKNOWN) — never reconstructed from current source (§13); rebinding falls back to locator-only conservative states",
+  "captured_at": "symbol_exposure resolve (bytes via SourceStore for non-indexed versions, or the live indexed file via provider.with_source_root)"
+}

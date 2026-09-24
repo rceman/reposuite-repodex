@@ -1,0 +1,13 @@
+{
+  "contract": "canonical memory project scope (Part I, §3-§6)",
+  "scope_kinds": {
+    "repo:{sha256(canonical_git_common_dir)}": "git checkouts — shared across all linked worktrees + branches of the logical repo; the primary identity",
+    "project:{registered_alias}": "registered project without git metadata",
+    "root:{sha256(canonical_root)}": "explicit non-git --root — isolated per directory, never the bare \"root\" constant"
+  },
+  "branch_is_identity": false,
+  "branch_is": "provenance metadata only",
+  "explicit_root_without_safe_identity": "unscoped/unavailable — never guessed",
+  "worktree_sharing": "verified — same common_dir digest => identical scope (test worktrees_share_scope_and_rebind_across_branches)",
+  "unrelated_projects_share": "verified false — distinct common_dir/root digests (test project_scope_isolates_unrelated_repos, cross_project_memory_never_leaks_into_scoped_query)"
+}

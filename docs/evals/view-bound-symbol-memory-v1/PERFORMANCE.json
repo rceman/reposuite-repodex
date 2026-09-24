@@ -1,0 +1,7 @@
+{
+  "memory_lookup_ms": "sub-ms to few-ms — postings query + bounded rebind; loaded from {state}/memory",
+  "rebind_cost": "per symbol: manifest load (once) + FileAnalysis read + one byte-slice sha256 per facet; lazy per-path",
+  "packet_overhead_bytes": {"file":301,"symbol":993},
+  "live_derivation": "incremental; derives only sessions with new tail events; bounded by checkpoint cadence",
+  "p95_derivation_lag": "bounded by checkpoint_dirty_updates/checkpoint_interval_s; measured via derived_lag_events (events pending), not a separate timer in V1"
+}

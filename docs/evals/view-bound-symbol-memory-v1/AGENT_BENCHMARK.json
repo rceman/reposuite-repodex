@@ -1,0 +1,22 @@
+{
+  "design": "T0 deterministic only | T1 +file memory | T2 +current-view-bound symbol memory. Serial, counterbalanced, conc=1, real `devin -p` agent (SWE-2 High).",
+  "sessions": 18, "questions": 3, "reps": 2,
+  "repo": "/tmp/mempilot/repo (Go module, multi-file, ambiguous same-name seeds)",
+  "results_mean": {
+    "off":    {"n":6,"correct":6,"in_tok":31775,"out_tok":467,"cached":25750,"steps":9.2,"wall_s":13.8},
+    "file":   {"n":6,"correct":6,"in_tok":31592,"out_tok":415,"cached":24881,"steps":9.2,"wall_s":12.8},
+    "symbol": {"n":6,"correct":6,"in_tok":37476,"out_tok":501,"cached":30435,"steps":9.5,"wall_s":14.2}
+  },
+  "deltas": {
+    "correctness": "non-inferior (6/6 all arms)",
+    "input_tokens": "symbol +18% vs off — the bounded ~1KB memory block + extra verification reads; bimodal (some runs read extra files)",
+    "steps": "9.2 -> 9.5 (noise)",
+    "wall_s": "within noise"
+  },
+  "cross_view_stale_fact_contamination": 0,
+  "cross_project_contamination": 0,
+  "trivial_lookup_packet": "bounded — memory block ~1KB, suppressed on single-exact-match (PACKET_MINIMALITY)",
+  "overserving_regression_reappeared": false,
+  "honest_conclusion": "symbol memory is SAFE (no stale-fact contamination, correctness preserved) but shows NO positive work delta on these simple lookups — the deterministic seed already sufficed. Per §66-§67, symbol memory is PRODUCTION_OPT_IN_ONLY, not default.",
+  "classification": "PRODUCTION_OPT_IN_ONLY"
+}

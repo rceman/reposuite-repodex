@@ -1,0 +1,8 @@
+{
+  "policy": "trivial single-exact-match declaration lookups (no relations/path intent) suppress symbol annotations — the lookup is already unambiguous (§38-§41)",
+  "packet_bytes": {"off":6340,"file":6641,"symbol":7333},
+  "delta_symbol_vs_off_bytes": 993,
+  "overserving_regression": "not reproduced — memory block is a bounded annotation, ~1KB, not a second full packet",
+  "symbol_cap_per_path": 2,
+  "control_no_memory": "queries with no matching investigation emit no memory block (q-registry: mem=None all modes)"
+}

@@ -1,0 +1,9 @@
+{
+  "pipeline": "durable AgentEvent -> (mirror sessions/*.jsonl) -> derive() episodes -> derive_symbol_exposures -> build_memory + enrich_symbols -> MemoryStore",
+  "incremental": "checkpoint-bounded; only sessions with new tail events re-derive; unchanged episodes reused",
+  "async": "runs on the derived worker checkpoint boundary — never blocks the ingest ACK path; lag measured via derived_lag_events",
+  "replay_equivalent": "derive() is deterministic over the durable log; second run over same log is a no-op delta (verified)",
+  "multi_session_isolation": "10 in-scope sessions + 1 foreign-scope session; foreign entry keeps own scope and never matches a scoped query (verified)",
+  "unresolved_source_version": "recorded as unresolved_*; never invented (§46)",
+  "test": "tests/view_bound_memory.rs::live_derivation_builds_memory_and_isolates_projects"
+}

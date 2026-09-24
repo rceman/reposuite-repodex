@@ -1,0 +1,22 @@
+{
+  "policy": "repodex.rebind.v1",
+  "states": ["exact_fresh","moved_but_same","changed_implementation","changed_interface","absent","ambiguous","unknown"],
+  "results": [
+    {"case":"unchanged decl, whole-file digest changed","locator":"matches","facets":"equal","state":"exact_fresh","current_evidence":"path+range","test":"unchanged_symbol_rebinds_exact_fresh_despite_file_change"},
+    {"case":"same signature, body changed","locator":"matches","header":"equal","body":"differs","state":"changed_implementation","current_evidence":"candidate (old body facts NOT reused)","test":"body_change_is_changed_implementation_not_fresh"},
+    {"case":"signature/header changed","locator":"matches","header":"differs","state":"changed_interface","current_evidence":"candidate (old interface facts NOT reused)","test":"signature_change_is_changed_interface"},
+    {"case":"moved to another file, same qname+facets","locator":"path-free qkey matches","state":"moved_but_same","current_evidence":"NEW path+range (never old)","test":"move_rebinds_moved_but_same_with_new_coordinates"},
+    {"case":"removed","state":"absent","current_evidence":"none (candidate, never stale fact)","test":"removed_symbol_is_absent_not_stale_fact"},
+    {"case":"duplicate same-name, no facets","locator":"2+ distinct-path candidates","state":"ambiguous","current_evidence":"candidate set, no single fact","test":"duplicate_same_name_is_ambiguous_without_facets"},
+    {"case":"dirty uncommitted edit","state":"changed_implementation (working tree is authoritative, not HEAD)","test":"dirty_uncommitted_edit_is_authoritative"},
+    {"case":"not-yet-merged FeatureA in branch-B","state":"absent (never appears as branch-B current evidence)","test":"worktrees_share_scope_and_rebind_across_branches"},
+    {"case":"rename without deterministic mapping","state":"ambiguous/candidate — never promoted to FACT (§21)"},
+    {"case":"split/merge","state":"ambiguous/candidate navigation only — no old source facts move (§22)"}
+  ],
+  "hard_rules": {
+    "old_ranges_replayed_as_current": false,
+    "entity_equality_validates_relationships": false,
+    "ambiguous_promoted_to_fact": false,
+    "cross_view_stale_fact_contamination": 0
+  }
+}
