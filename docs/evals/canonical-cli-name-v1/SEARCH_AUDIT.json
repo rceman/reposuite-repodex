@@ -1,0 +1,12 @@
+{
+  "canonical_executable": "reposuite-repodex",
+  "old_executable": "repodex",
+  "audit": {
+    "EXPECTED_INTERNAL_NAME": "Cargo [lib] name `repodex` (crate `repodex::`) — internal Rust lib identifier, not the public executable; Rust lib names cannot contain `-`",
+    "EXPECTED_RUNTIME_NAMESPACE": "~/reposuite/repodex/ runtime dir + REPODEX_* env (REPODEX_STATE_DIR) — persisted protocol/schema/runtime identifiers, unchanged per §3",
+    "EXPECTED_HISTORICAL_RECORD": "docs/evals/**, docs/SPIKE_RESULTS.md, docs/SYSTEM_ONE_LIVE_EVAL.md, docs/TASK3A_REPOSITORY_INDEX.md — accurately recorded `repodex ...` at that version; kept as truth",
+    "UNEXPECTED_ACTIVE_CLI_REFERENCE": 0
+  },
+  "active_docs_updated": ["docs/QUERY_ENGINE.md","docs/SERVICE.md","docs/CONFIGURATION.md","docs/INVESTIGATION_GRAPH.md","docs/REPOSITORY_VIEW.md","docs/RDX1.md","docs/SYSTEM_ONE.md"],
+  "no_alias": "no wrapper, symlink, second [[bin]], clap alias, or argv[0] shim exists; [[bin]] is a single reposuite-repodex"
+}

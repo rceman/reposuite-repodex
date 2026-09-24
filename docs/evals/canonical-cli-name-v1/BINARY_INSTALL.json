@@ -1,0 +1,7 @@
+{
+  "FRESH_BUILD_PRODUCES_REPOSUITE_REPODEX": true,
+  "FRESH_BUILD_PRODUCES_REPODEX": false,
+  "INSTALL_PRODUCES_REPOSUITE_REPODEX": true,
+  "INSTALL_PRODUCES_REPODEX": false,
+  "method": "isolated CARGO_TARGET_DIR=/tmp/cli-build cargo build --locked --release -> only target/release/reposuite-repodex produced; no repodex artifact"
+}

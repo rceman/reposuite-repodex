@@ -69,11 +69,11 @@ version bump, no evidence change).
 ## CLI
 
 ```bash
-repodex config system-one.enabled true
-repodex config system-one.models.jev.url https://api.typesafe.ai/v1/systemone
-repodex config system-one.roles.query jev
-repodex system-one status          # offline: validate config + role bindings
-repodex system-one probe jev       # one protocol request (not a quality test)
+reposuite-repodex config system-one.enabled true
+reposuite-repodex config system-one.models.jev.url https://api.typesafe.ai/v1/systemone
+reposuite-repodex config system-one.roles.query jev
+reposuite-repodex system-one status          # offline: validate config + role bindings
+reposuite-repodex system-one probe jev       # one protocol request (not a quality test)
 ```
 
 See `docs/CONFIGURATION.md` for the schema and `docs/SYSTEM_ONE_LIVE_EVAL.md`

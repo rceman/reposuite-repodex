@@ -8,11 +8,11 @@ processing. **No SQLite**, no OS daemon installer, harness-neutral.
 ## Lifecycle (§1-§5)
 
 ```bash
-repodex serve      # run in the foreground
-repodex start      # spawn detached `repodex serve`, wait ready, return
-repodex stop       # graceful authenticated shutdown
-repodex restart    # stop + start
-repodex status     # human / --json machine status
+reposuite-repodex serve      # run in the foreground
+reposuite-repodex start      # spawn detached `reposuite-repodex serve`, wait ready, return
+reposuite-repodex stop       # graceful authenticated shutdown
+reposuite-repodex restart    # stop + start
+reposuite-repodex status     # human / --json machine status
 ```
 
 `start` reuses `serve` — there is exactly one service implementation. There is

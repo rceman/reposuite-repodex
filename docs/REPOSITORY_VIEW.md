@@ -19,13 +19,13 @@ Exactly one locator names the view — `root` XOR `project`:
 
 ```bash
 # Form A — exact filesystem root (the intentional escape hatch, §18)
-repodex query --root /abs/path/to/worktree --query "where is auth checked?"
+reposuite-repodex query --root /abs/path/to/worktree --query "where is auth checked?"
 
 # Form B — registered project + view
-repodex query --project GTW --view GTW-TSK573 --query "..."
+reposuite-repodex query --project GTW --view GTW-TSK573 --query "..."
 
 # Form B default — registered root checkout (only when one exists, §7)
-repodex query --project GTW --query "..."
+reposuite-repodex query --project GTW --query "..."
 ```
 
 `--root` and `--project` are mutually exclusive (`LOCATOR_CONFLICT`); `--view`
@@ -42,13 +42,13 @@ Durable registry at `~/reposuite/repodex/projects.json` (override with
 concurrent reader never sees a partial registry.
 
 ```bash
-repodex project register GTW \
+reposuite-repodex project register GTW \
   --root /home/user/src/gpt-tunnel-gateway \
   --views-root /home/user/.local/share/gpt-tunnel-gateway/task-worktrees/gpt-tunnel-gateway
-repodex project show GTW
-repodex project list
-repodex project remove GTW
-repodex project resolve GTW --view GTW-TSK573   # canonical view metadata
+reposuite-repodex project show GTW
+reposuite-repodex project list
+reposuite-repodex project remove GTW
+reposuite-repodex project resolve GTW --view GTW-TSK573   # canonical view metadata
 ```
 
 A project has an `alias`, an optional default `root` checkout, and
@@ -111,8 +111,8 @@ ranges (§38).
 
 ```bash
 echo '{"schema":"reposuite.repodex.query.request.v1","root":"<abs>","query":"..."}' \
-  | repodex query --json
-echo '{"project":"GTW","view":"GTW-TSK573","query":"..."}' | repodex query --json
+  | reposuite-repodex query --json
+echo '{"project":"GTW","view":"GTW-TSK573","query":"..."}' | reposuite-repodex query --json
 ```
 
 Reads one request object from stdin, resolves the view, runs the query, and

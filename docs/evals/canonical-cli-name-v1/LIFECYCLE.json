@@ -1,0 +1,15 @@
+{
+  "commands": ["status","start","status","restart","status","start(idempotent)","stop","status"],
+  "results": {
+    "idempotent_start": true,
+    "graceful_stop": true,
+    "restart": true,
+    "dynamic_port": "127.0.0.1:55783 / :55827 (ephemeral)",
+    "service_runtime_json": true,
+    "service_token": true,
+    "service_lock": true
+  },
+  "spawn": "start/restart spawn std::env::current_exe() -> canonical executable path, not a hardcoded name",
+  "runtime_files": "present while running, cleaned on stop",
+  "state_dir": "REPODEX_STATE_DIR=/tmp/cli-life (isolated)"
+}

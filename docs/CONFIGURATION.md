@@ -56,15 +56,15 @@ Config errors gate only System One — deterministic query keeps working.
 ## Config CLI
 
 ```bash
-repodex config system-one.enabled true
-repodex config system-one.models.jev.protocol system-one-v1
-repodex config system-one.models.jev.url https://api.typesafe.ai/v1/systemone
-repodex config system-one.models.jev.model jev-latest
-repodex config system-one.models.jev.auth.type bearer
-repodex config system-one.models.jev.auth.token <KEY>
-repodex config system-one.roles.query jev
-repodex config system-one.roles.rerank jev
-repodex config system-one.enabled            # read a key
+reposuite-repodex config system-one.enabled true
+reposuite-repodex config system-one.models.jev.protocol system-one-v1
+reposuite-repodex config system-one.models.jev.url https://api.typesafe.ai/v1/systemone
+reposuite-repodex config system-one.models.jev.model jev-latest
+reposuite-repodex config system-one.models.jev.auth.type bearer
+reposuite-repodex config system-one.models.jev.auth.token <KEY>
+reposuite-repodex config system-one.roles.query jev
+reposuite-repodex config system-one.roles.rerank jev
+reposuite-repodex config system-one.enabled            # read a key
 ```
 
 Dashes in keys map to underscores (`system-one` -> `system_one`).

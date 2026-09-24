@@ -1,7 +1,7 @@
 # RDX1 — RepoDex Exchange format, version 1
 
 RDX1 is the compact, deterministic, line-oriented **agent-facing** projection
-of a `repodex query` result. It is the default `query` output; `--json` and
+of a `reposuite-repodex query` result. It is the default `query` output; `--json` and
 `--human` remain available. It is designed to be cheap for a downstream model
 to read while staying byte-deterministic and human-inspectable.
 

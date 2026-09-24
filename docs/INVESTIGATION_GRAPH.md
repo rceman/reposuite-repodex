@@ -68,7 +68,7 @@ g.neighborhood(id, filter); g.traverse(id, opts); g.stats();
 ```
 
 ```text
-repodex graph build|verify|stats|node|outgoing|incoming|neighborhood
+reposuite-repodex graph build|verify|stats|node|outgoing|incoming|neighborhood
 ```
 
 Traversal is bounded (`max_depth`/`max_nodes`) and deterministically ordered.

@@ -1,18 +1,18 @@
 # Deterministic Query Engine
 
-`repodex query` is a **model-free** lexical + graph retrieval layer over the
+`reposuite-repodex query` is a **model-free** lexical + graph retrieval layer over the
 investigation graph. It is not an LLM and never will be — it answers
 reproducible lexical + structural questions and reports completeness honestly.
 A future System One model may produce the same `QueryPlan`, never repository
 facts.
 
 ```bash
-repodex query --graph <graph> "auth token"                # ranked find (RDX1)
-repodex query --graph <graph> --exhaustive "auth"         # every match
-repodex query --graph <graph> --intent callers --target ValidateToken x
-repodex query --graph <graph> --explain "auth token"      # inspectable plan
-repodex query --graph <graph> --tokens 400 "auth"         # output budget
-repodex query --graph <graph> --json "..."  / --human     # opt-in formats
+reposuite-repodex query --graph <graph> "auth token"                # ranked find (RDX1)
+reposuite-repodex query --graph <graph> --exhaustive "auth"         # every match
+reposuite-repodex query --graph <graph> --intent callers --target ValidateToken x
+reposuite-repodex query --graph <graph> --explain "auth token"      # inspectable plan
+reposuite-repodex query --graph <graph> --tokens 400 "auth"         # output budget
+reposuite-repodex query --graph <graph> --json "..."  / --human     # opt-in formats
 ```
 
 ## Pipeline
