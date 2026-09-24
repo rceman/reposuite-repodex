@@ -162,11 +162,30 @@ pub struct VerificationReport {
 /// Because the key changes with the content, an edited file can never collide
 /// with the artifact of its previous revision.
 pub fn object_key(relative_path: &str, content_digest: &str) -> String {
-    let mut seed = String::with_capacity(relative_path.len() + content_digest.len() + 32);
+    object_key_scoped(relative_path, content_digest, "")
+}
+
+/// Content-addressed object key scoped by the analyzer/extractor identity.
+/// Two analyzers must never share a FileAnalysis for the same content, so the
+/// analyzer fingerprint is part of the key — a grammar/extraction bump produces
+/// new objects instead of reusing incompatible ones (§11). An empty
+/// `analyzer_digest` preserves the historical unscoped key for the legacy path.
+pub fn object_key_scoped(
+    relative_path: &str,
+    content_digest: &str,
+    analyzer_digest: &str,
+) -> String {
+    let mut seed = String::with_capacity(
+        relative_path.len() + content_digest.len() + analyzer_digest.len() + 32,
+    );
     seed.push_str("repodex-file-object-v1\n");
     seed.push_str(relative_path);
     seed.push('\n');
     seed.push_str(content_digest);
+    if !analyzer_digest.is_empty() {
+        seed.push('\n');
+        seed.push_str(analyzer_digest);
+    }
     let digest = digest::sha256_text(&seed);
     // Drop the algorithm prefix; the key is a file name, not a digest record.
     digest

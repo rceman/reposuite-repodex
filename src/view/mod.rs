@@ -17,6 +17,7 @@ pub mod model;
 pub mod registry;
 pub mod resolve;
 pub mod service;
+pub mod validity;
 
 pub use index::{ensure_index, EnsureOutcome};
 pub use model::{
