@@ -365,3 +365,185 @@ fn cross_project_memory_never_leaks_into_scoped_query() {
     assert_eq!(comp.matched_investigations, 0);
     assert!(comp.symbols.is_empty());
 }
+
+// --- §51-§53: cross-view git fixture (worktrees/branches of one project) ----
+
+use std::process::Command;
+fn git(root: &Path, args: &[&str]) {
+    let st = Command::new("git")
+        .args(args)
+        .current_dir(root)
+        .env("GIT_AUTHOR_NAME", "t")
+        .env("GIT_AUTHOR_EMAIL", "t@t")
+        .env("GIT_COMMITTER_NAME", "t")
+        .env("GIT_COMMITTER_EMAIL", "t@t")
+        .status()
+        .unwrap();
+    assert!(st.success());
+}
+
+#[test]
+fn worktrees_share_scope_and_rebind_across_branches() {
+    let s = TempDir::new("vbm-git");
+    let base = s.path().join("repo");
+    fs::create_dir_all(&base).unwrap();
+    git(&base, &["init", "-q", "-b", "main"]);
+    base_repo(&base);
+    git(&base, &["add", "-A"]);
+    git(&base, &["commit", "-qm", "init"]);
+    // branch-A worktree adds FeatureA; branch-B adds FeatureB.
+    git(
+        &base,
+        &["worktree", "add", "-b", "branch-a", "../wt-a", "-q"],
+    );
+    git(
+        &base,
+        &["worktree", "add", "-b", "branch-b", "../wt-b", "-q"],
+    );
+    let wa = s.path().join("wt-a");
+    let wb = s.path().join("wt-b");
+    fs::write(
+        wa.join("fa.go"),
+        "package main\n\nfunc FeatureA() int { return Foo() }\n",
+    )
+    .unwrap();
+    git(&wa, &["add", "-A"]);
+    git(&wa, &["commit", "-qm", "fa"]);
+    fs::write(
+        wb.join("fb.go"),
+        "package main\n\nfunc FeatureB() int { return 0 }\n",
+    )
+    .unwrap();
+    git(&wb, &["add", "-A"]);
+    git(&wb, &["commit", "-qm", "fb"]);
+
+    // Same logical project -> identical memory scope across worktrees (§3).
+    let va = q(&wa, s.path(), "Foo");
+    let vb = q(&wb, s.path(), "Foo");
+    assert_eq!(project_scope(&va.view), project_scope(&vb.view));
+
+    // Record Foo in branch-A, rebind in branch-B: unchanged -> ExactFresh,
+    // current branch-B coordinates (§53).
+    let (loc, fac) = record(&va.ensure.index_dir(), &wa, "main.go", "Foo");
+    let mut rb = rebinder(&vb.ensure.index_dir(), &vb.view);
+    let ann = rb.rebind(&loc, "Foo", "main.go", Some(&fac), None, None);
+    assert_eq!(ann.state, BindingState::ExactFresh, "{ann:?}");
+    assert_eq!(ann.current_path.as_deref(), Some("main.go"));
+
+    // FeatureA exists in branch-A but NOT branch-B -> Absent there (§53:
+    // not-yet-merged FeatureA never appears as branch-B current evidence).
+    let (loc_a, fac_a) = record(&va.ensure.index_dir(), &wa, "fa.go", "FeatureA");
+    let mut rb2 = rebinder(&vb.ensure.index_dir(), &vb.view);
+    let ann_a = rb2.rebind(&loc_a, "FeatureA", "fa.go", Some(&fac_a), None, None);
+    assert_eq!(ann_a.state, BindingState::Absent, "{ann_a:?}");
+    assert!(ann_a.current_path.is_none());
+    // In branch-A it rebinds fresh.
+    let mut rb3 = rebinder(&va.ensure.index_dir(), &va.view);
+    let ann_aa = rb3.rebind(&loc_a, "FeatureA", "fa.go", Some(&fac_a), None, None);
+    assert_eq!(ann_aa.state, BindingState::ExactFresh, "{ann_aa:?}");
+}
+
+#[test]
+fn dirty_uncommitted_edit_is_authoritative() {
+    // §53: dirty source overrides HEAD — a working-tree body change must
+    // rebind ChangedImplementation even though HEAD is unchanged.
+    let s = TempDir::new("vbm-dirty");
+    let root = s.path().join("repo");
+    fs::create_dir_all(&root).unwrap();
+    git(&root, &["init", "-q", "-b", "main"]);
+    base_repo(&root);
+    git(&root, &["add", "-A"]);
+    git(&root, &["commit", "-qm", "init"]);
+    let o1 = q(&root, s.path(), "Foo");
+    let (loc, fac) = record(&o1.ensure.index_dir(), &root, "main.go", "Foo");
+    // Dirty (uncommitted) body edit.
+    fs::write(
+        root.join("main.go"),
+        "package main\n\nfunc Foo() int { return 99 }\n\nfunc Bar() int { return Foo() }\n",
+    )
+    .unwrap();
+    let o2 = q(&root, s.path(), "Foo");
+    let mut rb = rebinder(&o2.ensure.index_dir(), &o2.view);
+    let ann = rb.rebind(&loc, "Foo", "main.go", Some(&fac), None, None);
+    assert_eq!(ann.state, BindingState::ChangedImplementation, "{ann:?}");
+}
+
+// --- §42-§47: live derivation + multi-session isolation + replay ------------
+
+use repodex::agent_event::{AgentEvent, AgentEventStore, SourceProvenance};
+
+fn ev(session: &str, seq: u64, inv: &str, scope: &str, path: &str) -> AgentEvent {
+    AgentEvent {
+        schema: repodex::agent_event::AGENT_EVENT_SCHEMA.into(),
+        event_id: AgentEvent::make_event_id(session, seq),
+        session_id: session.into(),
+        investigation_id: Some(inv.into()),
+        project_id: Some(scope.into()),
+        repository_id: Some(scope.into()),
+        repo_head: None,
+        sequence: seq,
+        timestamp: "2026-01-01T00:00:00Z".into(),
+        source: SourceProvenance {
+            runtime: "devin".into(),
+            adapter: "test".into(),
+            adapter_version: "1".into(),
+            native_session_id: None,
+        },
+        event_type: "source_observed".into(),
+        data: serde_json::json!({"path": path, "observation_kind": "explicit_read"}),
+        content_digest: None,
+    }
+}
+
+#[test]
+fn live_derivation_builds_memory_and_isolates_projects() {
+    let s = TempDir::new("vbm-live");
+    let root = s.path().join("repo");
+    fs::create_dir_all(&root).unwrap();
+    base_repo(&root);
+    // Ensure the view exists so derive_live can resolve its snapshot.
+    let o = q(&root, s.path(), "Foo");
+    let scope = project_scope(&o.view);
+
+    // Mirror events for several sessions/investigations, in-scope + out-of-scope.
+    let mut es = AgentEventStore::open(&s.path().join("agent-events")).unwrap();
+    let mut evs = Vec::new();
+    for n in 0..10 {
+        // in-scope session observes main.go (Foo's file)
+        evs.push(ev(
+            &format!("s{n}"),
+            1,
+            &format!("inv{n}"),
+            &scope,
+            "main.go",
+        ));
+    }
+    // out-of-scope session (different project scope) — must not leak in.
+    evs.push(ev("other", 1, "inv-other", "project:other-repo", "main.go"));
+    es.append(&evs).unwrap();
+
+    let rep = repodex::memory::live::derive_live(s.path(), &[root.display().to_string()]);
+    assert!(rep.get("error").is_none(), "{rep}");
+
+    // Memory store holds entries; in-scope ones carry this repo's scope, and
+    // the foreign session is stored under its own scope (isolated at query).
+    let ms = repodex::memory::MemoryStore::load(&s.path().join("memory")).unwrap();
+    assert!(!ms.entries.is_empty());
+    assert_eq!(
+        ms.entries["inv0"].project_scope.as_deref(),
+        Some(scope.as_str())
+    );
+    assert_eq!(
+        ms.entries["inv-other"].project_scope.as_deref(),
+        Some("project:other-repo")
+    );
+    // A scoped query for this repo returns only in-scope entries (§4).
+    let hits = ms.query_scoped("Foo", &Default::default(), 10, 64, Some(&scope));
+    assert!(hits.iter().all(|m| m.investigation_id != "inv-other"));
+
+    // Replay-equivalence: deriving again over the same log is a no-op delta.
+    let rep2 = repodex::memory::live::derive_live(s.path(), &[root.display().to_string()]);
+    assert!(rep2.get("error").is_none(), "{rep2}");
+    let ms2 = repodex::memory::MemoryStore::load(&s.path().join("memory")).unwrap();
+    assert_eq!(ms.entries.len(), ms2.entries.len());
+}
