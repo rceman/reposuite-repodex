@@ -62,6 +62,9 @@ pub struct QueryRequest {
     /// (deterministic shape-driven minimal packet).
     #[serde(default)]
     pub context_policy: Option<String>,
+    /// Recipe policy (§41): `off` (default) | `auto` | `force` (debug).
+    #[serde(default)]
+    pub recipes: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

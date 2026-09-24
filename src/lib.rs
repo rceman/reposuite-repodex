@@ -41,6 +41,7 @@ pub mod parser;
 pub mod paths;
 pub mod query;
 pub mod rdx1;
+pub mod recipe;
 pub mod repository;
 pub mod scanner;
 pub mod service;

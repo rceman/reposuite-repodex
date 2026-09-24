@@ -23,6 +23,8 @@ pub struct ViewQueryOutcome {
     pub shape: crate::context::QueryShape,
     /// The effective compiler policy for this query (static|adaptive).
     pub context_policy: crate::context::ContextPolicy,
+    /// Recipe execution outcome (Some when a recipe matched + ran).
+    pub recipe: Option<crate::recipe::RecipeOutcome>,
     /// Milliseconds for the whole resolve+ensure+query.
     pub total_ms: f64,
 }
@@ -45,6 +47,8 @@ pub struct ViewQueryParams<'a> {
     pub memory_mode: crate::memory::compose::MemoryMode,
     /// Context-compiler policy (§37): static | adaptive.
     pub context_policy: crate::context::ContextPolicy,
+    /// Recipe policy (§41): off | auto | force.
+    pub recipes: crate::recipe::RecipePolicy,
     pub state_override: Option<&'a Path>,
 }
 
@@ -77,7 +81,33 @@ pub fn run_view_query(
     plan.max_depth = params.depth;
     plan.validate()
         .map_err(|e| (ViewError::InvalidRequest, e))?;
-    let result = engine.run(&plan);
+    let mut result = engine.run(&plan);
+
+    // Guarded Evidence Recipes (§41-§43): on auto/force, match a stored recipe
+    // for this project scope + execute it against the CURRENT view, appending
+    // produced current-view witness relations into `related`. Never a required
+    // dependency — failure/absence leaves the deterministic result intact.
+    let recipe = if matches!(params.recipes, crate::recipe::RecipePolicy::Off) {
+        None
+    } else {
+        let state_dir = params
+            .state_override
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(crate::view::state_dir);
+        let scope = crate::memory::project::project_scope(&view);
+        let store = crate::recipe::RecipeStore::load(&state_dir, &scope).unwrap_or_default();
+        let (m, r) = crate::recipe::match_recipe(store.recipes.values(), &plan.terms, plan.intent);
+        match (m, r) {
+            (crate::recipe::RecipeMatch::Match, Some(rc)) => {
+                let out = crate::recipe::execute(&rc, &engine, &result);
+                for h in &out.produced {
+                    result.related.push(h.clone());
+                }
+                Some(out)
+            }
+            _ => None,
+        }
+    };
 
     // §31: optional memory composition — additive guidance only, rebinding
     // historical symbols against THIS validated view (never replayed as current).
@@ -119,6 +149,7 @@ pub fn run_view_query(
         memory,
         shape,
         context_policy: params.context_policy,
+        recipe,
         total_ms: started.elapsed().as_secs_f64() * 1000.0,
     })
 }

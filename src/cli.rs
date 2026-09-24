@@ -196,6 +196,8 @@ struct Options {
     memory: Option<String>,
     /// `query --context static|adaptive` — deterministic context compiler policy.
     context: Option<String>,
+    /// `query --recipes off|auto|force` — guarded evidence recipe policy.
+    recipes: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -289,6 +291,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--to" => options.to = Some(value_for(args, &mut index, name, inline_value)?),
             "--memory" => options.memory = Some(value_for(args, &mut index, name, inline_value)?),
             "--context" => options.context = Some(value_for(args, &mut index, name, inline_value)?),
+            "--recipes" => options.recipes = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -2649,6 +2652,11 @@ fn query_result_json(
 ) -> serde_json::Value {
     let mut p = crate::query::projection::build(&outcome.result, index_dir);
     attach_memory(&mut p, Some(&outcome.memory));
+    if let Some(rc) = &outcome.recipe {
+        p.recipe = Some(
+            serde_json::json!({"recipe_id":rc.recipe_id,"family":rc.family,"produced":rc.produced.len(),"fell_back":rc.fell_back}),
+        );
+    }
     // Adaptive context compiler: prune optional evidence to the minimal
     // faithful packet for the query shape (§37). `static` is a no-op.
     if outcome.context_policy == crate::context::ContextPolicy::Adaptive {
@@ -2729,6 +2737,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             context_policy: crate::context::ContextPolicy::parse(
                 req.context_policy.as_deref().unwrap_or("static"),
             ),
+            recipes: crate::recipe::RecipePolicy::parse(req.recipes.as_deref().unwrap_or("off")),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2804,6 +2813,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         context_policy: crate::context::ContextPolicy::parse(
             options.context.as_deref().unwrap_or("static"),
         ),
+        recipes: crate::recipe::RecipePolicy::parse(options.recipes.as_deref().unwrap_or("off")),
         state_override: state.as_deref(),
     };
     let outcome =

@@ -17,10 +17,11 @@ pub const ACTIVITY_WINDOW_DAYS: i64 = 400;
 
 /// Neutral lifecycle state derived from canonical events only (§5). Execution
 /// end, task outcome and future quality evaluation stay distinct (§22-§23).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum InvestigationState {
     /// No terminal session_completed observed yet.
+    #[default]
     Open,
     /// All observed sessions completed.
     Completed,
@@ -117,7 +118,7 @@ pub struct ToolTotals {
 }
 
 /// The derived per-investigation summary (§4-§22).
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InvestigationEpisode {
     pub schema: String,
     pub schema_version: u32,

@@ -33,6 +33,7 @@ fn q(root: &Path, state: &Path, text: &str) -> repodex::view::service::ViewQuery
         depth: 4,
         memory_mode: repodex::memory::compose::MemoryMode::Off,
         context_policy: repodex::context::ContextPolicy::Static,
+        recipes: repodex::recipe::RecipePolicy::Off,
         state_override: Some(state),
     };
     run_view_query(&ViewLocator::Root(root.to_path_buf()), &p).unwrap()
@@ -289,6 +290,7 @@ fn symbol_mode_rebinds_and_attaches_current_annotation() {
         depth: 4,
         memory_mode: repodex::memory::compose::MemoryMode::Symbol,
         context_policy: repodex::context::ContextPolicy::Static,
+        recipes: repodex::recipe::RecipePolicy::Off,
         state_override: Some(s.path()),
     };
     let o2 = run_view_query(&ViewLocator::Root(root.to_path_buf()), &p).unwrap();
@@ -313,6 +315,7 @@ fn symbol_mode_rebinds_and_attaches_current_annotation() {
         depth: 4,
         memory_mode: repodex::memory::compose::MemoryMode::Off,
         context_policy: repodex::context::ContextPolicy::Static,
+        recipes: repodex::recipe::RecipePolicy::Off,
         state_override: Some(s.path()),
     };
     let o3 = run_view_query(&ViewLocator::Root(root.to_path_buf()), &p2).unwrap();

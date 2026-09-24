@@ -61,6 +61,7 @@ fn query<'a>(
         depth: 4,
         memory_mode: repodex::memory::compose::MemoryMode::Off,
         context_policy: repodex::context::ContextPolicy::Static,
+        recipes: repodex::recipe::RecipePolicy::Off,
         state_override: Some(state),
     };
     run_view_query(&ViewLocator::Root(root.to_path_buf()), &p).unwrap()

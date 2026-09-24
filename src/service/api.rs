@@ -157,6 +157,7 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         context_policy: crate::context::ContextPolicy::parse(
             qreq.context_policy.as_deref().unwrap_or("static"),
         ),
+        recipes: crate::recipe::RecipePolicy::parse(qreq.recipes.as_deref().unwrap_or("off")),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {
@@ -210,6 +211,11 @@ fn query_result_json(
         && m.matched_investigations > 0
     {
         p.memory = serde_json::to_value(m).ok();
+    }
+    if let Some(rc) = &outcome.recipe {
+        p.recipe = Some(
+            serde_json::json!({"recipe_id":rc.recipe_id,"family":rc.family,"produced":rc.produced.len(),"fell_back":rc.fell_back}),
+        );
     }
     if outcome.context_policy == crate::context::ContextPolicy::Adaptive {
         crate::context::compile_into(

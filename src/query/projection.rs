@@ -184,6 +184,10 @@ pub struct EvidenceProjection {
     /// budget-limited flag. Present only for `context_policy=adaptive`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context: Option<serde_json::Value>,
+    /// Guarded Evidence Recipe block: recipe_id/family/produced/fell_back.
+    /// Compact provenance only — verbose step trace is debug-only (§28).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recipe: Option<serde_json::Value>,
     pub bounds: Bounds,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
@@ -405,6 +409,7 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
         connector,
         memory: None,
         context: None,
+        recipe: None,
         bounds: Bounds {
             max_seeds: MAX_SEEDS,
             max_related: MAX_RELATED,
