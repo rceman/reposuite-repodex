@@ -154,6 +154,9 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         memory_mode: crate::memory::compose::MemoryMode::parse(
             qreq.memory_mode.as_deref().unwrap_or("off"),
         ),
+        context_policy: crate::context::ContextPolicy::parse(
+            qreq.context_policy.as_deref().unwrap_or("static"),
+        ),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {
@@ -173,11 +176,7 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         "schema": v::QUERY_RESPONSE_SCHEMA,
         "repository_view": view_meta_json(&outcome.view),
         "query": text,
-        "result": query_result_json(
-            &outcome.result,
-            Some(&outcome.ensure.index_dir()),
-            Some(&outcome.memory),
-        ),
+        "result": query_result_json(&outcome, Some(&outcome.ensure.index_dir())),
         "index": {"fingerprint":outcome.ensure.fingerprint,
                   "reused":outcome.ensure.index_reused,
                   "analyses_reused":outcome.ensure.analyses_reused,
@@ -201,18 +200,24 @@ fn view_meta_json(view: &v::RepositoryView) -> serde_json::Value {
 /// direct `--json`, with rank/path/ranges/provenance preserved (no parallel
 /// service renderer). `index_dir` enables current-range materialization.
 fn query_result_json(
-    r: &crate::query::QueryResult,
+    outcome: &v::service::ViewQueryOutcome,
     index_dir: Option<&Path>,
-    memory: Option<&crate::memory::compose::MemoryComposition>,
 ) -> serde_json::Value {
-    let mut p = crate::query::projection::build(r, index_dir);
-    if let Some(m) = memory {
-        if m.mode != crate::memory::compose::MemoryMode::Off.as_str()
-            && !m.degraded
-            && m.matched_investigations > 0
-        {
-            p.memory = serde_json::to_value(m).ok();
-        }
+    let mut p = crate::query::projection::build(&outcome.result, index_dir);
+    let m = &outcome.memory;
+    if m.mode != crate::memory::compose::MemoryMode::Off.as_str()
+        && !m.degraded
+        && m.matched_investigations > 0
+    {
+        p.memory = serde_json::to_value(m).ok();
+    }
+    if outcome.context_policy == crate::context::ContextPolicy::Adaptive {
+        crate::context::compile_into(
+            &mut p,
+            outcome.shape,
+            outcome.memory.mode_parse(),
+            &crate::context::ContextBudget::default(),
+        );
     }
     p.to_json()
 }

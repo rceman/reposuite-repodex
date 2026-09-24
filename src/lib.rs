@@ -29,6 +29,7 @@ pub mod agent_event;
 pub mod candidates;
 pub mod canonical;
 pub mod cli;
+pub mod context;
 pub mod derived;
 pub mod graph;
 pub mod incremental;

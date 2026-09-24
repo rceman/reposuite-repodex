@@ -58,6 +58,10 @@ pub struct QueryRequest {
     /// default `off` keeps the query purely deterministic.
     #[serde(default)]
     pub memory_mode: Option<String>,
+    /// Context-compiler policy (§37): `static` (faithful, default) | `adaptive`
+    /// (deterministic shape-driven minimal packet).
+    #[serde(default)]
+    pub context_policy: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

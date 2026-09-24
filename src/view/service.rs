@@ -19,6 +19,10 @@ pub struct ViewQueryOutcome {
     pub ensure: super::index::EnsureOutcome,
     /// Bounded memory composition for this query (additive guidance only).
     pub memory: crate::memory::compose::MemoryComposition,
+    /// Deterministic query shape (for adaptive context compilation).
+    pub shape: crate::context::QueryShape,
+    /// The effective compiler policy for this query (static|adaptive).
+    pub context_policy: crate::context::ContextPolicy,
     /// Milliseconds for the whole resolve+ensure+query.
     pub total_ms: f64,
 }
@@ -39,6 +43,8 @@ pub struct ViewQueryParams<'a> {
     pub depth: usize,
     /// Memory policy (§33): off | file | symbol. Additive guidance only.
     pub memory_mode: crate::memory::compose::MemoryMode,
+    /// Context-compiler policy (§37): static | adaptive.
+    pub context_policy: crate::context::ContextPolicy,
     pub state_override: Option<&'a Path>,
 }
 
@@ -103,11 +109,16 @@ pub fn run_view_query(
         )
     };
 
+    // Deterministic query shape for adaptive compilation (§5-§7).
+    let (shape, _reason) = crate::context::classify(plan.intent, &result);
+
     Ok(ViewQueryOutcome {
         view,
         result,
         ensure,
         memory,
+        shape,
+        context_policy: params.context_policy,
         total_ms: started.elapsed().as_secs_f64() * 1000.0,
     })
 }

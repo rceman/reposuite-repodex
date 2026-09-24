@@ -133,7 +133,7 @@ pub struct ConnectorPacket {
 }
 
 /// Explicit output bounds applied (§32).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 pub struct Bounds {
     pub max_seeds: usize,
     pub max_related: usize,
@@ -142,7 +142,7 @@ pub struct Bounds {
 }
 
 /// The canonical projection — the single source every transport renders from.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 pub struct EvidenceProjection {
     pub schema: String,
     pub query: String,
@@ -180,6 +180,10 @@ pub struct EvidenceProjection {
     /// Absent when memory mode is `off` or memory is unavailable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<serde_json::Value>,
+    /// Adaptive Context Compiler block: query shape + obligation ledger +
+    /// budget-limited flag. Present only for `context_policy=adaptive`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub context: Option<serde_json::Value>,
     pub bounds: Bounds,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
@@ -400,6 +404,7 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
         related,
         connector,
         memory: None,
+        context: None,
         bounds: Bounds {
             max_seeds: MAX_SEEDS,
             max_related: MAX_RELATED,

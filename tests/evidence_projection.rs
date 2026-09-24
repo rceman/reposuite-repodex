@@ -60,6 +60,7 @@ fn query<'a>(
         token_budget: None,
         depth: 4,
         memory_mode: repodex::memory::compose::MemoryMode::Off,
+        context_policy: repodex::context::ContextPolicy::Static,
         state_override: Some(state),
     };
     run_view_query(&ViewLocator::Root(root.to_path_buf()), &p).unwrap()

@@ -194,6 +194,8 @@ struct Options {
     to: Option<String>,
     /// `query --memory off|file|symbol` — additive memory guidance policy.
     memory: Option<String>,
+    /// `query --context static|adaptive` — deterministic context compiler policy.
+    context: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -286,6 +288,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--target" => options.target = Some(value_for(args, &mut index, name, inline_value)?),
             "--to" => options.to = Some(value_for(args, &mut index, name, inline_value)?),
             "--memory" => options.memory = Some(value_for(args, &mut index, name, inline_value)?),
+            "--context" => options.context = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -2641,12 +2644,21 @@ fn command_query(args: &[String]) -> Result<u8, String> {
 /// (the view's `indexes/{key}` dir) enables current-range materialization; the
 /// projection is a backward-compatible superset (legacy fields retained, §38).
 fn query_result_json(
-    result: &crate::query::QueryResult,
+    outcome: &crate::view::service::ViewQueryOutcome,
     index_dir: Option<&Path>,
-    memory: Option<&crate::memory::compose::MemoryComposition>,
 ) -> serde_json::Value {
-    let mut p = crate::query::projection::build(result, index_dir);
-    attach_memory(&mut p, memory);
+    let mut p = crate::query::projection::build(&outcome.result, index_dir);
+    attach_memory(&mut p, Some(&outcome.memory));
+    // Adaptive context compiler: prune optional evidence to the minimal
+    // faithful packet for the query shape (§37). `static` is a no-op.
+    if outcome.context_policy == crate::context::ContextPolicy::Adaptive {
+        crate::context::compile_into(
+            &mut p,
+            outcome.shape,
+            outcome.memory.mode_parse(),
+            &crate::context::ContextBudget::default(),
+        );
+    }
     p.to_json()
 }
 
@@ -2714,6 +2726,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             memory_mode: crate::memory::compose::MemoryMode::parse(
                 req.memory_mode.as_deref().unwrap_or("off"),
             ),
+            context_policy: crate::context::ContextPolicy::parse(
+                req.context_policy.as_deref().unwrap_or("static"),
+            ),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2728,11 +2743,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             "schema": v::QUERY_RESPONSE_SCHEMA,
             "repository_view": view_meta_json(&outcome.view),
             "query": text,
-            "result": query_result_json(
-                &outcome.result,
-                Some(&outcome.ensure.index_dir()),
-                Some(&outcome.memory),
-            ),
+            "result": query_result_json(&outcome, Some(&outcome.ensure.index_dir())),
             "index": {"fingerprint":outcome.ensure.fingerprint,
                       "reused":outcome.ensure.index_reused,
                       "analyses_reused":outcome.ensure.analyses_reused,
@@ -2790,6 +2801,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         memory_mode: crate::memory::compose::MemoryMode::parse(
             options.memory.as_deref().unwrap_or("off"),
         ),
+        context_policy: crate::context::ContextPolicy::parse(
+            options.context.as_deref().unwrap_or("static"),
+        ),
         state_override: state.as_deref(),
     };
     let outcome =
@@ -2797,6 +2811,14 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
     let mut proj =
         crate::query::projection::build(&outcome.result, Some(&outcome.ensure.index_dir()));
     attach_memory(&mut proj, Some(&outcome.memory));
+    if outcome.context_policy == crate::context::ContextPolicy::Adaptive {
+        crate::context::compile_into(
+            &mut proj,
+            outcome.shape,
+            outcome.memory.mode_parse(),
+            &crate::context::ContextBudget::default(),
+        );
+    }
     if options.human {
         println!("view: {}", outcome.view.canonical_root.display());
         println!("fingerprint: {}", outcome.ensure.fingerprint);

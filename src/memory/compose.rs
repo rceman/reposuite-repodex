@@ -82,6 +82,13 @@ pub struct MemoryComposition {
 /// Max symbol annotations per memory path (§36 — proven bounded approach).
 pub const MAX_SYMBOLS_PER_PATH: usize = 2;
 
+impl MemoryComposition {
+    /// The effective MemoryMode of this composition (`mode` is a String).
+    pub fn mode_parse(&self) -> MemoryMode {
+        MemoryMode::parse(&self.mode)
+    }
+}
+
 /// Compose memory for a query against the current validated view.
 /// `state_dir` holds the `memory/` store. `index_dir`+`view_root` enable
 /// current-view rebinding. Returns an empty (degraded) composition when memory
