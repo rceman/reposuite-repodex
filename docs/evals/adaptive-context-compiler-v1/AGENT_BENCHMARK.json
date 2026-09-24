@@ -1,0 +1,20 @@
+{
+  "design": "C0 static faithful projection vs C1 adaptive compiler. Design A: memory=off both arms (isolates compilation). Serial, counterbalanced, conc=1, real `devin -p` (SWE-2 High).",
+  "sessions": 40, "questions": 10, "reps": 2,
+  "repo": "/tmp/mempilot/repo (Go module)",
+  "results_mean": {
+    "C0": {"n":20,"correct":20,"in_tok":39290,"out_tok":719,"cached":31859,"steps":9.7,"wall_s":18.1},
+    "C1": {"n":20,"correct":20,"in_tok":40409,"out_tok":665,"cached":32943,"steps":9.8,"wall_s":18.8}
+  },
+  "per_cohort_in_tok": {
+    "exact_lookup": {"C0":[29258,33584,26644],"C1":[29489,41045,33643]},
+    "ambiguous":   {"C0":[45544,53531],"C1":[53126,45576]},
+    "relationship":{"C0":[30539,36744],"C1":[30727,29577]},
+    "connector":   {"C0":[46364],"C1":[46716]},
+    "orientation": {"C0":[50859],"C1":[46126]},
+    "test":        {"C0":[39840],"C1":[48067]}
+  },
+  "honest_conclusion": "Adaptive compilation produced materially SMALLER packets (exact -86%, test -91%) but did NOT reduce agent input tokens or steps on this small repo — agent cost is dominated by the fixed system prompt + verification reads, not packet bytes. Correctness non-inferior (20/20 both). Safe but no measured agent-work benefit in this cohort.",
+  "classification": "ADAPTIVE_CONTEXT_COMPILER_OPT_IN",
+  "caveats": ["small repo","n=40 screening pilot (not the 240 full study)","input-token signal is noisy and prompt-dominated","packet-byte savings are real even if agent-token savings are not"]
+}

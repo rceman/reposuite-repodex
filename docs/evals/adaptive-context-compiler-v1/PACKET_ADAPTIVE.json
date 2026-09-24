@@ -1,0 +1,74 @@
+{
+ "exact_decl": {
+  "bytes": 1173,
+  "seeds": 1,
+  "related": 0,
+  "ranges": 1,
+  "conn": false,
+  "shape": "exact_lookup",
+  "budget_limited": false
+ },
+ "exact_simple": {
+  "bytes": 1152,
+  "seeds": 1,
+  "related": 0,
+  "ranges": 1,
+  "conn": false,
+  "shape": "exact_lookup",
+  "budget_limited": false
+ },
+ "ambiguous": {
+  "bytes": 8229,
+  "seeds": 6,
+  "related": 13,
+  "ranges": 5,
+  "conn": false,
+  "shape": "ambiguous_lookup",
+  "budget_limited": false
+ },
+ "orientation": {
+  "bytes": 9444,
+  "seeds": 8,
+  "related": 16,
+  "ranges": 4,
+  "conn": false,
+  "shape": "ambiguous_lookup",
+  "budget_limited": false
+ },
+ "relationship": {
+  "bytes": 1273,
+  "seeds": 1,
+  "related": 0,
+  "ranges": 2,
+  "conn": false,
+  "shape": "relationship",
+  "budget_limited": false
+ },
+ "connector": {
+  "bytes": 1738,
+  "seeds": 2,
+  "related": 0,
+  "ranges": 3,
+  "conn": true,
+  "shape": "path_or_connector",
+  "budget_limited": false
+ },
+ "test": {
+  "bytes": 1218,
+  "seeds": 1,
+  "related": 0,
+  "ranges": 1,
+  "conn": false,
+  "shape": "exact_lookup",
+  "budget_limited": false
+ },
+ "notfound": {
+  "bytes": 832,
+  "seeds": 0,
+  "related": 0,
+  "ranges": 0,
+  "conn": false,
+  "shape": "unknown",
+  "budget_limited": false
+ }
+}

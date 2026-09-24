@@ -1,0 +1,13 @@
+{
+  "policy": "deterministic shape-tier pruning, not a learned scorer",
+  "steps": [
+    "1. classify shape from QueryIntent + retrieval state",
+    "2. per-shape: keep mandatory + shape-required evidence, drop optional (body_range on exact/ambiguous, related on exact, connector on non-paths)",
+    "3. build obligation ledger",
+    "4. enforce serialized-byte budget by dropping lowest-priority optional records (related -> extra seeds -> ranges)",
+    "5. budget_limited -> complete=false (never implies completeness)"
+  ],
+  "reason_codes": ["exact_seed_sufficient","ambiguity_requires_locators","relationship_requested","connector_requested","memory_redundant","memory_adds_current_symbol","budget_exceeded","unsupported_evidence","orientation_context","test_evidence"],
+  "complementary_bundles": "relationship endpoints + via kept together; connector steps kept together",
+  "no_universal_scalar_optimizer": true
+}

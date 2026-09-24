@@ -1,0 +1,74 @@
+{
+ "exact_decl": {
+  "bytes": 8376,
+  "seeds": 6,
+  "related": 13,
+  "ranges": 10,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "exact_simple": {
+  "bytes": 3065,
+  "seeds": 2,
+  "related": 4,
+  "ranges": 4,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "ambiguous": {
+  "bytes": 8428,
+  "seeds": 6,
+  "related": 13,
+  "ranges": 10,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "orientation": {
+  "bytes": 17254,
+  "seeds": 9,
+  "related": 36,
+  "ranges": 4,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "relationship": {
+  "bytes": 873,
+  "seeds": 1,
+  "related": 0,
+  "ranges": 2,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "connector": {
+  "bytes": 1333,
+  "seeds": 2,
+  "related": 0,
+  "ranges": 3,
+  "conn": true,
+  "shape": null,
+  "budget_limited": null
+ },
+ "test": {
+  "bytes": 12949,
+  "seeds": 9,
+  "related": 22,
+  "ranges": 12,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ },
+ "notfound": {
+  "bytes": 432,
+  "seeds": 0,
+  "related": 0,
+  "ranges": 0,
+  "conn": false,
+  "shape": null,
+  "budget_limited": null
+ }
+}

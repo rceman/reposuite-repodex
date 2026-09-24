@@ -1,0 +1,14 @@
+{
+  "shapes": {
+    "exact_lookup": "one name-unique top declaration whose identifier-terms cover all query terms -> minimal single-seed packet (rank/key/kind/label/path/decl_range/FACT)",
+    "ambiguous_lookup": ">1 seed shares the top label -> keep bounded candidates with distinct paths/locators + decl ranges; never pick a winner",
+    "relationship": "intent callers|callees|related -> endpoints + evidence + via preserved",
+    "path_or_connector": "intent paths -> bounded connector packet (<=2 routes, <=3 depth)",
+    "orientation": "broad find with no unique exact match -> bounded seeds + local relations",
+    "test_or_verification": "seed factors mark a test -> decl + candidate test decls",
+    "unknown": "no declaration seeds / unsafe to classify -> conservative bounded packet"
+  },
+  "classification_signals": ["QueryIntent","seed count","same-name ambiguity","identifier-term coverage","test factors","connector/relationship request"],
+  "no_model": true,
+  "unknown_is_valid": true
+}

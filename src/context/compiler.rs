@@ -314,11 +314,7 @@ pub fn compile_into(
     // Memory admission (§26-§29): for ExactLookup the single exact seed already
     // supplies definition; historical memory is redundant -> drop it.
     let had_mem = proj.memory.is_some();
-    let packet = compile(
-        std::mem::take(proj),
-        shape,
-        budget,
-    );
+    let packet = compile(std::mem::take(proj), shape, budget);
     *proj = packet.projection;
     let mut trace = packet.trace;
     trace.memory_admitted = match (memory_mode, shape, had_mem) {

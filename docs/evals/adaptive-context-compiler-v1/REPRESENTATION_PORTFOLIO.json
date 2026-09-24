@@ -1,0 +1,15 @@
+{
+  "representations": {
+    "entity_label": {"satisfies":["definition","disambiguation"],"class":"navigation_metadata"},
+    "path": {"satisfies":["definition","disambiguation","connector"],"class":"navigation_metadata"},
+    "qualified_locator": {"satisfies":["definition","disambiguation"],"class":"navigation_metadata"},
+    "declaration_range": {"satisfies":["definition"],"class":"navigation_metadata"},
+    "body_range": {"satisfies":["definition"],"class":"navigation_metadata","note":"dropped by exact/ambiguous policy"},
+    "relationship_edge": {"satisfies":["relationship"],"class":"fact_or_candidate"},
+    "connector_path": {"satisfies":["connector"],"class":"fact_or_candidate"},
+    "memory_path": {"satisfies":["disambiguation"],"class":"historical_guidance"},
+    "memory_symbol": {"satisfies":["definition","disambiguation"],"class":"historical_guidance_current_rebound"}
+  },
+  "mandatory_once_emitted": ["rank","fact_candidate_evidence","current_entity_identity","relationship_endpoints","ambiguity_state"],
+  "source_bytes_exposed": "never — only path/range/locator navigation metadata (SourceExposure unchanged)"
+}

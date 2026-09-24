@@ -1,0 +1,6 @@
+{
+  "auto_admission_rule": "memory admitted only when it can add evidence not cheaply supplied by deterministic retrieval; for exact_lookup the single exact seed already witnesses definition -> memory dropped as redundant",
+  "implemented": "compile_into drops memory for exact_lookup; admitted otherwise when a scoped, rebounded composition exists",
+  "sub_experiment": "NOT run — the C0/C1 isolation benchmark showed no positive work delta, so the auto-memory contrast (M0/M1/M2) would not change the opt-in verdict; admission logic is deterministic + tested via memory_redundant reasoning",
+  "boundary_preserved": "no historical evidence bypasses project scope / target-view rebinding / freshness / ambiguity gates"
+}

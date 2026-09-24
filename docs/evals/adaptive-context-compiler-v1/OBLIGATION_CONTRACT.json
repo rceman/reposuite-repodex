@@ -1,0 +1,11 @@
+{
+  "obligations": ["definition","disambiguation","relationship","connector","test_candidate"],
+  "states": {
+    "witnessed": "objective current-view evidence present (decl seed, relation edge, found connector)",
+    "candidate_only": "only bounded candidate evidence exists (ambiguity, candidate edges, test candidates)",
+    "unknown": "not established here — absence of evidence, never coerced to not_applicable",
+    "not_applicable": "only when the shape objectively does not require the obligation"
+  },
+  "unknown_never_promoted_to_not_applicable": true,
+  "semantic_obligations_excluded": ["business_logic_explanation","root_cause","correct_fix"]
+}

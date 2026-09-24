@@ -1,0 +1,8 @@
+{
+  "compiler_overhead": "operates on the already-built QueryResult + EvidenceProjection; classify + prune + one serialized-size estimate — no source reparse, no extra FileAnalysis load beyond projection build",
+  "warm_query_p50_ms": {"exact":{"static":49.2,"adaptive":49.1},"ambiguous":{"static":50.6,"adaptive":56.3},"orientation":{"static":51.0,"adaptive":50.4},"relationship":{"static":45.3,"adaptive":45.9},"connector":{"static":46.9,"adaptive":49.1}},
+  "note": "p50 dominated by process spawn + index load (~45ms); compiler adds <=~6ms, mostly within noise",
+  "new_parses_caused_by_compiler": 0,
+  "new_source_reads": 0,
+  "new_file_analysis_loads": 0
+}

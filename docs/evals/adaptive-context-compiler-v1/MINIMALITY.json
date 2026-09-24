@@ -1,0 +1,55 @@
+{
+ "contract": "adaptive <= static byte-wise where trimming is safe; mandatory fields preserved",
+ "per_case": {
+  "exact_decl": {
+   "static_bytes": 8376,
+   "adaptive_bytes": 1173,
+   "delta": -7203,
+   "overserving_fixed": true
+  },
+  "exact_simple": {
+   "static_bytes": 3065,
+   "adaptive_bytes": 1152,
+   "delta": -1913,
+   "overserving_fixed": true
+  },
+  "ambiguous": {
+   "static_bytes": 8428,
+   "adaptive_bytes": 8229,
+   "delta": -199,
+   "overserving_fixed": true
+  },
+  "orientation": {
+   "static_bytes": 17254,
+   "adaptive_bytes": 9444,
+   "delta": -7810,
+   "overserving_fixed": true
+  },
+  "relationship": {
+   "static_bytes": 873,
+   "adaptive_bytes": 1273,
+   "delta": 400,
+   "overserving_fixed": false
+  },
+  "connector": {
+   "static_bytes": 1333,
+   "adaptive_bytes": 1738,
+   "delta": 405,
+   "overserving_fixed": false
+  },
+  "test": {
+   "static_bytes": 12949,
+   "adaptive_bytes": 1218,
+   "delta": -11731,
+   "overserving_fixed": true
+  },
+  "notfound": {
+   "static_bytes": 432,
+   "adaptive_bytes": 832,
+   "delta": 400,
+   "overserving_fixed": false
+  }
+ },
+ "exact_lookup_regression_addressed": true,
+ "note": "exact/test lookups shrink 60-91%; ambiguous keeps distinguishing locators; minimal packets add ~400B ledger context"
+}
