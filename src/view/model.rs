@@ -54,6 +54,10 @@ pub struct QueryRequest {
     pub depth: Option<usize>,
     #[serde(default)]
     pub max_results: Option<usize>,
+    /// Memory policy (§33): `off` | `file` | `symbol`. Additive guidance only;
+    /// default `off` keeps the query purely deterministic.
+    #[serde(default)]
+    pub memory_mode: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

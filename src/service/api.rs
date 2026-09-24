@@ -151,6 +151,9 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         max_results: qreq.max_results.unwrap_or(50),
         token_budget: None,
         depth: qreq.depth.unwrap_or(4),
+        memory_mode: crate::memory::compose::MemoryMode::parse(
+            qreq.memory_mode.as_deref().unwrap_or("off"),
+        ),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {
@@ -170,7 +173,11 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         "schema": v::QUERY_RESPONSE_SCHEMA,
         "repository_view": view_meta_json(&outcome.view),
         "query": text,
-        "result": query_result_json(&outcome.result, Some(&outcome.ensure.index_dir())),
+        "result": query_result_json(
+            &outcome.result,
+            Some(&outcome.ensure.index_dir()),
+            Some(&outcome.memory),
+        ),
         "index": {"fingerprint":outcome.ensure.fingerprint,
                   "reused":outcome.ensure.index_reused,
                   "analyses_reused":outcome.ensure.analyses_reused,
@@ -193,8 +200,21 @@ fn view_meta_json(view: &v::RepositoryView) -> serde_json::Value {
 /// Canonical machine `result` = the ONE EvidenceProjection (§6) — same shape as
 /// direct `--json`, with rank/path/ranges/provenance preserved (no parallel
 /// service renderer). `index_dir` enables current-range materialization.
-fn query_result_json(r: &crate::query::QueryResult, index_dir: Option<&Path>) -> serde_json::Value {
-    crate::query::projection::build(r, index_dir).to_json()
+fn query_result_json(
+    r: &crate::query::QueryResult,
+    index_dir: Option<&Path>,
+    memory: Option<&crate::memory::compose::MemoryComposition>,
+) -> serde_json::Value {
+    let mut p = crate::query::projection::build(r, index_dir);
+    if let Some(m) = memory {
+        if m.mode != crate::memory::compose::MemoryMode::Off.as_str()
+            && !m.degraded
+            && m.matched_investigations > 0
+        {
+            p.memory = serde_json::to_value(m).ok();
+        }
+    }
+    p.to_json()
 }
 
 // ---- /v1/events + /v1/events/batch (§41-§45) --------------------------------

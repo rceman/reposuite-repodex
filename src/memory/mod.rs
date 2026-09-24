@@ -10,3 +10,7 @@ pub mod store;
 pub use model::*;
 pub use signature::{query_signature, QuerySignature};
 pub use store::{build_memory, MemoryError, MemoryStore};
+pub mod compose;
+pub mod live;
+pub mod project;
+pub mod rebind;

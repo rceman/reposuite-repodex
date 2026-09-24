@@ -6,7 +6,7 @@
 //! manufactured (§8).
 
 use crate::agent_event::model::ObservationKind;
-use crate::model::{Declaration, SourceRange};
+use crate::model::{Declaration, FileAnalysis, SourceRange};
 
 use super::model::{
     Certainty, ExposureKind, OverlapClass, RangePrecision, ResolutionRecord, ResolutionState,
@@ -97,11 +97,18 @@ pub fn resolve_observation(
         _ => RangePrecision::WholeFile,
     };
 
+    // Source bytes for the resolved version (for facets §11) — only when the
+    // version's bytes are addressable; never reconstructed (§13).
+    let bytes: Option<Vec<u8>> = provider
+        .bytes_for(&obs.path, res.digest.as_deref())
+        .map(|b| b.as_ref().clone());
     let mut out = Vec::new();
     let ctx = Ctx {
         obs,
         precision,
         digest: res.digest.as_deref(),
+        analysis: &analysis,
+        bytes: bytes.as_deref(),
     };
     // enclosing candidates: decls whose range overlaps the observed window.
     let mut enclosing: Vec<(usize, &Declaration, OverlapClass)> = Vec::new();
@@ -180,6 +187,9 @@ struct Ctx<'a> {
     obs: &'a Observation,
     precision: RangePrecision,
     digest: Option<&'a str>,
+    analysis: &'a FileAnalysis,
+    /// Source bytes for the resolved version, when available (for facets §11).
+    bytes: Option<&'a [u8]>,
 }
 
 impl Ctx<'_> {
@@ -200,6 +210,11 @@ impl Ctx<'_> {
         );
         e.symbol_line_start = decl.range.row_start;
         e.symbol_line_end = decl.range.row_end;
+        // Stable qualified locator + facets for cross-version rebinding (§9-§13).
+        e.symbol_locator = Some(crate::memory::rebind::decl_locator(self.analysis, decl));
+        e.facets = self
+            .bytes
+            .map(|b| crate::memory::rebind::decl_facets(b, decl));
         e
     }
 
@@ -241,6 +256,8 @@ impl Ctx<'_> {
             path: obs.path.clone(),
             file_content_digest: self.digest.map(|d| d.to_string()),
             symbol_id: symbol_id.to_string(),
+            symbol_locator: None,
+            facets: None,
             symbol_name: symbol_name.to_string(),
             symbol_kind: symbol_kind.to_string(),
             observed_line_start: obs.line_start,

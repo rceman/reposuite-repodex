@@ -100,6 +100,9 @@ pub struct SymbolMapProvider<'a> {
     versions: RefCell<HashMap<String, Rc<FileAnalysis>>>,
     /// Source-byte store for unseen versions.
     sources: &'a SourceStore,
+    /// Optional live checkout root — supplies bytes for the indexed version
+    /// (whose bytes equal the live file) when capturing decl facets (§11).
+    source_root: RefCell<Option<PathBuf>>,
     /// Diagnostics counters (§80).
     pub diag: RefCell<ProviderDiag>,
 }
@@ -132,8 +135,37 @@ impl<'a> SymbolMapProvider<'a> {
             indexed: RefCell::new(HashMap::new()),
             versions: RefCell::new(HashMap::new()),
             sources,
+            source_root: RefCell::new(None),
             diag: RefCell::new(ProviderDiag::default()),
         }
+    }
+
+    /// Set the live checkout root so indexed-version bytes (== the live file)
+    /// can be read for decl-facet capture (§11).
+    pub fn with_source_root(self, root: &Path) -> Self {
+        *self.source_root.borrow_mut() = Some(root.to_path_buf());
+        self
+    }
+
+    /// Source bytes for `digest`, when addressable: the content-addressed store
+    /// (non-indexed versions) or the live file when `digest` matches the indexed
+    /// version of `path`. `None` when the version's bytes are unknown (§13).
+    pub fn bytes_for(&self, path: &str, digest: Option<&str>) -> Option<Rc<Vec<u8>>> {
+        if let Some(d) = digest {
+            if let Some(b) = self.sources.get(d) {
+                return Some(b.clone());
+            }
+            if let Some(f) = self.files.get(path) {
+                if f.content_digest == d {
+                    if let Some(root) = self.source_root.borrow().as_ref() {
+                        if let Ok(b) = std::fs::read(root.join(path)) {
+                            return Some(Rc::new(b));
+                        }
+                    }
+                }
+            }
+        }
+        None
     }
 
     /// Load the indexed FileAnalysis for a path (cached per path).

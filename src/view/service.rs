@@ -17,6 +17,8 @@ pub struct ViewQueryOutcome {
     pub view: RepositoryView,
     pub result: QueryResult,
     pub ensure: super::index::EnsureOutcome,
+    /// Bounded memory composition for this query (additive guidance only).
+    pub memory: crate::memory::compose::MemoryComposition,
     /// Milliseconds for the whole resolve+ensure+query.
     pub total_ms: f64,
 }
@@ -35,6 +37,8 @@ pub struct ViewQueryParams<'a> {
     pub max_results: usize,
     pub token_budget: Option<usize>,
     pub depth: usize,
+    /// Memory policy (§33): off | file | symbol. Additive guidance only.
+    pub memory_mode: crate::memory::compose::MemoryMode,
     pub state_override: Option<&'a Path>,
 }
 
@@ -69,10 +73,41 @@ pub fn run_view_query(
         .map_err(|e| (ViewError::InvalidRequest, e))?;
     let result = engine.run(&plan);
 
+    // §31: optional memory composition — additive guidance only, rebinding
+    // historical symbols against THIS validated view (never replayed as current).
+    let memory = {
+        let state_dir = params
+            .state_override
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(crate::view::state_dir);
+        let index_dir = ensure.index_dir();
+        let known: std::collections::BTreeSet<String> =
+            result.seeds.iter().map(|s| s.node.path.clone()).collect();
+        // §38-§41 minimality: a trivial single-exact decl lookup with no
+        // relations/path intent stays minimal — memory adds no navigation value.
+        let trivial = result.seeds.len() == 1
+            && result.related.is_empty()
+            && plan.intent == crate::query::QueryIntent::Find
+            && matches!(
+                result.seeds[0].node.kind,
+                crate::graph::model::NodeKind::Declaration
+            );
+        crate::memory::compose::compose(
+            &view,
+            &index_dir,
+            params.memory_mode,
+            params.query_text,
+            &known,
+            &state_dir,
+            trivial,
+        )
+    };
+
     Ok(ViewQueryOutcome {
         view,
         result,
         ensure,
+        memory,
         total_ms: started.elapsed().as_secs_f64() * 1000.0,
     })
 }

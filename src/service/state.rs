@@ -269,6 +269,12 @@ impl ServiceState {
         }
     }
 
+    /// Snapshot of the repo roots the service is serving (for live memory
+    /// derivation — symbol exposures resolve against their snapshots).
+    pub fn active_views(&self) -> Vec<String> {
+        self.active_views.lock().unwrap().clone()
+    }
+
     /// Deterministic eviction under memory pressure (§37): probationary
     /// FileAnalysis → view manifests → graph indexes. Authoritative durable
     /// evidence is never in a cache, so it can never be lost (§32).

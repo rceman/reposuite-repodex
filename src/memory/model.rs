@@ -114,7 +114,16 @@ impl MemoryEvidence {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SymbolMemoryEvidence {
     /// Stable RepoDex symbol identity (`decl:{path}#{id}`) or a referenced name.
+    /// NOTE: file-local ordinal — position-unstable (§9). `locator` is the
+    /// cross-version identity used for target-view rebinding.
     pub symbol_id: String,
+    /// Stable qualified declaration locator `{lang}:{path}:{kind}:{qname}`
+    /// (name/scope-based). None for bare references.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub locator: Option<String>,
+    /// Intrinsic decl facets captured at exposure (§11); None if bytes unknown.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub facets: Option<crate::memory::rebind::DeclFacets>,
     pub symbol_name: String,
     pub path: String,
     pub symbol_kind: String,
@@ -144,7 +153,7 @@ pub struct SymbolMemoryEvidence {
 }
 
 /// One remembered investigation: its query signature + per-path evidence.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MemoryEntry {
     pub schema: String,
     pub schema_version: u32,
@@ -152,6 +161,11 @@ pub struct MemoryEntry {
     pub session_ids: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository_id: Option<String>,
+    /// Canonical logical-project scope (§3-§5): `repo:{common_dir_digest}`,
+    /// `project:{alias}`, or `root:{root_digest}`. Stamped at build from the
+    /// resolved view's git common-dir; never derived from a branch name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project_scope: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo_head: Option<String>,
     #[serde(default)]

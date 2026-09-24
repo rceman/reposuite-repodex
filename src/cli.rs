@@ -192,6 +192,8 @@ struct Options {
     target: Option<String>,
     /// `query`/`paths` second endpoint.
     to: Option<String>,
+    /// `query --memory off|file|symbol` — additive memory guidance policy.
+    memory: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -283,6 +285,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--human" => options.human = true,
             "--target" => options.target = Some(value_for(args, &mut index, name, inline_value)?),
             "--to" => options.to = Some(value_for(args, &mut index, name, inline_value)?),
+            "--memory" => options.memory = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
             }
@@ -2640,8 +2643,25 @@ fn command_query(args: &[String]) -> Result<u8, String> {
 fn query_result_json(
     result: &crate::query::QueryResult,
     index_dir: Option<&Path>,
+    memory: Option<&crate::memory::compose::MemoryComposition>,
 ) -> serde_json::Value {
-    crate::query::projection::build(result, index_dir).to_json()
+    let mut p = crate::query::projection::build(result, index_dir);
+    attach_memory(&mut p, memory);
+    p.to_json()
+}
+
+/// Attach the memory composition to the projection when the mode requested it
+/// and the composition produced something (never an empty/stub block).
+fn attach_memory(
+    p: &mut crate::query::projection::EvidenceProjection,
+    memory: Option<&crate::memory::compose::MemoryComposition>,
+) {
+    use crate::memory::compose::MemoryMode;
+    if let Some(m) = memory {
+        if m.mode != MemoryMode::Off.as_str() && !m.degraded && m.matched_investigations > 0 {
+            p.memory = serde_json::to_value(m).ok();
+        }
+    }
 }
 
 /// `query` in RepositoryView locator mode (§4-§9):
@@ -2691,6 +2711,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             max_results: req.max_results.unwrap_or(50),
             token_budget: None,
             depth: req.depth.unwrap_or(4),
+            memory_mode: crate::memory::compose::MemoryMode::parse(
+                req.memory_mode.as_deref().unwrap_or("off"),
+            ),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2705,7 +2728,11 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             "schema": v::QUERY_RESPONSE_SCHEMA,
             "repository_view": view_meta_json(&outcome.view),
             "query": text,
-            "result": query_result_json(&outcome.result, Some(&outcome.ensure.index_dir())),
+            "result": query_result_json(
+                &outcome.result,
+                Some(&outcome.ensure.index_dir()),
+                Some(&outcome.memory),
+            ),
             "index": {"fingerprint":outcome.ensure.fingerprint,
                       "reused":outcome.ensure.index_reused,
                       "analyses_reused":outcome.ensure.analyses_reused,
@@ -2760,11 +2787,16 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         max_results: options.max_results.unwrap_or(50),
         token_budget: options.tokens,
         depth: options.depth.unwrap_or(4),
+        memory_mode: crate::memory::compose::MemoryMode::parse(
+            options.memory.as_deref().unwrap_or("off"),
+        ),
         state_override: state.as_deref(),
     };
     let outcome =
         v::run_view_query(&locator, &params).map_err(|(k, m)| machine_err_string(&k, &m))?;
-    let proj = crate::query::projection::build(&outcome.result, Some(&outcome.ensure.index_dir()));
+    let mut proj =
+        crate::query::projection::build(&outcome.result, Some(&outcome.ensure.index_dir()));
+    attach_memory(&mut proj, Some(&outcome.memory));
     if options.human {
         println!("view: {}", outcome.view.canonical_root.display());
         println!("fingerprint: {}", outcome.ensure.fingerprint);

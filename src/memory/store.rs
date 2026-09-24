@@ -210,7 +210,7 @@ impl MemoryStore {
     }
 
     /// Rebuild the postings index from all entries (deterministic).
-    fn rebuild_postings(&mut self) {
+    pub fn rebuild_postings(&mut self) {
         self.postings.clear();
         for (inv, e) in &self.entries {
             for t in e
@@ -308,6 +308,10 @@ impl MemoryStore {
             investigation_id: ep.investigation_id.clone(),
             session_ids: ep.session_ids.clone(),
             repository_id: ep.repository_id.clone(),
+            project_scope: super::project::scope_from_episode(
+                ep.project_id.as_deref(),
+                ep.repository_id.as_deref(),
+            ),
             repo_head: ep.repo_heads.first().cloned(),
             completed_at: ep.completed_at.clone(),
             signature,
@@ -328,6 +332,19 @@ impl MemoryStore {
         known_paths: &BTreeSet<String>,
         limit: usize,
         candidate_cap: usize,
+    ) -> Vec<MemoryMatch> {
+        self.query_scoped(query, known_paths, limit, candidate_cap, None)
+    }
+
+    /// Like `query` but restricted to a canonical project scope (§4). `scope`
+    /// `Some(s)` returns only entries stamped `project_scope == s`.
+    pub fn query_scoped(
+        &self,
+        query: &str,
+        known_paths: &BTreeSet<String>,
+        limit: usize,
+        candidate_cap: usize,
+        scope: Option<&str>,
     ) -> Vec<MemoryMatch> {
         let sig = query_signature(query, known_paths, None);
         let qterms: BTreeSet<String> = sig.terms.iter().cloned().collect();
@@ -359,6 +376,15 @@ impl MemoryStore {
             .take(cap)
             .filter_map(|inv| {
                 let e = self.entries.get(inv)?;
+                // §4 hard isolation: when a scope filter is given, only entries
+                // stamped with that exact canonical project scope match. An
+                // unscoped entry (bare "root"/unknown origin) never leaks into a
+                // scoped project query.
+                if let Some(scope) = scope {
+                    if e.project_scope.as_deref() != Some(scope) {
+                        return None;
+                    }
+                }
                 let terms: BTreeSet<String> = e.signature.terms.iter().cloned().collect();
                 let ids: BTreeSet<String> = e.signature.identifiers.iter().cloned().collect();
                 let paths: BTreeSet<String> = e.signature.paths.iter().cloned().collect();
@@ -524,6 +550,8 @@ impl MemoryStore {
                 let e = entry.symbols.entry(x.symbol_id.clone()).or_insert_with(|| {
                     SymbolMemoryEvidence {
                         symbol_id: x.symbol_id.clone(),
+                        locator: x.symbol_locator.clone(),
+                        facets: x.facets.clone(),
                         symbol_name: x.symbol_name.clone(),
                         path: x.path.clone(),
                         symbol_kind: x.symbol_kind.clone(),

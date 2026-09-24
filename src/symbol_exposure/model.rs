@@ -135,7 +135,18 @@ pub struct SymbolExposure {
     /// `IndexedFile.content_digest` of the version whose symbol map was used).
     pub file_content_digest: Option<String>,
     /// Stable RepoDex symbol/entity identity (`decl:{path}#{declaration_id}`).
+    /// NOTE: file-local ordinal — position-unstable across edits (§9). Use
+    /// `symbol_locator` for cross-version identity/rebinding.
     pub symbol_id: String,
+    /// Stable qualified declaration locator `{lang}:{path}:{kind}:{qname}`
+    /// (name+scope-based, survives insertions). Set for declaration/enclosing
+    /// exposures; None for bare references.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub symbol_locator: Option<String>,
+    /// Intrinsic decl facets captured at exposure (§11); `None` when the source
+    /// bytes for that version were unavailable (§13).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub facets: Option<crate::memory::rebind::DeclFacets>,
     pub symbol_name: String,
     pub symbol_kind: String,
     /// Observed source range (line precision unless bytes known).

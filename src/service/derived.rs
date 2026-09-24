@@ -79,21 +79,26 @@ fn worker_loop(rx: Receiver<AgentEvent>, state: Arc<ServiceState>, hot: Arc<Deri
     let lag = &state.metrics.derived_lag_events;
     let applied_ctr = &state.metrics.derived_events_applied;
     let ck_ctr = &state.metrics.checkpoints;
+    // Durable event mirror (`sessions/*.jsonl`) feeding the incremental
+    // episode->memory derivation (§42-§44). Replay of this log is the source of
+    // truth; derived state is rebuildable and converges identically.
+    let mut estore = crate::agent_event::AgentEventStore::open(&state_dir.join("agent-events"))
+        .expect("agent event mirror");
     let mut pending: Vec<AgentEvent> = Vec::new();
     while !state.shutdown.load(Ordering::SeqCst) {
         match rx.recv_timeout(Duration::from_millis(100)) {
             Ok(e) => pending.push(e),
             Err(_) => {
-                apply_batch(&pending, &hot, applied_ctr);
+                apply_batch(&pending, &hot, applied_ctr, &mut estore);
                 lag.store(0, Ordering::SeqCst);
                 pending.clear();
-                maybe_checkpoint(&cfg, &state_dir, &hot, ck_ctr);
+                maybe_checkpoint(&cfg, &state, &hot, ck_ctr);
             }
         }
         if pending.len() >= 500 {
-            apply_batch(&pending, &hot, applied_ctr);
+            apply_batch(&pending, &hot, applied_ctr, &mut estore);
             pending.clear();
-            maybe_checkpoint(&cfg, &state_dir, &hot, ck_ctr);
+            maybe_checkpoint(&cfg, &state, &hot, ck_ctr);
         }
         lag.store(pending.len() as u64, Ordering::SeqCst);
     }
@@ -101,15 +106,23 @@ fn worker_loop(rx: Receiver<AgentEvent>, state: Arc<ServiceState>, hot: Arc<Deri
     while let Ok(e) = rx.try_recv() {
         pending.push(e);
     }
-    apply_batch(&pending, &hot, applied_ctr);
+    apply_batch(&pending, &hot, applied_ctr, &mut estore);
     let _ = checkpoint(&state_dir, &hot);
+    let _ = crate::memory::live::derive_live(&state_dir, &state.active_views());
 }
 
 /// Fold a batch of events into the HOT derived state (incremental, §51).
-fn apply_batch(events: &[AgentEvent], hot: &DerivedHot, applied_ctr: &AtomicU64) {
+fn apply_batch(
+    events: &[AgentEvent],
+    hot: &DerivedHot,
+    applied_ctr: &AtomicU64,
+    estore: &mut crate::agent_event::AgentEventStore,
+) {
     if events.is_empty() {
         return;
     }
+    // Mirror into the replayable session log that feeds memory derivation (§42).
+    let _ = estore.append(events);
     let mut idx = hot.activity.lock().unwrap();
     let mut sessions = hot.sessions.lock().unwrap();
     for e in events {
@@ -136,7 +149,7 @@ fn apply_batch(events: &[AgentEvent], hot: &DerivedHot, applied_ctr: &AtomicU64)
     applied_ctr.fetch_add(events.len() as u64, Ordering::SeqCst);
 }
 
-fn maybe_checkpoint(cfg: &DerivedCfg, state_dir: &Path, hot: &DerivedHot, ck_ctr: &AtomicU64) {
+fn maybe_checkpoint(cfg: &DerivedCfg, state: &ServiceState, hot: &DerivedHot, ck_ctr: &AtomicU64) {
     let dirty = hot.dirty_updates.load(Ordering::SeqCst);
     let elapsed = hot.last_checkpoint.lock().unwrap().elapsed();
     if dirty == 0 {
@@ -147,10 +160,13 @@ fn maybe_checkpoint(cfg: &DerivedCfg, state_dir: &Path, hot: &DerivedHot, ck_ctr
     {
         return;
     }
-    if checkpoint(state_dir, hot).is_ok() {
+    if checkpoint(&state.state_dir, hot).is_ok() {
         hot.dirty_updates.store(0, Ordering::SeqCst);
         *hot.last_checkpoint.lock().unwrap() = Instant::now();
         ck_ctr.fetch_add(1, Ordering::SeqCst);
+        // §42-§45: derive episodes->memory on the checkpoint boundary — async,
+        // off the ACK path; lag is measured by derived_lag_events separately.
+        let _ = crate::memory::live::derive_live(&state.state_dir, &state.active_views());
     }
 }
 

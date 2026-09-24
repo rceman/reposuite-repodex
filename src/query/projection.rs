@@ -18,7 +18,7 @@ pub const PROJECTION_SCHEMA: &str = "reposuite.repodex.query-projection.v1";
 
 /// A current-view source range locator (row/col + byte offsets). Metadata only —
 /// it is NOT a SourceExposure: the bytes were not delivered to the model (§55-56).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct RangeOut {
     pub path: String,
     pub start_line: u32,
@@ -176,6 +176,10 @@ pub struct EvidenceProjection {
     pub related: Vec<RelOut>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connector: Option<ConnectorPacket>,
+    /// Optional memory composition (additive guidance; never replaces seeds).
+    /// Absent when memory mode is `off` or memory is unavailable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub memory: Option<serde_json::Value>,
     pub bounds: Bounds,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
@@ -395,6 +399,7 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
         seeds,
         related,
         connector,
+        memory: None,
         bounds: Bounds {
             max_seeds: MAX_SEEDS,
             max_related: MAX_RELATED,
