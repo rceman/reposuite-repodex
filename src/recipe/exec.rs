@@ -47,11 +47,13 @@ pub fn match_recipe<'a>(
         // Family must be consistent with the requested intent when the intent
         // is a relationship/connector (a callers recipe can't serve a paths
         // query). `find` is open to any family.
-        let ok_intent = matches!((intent, r.family),
+        let ok_intent = matches!(
+            (intent, r.family),
             (QueryIntent::Callers, RecipeFamily::DefinitionToCallers)
-            | (QueryIntent::Callees, RecipeFamily::DefinitionToCallees)
-            | (QueryIntent::Paths, RecipeFamily::TwoAnchorConnector)
-            | (QueryIntent::Find, _));
+                | (QueryIntent::Callees, RecipeFamily::DefinitionToCallees)
+                | (QueryIntent::Paths, RecipeFamily::TwoAnchorConnector)
+                | (QueryIntent::Find, _)
+        );
         if !ok_intent {
             continue;
         }
