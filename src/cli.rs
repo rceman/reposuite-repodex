@@ -198,6 +198,8 @@ struct Options {
     context: Option<String>,
     /// `query --recipes off|auto|force` — guarded evidence recipe policy.
     recipes: Option<String>,
+    /// `query --utility-policy off|shadow|apply` — evidence-utility policy.
+    utility_policy: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -2652,6 +2654,9 @@ fn query_result_json(
 ) -> serde_json::Value {
     let mut p = crate::query::projection::build(&outcome.result, index_dir);
     attach_memory(&mut p, Some(&outcome.memory));
+    if let Some(ut) = &outcome.utility_trace {
+        p.utility = Some(serde_json::to_value(ut).unwrap_or_default());
+    }
     if let Some(rc) = &outcome.recipe {
         p.recipe = Some(
             serde_json::json!({"recipe_id":rc.recipe_id,"family":rc.family,"produced":rc.produced.len(),"fell_back":rc.fell_back}),
@@ -2738,6 +2743,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
                 req.context_policy.as_deref().unwrap_or("static"),
             ),
             recipes: crate::recipe::RecipePolicy::parse(req.recipes.as_deref().unwrap_or("off")),
+            utility_policy: crate::utility::UtilityPolicy::parse(
+                req.utility_policy.as_deref().unwrap_or("off"),
+            ),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2814,6 +2822,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             options.context.as_deref().unwrap_or("static"),
         ),
         recipes: crate::recipe::RecipePolicy::parse(options.recipes.as_deref().unwrap_or("off")),
+        utility_policy: crate::utility::UtilityPolicy::parse(
+            options.utility_policy.as_deref().unwrap_or("off"),
+        ),
         state_override: state.as_deref(),
     };
     let outcome =

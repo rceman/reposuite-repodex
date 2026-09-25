@@ -25,6 +25,10 @@ pub struct ViewQueryOutcome {
     pub context_policy: crate::context::ContextPolicy,
     /// Recipe execution outcome (Some when a recipe matched + ran).
     pub recipe: Option<crate::recipe::RecipeOutcome>,
+    /// Utility-policy trace (shadow/apply) — debug, not agent-facing.
+    pub utility_trace: Option<crate::utility::UtilityTrace>,
+    /// The logged delivery decision (eligible slate + selected).
+    pub delivery: Option<crate::utility::DeliveryDecision>,
     /// Milliseconds for the whole resolve+ensure+query.
     pub total_ms: f64,
 }
@@ -49,6 +53,8 @@ pub struct ViewQueryParams<'a> {
     pub context_policy: crate::context::ContextPolicy,
     /// Recipe policy (§41): off | auto | force.
     pub recipes: crate::recipe::RecipePolicy,
+    /// Utility policy (§24): off (default) | shadow | apply.
+    pub utility_policy: crate::utility::UtilityPolicy,
     pub state_override: Option<&'a Path>,
 }
 
@@ -109,7 +115,9 @@ pub fn run_view_query(
         }
     };
 
-    // §31: optional memory composition — additive guidance only, rebinding
+    // Trajectory utility policy (§24-§28): `off` default. `shadow` computes the
+    // would-be selection without changing the packet; `apply` reorders the
+    // OPTIONAL seed tail only (mandatory identity + FACT/CANDIDATE untouched).
     // historical symbols against THIS validated view (never replayed as current).
     let memory = {
         let state_dir = params
@@ -142,6 +150,71 @@ pub fn run_view_query(
     // Deterministic query shape for adaptive compilation (§5-§7).
     let (shape, _reason) = crate::context::classify(plan.intent, &result);
 
+    let (utility_trace, delivery) =
+        if matches!(params.utility_policy, crate::utility::UtilityPolicy::Off) {
+            (None, None)
+        } else {
+            let state_dir = params
+                .state_override
+                .map(|p| p.to_path_buf())
+                .unwrap_or_else(crate::view::state_dir);
+            let scope = crate::memory::project::project_scope(&view);
+            let stats = crate::utility::UtilityStats::load(&state_dir);
+            let decision_id = crate::repository::digest::content_digest(
+                format!("{}|{}", params.query_text, started.elapsed().as_nanos()).as_bytes(),
+            );
+            let eligible: Vec<String> = result
+                .seeds
+                .iter()
+                .skip(1)
+                .map(|s| s.node.key.clone())
+                .collect();
+            let mandatory: Vec<String> = result
+                .seeds
+                .iter()
+                .take(1)
+                .map(|s| s.node.key.clone())
+                .collect();
+            let tr = crate::utility::decide(
+                &mut result.seeds,
+                &format!("{:?}", shape),
+                &scope,
+                &stats,
+                params.utility_policy,
+                &decision_id,
+            );
+            let dec = crate::utility::DeliveryDecision {
+                schema: crate::utility::UTILITY_SCHEMA.into(),
+                decision_id: decision_id.clone(),
+                scope,
+                query_family: plan.terms.join("|"),
+                query_shape: format!("{:?}", shape),
+                policy_version: params.utility_policy.as_str().into(),
+                eligible,
+                mandatory,
+                selected: tr.policy_optional.clone(),
+                est_bytes: 0,
+                actual_bytes: 0,
+            };
+            // §8: persist the delivery decision so later trajectory observations can
+            // reference the exact slate. Append-only decisions.jsonl, project dir.
+            {
+                let dir = state_dir.join("utility");
+                let _ = std::fs::create_dir_all(&dir);
+                if let Ok(mut f) = std::fs::OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(dir.join("decisions.jsonl"))
+                {
+                    use std::io::Write;
+                    let _ = writeln!(f, "{}", serde_json::to_string(&dec).unwrap_or_default());
+                }
+            }
+            (Some(tr), Some(dec))
+        };
+
+    // §31: optional memory composition — additive guidance only, rebinding
+
     Ok(ViewQueryOutcome {
         view,
         result,
@@ -150,6 +223,8 @@ pub fn run_view_query(
         shape,
         context_policy: params.context_policy,
         recipe,
+        utility_trace,
+        delivery,
         total_ms: started.elapsed().as_secs_f64() * 1000.0,
     })
 }

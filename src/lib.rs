@@ -48,6 +48,7 @@ pub mod service;
 pub mod symbol_exposure;
 pub mod system_one;
 pub mod temporal;
+pub mod utility;
 pub mod view;
 
 pub use model::{

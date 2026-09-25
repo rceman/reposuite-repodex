@@ -188,6 +188,9 @@ pub struct EvidenceProjection {
     /// Compact provenance only — verbose step trace is debug-only (§28).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recipe: Option<serde_json::Value>,
+    /// Utility-policy block: decision_id + policy + diverged (debug trace).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub utility: Option<serde_json::Value>,
     pub bounds: Bounds,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
@@ -410,6 +413,7 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
         memory: None,
         context: None,
         recipe: None,
+        utility: None,
         bounds: Bounds {
             max_seeds: MAX_SEEDS,
             max_related: MAX_RELATED,

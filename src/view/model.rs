@@ -65,6 +65,9 @@ pub struct QueryRequest {
     /// Recipe policy (§41): `off` (default) | `auto` | `force` (debug).
     #[serde(default)]
     pub recipes: Option<String>,
+    /// Utility policy (§24): `off` (default) | `shadow` | `apply`.
+    #[serde(default)]
+    pub utility_policy: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never
