@@ -130,7 +130,7 @@ impl Structure {
                 LanguageId::Go => structure.collect_go_package(analysis),
                 LanguageId::Php => structure.collect_php_namespaces(analysis),
                 LanguageId::Python => structure.collect_python_modules(analysis),
-                LanguageId::Rust => {}
+                LanguageId::Rust | LanguageId::Manifest => {}
             }
         }
         structure.files.sort();

@@ -1,0 +1,1 @@
+{"before":{"sufficient":31,"partial":4,"insufficient":5},"after":{"sufficient":36,"partial":0,"insufficient":4},"manifest_misses_fixed":"5/6 (ic-gomod,ic-cargo,ic-rustver,ic-edition,ic-module-dep)","still_missing":["ic-libname (ranking/ambiguity)","lx-shutdown,lx-entry,lx-encoder (vocabulary)"],"no_regression":true,"threshold":">=5/6 met"}

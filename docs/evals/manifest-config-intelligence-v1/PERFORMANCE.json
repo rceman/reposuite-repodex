@@ -1,0 +1,1 @@
+{"index_delta":"+1 FileAnalysis + bounded decls per manifest (small)","warm_query":"manifest facts share the term index, negligible","storage":"+1 object + graph nodes/edges per manifest","source_reuse":"manifest change does not reparse source (separate object keys)"}

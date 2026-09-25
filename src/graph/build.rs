@@ -281,6 +281,63 @@ pub fn build_graph(
         }
     }
 
+    // Source -> owning manifest edges (§19/§27). A source file is owned by the
+    // module/package declared in the nearest enclosing manifest (go.mod for
+    // .go, Cargo.toml for .rs); a nested manifest establishes a boundary, so
+    // files under it belong to the inner module, not the outer. FACT only when
+    // a single nearest manifest applies — never a guessed owner.
+    let mut manifests: Vec<(String, String, String)> = Vec::new(); // (filename,dir,key)
+    for a in &analyses {
+        if crate::manifest::manifest_kind(&a.file.relative_path).is_some() {
+            let rel = &a.file.relative_path;
+            let filename = rel.rsplit('/').next().unwrap_or(rel).to_string();
+            let dir = rel
+                .rsplit_once('/')
+                .map(|(d, _)| d.to_string())
+                .unwrap_or_default();
+            manifests.push((
+                filename,
+                dir,
+                node_key(NodeKind::File, &a.file.relative_path, None, None),
+            ));
+        }
+    }
+    // longest dir first so the innermost (nested) manifest wins.
+    manifests.sort_by(|a, b| b.1.len().cmp(&a.1.len()));
+    for a in &analyses {
+        let rel = &a.file.relative_path;
+        let ext = rel.rsplit('.').next().unwrap_or("");
+        let want = match ext {
+            "go" => Some("go.mod"),
+            "rs" => Some("Cargo.toml"),
+            _ => None,
+        };
+        let Some(want) = want else { continue };
+        let file_dir = rel
+            .rsplit_once('/')
+            .map(|(d, _)| d.to_string())
+            .unwrap_or_default();
+        // nearest enclosing manifest dir of the wanted kind (root = "").
+        let owner = manifests.iter().find(|(fname, d, _)| {
+            fname == want
+                && (file_dir == *d || d.is_empty() || file_dir.starts_with(&format!("{d}/")))
+        });
+        if let Some((_, _, mkey)) = owner {
+            let fkey = node_key(NodeKind::File, rel, None, None);
+            if let (Some(fnode), Some(mnode)) = (nodes.get(&fkey), nodes.get(mkey.as_str())) {
+                push_edge(
+                    &mut edges,
+                    "owned_by_manifest",
+                    EvidenceClass::Fact,
+                    "repodex.manifest_ownership",
+                    fnode.node_id.clone(),
+                    mnode.node_id.clone(),
+                    EdgeMeta::default(),
+                );
+            }
+        }
+    }
+
     // Structural-link edges: project each resolved link to node edges.
     for link in &links {
         project_link(link, &nodes, &mut edges);

@@ -1,0 +1,1 @@
+{"edge":"owned_by_manifest","semantics":"source file -> nearest enclosing manifest (go.mod for .go, Cargo.toml for .rs); nested manifest = boundary","evidence":"FACT (deterministic layout)","observed":"9 edges on memepilot (9 go files -> go.mod)"}

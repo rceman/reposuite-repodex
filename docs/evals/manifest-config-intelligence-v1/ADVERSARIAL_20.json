@@ -1,0 +1,1 @@
+{"design":"20 manifest/module/package queries not used as design inputs","manifest_entity_retrievable":"13/15 with manifest vocabulary","misses":"engine-package queries correctly resolve to the engine package entity not a manifest","note":"facts retrievable when queried with manifest vocabulary (cargo/module/edition); crate-vs-cargo synonymy is the remaining vocab gap"}

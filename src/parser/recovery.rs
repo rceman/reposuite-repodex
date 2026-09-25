@@ -218,5 +218,6 @@ fn recovery_query_source(language: LanguageId) -> &'static str {
         LanguageId::Go => include_str!("../../queries/go/recovery.scm"),
         LanguageId::Python => include_str!("../../queries/python/recovery.scm"),
         LanguageId::Php => include_str!("../../queries/php/recovery.scm"),
+        LanguageId::Manifest => include_str!("../../queries/rust/recovery.scm"),
     }
 }

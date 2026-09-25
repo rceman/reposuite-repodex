@@ -171,6 +171,45 @@ fn build_view_snapshot(
             meta.relative_path, meta.content_digest
         ));
     }
+    // Manifest artifacts (go.mod / Cargo.toml): index typed module/package
+    // facts as a synthetic FileAnalysis so they become first-class queryable
+    // evidence — not just validity metadata (§14-§28). They reuse the same
+    // content-addressed object store + snapshot pipeline as source files.
+    for meta in &manifest.metadata {
+        if crate::manifest::manifest_kind(&meta.relative_path).is_none() {
+            continue;
+        }
+        let abs = view.canonical_root.join(&meta.relative_path);
+        let read = crate::input::read_bounded(&abs, analyzer.config().max_file_size);
+        if digest::content_digest(&read.bytes) != meta.content_digest {
+            // Manifest changed between capture and index: skip rather than
+            // index stale bytes (validity recompute will pick up the change).
+            stats.diverged = true;
+            continue;
+        }
+        let analysis = crate::manifest::analyze(&meta.relative_path, &read.bytes);
+        let objkey = artifact::object_key_scoped(
+            &meta.relative_path,
+            &meta.content_digest,
+            &analyzer_digest,
+        );
+        let snap_obj = snap_files.join(format!("{objkey}.json"));
+        let real_obj = obj_root.join("files").join(format!("{objkey}.json"));
+        artifact::write_file_artifact(&obj_root, &objkey, &analysis).map_err(|e| e.to_string())?;
+        link_or_copy(&real_obj, &snap_obj).map_err(|e| e.to_string())?;
+        let mut rec = build::index_file(
+            &analysis,
+            &meta.content_digest,
+            read.bytes.len() as u64,
+            read.truncated,
+        );
+        rec.object_key = objkey.clone();
+        stats.parsed += 1;
+        accumulate(&mut m, &rec);
+        m.files.push(rec);
+    }
+    m.files
+        .sort_by(|a, b| a.relative_path.cmp(&b.relative_path));
     m.refresh_snapshot_digest();
     artifact::write_manifest(snap_dir, &m).map_err(|e| e.to_string())?;
     Ok((m, digest::content_digest(actual_seed.as_bytes())))

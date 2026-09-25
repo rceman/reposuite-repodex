@@ -1,0 +1,1 @@
+{"artifact_kinds":["go_mod","cargo_toml"],"detection":"by file basename (not extension)","model":"manifest facts -> Declaration{name:typed fact text, range:line range} on FileAnalysis(language=Manifest)","identity":"project scope + repo-relative path + content digest + producer policy"}

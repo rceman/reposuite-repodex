@@ -28,10 +28,17 @@ pub enum LanguageId {
     Go,
     Python,
     Php,
+    /// Manifest/config artifact (go.mod, Cargo.toml). Detected by file NAME,
+    /// not extension — intentionally outside `ALL` so it is never scanned as a
+    /// source language or included in the benchmark corpus.
+    Manifest,
 }
 
 impl LanguageId {
     /// All supported languages, in the fixed reporting order of TASK 1.
+    /// `Manifest` is excluded: it is an artifact kind, not a scannable source
+    /// language, so it must not appear in `--language all` corpus generation
+    /// or per-language indexing fingerprints.
     pub const ALL: [LanguageId; 4] = [
         LanguageId::Rust,
         LanguageId::Go,
@@ -46,6 +53,7 @@ impl LanguageId {
             LanguageId::Go => "go",
             LanguageId::Python => "python",
             LanguageId::Php => "php",
+            LanguageId::Manifest => "manifest",
         }
     }
 
@@ -56,6 +64,7 @@ impl LanguageId {
             LanguageId::Go => "Go",
             LanguageId::Python => "Python",
             LanguageId::Php => "PHP",
+            LanguageId::Manifest => "Manifest",
         }
     }
 
@@ -66,6 +75,7 @@ impl LanguageId {
             LanguageId::Go => &["go"],
             LanguageId::Python => &["py"],
             LanguageId::Php => &["php"],
+            LanguageId::Manifest => &[],
         }
     }
 

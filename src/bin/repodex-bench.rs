@@ -624,6 +624,7 @@ fn append_incremental_tail(language: LanguageId, source: &str) -> String {
     let comment = match language {
         LanguageId::Python => "# incremental tail",
         LanguageId::Rust | LanguageId::Go | LanguageId::Php => "// incremental tail",
+        LanguageId::Manifest => "// incremental tail",
     };
     format!("{source}\n{comment}\n")
 }
@@ -737,6 +738,7 @@ fn generate(language: LanguageId, size_name: &str, target: usize) -> String {
         }
         LanguageId::Python => source.push_str("\"\"\"Generated synthetic Python source.\"\"\"\n\n"),
         LanguageId::Php => source.push_str("<?php\n\n// generated synthetic PHP source\n\n"),
+        LanguageId::Manifest => {}
     }
     let mut index = 0usize;
     while source.len() < target {
@@ -782,6 +784,7 @@ fn generate(language: LanguageId, size_name: &str, target: usize) -> String {
                      function helper{index}(int $input): int\n{{\n    return $input * 2;\n}}\n\n"
                 ));
             }
+            LanguageId::Manifest => {}
         }
     }
     source
@@ -831,6 +834,7 @@ fn generate_nested(language: LanguageId, depth: usize) -> String {
                 source.push_str("}\n");
             }
         }
+        LanguageId::Manifest => {}
     }
     source
 }
