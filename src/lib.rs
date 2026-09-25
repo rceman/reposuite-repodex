@@ -50,6 +50,7 @@ pub mod system_one;
 pub mod temporal;
 pub mod utility;
 pub mod view;
+pub mod witness;
 
 pub use model::{
     AnalysisStatus, BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag,

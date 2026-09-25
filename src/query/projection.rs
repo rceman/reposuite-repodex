@@ -191,6 +191,14 @@ pub struct EvidenceProjection {
     /// Utility-policy block: decision_id + policy + diverged (debug trace).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub utility: Option<serde_json::Value>,
+    /// Current-source witnesses: the exact current bytes for bounded evidence
+    /// ranges. Present only for `source_witness=bounded` (§5, §16).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub witnesses: Vec<serde_json::Value>,
+    /// Source-exposure accounting (§11): witness bytes ARE source exposure;
+    /// navigation metadata is not.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_exposure: Option<serde_json::Value>,
     pub bounds: Bounds,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
@@ -214,7 +222,7 @@ fn range_out(path: &str, r: &crate::model::SourceRange) -> RangeOut {
 /// Resolve the current declaration/body ranges of a `decl:path#id` seed from the
 /// snapshot's stored `FileAnalysis` (no reparse — §11/§41). `files_dir` is the
 /// index snapshot's `files/` object dir; `manifest` maps path->object_key.
-struct RangeResolver {
+pub struct RangeResolver {
     files_dir: std::path::PathBuf,
     /// path -> object_key (from the snapshot manifest).
     object_of: BTreeMap<String, String>,
@@ -223,7 +231,8 @@ struct RangeResolver {
 }
 
 impl RangeResolver {
-    fn open(index_dir: &Path) -> Option<Self> {
+    /// Open the range resolver over the index snapshot dir.
+    pub fn open(index_dir: &Path) -> Option<Self> {
         let snap = index_dir.join("snapshot");
         let manifest = snap.join("manifest.json");
         let text = std::fs::read_to_string(manifest).ok()?;
@@ -239,6 +248,11 @@ impl RangeResolver {
             object_of,
             cache: std::cell::RefCell::new(BTreeMap::new()),
         })
+    }
+
+    /// The recorded content digest (snapshot_id) the file's ranges were computed on.
+    pub fn file_digest(&self, path: &str) -> Option<String> {
+        self.analysis(path).map(|a| a.file.snapshot_id)
     }
 
     fn analysis(&self, path: &str) -> Option<crate::model::FileAnalysis> {
@@ -414,6 +428,8 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
         context: None,
         recipe: None,
         utility: None,
+        witnesses: Vec::new(),
+        source_exposure: None,
         bounds: Bounds {
             max_seeds: MAX_SEEDS,
             max_related: MAX_RELATED,

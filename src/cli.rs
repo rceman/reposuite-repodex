@@ -200,6 +200,8 @@ struct Options {
     recipes: Option<String>,
     /// `query --utility-policy off|shadow|apply` — evidence-utility policy.
     utility_policy: Option<String>,
+    /// `query --source-witness off|bounded` — current-source witness policy.
+    source_witness: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -2657,6 +2659,18 @@ fn query_result_json(
     if let Some(ut) = &outcome.utility_trace {
         p.utility = Some(serde_json::to_value(ut).unwrap_or_default());
     }
+    // §16: source-witness delivery — exact current bytes for bounded ranges.
+    if outcome.source_witness == crate::witness::SourceWitnessPolicy::Bounded {
+        let wp = crate::witness::materialize(&p, &outcome.view_root, index_dir);
+        p.source_exposure = Some(
+            serde_json::json!({"witness_bytes":wp.witness_bytes,"witness_count":wp.witnesses.len(),"unavailable":wp.unavailable}),
+        );
+        p.witnesses = wp
+            .witnesses
+            .iter()
+            .map(|w| serde_json::to_value(w).unwrap_or_default())
+            .collect();
+    }
     if let Some(rc) = &outcome.recipe {
         p.recipe = Some(
             serde_json::json!({"recipe_id":rc.recipe_id,"family":rc.family,"produced":rc.produced.len(),"fell_back":rc.fell_back}),
@@ -2746,6 +2760,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             utility_policy: crate::utility::UtilityPolicy::parse(
                 req.utility_policy.as_deref().unwrap_or("off"),
             ),
+            source_witness: crate::witness::SourceWitnessPolicy::parse(
+                req.source_witness.as_deref().unwrap_or("off"),
+            ),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2824,6 +2841,9 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         recipes: crate::recipe::RecipePolicy::parse(options.recipes.as_deref().unwrap_or("off")),
         utility_policy: crate::utility::UtilityPolicy::parse(
             options.utility_policy.as_deref().unwrap_or("off"),
+        ),
+        source_witness: crate::witness::SourceWitnessPolicy::parse(
+            options.source_witness.as_deref().unwrap_or("off"),
         ),
         state_override: state.as_deref(),
     };

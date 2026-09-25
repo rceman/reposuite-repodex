@@ -68,6 +68,9 @@ pub struct QueryRequest {
     /// Utility policy (§24): `off` (default) | `shadow` | `apply`.
     #[serde(default)]
     pub utility_policy: Option<String>,
+    /// Source-witness policy (§16): `off` (default) | `bounded`.
+    #[serde(default)]
+    pub source_witness: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

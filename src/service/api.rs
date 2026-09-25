@@ -161,6 +161,9 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         utility_policy: crate::utility::UtilityPolicy::parse(
             qreq.utility_policy.as_deref().unwrap_or("off"),
         ),
+        source_witness: crate::witness::SourceWitnessPolicy::parse(
+            qreq.source_witness.as_deref().unwrap_or("off"),
+        ),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {
@@ -217,6 +220,18 @@ fn query_result_json(
     }
     if let Some(ut) = &outcome.utility_trace {
         p.utility = Some(serde_json::to_value(ut).unwrap_or_default());
+    }
+    // §16: source-witness delivery — exact current bytes for bounded ranges.
+    if outcome.source_witness == crate::witness::SourceWitnessPolicy::Bounded {
+        let wp = crate::witness::materialize(&p, &outcome.view_root, index_dir);
+        p.source_exposure = Some(
+            serde_json::json!({"witness_bytes":wp.witness_bytes,"witness_count":wp.witnesses.len(),"unavailable":wp.unavailable}),
+        );
+        p.witnesses = wp
+            .witnesses
+            .iter()
+            .map(|w| serde_json::to_value(w).unwrap_or_default())
+            .collect();
     }
     if let Some(rc) = &outcome.recipe {
         p.recipe = Some(

@@ -9,7 +9,7 @@ mod diagnostic;
 mod facts;
 mod range;
 
-pub use analysis::{AnalysisStatus, FileAnalysis, SourceFile, SCHEMA_VERSION};
+pub use analysis::{snapshot_id, AnalysisStatus, FileAnalysis, SourceFile, SCHEMA_VERSION};
 pub use diagnostic::{Diagnostic, DiagnosticKind, DiagnosticSeverity};
 pub use facts::{
     BindingKind, CallLikeForm, CallLikeOccurrence, Declaration, DeclarationFlag, DeclarationKind,

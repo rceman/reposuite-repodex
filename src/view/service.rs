@@ -29,6 +29,10 @@ pub struct ViewQueryOutcome {
     pub utility_trace: Option<crate::utility::UtilityTrace>,
     /// The logged delivery decision (eligible slate + selected).
     pub delivery: Option<crate::utility::DeliveryDecision>,
+    /// Absolute view root (for current-source witness materialization).
+    pub view_root: std::path::PathBuf,
+    /// Effective source-witness policy for this query.
+    pub source_witness: crate::witness::SourceWitnessPolicy,
     /// Milliseconds for the whole resolve+ensure+query.
     pub total_ms: f64,
 }
@@ -55,6 +59,8 @@ pub struct ViewQueryParams<'a> {
     pub recipes: crate::recipe::RecipePolicy,
     /// Utility policy (§24): off (default) | shadow | apply.
     pub utility_policy: crate::utility::UtilityPolicy,
+    /// Source-witness policy (§16): off (default) | bounded.
+    pub source_witness: crate::witness::SourceWitnessPolicy,
     pub state_override: Option<&'a Path>,
 }
 
@@ -215,6 +221,7 @@ pub fn run_view_query(
 
     // §31: optional memory composition — additive guidance only, rebinding
 
+    let view_root = view.canonical_root.clone();
     Ok(ViewQueryOutcome {
         view,
         result,
@@ -225,6 +232,8 @@ pub fn run_view_query(
         recipe,
         utility_trace,
         delivery,
+        view_root,
+        source_witness: params.source_witness,
         total_ms: started.elapsed().as_secs_f64() * 1000.0,
     })
 }

@@ -35,6 +35,7 @@ fn query(root: &Path, state: &Path, q: &str, recipes: RecipePolicy) -> serde_jso
         context_policy: repodex::context::ContextPolicy::Static,
         recipes,
         utility_policy: repodex::utility::UtilityPolicy::Off,
+        source_witness: repodex::witness::SourceWitnessPolicy::Off,
         state_override: Some(state),
     };
     let o = run_view_query(&ViewLocator::Root(root.to_path_buf()), &params).unwrap();

@@ -27,6 +27,7 @@ fn q(root: &Path, state: &Path, query: &str, policy: ContextPolicy) -> serde_jso
         context_policy: policy,
         recipes: repodex::recipe::RecipePolicy::Off,
         utility_policy: repodex::utility::UtilityPolicy::Off,
+        source_witness: repodex::witness::SourceWitnessPolicy::Off,
         state_override: Some(state),
     };
     let o = run_view_query(&loc, &params).unwrap();
@@ -124,6 +125,7 @@ fn adaptive_preserves_fact_candidate_and_endpoints() {
         context_policy: ContextPolicy::Adaptive,
         recipes: repodex::recipe::RecipePolicy::Off,
         utility_policy: repodex::utility::UtilityPolicy::Off,
+        source_witness: repodex::witness::SourceWitnessPolicy::Off,
         state_override: Some(s.path()),
     };
     let o = run_view_query(&loc, &params).unwrap();
@@ -162,6 +164,7 @@ fn budget_limited_marks_incomplete_not_complete() {
         context_policy: ContextPolicy::Adaptive,
         recipes: repodex::recipe::RecipePolicy::Off,
         utility_policy: repodex::utility::UtilityPolicy::Off,
+        source_witness: repodex::witness::SourceWitnessPolicy::Off,
         state_override: Some(s.path()),
     };
     let o = run_view_query(&loc, &params).unwrap();
