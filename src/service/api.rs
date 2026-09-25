@@ -164,6 +164,7 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
         source_witness: crate::witness::SourceWitnessPolicy::parse(
             qreq.source_witness.as_deref().unwrap_or("off"),
         ),
+        vocab_bridge: matches!(qreq.vocab_bridge.as_deref(), Some("on")),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {

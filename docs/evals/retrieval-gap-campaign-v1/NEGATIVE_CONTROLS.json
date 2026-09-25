@@ -1,0 +1,1 @@
+{"observed":"bridge expansion did not promote wrong entities on already-sufficient queries (encoder->encode matched Encode, not unrelated); no false positives on the corpus"}

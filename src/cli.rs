@@ -202,6 +202,8 @@ struct Options {
     utility_policy: Option<String>,
     /// `query --source-witness off|bounded` — current-source witness policy.
     source_witness: Option<String>,
+    /// `query --vocab-bridge on|off` — deterministic morphological term bridge.
+    vocab_bridge: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -2763,6 +2765,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             source_witness: crate::witness::SourceWitnessPolicy::parse(
                 req.source_witness.as_deref().unwrap_or("off"),
             ),
+            vocab_bridge: matches!(req.vocab_bridge.as_deref(), Some("on")),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2845,6 +2848,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         source_witness: crate::witness::SourceWitnessPolicy::parse(
             options.source_witness.as_deref().unwrap_or("off"),
         ),
+        vocab_bridge: matches!(options.vocab_bridge.as_deref(), Some("on")),
         state_override: state.as_deref(),
     };
     let outcome =

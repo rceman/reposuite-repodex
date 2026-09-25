@@ -74,3 +74,30 @@ pub fn query_terms(text: &str) -> Vec<String> {
 pub fn lowercase(text: &str) -> String {
     text.to_lowercase()
 }
+
+/// Deterministic morphological variants of a query term — stems that strip the
+/// common English suffixes that separate an identifier from its spoken form.
+/// Purely lexical: `encoder` -> {encode}, `resolving` -> {resolve}. No
+/// synonyms, no semantics, no model. Bounded to a small fixed set.
+pub fn morph_variants(term: &str) -> Vec<String> {
+    let mut out = vec![term.to_string()];
+    let suf = [
+        "tion", "ment", "ing", "ers", "ies", "ed", "er", "or", "es", "s", "ly", "al", "ity", "ity",
+    ];
+    for s in suf {
+        if let Some(base) = term.strip_suffix(s) {
+            if base.len() >= 3 {
+                out.push(base.to_string());
+                // restore a dropped trailing -e (encode -> encoder), a common split.
+                out.push(format!("{base}e"));
+                // ies -> y (queries -> query)
+                if s == "ies" {
+                    out.push(format!("{base}y"));
+                }
+            }
+        }
+    }
+    out.sort();
+    out.dedup();
+    out
+}

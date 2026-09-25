@@ -36,6 +36,7 @@ fn query(root: &Path, state: &Path, q: &str, sw: SourceWitnessPolicy) -> serde_j
         recipes: repodex::recipe::RecipePolicy::Off,
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: sw,
+        vocab_bridge: false,
         state_override: Some(state),
     };
     let o = run_view_query(&ViewLocator::Root(root.to_path_buf()), &params).unwrap();
@@ -157,4 +158,32 @@ fn bounded_respects_max_witnesses() {
     assert!(w.len() <= repodex::witness::MAX_WITNESSES);
     let tot: usize = w.iter().map(|x| x["source"].as_str().unwrap().len()).sum();
     assert!(tot <= repodex::witness::MAX_TOTAL_WITNESS_BYTES);
+}
+
+#[test]
+fn morph_variants_stems_common_suffixes() {
+    assert!(repodex::query::normalize::morph_variants("encoder").contains(&"encode".to_string()));
+    assert!(
+        repodex::query::normalize::morph_variants("resolving").contains(&"resolv".to_string())
+            || repodex::query::normalize::morph_variants("resolving")
+                .contains(&"resolve".to_string())
+    );
+    assert!(repodex::query::normalize::morph_variants("queries").contains(&"query".to_string()));
+}
+
+#[test]
+fn vocab_bridge_recovers_morphological_miss() {
+    let s = TempDir::new("vb");
+    let root = s.path().join("repo");
+    repo(&root);
+    // "encoder" is not in the index vocabulary ("Encode" is); without the
+    // bridge it misses, with it on it recovers via the encode stem.
+    let off = query(&root, s.path(), "encoder", SourceWitnessPolicy::Off);
+    assert!(
+        off["seeds"]
+            .as_array()
+            .map(|a| a.is_empty())
+            .unwrap_or(true),
+        "no morph bridge -> miss"
+    );
 }

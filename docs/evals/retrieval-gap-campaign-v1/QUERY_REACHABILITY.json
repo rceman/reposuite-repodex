@@ -1,0 +1,1 @@
+{"RUN":false,"reason":"no QUERY_INTENT_LIMIT/GRAPH_REACHABILITY failures observed — misses were missing index content, not unreachable existing capability"}

@@ -38,6 +38,7 @@ fn query(root: &Path, state: &Path, q: &str, up: UtilityPolicy) -> serde_json::V
         recipes: repodex::recipe::RecipePolicy::Off,
         utility_policy: up,
         source_witness: repodex::witness::SourceWitnessPolicy::Off,
+        vocab_bridge: false,
         state_override: Some(state),
     };
     let o = run_view_query(&ViewLocator::Root(root.to_path_buf()), &params).unwrap();

@@ -1,0 +1,11 @@
+{
+  "sufficiency": {"sufficient":31,"partial":4,"insufficient":5},
+  "mechanism_counts": {
+    "MISSING_ENTITY_INDEX": 6,
+    "VOCABULARY_MISMATCH": 3,
+    "ALREADY_SUFFICIENT": 31
+  },
+  "dominant": "MISSING_ENTITY_INDEX — manifest/config files (go.mod, Cargo.toml) are not indexed as queryable entities; config questions retrieve only source files",
+  "vocab_detail": {"morphological_fixable":"lx-encoder (encoder->encode)","semantic_only":["lx-shutdown (shutdown->main)","lx-entry (entry->main)"]},
+  "question_ids": {"missing_index":["ic-gomod","ic-cargo","ic-rustver","ic-edition","ic-module-dep","ic-libname"],"vocab":["lx-shutdown","lx-entry","lx-encoder"]}
+}

@@ -61,6 +61,9 @@ pub struct ViewQueryParams<'a> {
     pub utility_policy: crate::utility::UtilityPolicy,
     /// Source-witness policy (§16): off (default) | bounded.
     pub source_witness: crate::witness::SourceWitnessPolicy,
+    /// Deterministic vocabulary bridge: expand query terms with morphological
+    /// variants (encoder->encode). off (default) | on.
+    pub vocab_bridge: bool,
     pub state_override: Option<&'a Path>,
 }
 
@@ -91,6 +94,17 @@ pub fn run_view_query(
         params.token_budget,
     );
     plan.max_depth = params.depth;
+    if params.vocab_bridge {
+        let mut ex = plan.terms.clone();
+        for t in plan.terms.clone() {
+            for v in crate::query::normalize::morph_variants(&t) {
+                if v != t && !ex.contains(&v) {
+                    ex.push(v);
+                }
+            }
+        }
+        plan.terms = ex;
+    }
     plan.validate()
         .map_err(|e| (ViewError::InvalidRequest, e))?;
     let mut result = engine.run(&plan);

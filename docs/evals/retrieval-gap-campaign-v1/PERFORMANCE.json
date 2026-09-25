@@ -1,0 +1,1 @@
+{"vocab_bridge":"bounded term expansion, +<=3 term_index lookups/term, sub-ms","manifest_indexing":"not implemented (would add manifest parse + entity emission to index build)","new_parses_for_bridge":0}

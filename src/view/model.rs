@@ -71,6 +71,9 @@ pub struct QueryRequest {
     /// Source-witness policy (§16): `off` (default) | `bounded`.
     #[serde(default)]
     pub source_witness: Option<String>,
+    /// Vocabulary bridge (§15): `off` (default) | `on`.
+    #[serde(default)]
+    pub vocab_bridge: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

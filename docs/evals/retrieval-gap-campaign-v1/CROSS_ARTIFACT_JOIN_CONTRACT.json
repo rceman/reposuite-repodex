@@ -1,0 +1,1 @@
+{"RUN":false,"reason":"the dominant miss is not a missing JOIN between indexed artifacts but MISSING_ENTITY_INDEX — the manifest (go.mod/Cargo.toml) is never indexed as an entity at all. A join cannot connect a fact that does not exist. The needed feature is manifest indexing, not a join.","dominant_gap":"manifest/config indexing"}

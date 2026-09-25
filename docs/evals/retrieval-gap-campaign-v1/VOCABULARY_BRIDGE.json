@@ -1,0 +1,7 @@
+{
+  "RUN": true, "deterministic": true, "online_model": false,
+  "implementation": "query-time morphological expansion (morph_variants): strips -er/-or/-ing/-ed/-s/-tion/-ment/-ly/-ies, restores dropped -e; bounded ~4 variants/term, no combinatorial explosion",
+  "policy": "vocab_bridge = off | on (opt-in, QueryRequest/--vocab-bridge/service parity)",
+  "retrieval_delta": "fixed lx-encoder (encoder->encode now retrieves Encode+TestEncode); semantic synonyms (shutdown->main, entry->main) not morphologically derivable",
+  "alias_factor": "<=4 terms/term","false_positive":"none observed on corpus","latency":"negligible (term-index lookup per variant)"
+}
