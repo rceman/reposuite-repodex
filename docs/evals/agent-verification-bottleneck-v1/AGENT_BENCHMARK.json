@@ -1,0 +1,25 @@
+{
+  "design": "W0 locator/range-only vs W1 + bounded current-source witness. All else frozen (static, memory off, recipes off, utility off). 24q x 2 arms x 2 reps = 96 serial devin -p sessions on memepilot + reposuite-repodex.",
+  "sessions": 96,
+  "results_mean": {
+    "W0": {"n":48,"correct":47,"in_tok":96603,"out_tok":991,"steps":10.4,"wall_s":19.8,"read_intent_pct":52,"reread_pct":83},
+    "W1": {"n":48,"correct":48,"in_tok":97555,"out_tok":935,"steps":10.3,"wall_s":18.2,"read_intent_pct":46,"reread_pct":83}
+  },
+  "cohorts": {
+    "exact":   {"W0":{"in":65495,"wall":9.9},"W1":{"in":80259,"wall":10.5}},
+    "body":    {"W0":{"in":75023,"wall":18.7},"W1":{"in":75859,"wall":17.8}},
+    "rel":     {"W0":{"in":114482,"wall":26.7},"W1":{"in":114484,"wall":29.4}},
+    "conn":    {"W0":{"in":148943,"wall":28.0},"W1":{"in":137788,"wall":17.8}},
+    "testcfg": {"W0":{"in":72851,"wall":13.9},"W1":{"in":75928,"wall":13.8}}
+  },
+  "by_repo": {
+    "memepilot": {"W0":{"in":36254,"wall":12.4},"W1":{"in":34686,"wall":10.5}},
+    "reposuite_repodex": {"W0":{"in":181092,"wall":30.2},"W1":{"in":185573,"wall":28.9}}
+  },
+  "central_result": "W1 delivered exact current source bytes but the Agent reread the same evidence at the SAME rate (83% both arms). Case C: the bottleneck is Agent verification behavior/trust, not missing source bytes.",
+  "verdict": "CURRENT_SOURCE_WITNESS_DOES_NOT_REDUCE_REVERIFY",
+  "DIAGNOSTIC_W2_RUN": false,
+  "w2_note": "reread threshold was met (83%) but W2 (provenance text) would only test persuasion, not missing evidence — the agent verifies by policy, not by missing bytes",
+  "correctness": "W1 48/48 vs W0 47/48 — non-inferior",
+  "break_even": "witnesses added ~1% input tokens but reads did not fall -> no break-even"
+}

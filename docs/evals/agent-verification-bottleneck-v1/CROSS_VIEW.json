@@ -1,0 +1,1 @@
+{"binding":"witness bytes sliced from the CURRENT file under view_root only when snapshot_id(current)==snapshot_id(index) — a moved/dirty file yields no stale witness (unavailable)","CROSS_VIEW_STALE_SOURCE_WITNESS":0}

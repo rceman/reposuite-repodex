@@ -1,0 +1,1 @@
+{"witness_selection":"sub-ms (top decl seeds)","materialization":"one bounded file read per candidate seed, digest check, slice — no reparse","digest_validation":"snapshot_id compare","serialization":"UTF-8 lossy-safe","added_latency":"ms-scale bounded file reads on top of ~45ms query","new_parses":0,"source_bytes_read_by_repodex":"<= bounded witness budget"}

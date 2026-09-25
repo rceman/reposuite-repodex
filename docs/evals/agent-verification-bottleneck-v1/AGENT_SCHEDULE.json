@@ -1,0 +1,1 @@
+{"sessions":96,"questions":24,"arms":["W0","W1"],"reps":2,"cohorts":{"exact":4,"body":5,"rel":5,"conn":5,"testcfg":5},"repos":["memepilot","reposuite-repodex"],"counterbalanced":"seeded W0/W1 order per question+rep","frozen":true,"policies":{"context":"static","memory":"off","recipes":"off","utility":"off"}}

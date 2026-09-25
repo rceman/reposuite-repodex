@@ -1,0 +1,1 @@
+{"tests":"tests/source_witness.rs (6): exact body, off-no-witness, dirty authoritative, absent-entity, digest=bytes, bounds","invariants":["digest_matches_captured_bytes","dirty_view_authoritative","absent_no_witness","bounded_limits","explicit_truncation","fact_candidate_preserved"]}

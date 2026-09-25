@@ -1,0 +1,1 @@
+{"added_initial_witness_bytes":"~31B-6KB per packet (+~1% input tokens)","avoided_reads":0,"avoided_searches":0,"avoided_tool_calls":0,"wall_delta":"~equal","result":"NO break-even — witness bytes add input cost without removing the verification read"}

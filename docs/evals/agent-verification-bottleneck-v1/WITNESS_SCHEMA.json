@@ -1,0 +1,6 @@
+{
+  "schema": "reposuite.repodex.source-witness.v1",
+  "fields": {"scope":"project scope","repository_view":"validated view","repo_relative_path":"path","role":"witness_role","evidence_class":"fact|candidate","entity":"locator/key","current_file_digest":"snapshot_id of bytes","byte_start/end":"range","line_start/end":"range","source":"exact bytes","complete_for_range":"bool","truncated":"bool","provenance":"index.snapshot.file_analysis"},
+  "roles": ["declaration","declaration_header","body","relation_occurrence","test_declaration","config_occurrence"],
+  "navigation_vs_witness": "path/range/locator is navigation evidence, NOT source exposure; `source` is the actual content (counted exposure)"
+}

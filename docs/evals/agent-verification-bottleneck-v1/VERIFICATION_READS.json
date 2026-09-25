@@ -1,0 +1,1 @@
+{"resolution":"file-level (ATIF exposes agent messages, not per-step read ranges)","witnesses_reread_pct":83,"not_reread_pct":17,"w0_first_read_pct":83,"interpretation":"the Agent re-reads the same files whether or not exact source bytes were delivered — inherent verification behavior, not missing evidence"}
