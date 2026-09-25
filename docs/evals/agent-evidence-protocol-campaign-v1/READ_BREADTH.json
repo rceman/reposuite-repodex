@@ -1,0 +1,1 @@
+{"note":"ATIF exposes agent messages not per-step read ranges — byte/line read breadth is not directly observable","coarse":"containing reads (agent narrates seeking broader context) ~7-14% of sufficient cases; most reads are the identified file itself","sufficient_witness_reread_low":"10-17% across all arms — verification reads are infrequent and largely legitimate"}

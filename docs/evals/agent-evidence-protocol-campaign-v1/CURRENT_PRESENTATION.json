@@ -1,0 +1,1 @@
+{"today":"witness = {scope,view,path,role,evidence_class,entity,current_file_digest,byte/line range,source,complete,truncated,provenance} inside the projection JSON","location":"result.witnesses[] + result.source_exposure","A2":"+ top-level evidence_provenance block surfacing the same fields","A3":"wrapped in tool_call{tool:repodex.query,status:ok,result:{...}} envelope"}

@@ -1,0 +1,1 @@
+{"note":"prior 83% reread was file-level co-occurrence of agent read-intent; the ATIF exports do not expose per-step read ranges, so exact-vs-containing vs justified-broader cannot be fully decomposed at that resolution","resolution":"message-intent + steps only","honest":"UNSUPPORTED_FOR_BYTE_RANGES; file-level + narrated-intent only"}

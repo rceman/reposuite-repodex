@@ -1,0 +1,16 @@
+{
+  "sessions": 160, "design": "20q x A0/A1/A2/A3 x 2reps, counterbalanced, serial, conc=1",
+  "arms": {"A0":"locator/range only","A1":"+exact source witness","A2":"+machine provenance block","A3":"tool-result envelope"},
+  "results_mean": {
+    "A0": {"n":40,"correct":38,"in_tok":79493,"out_tok":833,"steps":10.2,"wall_s":22.2,"reread_pct":5},
+    "A1": {"n":40,"correct":40,"in_tok":97002,"out_tok":880,"steps":10.4,"wall_s":22.6,"reread_pct":12},
+    "A2": {"n":40,"correct":39,"in_tok":89521,"out_tok":684,"steps":10.0,"wall_s":18.0,"reread_pct":12},
+    "A3": {"n":40,"correct":39,"in_tok":84952,"out_tok":730,"steps":9.9,"wall_s":19.4,"reread_pct":12}
+  },
+  "sufficient_witness_reread": {"A0":3,"A1":10,"A2":10,"A3":17},
+  "insufficient_witness_reread": {"A0":10,"A1":20,"A2":20,"A3":0},
+  "reread_class": {"A0":{"containing":5,"no_reread":95},"A1":{"containing":7,"exact_or_file":5,"no_reread":87},"A2":{"containing":10,"exact_or_file":2,"other_file":2,"no_reread":85},"A3":{"containing":10,"exact_or_file":2,"no_reread":87}},
+  "first_action": {"A0":{"no_tool":35,"read":37,"search":10},"A1":{"no_tool":40,"read":42},"A2":{"no_tool":45,"read":40},"A3":{"no_tool":37,"read":45}},
+  "interpretation": "A1 reproduced the witness delivery but reread is LOW and presentation-invariant (5-17%), not the earlier loose 83%. No arm clears the >=20pp improvement bar; A2/A3 marginally lower steps+input but same correctness. Source bytes identical across A1/A2/A3; retrieval identical. The prior 'verification bottleneck' was overstated — redundant rereads are infrequent; most reads are legitimate grounding.",
+  "no_winner": true, "winner_threshold_pp": 20
+}

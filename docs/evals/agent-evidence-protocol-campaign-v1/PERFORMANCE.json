@@ -1,0 +1,1 @@
+{"witness_materialization":"bounded file read + snapshot_id compare, ms-scale","provenance":"field projection from existing witness record, ~0","tool_envelope":"JSON wrap, ~0","structure":"field reorganization, ~0","new_parses":0,"source_bytes_read":"bounded witness budget","query_overhead":"<5ms on ~45ms warm query"}

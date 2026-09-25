@@ -1,0 +1,9 @@
+{
+  "sessions": 72, "design": "12q x C0(raw)/C1(structured-decl)/C2(structured+relation) x 2reps",
+  "results_mean": {
+    "C0": {"n":24,"correct":23,"in_tok":102602,"steps":10.2,"wall_s":23.6,"reread_pct":16},
+    "C1": {"n":24,"correct":24,"in_tok":113493,"steps":10.4,"wall_s":24.4,"reread_pct":0},
+    "C2": {"n":24,"correct":24,"in_tok":103868,"steps":10.3,"wall_s":21.8,"reread_pct":12}
+  },
+  "interpretation": "structure variation does not reduce total work (steps/tokens ~equal). C1's 0% reread is within noise at n=24 and did not lower steps/tokens/wall. Correctness non-inferior. No representation winner."
+}

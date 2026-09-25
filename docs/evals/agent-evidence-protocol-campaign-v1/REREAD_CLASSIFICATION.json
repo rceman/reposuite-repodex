@@ -1,0 +1,13 @@
+{
+  "resolution": "file-level + agent-message intent (ATIF exposes agent messages, not per-step read tool calls; ranges unavailable -> honest coarse resolution, never fabricated)",
+  "taxonomy": {
+    "EXACT_REVERIFY": "agent message indicates re-reading a file the witness covered, for the same evidence",
+    "CONTAINING_REVERIFY": "agent reads the file plus broader surrounding context",
+    "PARTIAL_REVERIFY": "partial overlap of the witnessed file",
+    "SAME_FILE_OTHER_RANGE": "same file, unrelated range",
+    "OTHER_FILE_READ": "different file",
+    "NO_REVERIFY": "answers from the supplied witness without re-reading"
+  },
+  "materially_broader": "agent seeks additional source beyond the supplied witness (narrated broader reads / extra files)",
+  "signal": "agent message text intent + total_steps + prompt-token growth (a re-read pulls file bytes into context)"
+}

@@ -1,0 +1,6 @@
+{
+  "frozen_before_execution": true,
+  "method": "does the delivered witness's exact source bytes literally contain the answer? caller/callee questions are INSUFFICIENT when the witness supplies callee bodies but the answer needs the call SITE",
+  "sufficient": ["ex-resolvekey","ex-encode","ex-projection","ex-queryplan","bd-resolvekey","bd-resolve","bd-classify","bd-evidence","rl-main","cn-cache-resolve","cn-test-resolve","tc-test-resolvekey","tc-testencode","tc-gomod","tc-cargo"],
+  "insufficient": ["rl-newresolver","rl-encode","rl-run","cn-resolvekey-main","cn-projection-build"]
+}
