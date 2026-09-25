@@ -1,0 +1,1 @@
+{"tracked":["searches/reads/tool_calls before primary evidence","searches/reads before sufficient","expansions","subsequent_tool_calls","final_mentioned"],"note":"signals kept separate (§13): a subsequent read is not automatically negative (necessary verification) — raw continuation stays observable","not_used_as_reward":"reasoning/output token volume (§12)"}

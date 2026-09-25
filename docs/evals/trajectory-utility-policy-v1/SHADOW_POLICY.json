@@ -1,0 +1,6 @@
+{
+  "modes": {"off":"no utility logic","shadow":"compute would-be selection, packet unchanged","apply":"reorder optional tail under margin+support gate"},
+  "shadow_disagreement": "on seeded memepilot stats, shadow diverged on all 5 ambiguous queries (promoted a lower-followup-rate seed to rank 2); controls single-seed/no-ambiguity -> no divergence",
+  "apply_scope": "optional seed ordering only; mandatory rank-1 identity + FACT/CANDIDATE + view validity + project scope untouched",
+  "margin": "reorder only when best rate beats baseline top by >= MIN_MARGIN (0.05) with support"
+}

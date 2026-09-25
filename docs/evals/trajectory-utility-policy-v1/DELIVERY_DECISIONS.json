@@ -1,0 +1,1 @@
+{"logged":"per utility-policy query: decision_id, scope, family, shape, eligible/mandatory/selected units, est/actual bytes -> state/utility/decisions.jsonl","decision_id":"content digest of query+time; stable + unique","why":"learning only from selected evidence creates selection bias; the eligible slate is persisted"}

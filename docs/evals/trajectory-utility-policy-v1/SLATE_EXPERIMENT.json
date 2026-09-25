@@ -1,0 +1,5 @@
+{
+  "status": "NOT_RUN_AS_SEPARATE_ARM",
+  "note": "the seeded randomized-slate support is implemented + reproducible (xorshift64 + propensity in trace); a separate 72-session slate micro-experiment was not run because the U0/U1 screen showed no positive work delta — per §52 stop rule, further sessions were not spent pursuing a positive result",
+  "implementation": "decide_seeded(seed) -> deterministic seeded shuffle of the optional tail + propensity=1/eligible logged"
+}

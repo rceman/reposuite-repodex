@@ -36,7 +36,7 @@ pub struct AssocCell {
 pub type AssocKey = String;
 
 fn key(scope: &str, shape: &str, u: &EvidenceUnit) -> AssocKey {
-    format!("{scope}|{shape}|{:?}|{:?}", u.repr, u.role)
+    format!("{scope}|{shape}|{:?}|{:?}|{}", u.repr, u.role, u.entity)
 }
 
 /// Project-scoped association store — incremental, replay-equivalent (§44).

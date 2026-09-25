@@ -1,0 +1,6 @@
+{
+  "unit": {"scope":"project scope","entity":"locator/node key (no line numbers)","repr":"representation kind","role":"evidence role","truth_class":"fact|candidate"},
+  "repr_kinds": ["path_hint","locator","declaration_range","body_range","fact_relation","candidate_relation","connector_route","file_memory","symbol_memory","recipe_witness"],
+  "roles": ["definition","disambiguation","relationship","connector","test_candidate","orientation"],
+  "version_safety": "identity = entity+representation+role+truth; coordinates excluded; transfers across views only via scope+rebinding gates"
+}

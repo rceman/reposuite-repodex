@@ -1,0 +1,6 @@
+{
+  "available_before": ["delivered evidence (ContextArtifactPresented)","source_observed","final_answer mentions","symbol exposure","compiler trace"],
+  "new_needed": ["per-unit association cells","decision slate log","expansion count","subsequent-work proxy"],
+  "rejected": ["reasoning-token volume (§12 anti-verbosity)","task-success->per-item causal copy (§21)","line-number identity (§5 unstable)"],
+  "sparse": "on a small repo the cells are thin; MIN_SUPPORT + shrinkage to global prior keeps sparse cells from outranking supported baselines"
+}

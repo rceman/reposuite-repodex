@@ -1,0 +1,15 @@
+{
+  "design": "U0 utility=off vs U1 utility=apply. memory off, recipes off, context static — only optional-seed ordering changes. Serial, counterbalanced, conc=1, real devin -p.",
+  "sessions": 32, "questions": 8, "reps": 2,
+  "results_mean": {
+    "U0": {"n":16,"correct":16,"in_tok":38989,"out_tok":716,"steps":9.7,"wall_s":13.6},
+    "U1": {"n":16,"correct":16,"in_tok":41534,"out_tok":837,"steps":9.8,"wall_s":13.0}
+  },
+  "cohorts": {
+    "ambiguous": {"U0":{"in":39086,"steps":9.6,"wall":12.1},"U1":{"in":42964,"steps":9.8,"wall":15.7}},
+    "control":   {"U0":{"in":38827,"steps":9.8,"wall":16.0},"U1":{"in":39153,"steps":9.8,"wall":8.6}}
+  },
+  "honest_conclusion": "utility-apply reordered the optional seed tail correctly (diverged on all 5 ambiguous queries) but produced NO measured work reduction — ambiguous cohort was slightly worse (+10% in, +30% wall). Correctness non-inferior (16/16). Fourth consecutive finding that evidence selection/ordering is not the bottleneck on this workload.",
+  "classification": "UTILITY_POLICY_SHADOW_ONLY",
+  "escalation": "criterion (correctness + material work improvement + no cohort regression) NOT met -> stop Agent benchmark; no confirmation study"
+}

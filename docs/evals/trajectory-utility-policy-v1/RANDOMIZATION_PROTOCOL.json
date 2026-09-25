@@ -1,0 +1,7 @@
+{
+  "scope": "evaluation only; production default deterministic",
+  "method": "seeded Fisher-Yates (xorshift64) over the optional seed tail",
+  "propensity": "1/eligible_count logged in the trace",
+  "reproducible": "seeded; same seed -> same order",
+  "never_randomized": ["mandatory evidence","FACT/CANDIDATE","view validity","project scope"]
+}

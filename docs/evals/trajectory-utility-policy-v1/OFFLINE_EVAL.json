@@ -1,0 +1,5 @@
+{
+  "holdout": "decision log + continuation metrics support temporal split; on memepilot the seeded stats were a controlled fixture (not mined history), so held-out generalization is limited",
+  "predictive": "shrunken followup-rate correctly ranked the low-followup seed first (shadow diverged consistently) — association is coherent, causal benefit unproven",
+  "leave_family_out": "single query family in eval corpus -> not measurable; noted as limitation"
+}

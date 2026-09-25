@@ -1,0 +1,8 @@
+{
+  "conditioning": "scope | shape | repr | role | entity",
+  "dimensions": ["delivered","search_followups","read_followups","expansions","final_mentions","subsequent_work"],
+  "estimator": "shrunken search-followup rate = (followups + SHRINKAGE*global_prior)/(delivered + SHRINKAGE)",
+  "MIN_SUPPORT": 5, "SHRINKAGE": 3.0,
+  "low_support": "below MIN_SUPPORT -> global prior -> no ranking advantage (§18)",
+  "scalar": "no single opaque score; a bounded selection heuristic is used only for apply ordering, never a truth probability"
+}

@@ -1,0 +1,1 @@
+{"utility_lookup":"in-memory BTreeMap cell read, sub-ms","policy_decision":"one followup-rate lookup per optional seed, sub-ms","shadow_decision":"same computation, no mutation","state_size":"utility.json cells + append-only decisions.jsonl","added_latency":"<1 ms on top of ~45 ms query","memory":"negligible","new_parses":0,"database":"none (JSON)"}

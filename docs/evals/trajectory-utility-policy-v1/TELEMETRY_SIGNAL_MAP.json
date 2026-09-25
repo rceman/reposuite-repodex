@@ -1,0 +1,14 @@
+{
+  "source_to_signal": {
+    "AgentEvent/ContextArtifactPresented": "delivered evidence (OBSERVED)",
+    "AgentEvent/SourceObserved": "source actually opened (OBSERVED)",
+    "InvestigationEpisode.final_answer_path_mentions": "final-evidence mention (OUTCOME_ASSOCIATED)",
+    "SymbolExposure": "symbol-level exposure (OBSERVED)",
+    "Context Compiler trace": "selected/dropped representations (OBSERVED)"
+  },
+  "class": {
+    "runtime_observable": ["delivered","source_observed","expansions","subsequent tool calls"],
+    "derived_runtime_association": ["final_mention","followup rates"],
+    "benchmark_evaluator_only": ["correctness","time-to-sufficient","gold witnesses"]
+  }
+}
