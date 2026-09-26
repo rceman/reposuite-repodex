@@ -1,0 +1,1 @@
+{"dominant":"SOURCE_VERIFICATION + SEMANTIC_INTERPRETATION","finding":"the packet pre-answers what the agent then re-verifies via reads — the agent must verify regardless (grounding requirement), so RepoDex evidence does not eliminate the verification step, only the localization/searches"}

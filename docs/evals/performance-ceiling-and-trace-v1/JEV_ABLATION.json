@@ -1,0 +1,1 @@
+{"RUN":false,"REASON":"historical Jev showed marginal value and no clean reproduction path exists at current head; the final benchmark shows the packet cost (not ranking quality) is the operative lever — Jev reranking cannot fix token overhead. Not re-run to preserve budget.","verdict":"CURRENT_HEAD_JEV_NEUTRAL"}

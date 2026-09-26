@@ -1,0 +1,1 @@
+{"json_mean_bytes":79241,"rdx_mean_bytes":22127,"rdx_is":"28% of JSON (72% smaller)","dup_string_share_json":0.31,"related_share_json":0.92,"semantic_atoms":"RDX preserves seeds/related/gaps/completeness; matches to_rdx schema","verdict":"compaction confirmed — RDX already exists as the agent-facing format; serving it instead of JSON is the safe win"}

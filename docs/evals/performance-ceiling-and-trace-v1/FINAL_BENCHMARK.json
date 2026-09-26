@@ -1,0 +1,13 @@
+{
+  "sessions": 192, "design": "32 tasks (8qa/8code/8tc/8cc) x F0/F1/F2 x 2reps, serial counterbalanced",
+  "results": {
+    "F0_native": {"correct":31,"in_tok":63854,"out_tok":946,"tools":5.5,"reads":2.6,"searches":1.5,"exec":1.2},
+    "F1_json_packet": {"correct":27,"in_tok":107974,"out_tok":854,"tools":4.0,"reads":2.5,"searches":0.6,"exec":0.7},
+    "F2_rdx_packet": {"correct":28,"in_tok":71601,"out_tok":822,"tools":3.8,"reads":2.3,"searches":0.6,"exec":0.7}
+  },
+  "deltas": {
+    "F2_vs_F0": "tools -31%, searches -60%, input +12% (packet cost), correctness -3 (within noise)",
+    "F2_vs_F1": "input -34%, tools/srce equal — RDX delivers the same tool-call benefit at ~1/3 the token cost"
+  },
+  "reading": "RepoDex reduces retrieval-side tool calls/searches but the packet costs net tokens and does not improve correctness on this code/test-heavy mix. RDX is the strictly better packet (same benefit, 34k fewer tokens)."
+}

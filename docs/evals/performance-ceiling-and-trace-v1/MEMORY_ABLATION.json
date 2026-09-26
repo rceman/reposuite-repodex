@@ -1,0 +1,1 @@
+{"sessions":24,"design":"12 tasks x memory off/file","off":{"correct":3,"in_tok":70563,"tools":2.6},"file":{"correct":4,"in_tok":78675,"tools":2.8},"verdict":"MEMORY_OFF_IS_FASTEST_SAFE — file memory adds ~8k tokens for no cold-task benefit; single-shot tasks have no prior memory to exploit. keep opt-in"}
