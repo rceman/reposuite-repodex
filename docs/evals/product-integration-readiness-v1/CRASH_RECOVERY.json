@@ -1,0 +1,1 @@
+{"durable_events_survive":true,"restart":"no semantic loss","corrupt_tail":"fails actionable diagnostic, never invents state"}

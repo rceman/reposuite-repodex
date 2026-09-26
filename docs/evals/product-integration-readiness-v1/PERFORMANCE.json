@@ -1,0 +1,1 @@
+{"idle_rss_mib":10.4,"warm_rss_mib":152.7,"cold_index_reposuite_ms":4808,"warm_reopen_ms":513,"warm_query_p50_ms":28,"warm_query_p95_ms":30,"ingest":"sub-ms durable append","regression":"none vs accepted baselines"}

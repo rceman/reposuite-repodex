@@ -1,0 +1,1 @@
+{"idle_rss":"PASS ~10MiB","warm_rss":"PASS ~152MiB","query_p95":"PASS ~30ms","cold_index":"PASS ~4.8s","ingest":"PASS","blockers":0}

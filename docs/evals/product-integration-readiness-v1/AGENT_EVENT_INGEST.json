@@ -1,0 +1,1 @@
+{"schema":"reposuite.agent-event.v1","fields":"schema/event_id/session_id/sequence/timestamp/source{type}/data","single":"accepted=1","batch":"non-atomic per-event, valid siblings commit","idempotent":"event_id dedupe (duplicates, not re-commit)","ack":"durable, derivation async","source_observed":"content delivered, not a mention"}

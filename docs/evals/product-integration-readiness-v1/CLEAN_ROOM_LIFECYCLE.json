@@ -1,0 +1,1 @@
+{"status_stopped":"PASS","start":"PASS pid+endpoint+ready","status_running":"PASS pid/endpoint/uptime/memory","query_via_service":"PASS go module resolved","restart":"PASS new pid","stop":"PASS graceful","orphan":"PASS port closed","auth":"bearer enforced"}

@@ -1,0 +1,1 @@
+{"manifest_intelligence":"default","morphology":"opt-in","repository_native_vocab":"opt-in","cheap_model_vocab":"offline-experimental","symbol_memory":"opt-in","adaptive_context":"opt-in","recipes":"opt-in","utility_policy":"shadow-only","source_witness":"opt-in","defaults_verified_in":"src/cli.rs + src/view/service.rs"}

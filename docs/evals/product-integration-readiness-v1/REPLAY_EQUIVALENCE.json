@@ -1,0 +1,1 @@
+{"incremental_vs_replay":"equivalent (event_id deterministic, checkpoint->replay)","note":"derived state reproducible from canonical event log"}

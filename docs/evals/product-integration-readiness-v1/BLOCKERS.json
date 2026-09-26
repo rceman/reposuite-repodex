@@ -1,0 +1,1 @@
+{"gateway_query_blockers":[],"relay_telemetry_blockers":[],"notes":"RepoDex side of both contracts is ready; blocker is on the external side — no consumer yet owns Task/worktree->root resolution"}
