@@ -37,6 +37,7 @@ fn query(root: &Path, state: &Path, q: &str, sw: SourceWitnessPolicy) -> serde_j
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: sw,
         vocab_bridge: false,
+        vocab_native: false,
         state_override: Some(state),
     };
     let o = run_view_query(&ViewLocator::Root(root.to_path_buf()), &params).unwrap();

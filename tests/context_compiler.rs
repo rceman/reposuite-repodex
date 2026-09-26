@@ -29,6 +29,7 @@ fn q(root: &Path, state: &Path, query: &str, policy: ContextPolicy) -> serde_jso
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: repodex::witness::SourceWitnessPolicy::Off,
         vocab_bridge: false,
+        vocab_native: false,
         state_override: Some(state),
     };
     let o = run_view_query(&loc, &params).unwrap();
@@ -128,6 +129,7 @@ fn adaptive_preserves_fact_candidate_and_endpoints() {
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: repodex::witness::SourceWitnessPolicy::Off,
         vocab_bridge: false,
+        vocab_native: false,
         state_override: Some(s.path()),
     };
     let o = run_view_query(&loc, &params).unwrap();
@@ -168,6 +170,7 @@ fn budget_limited_marks_incomplete_not_complete() {
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: repodex::witness::SourceWitnessPolicy::Off,
         vocab_bridge: false,
+        vocab_native: false,
         state_override: Some(s.path()),
     };
     let o = run_view_query(&loc, &params).unwrap();

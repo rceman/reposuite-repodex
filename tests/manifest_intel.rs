@@ -55,3 +55,20 @@ fn malformed_manifest_no_panic() {
     // degraded, not a crash; may yield partial/none facts
     assert!(a.declarations.len() <= 4);
 }
+
+#[test]
+fn native_aliases_are_repository_derived_and_bounded() {
+    use repodex::manifest::native_aliases;
+    // "crate" expands to the manifest's declared package terms — not a synonym.
+    let m = vec![
+        "cargo".to_string(),
+        "package".to_string(),
+        "reposuite-repodex".to_string(),
+    ];
+    let a = native_aliases(&["crate".into()], &m);
+    assert!(a.iter().any(|t| t == "reposuite-repodex"), "{a:?}");
+    // a non-role term gets nothing.
+    assert!(native_aliases(&["frobnicate".into()], &m).is_empty());
+    // bounded
+    assert!(a.len() <= 12);
+}

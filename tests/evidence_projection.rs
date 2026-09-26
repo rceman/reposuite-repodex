@@ -65,6 +65,7 @@ fn query<'a>(
         utility_policy: repodex::utility::UtilityPolicy::Off,
         source_witness: repodex::witness::SourceWitnessPolicy::Off,
         vocab_bridge: false,
+        vocab_native: false,
         state_override: Some(state),
     };
     run_view_query(&ViewLocator::Root(root.to_path_buf()), &p).unwrap()

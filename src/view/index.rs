@@ -175,8 +175,11 @@ fn build_view_snapshot(
     // facts as a synthetic FileAnalysis so they become first-class queryable
     // evidence — not just validity metadata (§14-§28). They reuse the same
     // content-addressed object store + snapshot pipeline as source files.
+    let manifest_on = std::env::var("REPODEX_MANIFEST_INDEX")
+        .map(|v| v != "0" && v != "off")
+        .unwrap_or(true);
     for meta in &manifest.metadata {
-        if crate::manifest::manifest_kind(&meta.relative_path).is_none() {
+        if !manifest_on || crate::manifest::manifest_kind(&meta.relative_path).is_none() {
             continue;
         }
         let abs = view.canonical_root.join(&meta.relative_path);

@@ -165,6 +165,7 @@ fn query(state: &Arc<ServiceState>, req: &Request) -> Response {
             qreq.source_witness.as_deref().unwrap_or("off"),
         ),
         vocab_bridge: matches!(qreq.vocab_bridge.as_deref(), Some("on")),
+        vocab_native: matches!(qreq.vocab_native.as_deref(), Some("on")),
         state_override: Some(&state.state_dir),
     };
     let outcome = match v::run_view_query(&locator, &params) {

@@ -64,6 +64,9 @@ pub struct ViewQueryParams<'a> {
     /// Deterministic vocabulary bridge: expand query terms with morphological
     /// variants (encoder->encode). off (default) | on.
     pub vocab_bridge: bool,
+    /// Repository-native vocabulary bridge: expand domain role terms to the
+    /// concrete names the manifests declare. off (default) | on.
+    pub vocab_native: bool,
     pub state_override: Option<&'a Path>,
 }
 
@@ -101,6 +104,22 @@ pub fn run_view_query(
                 if v != t && !ex.contains(&v) {
                     ex.push(v);
                 }
+            }
+        }
+        plan.terms = ex;
+    }
+    if params.vocab_native {
+        let manifest_terms: Vec<String> = engine
+            .index()
+            .nodes()
+            .iter()
+            .filter(|n| n.language == "manifest")
+            .flat_map(|n| crate::query::normalize::identifier_terms(&n.label))
+            .collect();
+        let mut ex = plan.terms.clone();
+        for v in crate::manifest::native_aliases(&plan.terms, &manifest_terms) {
+            if !ex.contains(&v) {
+                ex.push(v);
             }
         }
         plan.terms = ex;

@@ -1,0 +1,11 @@
+{
+  "sessions": 80, "design": "20 manifest questions x M0(off)/M1(on) x 2reps, serial conc=1",
+  "note": "2 of the sessions overlapped briefly with an offline model-selection call for Phase D (marginal concurrency breach on the rate limit, no shared context)",
+  "results": {
+    "M0": {"n":40,"correct":36,"in_tok":100868,"steps":10.6},
+    "M1": {"n":40,"correct":36,"in_tok":91077,"steps":10.2}
+  },
+  "manifest_dependent": {"M0":32,"M1":32},
+  "verdict": "MANIFEST_AGENT_VALUE_NEUTRAL",
+  "interpretation": "manifest indexing restores objectively-missing facts but Agent correctness is unchanged (the agent finds answers via source reads regardless); ~10% fewer input tokens and 0.4 fewer steps on M1 — marginal, not decisive"
+}

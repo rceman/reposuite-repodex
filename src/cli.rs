@@ -204,6 +204,8 @@ struct Options {
     source_witness: Option<String>,
     /// `query --vocab-bridge on|off` — deterministic morphological term bridge.
     vocab_bridge: Option<String>,
+    /// `query --vocab-native on|off` — repository-native role-term bridge.
+    vocab_native: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -2766,6 +2768,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
                 req.source_witness.as_deref().unwrap_or("off"),
             ),
             vocab_bridge: matches!(req.vocab_bridge.as_deref(), Some("on")),
+            vocab_native: matches!(req.vocab_native.as_deref(), Some("on")),
             state_override: state.as_deref(),
         };
         let outcome = match v::run_view_query(&locator, &params) {
@@ -2849,6 +2852,7 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
             options.source_witness.as_deref().unwrap_or("off"),
         ),
         vocab_bridge: matches!(options.vocab_bridge.as_deref(), Some("on")),
+        vocab_native: matches!(options.vocab_native.as_deref(), Some("on")),
         state_override: state.as_deref(),
     };
     let outcome =

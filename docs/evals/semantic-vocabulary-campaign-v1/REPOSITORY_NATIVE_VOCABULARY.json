@@ -1,0 +1,1 @@
+{"implemented":true,"mechanism":"role term (crate/module/package/dependency) -> concrete manifest-declared names; repository-derived values, bounded <=4/term, project-scoped","delta":"+2/40 over morphology (crate->cargo package, dep->dependencies)","policy":"OPT_IN (vocab_native=on)"}

@@ -74,6 +74,9 @@ pub struct QueryRequest {
     /// Vocabulary bridge (§15): `off` (default) | `on`.
     #[serde(default)]
     pub vocab_bridge: Option<String>,
+    /// Repository-native vocabulary (§18): `off` (default) | `on`.
+    #[serde(default)]
+    pub vocab_native: Option<String>,
 }
 
 /// Generic RepositoryView metadata (§19, §29). Branch is metadata only — never

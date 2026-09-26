@@ -233,3 +233,37 @@ fn cargo(b: &mut FactBuilder, text: &str) {
         }
     }
 }
+
+/// Repository-native deterministic vocabulary bridge (§18-§26). A role term
+/// (crate/module/package/…) expands to the *concrete* names this repository's
+/// manifests actually declare — the alias value is repository-derived, never a
+/// global synonym. DERIVED query terms only; never FACT. <=4/term, one layer.
+pub fn native_aliases(terms: &[String], manifest_terms: &[String]) -> Vec<String> {
+    // Bounded domain role vocabulary — the *value* substituted comes from the
+    // repository's own manifest terms, not a fixed synonym.
+    const ROLE: &[&str] = &[
+        "crate",
+        "package",
+        "module",
+        "manifest",
+        "dependency",
+        "dependencies",
+        "workspace",
+        "edition",
+        "version",
+    ];
+    let mut out = Vec::new();
+    for t in terms {
+        if ROLE.contains(&t.as_str()) {
+            for mt in manifest_terms.iter().take(4) {
+                if !out.contains(mt) {
+                    out.push(mt.clone());
+                }
+            }
+        }
+    }
+    out.sort();
+    out.dedup();
+    out.truncate(12);
+    out
+}
