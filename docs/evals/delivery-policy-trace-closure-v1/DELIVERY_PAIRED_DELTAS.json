@@ -1,0 +1,1 @@
+{"D1_vs_D0":{"input":+14,"tools":-29,"searches":-50},"D3_vs_D0":{"input":-11,"tools":-14,"searches":-21},"D3_vs_D1":{"input":-22,"tools":+20,"searches":+57},"note":"D3 is the only arm cheaper in input than native while still reducing tool calls; on-demand arms self-select repodex ~half the time"}
