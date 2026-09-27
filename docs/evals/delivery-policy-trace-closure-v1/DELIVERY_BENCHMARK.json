@@ -1,0 +1,9 @@
+{"sessions":192,"design":"24 tasks (6qa/6code/6tc/6cc) x D0/D1/D2/D3 x 2reps serial",
+ "results":{
+   "D0_native":{"correct":20,"in":72000,"out":965,"tools":5.6,"reads":2.7,"searches":1.4,"exec":1.4},
+   "D1_auto_rdx":{"correct":20,"in":82157,"out":917,"tools":4.0,"reads":2.4,"searches":0.7,"exec":0.7},
+   "D2_ondemand":{"correct":18,"in":68071,"out":881,"tools":5.3,"reads":2.4,"searches":1.5,"exec":1.3},
+   "D3_lite_demand":{"correct":18,"in":63944,"out":873,"tools":4.8,"reads":2.5,"searches":1.1,"exec":1.0}},
+ "ondemand_usage":{"D2_rep_odex_called":"24/48 (50%)","D3_rep_odex_called":"22/48 (46%)"},
+ "reading":"D3 (lite+on-demand) is cheapest input (63.9k, below native 72k) AND keeps the search/tool reduction (4.8 tools vs native 5.6). D1 auto-full is the most expensive (82k). On-demand arms: agent self-selectively invokes repodex ~half the time."
+}

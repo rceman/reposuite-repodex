@@ -1,0 +1,1 @@
+{"qa":{"D0":4,"D1":4,"D2":3,"D3":4},"code":{"D0":0,"D1":0,"D2":0,"D3":0},"tc":{"D0":8,"D1":8,"D2":8,"D3":8},"cc":{"D0":8,"D1":8,"D2":7,"D3":6},"note":"code cohort fails for all arms (hard tasks); cc slightly better under auto-inject D1 since the agent doesn't always self-invoke repodex on-demand"}

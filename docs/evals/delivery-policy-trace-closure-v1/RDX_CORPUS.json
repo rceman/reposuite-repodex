@@ -1,0 +1,1 @@
+{"packets":40,"mean_bytes":22127,"median_bytes":~19000,"note":"RDX already compact; the related-edge set is the bulk. Overserving exists: a packet often carries more relations than the agent uses."}

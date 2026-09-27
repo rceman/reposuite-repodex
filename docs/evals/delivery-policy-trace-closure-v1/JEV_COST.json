@@ -1,0 +1,1 @@
+{"jev_calls":"1 per eligible query","cost":"extra HTTP call, ~ms-scale, no ordering change observed","net":"neutral — no downstream benefit to justify cost"}
