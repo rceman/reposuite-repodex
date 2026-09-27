@@ -1,0 +1,1 @@
+{"harness":"devin cli","permission_mode":"dangerous (isolated benchmark worktree only)","export":"--export session.json","note":"frozen across both arms; PERMISSION_POLICY_IDENTICAL_ACROSS_ARMS=true"}

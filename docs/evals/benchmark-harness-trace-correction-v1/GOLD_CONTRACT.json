@@ -1,0 +1,1 @@
+{"method":"obligation-based","rules":"each task declares obligations 'kind:value'; non-mutating -> every obligation value (or |alternative) present in final answer; mutating -> actual disposable-worktree file must contain the required marker","not":"lowercase contains of a single gold token; a requested edit is not success; a rejected edit is INFRA_INVALID not failure"}

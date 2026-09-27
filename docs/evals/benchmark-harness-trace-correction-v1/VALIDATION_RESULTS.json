@@ -1,0 +1,638 @@
+[
+ {
+  "session": "cc-calls.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "NewResolver",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "ResolveKey",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "cmd/main.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-calls.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "NewResolver",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "ResolveKey",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "cmd/main.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-calls.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "NewResolver",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "ResolveKey",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "cmd/main.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-calls.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "NewResolver",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "ResolveKey",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "cmd/main.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-eng.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "engine",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "codec",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "import",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-eng.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "engine",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "codec",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "import",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-eng.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "engine",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "codec",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "import",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "cc-eng.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "engine",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "codec",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "import",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-add.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "const MaxSize = 256",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-add.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "const MaxSize = 256",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-add.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "const MaxSize = 256",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-add.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "const MaxSize = 256",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-comment.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "// cache boundary",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-comment.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "// cache boundary",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-comment.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "// cache boundary",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "code-comment.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "// cache boundary",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "file:internal/engine/cache.go",
+    "ok": true,
+    "why": "path internal/engine/cache.go exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-get.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "func (c *Cache) Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "internal/engine/cache.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-get.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "func (c *Cache) Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "internal/engine/cache.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-get.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "func (c *Cache) Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "internal/engine/cache.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-get.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "func (c *Cache) Get",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "internal/engine/cache.go",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-mod.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "module:example.com/mempilot",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "path:go.mod",
+    "ok": true,
+    "why": "path go.mod exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-mod.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "module:example.com/mempilot",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "path:go.mod",
+    "ok": true,
+    "why": "path go.mod exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-mod.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "module:example.com/mempilot",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "path:go.mod",
+    "ok": true,
+    "why": "path go.mod exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "qa-mod.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "module:example.com/mempilot",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "path:go.mod",
+    "ok": true,
+    "why": "path go.mod exists"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-dep.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Cargo.toml",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "serde|toml|clap|reqwest",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-dep.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Cargo.toml",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "serde|toml|clap|reqwest",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-dep.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Cargo.toml",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "serde|toml|clap|reqwest",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-dep.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": true,
+  "obligations": [
+   {
+    "ob": "Cargo.toml",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "serde|toml|clap|reqwest",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-ver.S0.r0",
+  "status": "VALID_SUCCESS",
+  "correct": false,
+  "obligations": [
+   {
+    "ob": "go 1.21",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "go.mod",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-ver.S0.r1",
+  "status": "VALID_SUCCESS",
+  "correct": false,
+  "obligations": [
+   {
+    "ob": "go 1.21",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "go.mod",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-ver.S1.r0",
+  "status": "VALID_SUCCESS",
+  "correct": false,
+  "obligations": [
+   {
+    "ob": "go 1.21",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "go.mod",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ },
+ {
+  "session": "tc-ver.S1.r1",
+  "status": "VALID_SUCCESS",
+  "correct": false,
+  "obligations": [
+   {
+    "ob": "go 1.21",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   },
+   {
+    "ob": "go.mod",
+    "ok": null,
+    "why": "answer-text obligation, checked in last()"
+   }
+  ],
+  "rejected": 0
+ }
+]

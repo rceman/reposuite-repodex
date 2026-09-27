@@ -1,0 +1,1 @@
+{"authoritative":"provider per-call metrics preserved per step (prompt_tokens, completion_tokens, cached_tokens) in trace MODEL_TOKENS events","session_totals":"final_metrics.total_prompt_tokens/completion_tokens","repodex_bytes":"recorded separately","note":"cached_input now captured per model call"}
