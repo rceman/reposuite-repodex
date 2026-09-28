@@ -206,6 +206,9 @@ struct Options {
     vocab_bridge: Option<String>,
     /// `query --vocab-native on|off` — repository-native role-term bridge.
     vocab_native: Option<String>,
+    /// `query --nav full|adaptive` — Agent-facing evidence packet policy.
+    /// `adaptive` = RepoDex-first intent-conditioned evidence packet.
+    nav: Option<String>,
     import: Option<String>,
     call: Option<String>,
     /// `agent-events ingest --format` input format.
@@ -299,6 +302,7 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--to" => options.to = Some(value_for(args, &mut index, name, inline_value)?),
             "--memory" => options.memory = Some(value_for(args, &mut index, name, inline_value)?),
             "--context" => options.context = Some(value_for(args, &mut index, name, inline_value)?),
+            "--nav" => options.nav = Some(value_for(args, &mut index, name, inline_value)?),
             "--recipes" => options.recipes = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
@@ -2872,6 +2876,11 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         println!("view: {}", outcome.view.canonical_root.display());
         println!("fingerprint: {}", outcome.ensure.fingerprint);
         print!("{}", proj.to_human());
+    } else if matches!(options.nav.as_deref(), Some("adaptive")) {
+        // RepoDex-first adaptive evidence packet (§6-§18): deterministic intent
+        // classification -> obligation-aware selection -> dedup -> budget.
+        let ni = crate::query::adaptive::classify(&text, intent);
+        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, ni));
     } else {
         // Default agent-facing output: RDX2 (faithful: rank/path/range/via, §39).
         print!("{}", proj.to_rdx());

@@ -127,7 +127,10 @@ pub fn execute(
             Selector::CallersOf => QueryIntent::Callers,
             Selector::CalleesOf => QueryIntent::Callees,
             Selector::RelatedOf => QueryIntent::Related,
-            Selector::TestCandidatesOf => QueryIntent::Callees, // test decls reachable via calls
+            // Test candidates are NOT callees. Use the broader related-edge
+            // domain and keep only nodes that are actually test-shaped —
+            // never label an arbitrary callee a test.
+            Selector::TestCandidatesOf => QueryIntent::Related,
             Selector::OwningModuleOf => QueryIntent::Related,
             Selector::PathTo { .. } => QueryIntent::Paths,
         };
@@ -153,8 +156,14 @@ pub fn execute(
             continue;
         }
         let res = engine.run(&plan);
+        let test_only = matches!(step.selector, Selector::TestCandidatesOf);
         let n = res.related.len();
         for h in res.related {
+            // TEST_EVIDENCE honesty (§11): only nodes that are test-shaped are
+            // produced as test candidates — a plain callee is not a test.
+            if test_only && !is_test_shaped(&h.node.label, &h.node.path) {
+                continue;
+            }
             produced.push(h);
         }
         steps.push(StepTrace {
@@ -173,4 +182,17 @@ pub fn execute(
         steps,
         fell_back: false,
     }
+}
+
+/// A node is test-shaped when its label or path is recognizably a test —
+/// the `TestCandidatesOf` selector must not label arbitrary callees as tests.
+fn is_test_shaped(label: &str, path: &str) -> bool {
+    let l = label.to_lowercase();
+    let p = path.to_lowercase();
+    l.starts_with("test")
+        || l.contains("_test")
+        || l.contains("test_")
+        || l.ends_with("test")
+        || p.contains("test")
+        || p.contains("spec")
 }
