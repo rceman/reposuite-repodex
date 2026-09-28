@@ -1,0 +1,1 @@
+{"runner":"tools/eval/test_validator.py","tests":["contains_negative","absent_claim","equivalent_correct","mutating_worktree_proof","status_model","reproducible","classify"],"all_pass":true,"note":"negative answers rejected; equivalent-correct pass; unchanged-worktree claim = TASK_FAILURE; rejected tool = INFRA_INVALID"}

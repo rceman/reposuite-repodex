@@ -1,0 +1,1 @@
+{"same_fixture_same_result":true,"status_model":"deterministic","json_strict":true,"harness_source":"tools/eval/","one_command":"python3 tools/eval/run_smoke.py --binary <bin> --workdir <dir>","schedule":"committed SESSION_SCHEDULE.json (seeded counterbalance)"}

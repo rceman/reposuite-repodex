@@ -1,0 +1,143 @@
+{
+ "tasks": [
+  {
+   "task_id": "qa-mod",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "go.mod contains expected fact",
+     "digest": "84561388fe01a11f571458b83a6dfd5e3fe1612f7338fafd663ecf3d68571317"
+    },
+    {
+     "id": "o2",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "qa-get",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "internal/engine/cache.go contains expected fact",
+     "digest": "381c0f7db6206b009bf061d6023c2f4a53dd2a2b83f9ac236c04b0d04c2623e9"
+    },
+    {
+     "id": "o2",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-calls",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "cmd/main.go contains expected fact",
+     "digest": "d6cdbec2e4bd82302558c5e5e73bdc16cf3d4367f2f730e65c6fbbc00bc3d0bb"
+    },
+    {
+     "id": "o2",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-eng",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    },
+    {
+     "id": "o2",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "tc-ver",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "absent_claim",
+     "ok": true,
+     "evidence": "'go\\s*1\\.|go\\s*\\d' is absent in go.mod",
+     "digest": "84561388fe01a11f571458b83a6dfd5e3fe1612f7338fafd663ecf3d68571317"
+    },
+    {
+     "id": "o2",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "tc-dep",
+   "root": "/tmp/mempilot/smoke/rdx",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains",
+     "ok": true,
+     "evidence": "answer-text obligation (verified against source at eval)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "code-add",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "marker",
+     "ok": true,
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "code-comment",
+   "root": "/tmp/mempilot/smoke/mem",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "marker",
+     "ok": true,
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  }
+ ],
+ "FROZEN_GOLD_SOURCE_AUDIT_PASS": true
+}

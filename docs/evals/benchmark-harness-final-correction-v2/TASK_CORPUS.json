@@ -1,0 +1,147 @@
+[
+ {
+  "id": "qa-mod",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "What Go module does this repository declare and in which file?",
+  "cohort": "qa",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains",
+    "value": "example.com/mempilot",
+    "source_path": "go.mod"
+   },
+   {
+    "id": "o2",
+    "kind": "contains",
+    "value": "go.mod"
+   }
+  ]
+ },
+ {
+  "id": "qa-get",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "What is the signature of the Cache.Get method and which file defines it?",
+  "cohort": "qa",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains",
+    "value": "func (c *Cache) Get",
+    "source_path": "internal/engine/cache.go"
+   },
+   {
+    "id": "o2",
+    "kind": "contains",
+    "value": "internal/engine/cache.go"
+   }
+  ]
+ },
+ {
+  "id": "cc-calls",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "Which functions does cmd/main.go call to resolve a key? Trace the call chain.",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains",
+    "value": "NewResolver",
+    "source_path": "cmd/main.go"
+   },
+   {
+    "id": "o2",
+    "kind": "contains",
+    "value": "ResolveKey|resolve"
+   }
+  ]
+ },
+ {
+  "id": "cc-eng",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "How does the engine package relate to the util codec package? Who calls whom?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains",
+    "value": "engine"
+   },
+   {
+    "id": "o2",
+    "kind": "contains",
+    "value": "codec"
+   }
+  ]
+ },
+ {
+  "id": "tc-ver",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "Does go.mod declare a Go version directive? Answer and quote the relevant line or state it is absent.",
+  "cohort": "tc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absent_claim",
+    "value": "go\\s*1\\.|go\\s*\\d",
+    "source_path": "go.mod"
+   },
+   {
+    "id": "o2",
+    "kind": "contains",
+    "value": "no |absent|not|does not|no go"
+   }
+  ]
+ },
+ {
+  "id": "tc-dep",
+  "root": "/tmp/mempilot/smoke/rdx",
+  "pristine_root": "/tmp/mempilot/smoke/rdx",
+  "task": "Name one dependency declared in this crate's Cargo.toml.",
+  "cohort": "tc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains",
+    "value": "serde|toml|clap|regex|thiserror"
+   }
+  ]
+ },
+ {
+  "id": "code-add",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "In internal/engine/cache.go add the constant line `const MaxSize = 256` at top-level scope.",
+  "cohort": "code",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "marker",
+    "path": "internal/engine/cache.go",
+    "value": "const MaxSize = 256"
+   }
+  ],
+  "mutating": true
+ },
+ {
+  "id": "code-comment",
+  "root": "/tmp/mempilot/smoke/mem",
+  "pristine_root": "/tmp/mempilot/smoke/mem",
+  "task": "Add a comment `// cache boundary` immediately above the Get method in internal/engine/cache.go.",
+  "cohort": "code",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "marker",
+    "path": "internal/engine/cache.go",
+    "value": "// cache boundary"
+   }
+  ],
+  "mutating": true
+ }
+]

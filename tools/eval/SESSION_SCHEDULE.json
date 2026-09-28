@@ -1,0 +1,162 @@
+[
+ {
+  "task": "qa-mod",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "qa-mod",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "qa-get",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "qa-get",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "cc-calls",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "cc-calls",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "cc-eng",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "cc-eng",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "tc-ver",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "tc-ver",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "tc-dep",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "tc-dep",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "code-add",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "code-add",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "code-comment",
+  "arm": "S1",
+  "rep": 0
+ },
+ {
+  "task": "code-comment",
+  "arm": "S0",
+  "rep": 0
+ },
+ {
+  "task": "qa-mod",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "qa-mod",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "qa-get",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "qa-get",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "cc-calls",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "cc-calls",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "cc-eng",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "cc-eng",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "tc-ver",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "tc-ver",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "tc-dep",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "tc-dep",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "code-add",
+  "arm": "S1",
+  "rep": 1
+ },
+ {
+  "task": "code-add",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "code-comment",
+  "arm": "S0",
+  "rep": 1
+ },
+ {
+  "task": "code-comment",
+  "arm": "S1",
+  "rep": 1
+ }
+]

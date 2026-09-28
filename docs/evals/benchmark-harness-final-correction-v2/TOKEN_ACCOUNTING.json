@@ -1,0 +1,1 @@
+{"per_call":"MODEL_TOKENS events (prompt/completion/cached) per model request","session":"final_metrics totals","note":"model_requests counted from MODEL_TOKENS events not total_steps"}

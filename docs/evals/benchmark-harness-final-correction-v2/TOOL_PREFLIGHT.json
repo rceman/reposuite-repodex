@@ -1,0 +1,1 @@
+{"executor_mode":"dangerous","checks":{"read":true,"grep":true,"find":true,"exec":true,"repodex_query":true,"edit_worktree":true,"build_test":true},"INTERACTIVE_APPROVAL_PROMPTS":0,"SCORED_REQUIRED_TOOL_REJECTIONS":0,"SCORED_REQUIRED_TOOL_CANCELLATIONS":0,"BENCHMARK_TOOL_PREFLIGHT_PASS":true,"note":"dangerous scoped to disposable benchmark worktree only"}
