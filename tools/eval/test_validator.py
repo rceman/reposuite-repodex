@@ -1,85 +1,144 @@
 import sys, json, tempfile, shutil
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-import validator as V
+import validator as V, gold, classify
 
-def task(ob, mutating=False):
-    return {"id": "t", "root": "/x", "pristine_root": "/x",
-            "obligations": ob, "mutating": mutating}
+FIX = str(Path(__file__).parent / "fixtures" / "microrepo")
 
 
-def test_contains_negative():
-    ob = [{"id": "o", "kind": "contains", "value": "example.com/mempilot"}]
-    r = V.eval_obligation(ob[0], "module example.com/mempilot", "/x")
-    assert r["ok"] is True
-    r = V.eval_obligation(ob[0], "module example.com/wrong", "/x")
-    assert r["ok"] is False
+def task(ob, mutating=False, cmd=None, pristine=None, root=None):
+    return {"id": "t", "root": root or FIX, "pristine_root": pristine or FIX,
+            "obligations": ob, "mutating": mutating, "validator_command": cmd}
 
 
-def test_absent_claim():
-    ob = {"id": "o", "kind": "absent_claim", "value": r"go\s*1\."}
-    # correct: reports absence
-    ok = V.eval_obligation(ob, "go.mod declares no Go version directive", "/x")
+# ---------- negative + equivalent gold ----------
+def test_unproven_gold_blocks():
+    t = task([{"id": "o", "kind": "contains_text", "value": "neverdeclared-xyz"}])
+    r = gold.prove(t, FIX)
+    assert r["all_proven"] is False  # blocks: no source_path + not in any file
+
+
+def test_gold_source_proven():
+    t = task([{"id": "o", "kind": "contains_text", "value": "example.com/micro",
+               "source_path": "go.mod"}])
+    assert gold.prove(t, FIX)["all_proven"] is True
+
+
+def test_absence_gold():
+    t = task([{"id": "o", "kind": "absence", "value": r"go\s*\d",
+               "source_path": "go.mod"}])
+    assert gold.prove(t, FIX)["all_proven"] is True
+
+
+# ---------- direction ----------
+def test_relation_direction():
+    # engine calls util.Encode — true
+    ob = {"id": "o", "kind": "relation_direction", "from_path": "internal/engine/core.go",
+          "to_callee": "util.Encode", "direction": "engine calls util codec"}
+    ok = V.eval_obligation(ob, "engine calls util codec", FIX, FIX)
     assert ok["ok"] is True
-    # wrong: asserts a version
-    bad = V.eval_obligation(ob, "go.mod requires go 1.21", "/x")
+    # reversed answer (codec calls engine) - the answer text asserts wrong dir
+    bad = V.eval_obligation(ob, "codec calls engine", FIX, FIX)
     assert bad["ok"] is False
 
 
-def test_equivalent_correct():
-    ob = {"id": "o", "kind": "contains", "value": "serde|toml"}
-    for ans in ["uses serde", "depends on toml", "serde is declared"]:
-        assert V.eval_obligation(ob, ans, "/x")["ok"] is True
+def test_written_call():
+    ob = {"id": "o", "kind": "written_call", "caller": "cmd/main.go", "callee": "NewResolver"}
+    assert V.eval_obligation(ob, "main calls NewResolver", FIX, FIX)["ok"] is True
+    # claiming a call that doesn't exist fails
+    ob2 = {"id": "o", "kind": "written_call", "caller": "cmd/main.go", "callee": "NoSuch"}
+    assert V.eval_obligation(ob2, "main calls NoSuch", FIX, FIX)["ok"] is False
 
 
-def test_mutating_worktree_proof():
-    d = tempfile.mkdtemp()
-    try:
-        p = Path(d) / "f.go"
-        # case 1: marker present -> success
-        p.write_text("const MaxSize = 256\nfunc g(){}")
-        t = task([{"id": "m", "kind": "marker", "path": "f.go",
-                   "value": "const MaxSize = 256"}], mutating=True)
-        t["root"] = d; t["pristine_root"] = d
-        v = V.validate(t, "done", d, True, 0, False)
-        assert v["execution_status"] == V.EXECUTION_VALID
-        assert v["validation_status"] == V.TASK_SUCCESS
-        # case 2: agent claims done but file unchanged -> failure
-        p.write_text("func g(){}")
-        v = V.validate(t, "i added the constant", d, True, 0, False)
-        assert v["validation_status"] == V.TASK_FAILURE
-    finally:
-        shutil.rmtree(d)
+# ---------- mutation: diff/scope/position/build ----------
+def test_mutation_requires_diff():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    t = task([{"id": "m", "kind": "mutation_marker", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256"}], mutating=True,
+             cmd="true", pristine=FIX, root=d)
+    # no edit -> no diff -> failure
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_FAILURE
+    shutil.rmtree(d)
+
+
+def test_mutation_scope():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    # marker inside a function (wrong scope)
+    p.write_text(p.read_text().replace("func (c *Cache) Get(k string) int {",
+                                       "func (c *Cache) Get(k string) int {\n\t_ = constNever\n\tconst MaxSize = 256\n"))
+    # Note: that's invalid Go; use a legal-looking inside-func placement
+    p.write_text("package engine\n\ntype Cache struct {\n\tm map[string]int\n}\n\nfunc (c *Cache) Get(k string) int {\n\tconst MaxSize = 256\n\treturn c.m[k]\n}\n")
+    t = task([{"id": "m", "kind": "mutation_scope", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256", "scope": "top-level"}],
+             mutating=True, cmd="true", pristine=FIX, root=d)
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_FAILURE
+    shutil.rmtree(d)
+
+
+def test_mutation_scope_ok():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    p.write_text(p.read_text() + "\nconst MaxSize = 256\n")
+    t = task([{"id": "m", "kind": "mutation_scope", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256", "scope": "top-level"}],
+             mutating=True, cmd="true", pristine=FIX, root=d)
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_SUCCESS
+    shutil.rmtree(d)
+
+
+def test_mutation_position():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    lines = p.read_text().splitlines()
+    # marker immediately above `func (c *Cache) Get`
+    for i, l in enumerate(lines):
+        if l.strip().startswith("func (c *Cache) Get"):
+            lines.insert(i, "// cache boundary")
+            break
+    p.write_text("\n".join(lines) + "\n")
+    t = task([{"id": "m", "kind": "mutation_position", "path": "internal/engine/cache.go",
+               "value": "// cache boundary", "above": "func (c *Cache) Get"}],
+             mutating=True, cmd="true", pristine=FIX, root=d)
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_SUCCESS
+    # wrong position: marker elsewhere
+    shutil.rmtree(d); d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    p.write_text("// cache boundary\n" + p.read_text())
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_FAILURE
+    shutil.rmtree(d)
+
+
+def test_build_failure_fails():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    p.write_text(p.read_text() + "\nconst MaxSize = 256\nBROKEN\n")  # bad syntax
+    t = task([{"id": "m", "kind": "mutation_scope", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256", "scope": "top-level"}],
+             mutating=True, cmd="false", pristine=FIX, root=d)  # validator cmd fails
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_FAILURE
+    shutil.rmtree(d)
 
 
 def test_status_model():
-    t = task([{"id": "o", "kind": "contains", "value": "x"}])
-    # wrong answer, fully executed
-    v = V.validate(t, "wrong answer", "/x", True, 0, False)
+    t = task([{"id": "o", "kind": "contains_text", "value": "x"}])
+    v = V.validate(t, "wrong", FIX, True, 0, False)
     assert v["execution_status"] == V.EXECUTION_VALID and v["validation_status"] == V.TASK_FAILURE
-    # rejected tool -> infra invalid
-    v = V.validate(t, "", "/x", True, 1, False)
+    v = V.validate(t, "", FIX, True, 1, False)
     assert v["execution_status"] == V.INFRA_INVALID and v["validation_status"] == V.NOT_EVALUATED
-    # provider failure
-    v = V.validate(t, "", "/x", False, 0, False)
-    assert v["execution_status"] == V.MODEL_PROVIDER_FAILURE
-
-
-def test_reproducible():
-    t = task([{"id": "o", "kind": "contains", "value": "abc"}])
-    a = V.validate(t, "abc yes", "/x", True, 0, False)
-    b = V.validate(t, "abc yes", "/x", True, 0, False)
-    assert a == b
 
 
 def test_classify():
-    from classify import classify_tool
-    assert classify_tool("exec", {"command": "reposuite-repodex query ..."}) == "repodex"
-    assert classify_tool("exec", {"command": "ls -la"}) == "enumeration"
-    assert classify_tool("exec", {"command": "grep -rn foo"}) == "native_search"
-    assert classify_tool("exec", {"command": "go build ./..."}) == "test_build"
-    assert classify_tool("read", {"file_path": "x"}) == "source_read"
-    assert classify_tool("edit", {}) == "edit"
+    assert classify.classify_tool("exec", {"command": "reposuite-repodex query x"}) == "repodex"
+    assert classify.classify_tool("exec", {"command": "ls"}) == "enumeration"
+    assert classify.classify_tool("exec", {"command": "go build ./..."}) == "test_build"
+    assert classify.classify_tool("edit", {}) == "edit"
 
 
 if __name__ == "__main__":

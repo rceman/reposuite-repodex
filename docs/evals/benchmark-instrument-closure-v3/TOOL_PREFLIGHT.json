@@ -1,0 +1,7 @@
+{
+ "read": true,
+ "edit": true,
+ "build_test": true,
+ "repodex": true,
+ "exec": true
+}

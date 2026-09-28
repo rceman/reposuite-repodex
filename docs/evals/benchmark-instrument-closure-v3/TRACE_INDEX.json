@@ -1,0 +1,322 @@
+[
+ {
+  "session_id": "cc-calls.S0.r0",
+  "task": "cc-calls",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-calls.S0.r0.json",
+  "sha256": "60b3f65c401f9a320fbb09f83c54269d3968d3e3c5d087daa8b9408272c009fc"
+ },
+ {
+  "session_id": "cc-calls.S0.r1",
+  "task": "cc-calls",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-calls.S0.r1.json",
+  "sha256": "3b471de7edbb49941c373529be53abf6e56b46caff72fa547b94fdde41387bc2"
+ },
+ {
+  "session_id": "cc-calls.S1.r0",
+  "task": "cc-calls",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-calls.S1.r0.json",
+  "sha256": "fc76f90c630c59f9ab7d5a1c566ff1d87dee1d52fcb3b6f1640e1c5d973eac44"
+ },
+ {
+  "session_id": "cc-calls.S1.r1",
+  "task": "cc-calls",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-calls.S1.r1.json",
+  "sha256": "f71a3955737699c104cf29c7d52e5b97f67247556c799be7ddba00b23829e5ee"
+ },
+ {
+  "session_id": "cc-eng.S0.r0",
+  "task": "cc-eng",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-eng.S0.r0.json",
+  "sha256": "b6a81d2f39dd8ef054158630aa20995bdd508371ccb8dd816c4a971d92cfdc23"
+ },
+ {
+  "session_id": "cc-eng.S0.r1",
+  "task": "cc-eng",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/cc-eng.S0.r1.json",
+  "sha256": "91421b1f03d42de31457e57e338ed9048f1779e9addd237088b2639042e1e770"
+ },
+ {
+  "session_id": "cc-eng.S1.r0",
+  "task": "cc-eng",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "trace_path": "traces/cc-eng.S1.r0.json",
+  "sha256": "539473cf4f92b7cb0decef9069c61a72f9c9afbc225e43ce8c72ca0dcfc9f229"
+ },
+ {
+  "session_id": "cc-eng.S1.r1",
+  "task": "cc-eng",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "trace_path": "traces/cc-eng.S1.r1.json",
+  "sha256": "32355769e577fbd5a4fe665e7e95c9df88ab599c8c1a03342e968605524ad3de"
+ },
+ {
+  "session_id": "code-add.S0.r0",
+  "task": "code-add",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-add.S0.r0.json",
+  "sha256": "c62f9337e721676d5f2ebf35f450d647c2bf8007bbcc4e4513571c4c768f7cbe"
+ },
+ {
+  "session_id": "code-add.S0.r1",
+  "task": "code-add",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-add.S0.r1.json",
+  "sha256": "c35fecc8b7f9a35a2ec98f4e00594aad12ea39b93652fcecb724fdfbd7a3c7f5"
+ },
+ {
+  "session_id": "code-add.S1.r0",
+  "task": "code-add",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-add.S1.r0.json",
+  "sha256": "c84f4d739b02470595249bbc3375184f8f22cd3560619ee2b29a9a7c1686164f"
+ },
+ {
+  "session_id": "code-add.S1.r1",
+  "task": "code-add",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-add.S1.r1.json",
+  "sha256": "2591531bc2b0e75674a436186c919eee677cda55a9037887cc4901b1a785b975"
+ },
+ {
+  "session_id": "code-comment.S0.r0",
+  "task": "code-comment",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-comment.S0.r0.json",
+  "sha256": "c4629f3cdd650200dc757d214539239d2d334dd0344d357fea20462d3483b4c7"
+ },
+ {
+  "session_id": "code-comment.S0.r1",
+  "task": "code-comment",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-comment.S0.r1.json",
+  "sha256": "b35b9618d65b1c8511458c054e40e7d8b556cc5597bce40e2f9d054dce469689"
+ },
+ {
+  "session_id": "code-comment.S1.r0",
+  "task": "code-comment",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-comment.S1.r0.json",
+  "sha256": "1ba06058d35fd7761f977286344fa9fb1ed5ba6eb105fb7d3b2a554f5a58340a"
+ },
+ {
+  "session_id": "code-comment.S1.r1",
+  "task": "code-comment",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/code-comment.S1.r1.json",
+  "sha256": "323ef817692eef6232dafc51d884cb46a2a30b61bb8de3e6a5120ca1cb6d2dc0"
+ },
+ {
+  "session_id": "qa-get.S0.r0",
+  "task": "qa-get",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-get.S0.r0.json",
+  "sha256": "918a876ad1adaeb7af87485276741f171bd1c803a31a82d54663f57d2da0c3b0"
+ },
+ {
+  "session_id": "qa-get.S0.r1",
+  "task": "qa-get",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-get.S0.r1.json",
+  "sha256": "d3cf1205db6e2ac9ab417316c5d1873a76351fb6a2d65005cc91024ff9fec79d"
+ },
+ {
+  "session_id": "qa-get.S1.r0",
+  "task": "qa-get",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-get.S1.r0.json",
+  "sha256": "73d74dd45a20df2552e0b7e979ad09c616afaf8dcddc54ed40540a4353f82d41"
+ },
+ {
+  "session_id": "qa-get.S1.r1",
+  "task": "qa-get",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-get.S1.r1.json",
+  "sha256": "a89584d55b8725afa7b58db10906d87366787fbd99593e9a59298fc21b39b7a8"
+ },
+ {
+  "session_id": "qa-mod.S0.r0",
+  "task": "qa-mod",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-mod.S0.r0.json",
+  "sha256": "e1b2a317520b7627fada8cd3dbbc4b5dc2d5545fc3ced865ca24ab65f93410e3"
+ },
+ {
+  "session_id": "qa-mod.S0.r1",
+  "task": "qa-mod",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-mod.S0.r1.json",
+  "sha256": "3e9c228d5e306125d621d04a6311f7a53a5ba458c3ce3356b4385483fb5d5f58"
+ },
+ {
+  "session_id": "qa-mod.S1.r0",
+  "task": "qa-mod",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-mod.S1.r0.json",
+  "sha256": "ff8e9bb99874e5d5b1c261fae9122d58ed83391379e4010f8b7e7e46437121f0"
+ },
+ {
+  "session_id": "qa-mod.S1.r1",
+  "task": "qa-mod",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/qa-mod.S1.r1.json",
+  "sha256": "4dac73ec618dcb67d6775df1507d6263bdacdf31da95fcbeb2e449c769c2e82d"
+ },
+ {
+  "session_id": "tc-dep.S0.r0",
+  "task": "tc-dep",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-dep.S0.r0.json",
+  "sha256": "b34c610b997128b134b5dcfc10bc8cbaad9f18e714b45796e7150f9dd35ec77b"
+ },
+ {
+  "session_id": "tc-dep.S0.r1",
+  "task": "tc-dep",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-dep.S0.r1.json",
+  "sha256": "2955322e0d45dc01798939c8b36144d21d45f6b19a2bb282056f49707df73dc8"
+ },
+ {
+  "session_id": "tc-dep.S1.r0",
+  "task": "tc-dep",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-dep.S1.r0.json",
+  "sha256": "e62b6f80c191254624b960ea541eb7da3c8d71730e90aca65ae0b0f3284299fc"
+ },
+ {
+  "session_id": "tc-dep.S1.r1",
+  "task": "tc-dep",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-dep.S1.r1.json",
+  "sha256": "13f35e9f17fec95fd1baed6e64974a97119c4dc4b543bdd4b839468bc5338a7d"
+ },
+ {
+  "session_id": "tc-ver.S0.r0",
+  "task": "tc-ver",
+  "arm": "S0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-ver.S0.r0.json",
+  "sha256": "1244840251a83a9cda062543d760ccb69951770945955333c183c72b477d9501"
+ },
+ {
+  "session_id": "tc-ver.S0.r1",
+  "task": "tc-ver",
+  "arm": "S0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-ver.S0.r1.json",
+  "sha256": "ff63eba6d192f42437773864bbaab4947cc73c576f21bfaae0aa2c90384911eb"
+ },
+ {
+  "session_id": "tc-ver.S1.r0",
+  "task": "tc-ver",
+  "arm": "S1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-ver.S1.r0.json",
+  "sha256": "f00ff47481a053033e72cf38c5b7f342b1e07b15972d78f4f9f2cf299e64d87f"
+ },
+ {
+  "session_id": "tc-ver.S1.r1",
+  "task": "tc-ver",
+  "arm": "S1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "trace_path": "traces/tc-ver.S1.r1.json",
+  "sha256": "6e16bd91a7c0c3c033a8e0e200b980895361a45688939ec76fe0570106d6babe"
+ }
+]

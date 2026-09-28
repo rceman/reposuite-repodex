@@ -1,0 +1,156 @@
+{
+ "tasks": [
+  {
+   "task_id": "qa-mod",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "go.mod",
+     "digest": "aef2523fc663c792f01fa5dac392ec707ce7347649ce7cac5568cb4bb0f34439",
+     "evidence": "go.mod contains example.com/micro"
+    },
+    {
+     "id": "o2",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "qa-get",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "internal/engine/cache.go contains func (c *Cache) Get(k string) int|Get(k string) int"
+    },
+    {
+     "id": "o2",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-calls",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "tools/eval/fixtures/microrepo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls NewResolver"
+    },
+    {
+     "id": "o2",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "tools/eval/fixtures/microrepo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls ResolveKey"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-eng",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "relation_direction",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "tools/eval/fixtures/microrepo/internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "core.go calls util.Encode"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "tc-ver",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "absence",
+     "ok": true,
+     "proof_type": "ABSENCE_PROVEN",
+     "source_path": "go.mod",
+     "digest": "aef2523fc663c792f01fa5dac392ec707ce7347649ce7cac5568cb4bb0f34439",
+     "evidence": "'go\\s*\\d' provably absent"
+    },
+    {
+     "id": "o2",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "tc-dep",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "manifest_dependency",
+     "ok": true,
+     "proof_type": "DEPENDENCY_PROVEN",
+     "source_path": "Cargo.toml",
+     "digest": "4b6d7a6495c011df1f23283f73230c967121fd0a565ae2edbe47fd973df24dd6",
+     "evidence": "Cargo.toml contains serde"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "code-add",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_scope",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "tools/eval/fixtures/microrepo/internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "code-comment",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_position",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "tools/eval/fixtures/microrepo/internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  }
+ ],
+ "FROZEN_GOLD_SOURCE_AUDIT_PASS": true,
+ "fixture_mismatch": []
+}

@@ -1,0 +1,690 @@
+[
+ {
+  "session": "cc-calls.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls NewResolver and answer states it"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls ResolveKey and answer states it"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-calls.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls NewResolver and answer states it"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls ResolveKey and answer states it"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-calls.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls NewResolver and answer states it"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls ResolveKey and answer states it"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-calls.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls NewResolver and answer states it"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "ok": true,
+    "why": "cmd/main.go calls ResolveKey and answer states it"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-eng.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "relation_direction",
+    "ok": true,
+    "why": "internal/engine/core.go calls util.Encode; answer direction correct"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-eng.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "relation_direction",
+    "ok": true,
+    "why": "internal/engine/core.go calls util.Encode; answer direction correct"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-eng.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "relation_direction",
+    "ok": false,
+    "why": "internal/engine/core.go calls util.Encode; answer direction wrong/missing"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "cc-eng.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "relation_direction",
+    "ok": false,
+    "why": "internal/engine/core.go calls util.Encode; answer direction wrong/missing"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "code-add.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "ok": true,
+    "why": "marker is top-level, required top-level"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-add.S0.r0/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-add.S0.r0/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-add.S0.r0/internal/engine/cache.go\t2026-09-28 11:22:10.930272156 +0300\n@@ -1,5 +1,7 @@\n package engine\n \n+const MaxSize = 256\n+\n type Cache struct {\n \tm map[string]int\n }\n",
+   "diff_digest": "bdaa02ea9e1db3d2cd900e3912a5f46fa80d300e06e704d34c7abd95ecf598ce",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-add.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "ok": true,
+    "why": "marker is top-level, required top-level"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-add.S0.r1/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-add.S0.r1/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-add.S0.r1/internal/engine/cache.go\t2026-09-28 11:29:27.138611633 +0300\n@@ -1,5 +1,7 @@\n package engine\n \n+const MaxSize = 256\n+\n type Cache struct {\n \tm map[string]int\n }\n",
+   "diff_digest": "ffbcda75593a744712961dc0b26d30fa089872c0013b7309d87e96554410d201",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-add.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "ok": true,
+    "why": "marker is top-level, required top-level"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-add.S1.r0/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-add.S1.r0/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-add.S1.r0/internal/engine/cache.go\t2026-09-28 11:22:44.976310772 +0300\n@@ -1,5 +1,7 @@\n package engine\n \n+const MaxSize = 256\n+\n type Cache struct {\n \tm map[string]int\n }\n",
+   "diff_digest": "20e9a2759fd78301074b08b37cd8dcd2b2ecdcf3f7fdf13e4171f66c16c1c2ad",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-add.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "ok": true,
+    "why": "marker is top-level, required top-level"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-add.S1.r1/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-add.S1.r1/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-add.S1.r1/internal/engine/cache.go\t2026-09-28 11:28:50.599821950 +0300\n@@ -1,5 +1,7 @@\n package engine\n \n+const MaxSize = 256\n+\n type Cache struct {\n \tm map[string]int\n }\n",
+   "diff_digest": "e7573d28a047617ad4b55a509a6d738cf558d1bbbc3949f9c782f627e42e6128",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-comment.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "ok": true,
+    "why": "marker immediately above anchor"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-comment.S0.r0/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-comment.S0.r0/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-comment.S0.r0/internal/engine/cache.go\t2026-09-28 11:23:45.656927663 +0300\n@@ -4,6 +4,7 @@\n \tm map[string]int\n }\n \n+// cache boundary\n func (c *Cache) Get(k string) int {\n \treturn c.m[k]\n }\n",
+   "diff_digest": "ebf9cd419675a6e09714e3f661859df63ead9527c0e3d87632868118c4096a47",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-comment.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "ok": true,
+    "why": "marker immediately above anchor"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-comment.S0.r1/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-comment.S0.r1/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-comment.S0.r1/internal/engine/cache.go\t2026-09-28 11:30:21.742592715 +0300\n@@ -4,6 +4,7 @@\n \tm map[string]int\n }\n \n+// cache boundary\n func (c *Cache) Get(k string) int {\n \treturn c.m[k]\n }\n",
+   "diff_digest": "380d77a9a6ee75bb9e4a3e964718511e26f95ee5e9535beb42d355de612dc7c6",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-comment.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "ok": true,
+    "why": "marker immediately above anchor"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-comment.S1.r0/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-comment.S1.r0/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-comment.S1.r0/internal/engine/cache.go\t2026-09-28 11:23:12.565595148 +0300\n@@ -4,6 +4,7 @@\n \tm map[string]int\n }\n \n+// cache boundary\n func (c *Cache) Get(k string) int {\n \treturn c.m[k]\n }\n",
+   "diff_digest": "45775f754c379bf5243f5bc4d534e6cfbb5e45986d5ba963f9ecb6a43bc0d603",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "code-comment.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "ok": true,
+    "why": "marker immediately above anchor"
+   }
+  ],
+  "worktree": {
+   "changed_paths": [
+    "/tmp/mempilot/smoke3/wt/code-comment.S1.r1/internal/engine/cache.go"
+   ],
+   "diff": "diff -ruN tools/eval/fixtures/microrepo/internal/engine/cache.go /tmp/mempilot/smoke3/wt/code-comment.S1.r1/internal/engine/cache.go\n--- tools/eval/fixtures/microrepo/internal/engine/cache.go\t2026-09-28 11:09:19.956896043 +0300\n+++ /tmp/mempilot/smoke3/wt/code-comment.S1.r1/internal/engine/cache.go\t2026-09-28 11:30:59.732992809 +0300\n@@ -4,6 +4,7 @@\n \tm map[string]int\n }\n \n+// cache boundary\n func (c *Cache) Get(k string) int {\n \treturn c.m[k]\n }\n",
+   "diff_digest": "949476dfb7e2741891580ce66f71670c6489b9132797a7c906a9e29e23171855",
+   "validator_command": "go build -buildvcs=false ./...",
+   "validator_exit_code": 0,
+   "validator_stdout": "",
+   "validator_stderr": ""
+  }
+ },
+ {
+  "session": "qa-get.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'func (c *Cache) Get(k string) int|Get(k string) int'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'internal/engine/cache.go|cache.go'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-get.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'func (c *Cache) Get(k string) int|Get(k string) int'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'internal/engine/cache.go|cache.go'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-get.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'func (c *Cache) Get(k string) int|Get(k string) int'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'internal/engine/cache.go|cache.go'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-get.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'func (c *Cache) Get(k string) int|Get(k string) int'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'internal/engine/cache.go|cache.go'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-mod.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'example.com/micro'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'go.mod'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-mod.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'example.com/micro'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'go.mod'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-mod.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'example.com/micro'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'go.mod'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "qa-mod.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'example.com/micro'"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'go.mod'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-dep.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "ok": true,
+    "why": "answer contains 'serde'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-dep.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "ok": true,
+    "why": "answer contains 'serde'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-dep.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "ok": true,
+    "why": "answer contains 'serde'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-dep.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "ok": true,
+    "why": "answer contains 'serde'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-ver.S0.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "ok": true,
+    "why": "source lacks claim and answer reports absence"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'no |not |absent|does not|doesn't|none'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-ver.S0.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "ok": true,
+    "why": "source lacks claim and answer reports absence"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'no |not |absent|does not|doesn't|none'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-ver.S1.r0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "ok": true,
+    "why": "source lacks claim and answer reports absence"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'no |not |absent|does not|doesn't|none'"
+   }
+  ],
+  "worktree": null
+ },
+ {
+  "session": "tc-ver.S1.r1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "rejected": 0,
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "ok": true,
+    "why": "source lacks claim and answer reports absence"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "ok": true,
+    "why": "answer contains 'no |not |absent|does not|doesn't|none'"
+   }
+  ],
+  "worktree": null
+ }
+]
