@@ -130,6 +130,9 @@
     "value": "const MaxSize = 256",
     "scope": "top-level"
    }
+  ],
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
   ]
  },
  {
@@ -148,6 +151,9 @@
     "value": "// cache boundary",
     "above": "func (c *Cache) Get"
    }
+  ],
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
   ]
  }
 ]

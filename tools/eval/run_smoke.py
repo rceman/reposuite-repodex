@@ -42,7 +42,7 @@ def tool_preflight(binary, state_dir, workdir):
         checks["edit"] = _try((wt / "go.mod").write_text, "module example.com/micro\n// preflight\n")
         c = subprocess.run(["go", "build", "-buildvcs=false", "./..."], cwd=wt,
                            capture_output=True, timeout=60)
-        checks["build_test"] = c.returncode in (0, 1)  # ran; may fail if no go toolchain but executed
+        checks["build_test"] = c.returncode == 0  # known-good fixture must build cleanly
         q = subprocess.run([binary, "query", "--root", str(wt), "--query", "module",
                             "--state-dir", state_dir], capture_output=True, text=True, timeout=60)
         checks["repodex"] = bool(q.stdout.strip())
@@ -63,21 +63,30 @@ def _try(fn, *a):
 
 def rdx_packet(binary, state_dir, root, query):
     t0 = time.monotonic()
-    out = subprocess.run([binary, "query", "--root", root, "--query", query,
-                          "--state-dir", state_dir], capture_output=True, text=True).stdout
-    return out, (time.monotonic() - t0) * 1000
+    r = subprocess.run([binary, "query", "--root", root, "--query", query,
+                        "--state-dir", state_dir], capture_output=True, text=True)
+    ms = (time.monotonic() - t0) * 1000
+    return r.stdout, {"repodex_prepare_transport_status": "SUCCESS" if r.returncode is not None else "FAILED",
+                      "repodex_prepare_process_exit_code": r.returncode,
+                      "repodex_prepare_stdout_bytes": len(r.stdout.encode()),
+                      "repodex_prepare_stderr": r.stderr[:4000],
+                      "repodex_prepare_wall_ms": round(ms, 1),
+                      "prepare_ok": r.returncode == 0 and bool(r.stdout.strip())}
 
 
 def make_prompt(task, arm, root, binary, state_dir):
     base = f"Investigate this repository and complete the task, verifying with tools.\n\nTASK:\n{task['task']}\n\n"
-    pk = None; ms = 0
+    prep = {"repodex_prepare_transport_status": None, "repodex_prepare_process_exit_code": None,
+            "repodex_prepare_stdout_bytes": 0, "repodex_prepare_stderr": None,
+            "repodex_prepare_wall_ms": 0, "packet_bytes": 0, "prepare_ok": True}
     if arm == "S1":
-        pk, ms = rdx_packet(binary, state_dir, task["root"], task["task"])
+        pk, pr = rdx_packet(binary, state_dir, task["root"], task["task"])
+        prep.update(pr); prep["packet_bytes"] = len(pk or "")
         base += f"A repository-analysis tool produced this evidence (RDX). Verify with tools.\n\nEVIDENCE:\n{pk}\n\n"
     else:
         base += "Use read/grep/find_file_by_name/exec.\n"
     base += "\nReturn:\nANSWER:\n<answer>\nEVIDENCE:\n<path:line>\n"
-    return base, {"repodex_prepare_wall_ms": round(ms, 1), "packet_bytes": len(pk or "")}
+    return base, prep
 
 
 def setup_wt(task, out, sid):
@@ -93,6 +102,15 @@ def run_one(binary, state_dir, devin, task, arm, rep, out):
     sid = f"{task['id']}.{arm}.r{rep}"
     root = setup_wt(task, out, sid)
     ptxt, prep = make_prompt(task, arm, root, binary, state_dir)
+    if arm == "S1" and not prep.get("prepare_ok"):
+        # RepoDex preparation failed — do not silently run an empty treatment.
+        tr = {"session": sid, "task": task["id"], "arm": arm, "rep": rep,
+              "executor_mode": "dangerous", "execution_status": "INFRA_INVALID",
+              "validation_status": "NOT_EVALUATED", "repodex_prepare": prep,
+              "correct": False, "events": []}
+        tp = Path(out) / "traces" / f"{sid}.json"; tp.parent.mkdir(parents=True, exist_ok=True)
+        tp.write_text(json.dumps(tr))
+        return tr
     pf = Path(out) / "prompts" / f"{sid}.txt"; pf.parent.mkdir(parents=True, exist_ok=True); pf.write_text(ptxt)
     exp = Path(out) / "exports" / f"{sid}.json"; exp.parent.mkdir(parents=True, exist_ok=True)
     exp.unlink(missing_ok=True)
@@ -113,6 +131,7 @@ def run_one(binary, state_dir, devin, task, arm, rep, out):
           "executor_mode": "dangerous",
           "execution_status": v["execution_status"], "validation_status": v["validation_status"],
           "rejected": summ["rejected"], "repodex_prepare_wall_ms": prep["repodex_prepare_wall_ms"],
+          "repodex_prepare": prep,
           "packet_bytes": prep["packet_bytes"], "agent_session_wall_ms": round(agent_wall),
           "combined_wall_ms": round(agent_wall + prep["repodex_prepare_wall_ms"]),
           "final_metrics": d.get("final_metrics", {}), "model_calls": summ["model_calls"],
@@ -162,9 +181,26 @@ def main():
     sched = load(a.schedule)
     results = []
     if a.from_traces:
+        from classify import classify_tool as _ct
         for tp in sorted((out / "traces").glob("*.json")):
-            results.append(load(tp))
-        print(f"replayed {len(results)} existing traces")
+            t = load(tp)
+            # Re-derive tool classification from raw TOOL_REQUEST events rather
+            # than trusting the previously stored (possibly stale) categories.
+            cats = []
+            for e in t.get("events", []):
+                if e.get("ev") == "TOOL_REQUEST":
+                    cats.append(_ct(e.get("tool"), e.get("args")))
+            old = t.get("tool_categories", [])
+            if cats:
+                t["_reclassified_from_raw"] = {"old_rep_dex": old.count("repodex"),
+                                               "new_rep_dex": cats.count("repodex")}
+                t["tool_categories"] = cats
+            # model_calls re-derived from MODEL_TOKENS events
+            mc = sum(1 for e in t.get("events", []) if e.get("ev") == "MODEL_TOKENS")
+            if mc:
+                t["model_calls"] = mc
+            results.append(t)
+        print(f"replayed {len(results)} existing traces (reclassified)")
     else:
         for job in sched:
             tr = run_one(a.binary, state_dir, a.devin, tasks[job["task"]], job["arm"], job["rep"], out)

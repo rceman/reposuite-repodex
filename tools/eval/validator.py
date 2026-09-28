@@ -156,8 +156,14 @@ def worktree_proof(task, worktree):
                               capture_output=True, text=True, timeout=60)
         res["diff"] = diff.stdout
         res["diff_digest"] = hashlib.sha256(diff.stdout.encode()).hexdigest()
-        res["changed_paths"] = sorted({re.sub(rf"^{re.escape(str(pristine))}/?", "", l.split()[3])
-                                       for l in diff.stdout.splitlines()
+        # normalize to deterministic repository-relative paths
+        def _rel(pth):
+            pth = pth.rsplit(" ", 1)[-1] if " " in pth else pth
+            for base in (str(pristine), str(wt)):
+                if pth.startswith(base.rstrip("/") + "/"):
+                    return pth[len(base.rstrip("/")) + 1:]
+            return pth.split("/")[-1]
+        res["changed_paths"] = sorted({_rel(l.split()[-1]) for l in diff.stdout.splitlines()
                                        if l.startswith("diff ")})
     except Exception as e:
         res["diff_error"] = str(e)
@@ -192,9 +198,19 @@ def validate(task, answer, worktree, export_ok, rejected, timed_out):
         has_diff = bool(proof["diff"].strip()) and len(proof["changed_paths"]) >= 1
         obs_ok = all(o["ok"] for o in obs)
         cmd_ok = proof.get("validator_exit_code", 0) == 0 if proof.get("validator_command") else True
-        out["validation_status"] = TASK_SUCCESS if (has_diff and obs_ok and cmd_ok) else TASK_FAILURE
+        # every changed path must be in the allowed set; the required path must
+        # itself have changed.
+        allowed = set(task.get("allowed_changed_paths") or [])
+        req_paths = {o["path"] for o in task.get("obligations", [])
+                     if o.get("kind") in ("mutation_marker", "mutation_scope", "mutation_position") and o.get("path")}
+        forbidden = sorted(p for p in proof["changed_paths"] if allowed and p not in allowed)
+        req_changed = (not req_paths) or any(p in proof["changed_paths"] for p in req_paths)
+        scope_ok = has_diff and not forbidden and req_changed
+        out["validation_status"] = TASK_SUCCESS if (has_diff and obs_ok and cmd_ok and scope_ok) else TASK_FAILURE
         out["has_required_diff"] = has_diff
         out["changed_paths"] = proof["changed_paths"]
+        out["forbidden_changed_paths"] = forbidden
+        out["allowed_changed_paths"] = sorted(allowed)
     else:
         out["validation_status"] = TASK_SUCCESS if all(o["ok"] for o in obs) else TASK_FAILURE
     return out

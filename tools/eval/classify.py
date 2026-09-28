@@ -4,6 +4,35 @@ Ordinary `exec` is NOT a RepoDex call. Classification inspects the executed
 command string.
 """
 import re
+import shlex
+
+
+def _is_repodex_invocation(cmd):
+    """True only if the command's executable token is a reposuite-repodex
+    binary being run (e.g. `reposuite-repodex query ...`, `.../reposuite-repodex
+    query ...`, `env X=1 reposuite-repodex ...`). A path that merely *contains*
+    'reposuite-repodex' (find/ls/cat on the repo dir) is NOT an invocation."""
+    try:
+        toks = shlex.split(cmd)
+    except Exception:
+        toks = cmd.split()
+    if not toks:
+        return False
+    # skip `env VAR=val` wrappers to reach the real program
+    i = 0
+    if toks[0] == "env":
+        i = 1
+        while i < len(toks) and "=" in toks[i] and not toks[i].startswith("-"):
+            i += 1
+    if i >= len(toks):
+        return False
+    prog = toks[i]
+    # the executable basename must be the reposuite-repodex binary
+    if prog.rsplit("/", 1)[-1] != "reposuite-repodex":
+        return False
+    # must be invoked with a real subcommand (not just the path mentioned)
+    return len(toks) > i + 1
+
 
 def classify_tool(function_name, args):
     """Return (category, executed_content_description)."""
@@ -11,7 +40,7 @@ def classify_tool(function_name, args):
     if isinstance(args, dict):
         cmd = str(args.get("command", "") or args.get("file_path", "") or args.get("pattern", ""))
     if function_name == "exec":
-        if "reposuite-repodex" in cmd or "repodex query" in cmd or "repo_query" in cmd:
+        if _is_repodex_invocation(cmd):
             return "repodex"
         if re.search(r"\b(go|cargo|pytest|make|npm|tsc|clang|gcc)\b.*\b(build|test|vet|check|lint)\b", cmd):
             return "test_build"

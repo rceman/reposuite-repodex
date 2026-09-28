@@ -1,0 +1,45 @@
+{
+ "reason": "path substring 'reposuite-repodex' matched any exec command referencing the fixture path /home/therceman/git/reposuite-repodex/tools/eval/fixtures/*; find/ls/cat/grep on the repo dir were misclassified as repodex invocations",
+ "fix": "classify the executed program token (basename==reposuite-repodex with a subcommand) not a path substring; env VAR=val wrappers skipped",
+ "old_repodex_calls": 7,
+ "corrected_repodex_calls": 0,
+ "S0_FALSE_REPODEX_CLASSIFICATIONS": 0,
+ "native_repodex_invocations": 0,
+ "affected_sessions": [
+  {
+   "session": "cc-calls.S0.r0",
+   "arm": "S0",
+   "old_repodex": 1
+  },
+  {
+   "session": "cc-calls.S0.r1",
+   "arm": "S0",
+   "old_repodex": 1
+  },
+  {
+   "session": "cc-calls.S1.r0",
+   "arm": "S1",
+   "old_repodex": 1
+  },
+  {
+   "session": "cc-eng.S0.r0",
+   "arm": "S0",
+   "old_repodex": 1
+  },
+  {
+   "session": "cc-eng.S1.r0",
+   "arm": "S1",
+   "old_repodex": 1
+  },
+  {
+   "session": "cc-eng.S1.r1",
+   "arm": "S1",
+   "old_repodex": 1
+  },
+  {
+   "session": "qa-get.S1.r1",
+   "arm": "S1",
+   "old_repodex": 1
+  }
+ ]
+}

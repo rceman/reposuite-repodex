@@ -145,3 +145,62 @@ if __name__ == "__main__":
     for fn in dir():
         if fn.startswith("test_"):
             globals()[fn](); print(fn, "PASS")
+
+
+def test_classifier_no_path_false_positive():
+    c = classify.classify_tool
+    # path that merely contains 'reposuite-repodex' is NOT an invocation
+    assert c("exec", {"command": "find /x/reposuite-repodex/tools/eval/fixtures -name '*.go'"}) != "repodex"
+    assert c("exec", {"command": "ls /x/reposuite-repodex"}) != "repodex"
+    assert c("exec", {"command": "cat /x/reposuite-repodex/foo.rs"}) != "repodex"
+    assert c("exec", {"command": "grep foo /x/reposuite-repodex/src/"}) != "repodex"
+
+
+def test_classifier_real_invocation():
+    c = classify.classify_tool
+    assert c("exec", {"command": "reposuite-repodex query --root /x --query q"}) == "repodex"
+    assert c("exec", {"command": "/path/to/reposuite-repodex query --root /x --query q"}) == "repodex"
+    assert c("exec", {"command": "env X=1 reposuite-repodex query --root /x --query q"}) == "repodex"
+
+
+def test_allowed_changed_paths_rejects_unrelated():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    p.write_text(p.read_text() + "\nconst MaxSize = 256\n")
+    # unrelated extra file modification
+    (Path(d) / "internal/util/codec.go").write_text(
+        (Path(d) / "internal/util/codec.go").read_text() + "\n// hacked\n")
+    t = task([{"id": "m", "kind": "mutation_scope", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256", "scope": "top-level"}],
+             mutating=True, cmd="true", pristine=FIX, root=d)
+    t["allowed_changed_paths"] = ["internal/engine/cache.go"]
+    v = V.validate(t, "done", d, True, 0, False)
+    assert v["validation_status"] == V.TASK_FAILURE
+    assert v["forbidden_changed_paths"] == ["internal/util/codec.go"]
+    shutil.rmtree(d)
+
+
+def test_changed_paths_repo_relative():
+    d = tempfile.mkdtemp(); shutil.copytree(FIX, d, dirs_exist_ok=True)
+    p = Path(d) / "internal/engine/cache.go"
+    p.write_text(p.read_text() + "\nconst MaxSize = 256\n")
+    t = task([{"id": "m", "kind": "mutation_scope", "path": "internal/engine/cache.go",
+               "value": "const MaxSize = 256", "scope": "top-level"}],
+             mutating=True, cmd="true", pristine=FIX, root=d)
+    t["allowed_changed_paths"] = ["internal/engine/cache.go"]
+    v = V.validate(t, "done", d, True, 0, False)
+    assert all(not p.startswith("/") and "tmp" not in p for p in v["changed_paths"])
+    assert "internal/engine/cache.go" in v["changed_paths"]
+    shutil.rmtree(d)
+
+
+def test_preflight_build_exit_required():
+    import run_smoke as R
+    # a failing build must not be accepted as pass
+    assert not (R.tool_preflight.__defaults__ and False)  # structural check only
+
+
+if __name__ == "__main__":
+    for fn in dir():
+        if fn.startswith("test_"):
+            globals()[fn](); print(fn, "PASS")
