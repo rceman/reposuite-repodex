@@ -1,0 +1,12 @@
+{
+ "A2_vs_N0": {
+  "success_delta": 6,
+  "tools_delta": -1.2,
+  "search_delta": -0.7,
+  "input_delta": -90
+ },
+ "A2_vs_F1": {
+  "success_delta": 0,
+  "packet_reduction_pct": 90
+ }
+}

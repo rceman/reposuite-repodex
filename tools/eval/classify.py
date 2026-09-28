@@ -63,12 +63,18 @@ def classify_tool(function_name, args):
 
 
 def is_rejected_result(content):
-    """Detect approval-layer rejection vs legitimate tool failure."""
+    """Detect approval-layer rejection vs legitimate tool failure.
+
+    Match only explicit approval/permission-denial phrases — not the bare word
+    'rejected'/'canceled', which can appear inside ordinary tool output (e.g. an
+    exported session JSON the agent reads)."""
     c = str(content).lower()
     return any(p in c for p in (
-        "rejected", "not approved", "permission denied",
-        "requires approval", "denied by policy", "canceled",
-        "cancelled", "requires user approval"))
+        "not approved", "permission denied", "requires approval",
+        "requires user approval", "denied by policy", "auto-denied",
+        "auto denied", "tool call rejected", "tool rejected",
+        "rejected by policy", "approval required", "was rejected",
+        "call was canceled", "tool was canceled", "tool was cancelled"))
 
 
 def exit_code_of(content):

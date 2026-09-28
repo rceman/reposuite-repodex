@@ -1,0 +1,520 @@
+[
+ {
+  "id": "lk-get",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the Cache.Get method defined? Give file + signature.",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func (c *Cache) Get",
+    "source_path": "internal/engine/cache.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-res",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which file declares the Resolver type and its NewResolver constructor?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "NewResolver|Resolver",
+    "source_path": "internal/engine/core.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-main",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which file holds the main() entrypoint?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "cmd/main.go|main.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-rust-an",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Where is the FileAnalysis type declared?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "FileAnalysis"
+   }
+  ]
+ },
+ {
+  "id": "lk-rust-intent",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which file declares the QueryIntent enum?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "QueryIntent"
+   }
+  ]
+ },
+ {
+  "id": "lk-sig",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What is the signature of Cache.Set?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func (c *Cache) Set|Set(k string, v int)",
+    "source_path": "internal/engine/cache.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-enc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the util Encode function?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func Encode|internal/util/codec.go",
+    "source_path": "internal/util/codec.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-rust-cli",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which file implements the CLI query command?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "command_query|query"
+   }
+  ]
+ },
+ {
+  "id": "cc-main",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which functions does cmd/main.go call?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "NewResolver"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "ResolveKey"
+   }
+  ]
+ },
+ {
+  "id": "cc-enc-use",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Does the engine package use util.Encode? State the call direction.",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "relation_direction",
+    "from_path": "internal/engine/core.go",
+    "to_callee": "util.Encode",
+    "direction": "engine calls util codec"
+   }
+  ]
+ },
+ {
+  "id": "cc-get-callers",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Who calls Cache.Get?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Get|none|no caller"
+   }
+  ]
+ },
+ {
+  "id": "cc-res-callees",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What does Resolver.ResolveKey call?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Encode|util"
+   }
+  ]
+ },
+ {
+  "id": "cc-rust-q",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "What does command_query invoke to run a view query?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "run_view_query|query"
+   }
+  ]
+ },
+ {
+  "id": "cc-cache-main",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "How does main reach the Cache? Trace it.",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "engine|Resolver|NewResolver"
+   }
+  ]
+ },
+ {
+  "id": "cc-rust-proj",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which module builds the EvidenceProjection?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "projection|EvidenceProjection"
+   }
+  ]
+ },
+ {
+  "id": "cc-pkg",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "How does cmd/main.go relate to internal/engine? Import or call?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "import|engine|call"
+   }
+  ]
+ },
+ {
+  "id": "mc-gomod",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What module does go.mod declare and does it pin a Go version?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "value": "go\\s*\\d",
+    "source_path": "go.mod"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "value": "example.com/mempilot|mempilot"
+   }
+  ]
+ },
+ {
+  "id": "mc-cargo",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Name one dependency in this crate's Cargo.toml.",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "value": "serde|tree-sitter|clap|regex|toml",
+    "source_path": "Cargo.toml"
+   }
+  ]
+ },
+ {
+  "id": "mc-toml-ver",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "What Rust edition does Cargo.toml declare?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "value": "2021|edition",
+    "source_path": "Cargo.toml"
+   }
+  ]
+ },
+ {
+  "id": "mc-test",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Is there a test file for the engine package? Which file?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "test|core_test|cache_test"
+   }
+  ]
+ },
+ {
+  "id": "mc-rust-tests",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which directory holds the integration test suites?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "tests"
+   }
+  ]
+ },
+ {
+  "id": "mc-pkgname",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What is the package name of the engine module?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "engine|package"
+   }
+  ]
+ },
+ {
+  "id": "mc-mod2",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Does go.mod require any external dependencies?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "no |none|does not|no require|no depend"
+   }
+  ]
+ },
+ {
+  "id": "mc-crate-name",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "What is the crate's package name in Cargo.toml?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "value": "reposuite-repodex|repodex",
+    "source_path": "Cargo.toml"
+   }
+  ]
+ },
+ {
+  "id": "cd-cache-cap",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add a top-level `const MaxSize = 256` to the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "path": "internal/engine/cache.go",
+    "value": "const MaxSize = 256",
+    "scope": "top-level"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-get-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add the comment `// cache boundary` immediately above the Get method in the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/cache.go",
+    "value": "// cache boundary",
+    "above": "func (c *Cache) Get"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-set-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add the comment `// setter` immediately above the Set method in the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/cache.go",
+    "value": "// setter",
+    "above": "func (c *Cache) Set"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-enc-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add the comment `// encodes keys` immediately above the Encode function in the util codec file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/util/codec.go",
+    "value": "// encodes keys",
+    "above": "func Encode"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/util/codec.go"
+  ]
+ },
+ {
+  "id": "cd-main-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add the comment `// entrypoint` immediately above func main in cmd/main.go.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "cmd/main.go",
+    "value": "// entrypoint",
+    "above": "func main"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "cmd/main.go"
+  ]
+ },
+ {
+  "id": "cd-res-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add the comment `// resolves keys via the codec` immediately above ResolveKey in the engine core file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/core.go",
+    "value": "// resolves keys via the codec",
+    "above": "func (r *Resolver) ResolveKey"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/core.go"
+  ]
+ },
+ {
+  "id": "cd-cache2",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add a top-level `const DefaultSize = 64` to the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "path": "internal/engine/cache.go",
+    "value": "const DefaultSize = 64",
+    "scope": "top-level"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-rust-doc",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Add the comment `// query intent` immediately above the QueryIntent enum declaration in the query engine file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "src/query/engine.rs",
+    "value": "// query intent",
+    "above": "pub enum QueryIntent"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "src/query/engine.rs"
+  ]
+ }
+]

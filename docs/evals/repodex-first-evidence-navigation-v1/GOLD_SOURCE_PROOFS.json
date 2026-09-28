@@ -1,0 +1,1 @@
+{"method":"obligation-based; source_path obligations proven against frozen fixtures (microrepo Go, frozen reposuite-repodex Rust snapshot); mutating tasks proven via worktree diff","audit":"all factual obligations carried a proof mechanism or were marked nonfactual"}

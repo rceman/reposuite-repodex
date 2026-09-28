@@ -1,0 +1,7 @@
+{
+ "REPODEX_DISCOVERY_COVERAGE": {
+  "numerator": 63,
+  "denominator": 64
+ },
+ "note": "A2 sessions where the injected adaptive packet sufficed without the agent re-calling repodex"
+}

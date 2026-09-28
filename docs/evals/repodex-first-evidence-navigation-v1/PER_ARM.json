@@ -1,0 +1,47 @@
+{
+ "N0": {
+  "sessions": 63,
+  "success": 46,
+  "infra_invalid": 1,
+  "input_tok": 69485,
+  "output_tok": 771,
+  "tools": 6.1,
+  "model_calls": 5.0,
+  "native_search": 1.2,
+  "source_read": 1.4,
+  "edit": 13,
+  "repodex_calls": 0,
+  "combined_wall_ms": 17721,
+  "packet_bytes": 0
+ },
+ "F1": {
+  "sessions": 62,
+  "success": 52,
+  "infra_invalid": 2,
+  "input_tok": 69615,
+  "output_tok": 886,
+  "tools": 4.2,
+  "model_calls": 3.9,
+  "native_search": 0.2,
+  "source_read": 1.3,
+  "edit": 15,
+  "repodex_calls": 0,
+  "combined_wall_ms": 18594,
+  "packet_bytes": 13925
+ },
+ "A2": {
+  "sessions": 63,
+  "success": 52,
+  "infra_invalid": 1,
+  "input_tok": 69395,
+  "output_tok": 832,
+  "tools": 4.9,
+  "model_calls": 4.4,
+  "native_search": 0.5,
+  "source_read": 1.6,
+  "edit": 16,
+  "repodex_calls": 0,
+  "combined_wall_ms": 19872,
+  "packet_bytes": 1395
+ }
+}

@@ -1,0 +1,1 @@
+{"harness":"devin cli --permission-mode dangerous","isolation":"disposable benchmark worktrees","PERMISSION_POLICY_IDENTICAL_ACROSS_ARMS":true,"JEV_ONLINE":false,"LEARNED_PROJECT_MEMORY":"off"}

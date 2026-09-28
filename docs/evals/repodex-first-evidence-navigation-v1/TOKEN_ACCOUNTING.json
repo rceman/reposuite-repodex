@@ -1,0 +1,1 @@
+{"per_call":"MODEL_TOKENS events","avg":{"N0":{"in":69485,"out":771},"F1":{"in":69615,"out":886},"A2":{"in":69395,"out":832}},"note":"cumulative input roughly equal; adaptive packet is smaller but agent verification dominates"}

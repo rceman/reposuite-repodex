@@ -1,0 +1,1 @@
+{"F1":{"desc":"frozen full-RDX baseline","commit":"fe824e5","binary":"/tmp/baseline-wt/target/release/reposuite-repodex"},"A2":{"desc":"adaptive evidence navigation","commit":"ddd9e10","flags":"--nav adaptive","binary":"target/debug/reposuite-repodex"},"N0":{"desc":"native, no RepoDex"}}
