@@ -1,0 +1,1 @@
+{"checkpoints":[0,5,10,25,50],"memories_per_checkpoint":{"C0":0,"C5":4,"C10":4,"C25":4,"C50":4},"note":"4 reusable families derived from 50 investigations; snapshots frozen before eval"}

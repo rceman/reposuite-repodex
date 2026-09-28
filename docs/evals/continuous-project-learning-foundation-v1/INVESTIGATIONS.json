@@ -1,0 +1,552 @@
+[
+ {
+  "qid": "q-e0",
+  "family": "entrypoint",
+  "question": "What does main initialize?",
+  "anchors": [
+   "main"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ main\\ initialize?\nI ambiguous\nF 1 declaration decl:cmd/main.go#0 main\nF 2 declaration decl:cmd/main.go#1 main\nF 3 file file:cmd/main.go cmd/main.go\nF 4 entity ent:ent-e61e202329495071 cmd:main\nF 5 node call:cmd/main.go#0 engine.NewResolver\nF 6 node call:cmd/main.go#1 engine.NewResolver().ResolveKey\nF 7 node file:go.mod go.mod\nF 8 node imp:cmd/main.go#0 import\\ \"example.com/mempilot/internal/engine\"\nD 1 rank=1 path=cmd/main.go decl=1:0-12\nD 2 rank=2 path=cmd/main.go decl=5:61-117 body=5:73-117\nD 3 rank=3 path=cmd/main.go\nD 4 rank=4 path=\nR contains 2 5 f rule=repodex.callable_contains\nR contains 2 6 f rule=repodex.callable_contains\nR package_membership 1 4 f rule=go.package.same_directory\nR contains 3 1 f rule=repodex.containment\nR contains 3 2 f rule=repodex.containment\nR member_of 3 4 f rule=repodex.package_membership\nR owned_by_manifest 3 7 f rule=repodex.manifest_ownership\nR contains 3 8 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=11\nS shown=4 total=4 complete=1 seeds=4 related=8 candidates=0 intent=ambiguous bytes=1069\n",
+  "wall_ms": 61,
+  "bytes": 1157
+ },
+ {
+  "qid": "q-e1",
+  "family": "entrypoint",
+  "question": "What does Get initialize?",
+  "anchors": [
+   "Get"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Get\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/cache.go#3 Get\nF 2 node file:internal/engine/cache.go internal/engine/cache.go\nD 1 rank=1 path=internal/engine/cache.go decl=6:86-137 body=6:120-137\nR contains 2 1 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=1 total=1 complete=1 seeds=1 related=1 candidates=0 intent=ambiguous bytes=335\n",
+  "wall_ms": 52,
+  "bytes": 422
+ },
+ {
+  "qid": "q-e2",
+  "family": "entrypoint",
+  "question": "What does Set initialize?",
+  "anchors": [
+   "Set"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Set\\ initialize?\nI ambiguous\nG NO_RESULT\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=ambiguous bytes=119\n",
+  "wall_ms": 74,
+  "bytes": 206
+ },
+ {
+  "qid": "q-e3",
+  "family": "entrypoint",
+  "question": "What does ResolveKey initialize?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ ResolveKey\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/core.go#4 ResolveKey\nF 2 declaration decl:internal/engine/core_test.go#1 TestResolveKey\nF 3 declaration decl:internal/util/resolve.go#1 Resolve\nF 4 file file:internal/util/resolve.go internal/util/resolve.go\nF 5 declaration decl:internal/engine/cache.go#4 Resolve\nF 6 node call:internal/engine/cache.go#0 c.Get\nF 7 node call:internal/engine/core_test.go#0 NewResolver\nF 8 node call:internal/engine/core_test.go#1 NewResolver().ResolveKey\nF 9 node call:internal/engine/core_test.go#2 t.Fatal\nF 10 node call:internal/util/resolve.go#0 len\nF 11 node decl:internal/util/resolve.go#0 util\nF 12 node ent:ent-652107ae93aa46f2 internal/util:util\nF 13 node file:go.mod go.mod\nF 14 node file:internal/engine/cache.go internal/engine/cache.go\nD 1 rank=1 path=internal/engine/core.go decl=9:222-287 body=9:266-287\nD 2 rank=2 path=internal/engine/core_test.go decl=5:34-135 body=5:68-135\nD 3 rank=3 path=internal/util/resolve.go decl=4:83-127 body=4:110-127\nD 4 rank=4 path=internal/util/resolve.go\nD 5 rank=5 path=internal/engine/cache.go decl=7:138-195 body=7:176-195\nR contains 5 6 f rule=repodex.callable_contains\nR contains 2 7 f rule=repodex.callable_contains\nR contains 2 8 f rule=repodex.callable_contains\nR contains 2 9 f rule=repodex.callable_contains\nR contains 3 10 f rule=repodex.callable_contains\nR contains 4 11 f rule=repodex.containment\nR contains 4 3 f rule=repodex.containment\nR member_of 4 12 f rule=repodex.package_membership\nR owned_by_manifest 4 13 f rule=repodex.manifest_ownership\nR contains 14 5 f rule=repodex.containment\nG AMBIGUOUS_RESULT shown=5 total=6\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=10 relevant_total=14\nS shown=5 total=6 complete=1 seeds=5 related=10 candidates=0 intent=ambiguous bytes=1783\n",
+  "wall_ms": 66,
+  "bytes": 1872
+ },
+ {
+  "qid": "q-e4",
+  "family": "entrypoint",
+  "question": "What does NewResolver initialize?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ NewResolver\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/core.go#3 NewResolver\nF 2 declaration decl:internal/engine/core.go#1 Resolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nF 5 node file:internal/engine/core.go internal/engine/core.go\nD 1 rank=1 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nD 2 rank=2 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nR call_candidate 3 1 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 1 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nR contains 5 1 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=2 total=2 complete=1 seeds=2 related=3 candidates=2 intent=ambiguous bytes=764\n",
+  "wall_ms": 71,
+  "bytes": 851
+ },
+ {
+  "qid": "q-e5",
+  "family": "entrypoint",
+  "question": "What does Encode initialize?",
+  "anchors": [
+   "Encode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Encode\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/util/codec.go#1 Encode\nF 2 declaration decl:internal/util/codec_test.go#1 TestEncode\nF 3 node call:internal/util/codec_test.go#0 Encode\nF 4 node file:internal/util/codec.go internal/util/codec.go\nF 5 node file:internal/util/codec_test.go internal/util/codec_test.go\nD 1 rank=1 path=internal/util/codec.go decl=3:14-55 body=3:43-55\nD 2 rank=2 path=internal/util/codec_test.go decl=5:32-81 body=5:62-81\nR call_candidate 3 1 c cs=cand-831ffb0c5a9e9568 rule=go.call.package_local_function_candidate\nR contains 2 3 f rule=repodex.callable_contains\nR contains 4 1 f rule=repodex.containment\nR contains 5 2 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=2 total=2 complete=1 seeds=2 related=4 candidates=1 intent=ambiguous bytes=767\n",
+  "wall_ms": 57,
+  "bytes": 854
+ },
+ {
+  "qid": "q-e6",
+  "family": "entrypoint",
+  "question": "What does Cache initialize?",
+  "anchors": [
+   "Cache"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Cache\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/cache.go#1 Cache\nF 2 file file:internal/engine/cache.go internal/engine/cache.go\nF 3 node call:internal/engine/cache.go#0 c.Get\nF 4 node decl:internal/engine/cache.go#0 engine\nF 5 node decl:internal/engine/cache.go#2 m\nF 6 node decl:internal/engine/cache.go#3 Get\nF 7 node decl:internal/engine/cache.go#4 Resolve\nF 8 node ent:ent-9c1f9d6e98d52ae0 internal/engine:engine\nF 9 node file:go.mod go.mod\nD 1 rank=1 path=internal/engine/cache.go decl=4:52-84 body=4:58-84\nD 2 rank=2 path=internal/engine/cache.go\nR contains 2 3 f rule=repodex.containment\nR contains 2 4 f rule=repodex.containment\nR contains 2 1 f rule=repodex.containment\nR contains 2 5 f rule=repodex.containment\nR contains 2 6 f rule=repodex.containment\nR contains 2 7 f rule=repodex.containment\nR member_of 2 8 f rule=repodex.package_membership\nR owned_by_manifest 2 9 f rule=repodex.manifest_ownership\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=9\nS shown=2 total=2 complete=1 seeds=2 related=8 candidates=0 intent=ambiguous bytes=1071\n",
+  "wall_ms": 66,
+  "bytes": 1159
+ },
+ {
+  "qid": "q-e7",
+  "family": "entrypoint",
+  "question": "What does Resolver initialize?",
+  "anchors": [
+   "Resolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Resolver\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/core.go#1 Resolver\nF 2 declaration decl:internal/engine/core.go#3 NewResolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nF 5 node file:internal/engine/core.go internal/engine/core.go\nD 1 rank=1 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nD 2 rank=2 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nR call_candidate 3 2 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 2 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nR contains 5 1 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=2 total=2 complete=1 seeds=2 related=3 candidates=2 intent=ambiguous bytes=761\n",
+  "wall_ms": 56,
+  "bytes": 848
+ },
+ {
+  "qid": "q-e8",
+  "family": "entrypoint",
+  "question": "What does Decode initialize?",
+  "anchors": [
+   "Decode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Decode\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/util/codec.go#2 Decode\nF 2 node file:internal/util/codec.go internal/util/codec.go\nD 1 rank=1 path=internal/util/codec.go decl=4:56-97 body=4:85-97\nR contains 2 1 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=1 total=1 complete=1 seeds=1 related=1 candidates=0 intent=ambiguous bytes=330\n",
+  "wall_ms": 58,
+  "bytes": 417
+ },
+ {
+  "qid": "q-e9",
+  "family": "entrypoint",
+  "question": "What does Config initialize?",
+  "anchors": [
+   "Config"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Config\\ initialize?\nI manifest_or_config\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=manifest_or_config bytes=85\n",
+  "wall_ms": 55,
+  "bytes": 180
+ },
+ {
+  "qid": "q-e10",
+  "family": "entrypoint",
+  "question": "What does Handler initialize?",
+  "anchors": [
+   "Handler"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Handler\\ initialize?\nI ambiguous\nF 1 declaration decl:internal/engine/handler.go#1 Handler\nF 2 file file:internal/engine/handler.go internal/engine/handler.go\nF 3 node call:internal/engine/handler.go#0 h.r.ResolveKey\nF 4 node call:internal/engine/handler.go#1 make\nF 5 node call:internal/engine/handler.go#2 len\nF 6 node call:internal/engine/handler.go#3 h.r.ResolveKey\nF 7 node decl:internal/engine/handler.go#0 engine\nF 8 node decl:internal/engine/handler.go#2 r\nF 9 node decl:internal/engine/handler.go#3 Serve\nF 10 node decl:internal/engine/handler.go#4 Batch\nF 11 node ent:ent-9c1f9d6e98d52ae0 internal/engine:engine\nD 1 rank=1 path=internal/engine/handler.go decl=4:70-99 body=4:78-99\nD 2 rank=2 path=internal/engine/handler.go\nR contains 2 3 f rule=repodex.containment\nR contains 2 4 f rule=repodex.containment\nR contains 2 5 f rule=repodex.containment\nR contains 2 6 f rule=repodex.containment\nR contains 2 7 f rule=repodex.containment\nR contains 2 1 f rule=repodex.containment\nR contains 2 8 f rule=repodex.containment\nR contains 2 9 f rule=repodex.containment\nR contains 2 10 f rule=repodex.containment\nR member_of 2 11 f rule=repodex.package_membership\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=10 relevant_total=12\nS shown=2 total=2 complete=1 seeds=2 related=10 candidates=0 intent=ambiguous bytes=1303\n",
+  "wall_ms": 63,
+  "bytes": 1392
+ },
+ {
+  "qid": "q-e11",
+  "family": "entrypoint",
+  "question": "What does Store initialize?",
+  "anchors": [
+   "Store"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Store\\ initialize?\nI ambiguous\nG NO_RESULT\nG AMBIGUOUS_RESULT reason=no_confident_intent\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=ambiguous bytes=121\n",
+  "wall_ms": 61,
+  "bytes": 208
+ },
+ {
+  "qid": "q-c0",
+  "family": "call_path",
+  "question": "Who calls main?",
+  "anchors": [
+   "main"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ main?\nI callers\nF 1 declaration decl:cmd/main.go#0 main\nF 2 declaration decl:cmd/main.go#1 main\nF 3 file file:cmd/main.go cmd/main.go\nD 1 rank=1 path=cmd/main.go decl=1:0-12\nD 2 rank=2 path=cmd/main.go decl=5:61-117 body=5:73-117\nD 3 rank=3 path=cmd/main.go\nG AMBIGUOUS_RESULT shown=3 total=4\nS shown=3 total=4 complete=1 seeds=3 related=0 candidates=0 intent=callers bytes=325\n",
+  "wall_ms": 52,
+  "bytes": 410
+ },
+ {
+  "qid": "q-d0",
+  "family": "call_path",
+  "question": "What does main call?",
+  "anchors": [
+   "main"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ main\\ call?\nI callees\nF 1 declaration decl:cmd/main.go#0 main\nF 2 declaration decl:cmd/main.go#1 main\nF 3 file file:cmd/main.go cmd/main.go\nD 1 rank=1 path=cmd/main.go decl=1:0-12\nD 2 rank=2 path=cmd/main.go decl=5:61-117 body=5:73-117\nD 3 rank=3 path=cmd/main.go\nG AMBIGUOUS_RESULT shown=3 total=4\nS shown=3 total=4 complete=1 seeds=3 related=0 candidates=0 intent=callees bytes=331\n",
+  "wall_ms": 46,
+  "bytes": 416
+ },
+ {
+  "qid": "q-c1",
+  "family": "call_path",
+  "question": "Who calls Get?",
+  "anchors": [
+   "Get"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Get?\nI callers\nF 1 declaration decl:internal/engine/cache.go#3 Get\nD 1 rank=1 path=internal/engine/cache.go decl=6:86-137 body=6:120-137\nS shown=1 total=1 complete=1 seeds=1 related=0 candidates=0 intent=callers bytes=169\n",
+  "wall_ms": 51,
+  "bytes": 254
+ },
+ {
+  "qid": "q-d1",
+  "family": "call_path",
+  "question": "What does Get call?",
+  "anchors": [
+   "Get"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Get\\ call?\nI callees\nF 1 declaration decl:internal/engine/cache.go#3 Get\nD 1 rank=1 path=internal/engine/cache.go decl=6:86-137 body=6:120-137\nS shown=1 total=1 complete=1 seeds=1 related=0 candidates=0 intent=callees bytes=175\n",
+  "wall_ms": 48,
+  "bytes": 260
+ },
+ {
+  "qid": "q-c2",
+  "family": "call_path",
+  "question": "Who calls Set?",
+  "anchors": [
+   "Set"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Set?\nI callers\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=callers bytes=59\n",
+  "wall_ms": 44,
+  "bytes": 143
+ },
+ {
+  "qid": "q-d2",
+  "family": "call_path",
+  "question": "What does Set call?",
+  "anchors": [
+   "Set"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Set\\ call?\nI callees\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=callees bytes=65\n",
+  "wall_ms": 45,
+  "bytes": 149
+ },
+ {
+  "qid": "q-c3",
+  "family": "call_path",
+  "question": "Who calls ResolveKey?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ ResolveKey?\nI callers\nF 1 declaration decl:internal/engine/core.go#4 ResolveKey\nF 2 declaration decl:internal/engine/core_test.go#1 TestResolveKey\nF 3 declaration decl:internal/util/resolve.go#1 Resolve\nD 1 rank=1 path=internal/engine/core.go decl=9:222-287 body=9:266-287\nD 2 rank=2 path=internal/engine/core_test.go decl=5:34-135 body=5:68-135\nD 3 rank=3 path=internal/util/resolve.go decl=4:83-127 body=4:110-127\nG AMBIGUOUS_RESULT shown=3 total=6\nS shown=3 total=6 complete=1 seeds=3 related=0 candidates=0 intent=callers bytes=483\n",
+  "wall_ms": 48,
+  "bytes": 568
+ },
+ {
+  "qid": "q-d3",
+  "family": "call_path",
+  "question": "What does ResolveKey call?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ ResolveKey\\ call?\nI callees\nF 1 declaration decl:internal/engine/core.go#4 ResolveKey\nF 2 declaration decl:internal/engine/core_test.go#1 TestResolveKey\nF 3 declaration decl:internal/util/resolve.go#1 Resolve\nD 1 rank=1 path=internal/engine/core.go decl=9:222-287 body=9:266-287\nD 2 rank=2 path=internal/engine/core_test.go decl=5:34-135 body=5:68-135\nD 3 rank=3 path=internal/util/resolve.go decl=4:83-127 body=4:110-127\nG AMBIGUOUS_RESULT shown=3 total=6\nS shown=3 total=6 complete=1 seeds=3 related=0 candidates=0 intent=callees bytes=489\n",
+  "wall_ms": 49,
+  "bytes": 574
+ },
+ {
+  "qid": "q-c4",
+  "family": "call_path",
+  "question": "Who calls NewResolver?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ NewResolver?\nI callers\nF 1 declaration decl:internal/engine/core.go#3 NewResolver\nF 2 declaration decl:internal/engine/core.go#1 Resolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nD 1 rank=1 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nD 2 rank=2 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nR call_candidate 3 1 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 1 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nS shown=2 total=2 complete=1 seeds=2 related=2 candidates=2 intent=callers bytes=600\n",
+  "wall_ms": 55,
+  "bytes": 685
+ },
+ {
+  "qid": "q-d4",
+  "family": "call_path",
+  "question": "What does NewResolver call?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ NewResolver\\ call?\nI callees\nF 1 declaration decl:internal/engine/core.go#3 NewResolver\nF 2 declaration decl:internal/engine/core.go#1 Resolver\nD 1 rank=1 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nD 2 rank=2 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callees bytes=311\n",
+  "wall_ms": 49,
+  "bytes": 396
+ },
+ {
+  "qid": "q-c5",
+  "family": "call_path",
+  "question": "Who calls Encode?",
+  "anchors": [
+   "Encode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Encode?\nI callers\nF 1 declaration decl:internal/util/codec.go#1 Encode\nF 2 declaration decl:internal/util/codec_test.go#1 TestEncode\nF 3 node call:internal/util/codec_test.go#0 Encode\nD 1 rank=1 path=internal/util/codec.go decl=3:14-55 body=3:43-55\nD 2 rank=2 path=internal/util/codec_test.go decl=5:32-81 body=5:62-81\nR call_candidate 3 1 c cs=cand-831ffb0c5a9e9568 rule=go.call.package_local_function_candidate\nS shown=2 total=2 complete=1 seeds=2 related=1 candidates=1 intent=callers bytes=445\n",
+  "wall_ms": 51,
+  "bytes": 530
+ },
+ {
+  "qid": "q-d5",
+  "family": "call_path",
+  "question": "What does Encode call?",
+  "anchors": [
+   "Encode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Encode\\ call?\nI callees\nF 1 declaration decl:internal/util/codec.go#1 Encode\nF 2 declaration decl:internal/util/codec_test.go#1 TestEncode\nD 1 rank=1 path=internal/util/codec.go decl=3:14-55 body=3:43-55\nD 2 rank=2 path=internal/util/codec_test.go decl=5:32-81 body=5:62-81\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callees bytes=306\n",
+  "wall_ms": 46,
+  "bytes": 391
+ },
+ {
+  "qid": "q-c6",
+  "family": "call_path",
+  "question": "Who calls Cache?",
+  "anchors": [
+   "Cache"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Cache?\nI callers\nF 1 declaration decl:internal/engine/cache.go#1 Cache\nF 2 file file:internal/engine/cache.go internal/engine/cache.go\nD 1 rank=1 path=internal/engine/cache.go decl=4:52-84 body=4:58-84\nD 2 rank=2 path=internal/engine/cache.go\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callers bytes=275\n",
+  "wall_ms": 56,
+  "bytes": 360
+ },
+ {
+  "qid": "q-d6",
+  "family": "call_path",
+  "question": "What does Cache call?",
+  "anchors": [
+   "Cache"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Cache\\ call?\nI callees\nF 1 declaration decl:internal/engine/cache.go#1 Cache\nF 2 file file:internal/engine/cache.go internal/engine/cache.go\nD 1 rank=1 path=internal/engine/cache.go decl=4:52-84 body=4:58-84\nD 2 rank=2 path=internal/engine/cache.go\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callees bytes=281\n",
+  "wall_ms": 52,
+  "bytes": 366
+ },
+ {
+  "qid": "q-c7",
+  "family": "call_path",
+  "question": "Who calls Resolver?",
+  "anchors": [
+   "Resolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Resolver?\nI callers\nF 1 declaration decl:internal/engine/core.go#1 Resolver\nF 2 declaration decl:internal/engine/core.go#3 NewResolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nD 1 rank=1 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nD 2 rank=2 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nR call_candidate 3 2 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 2 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nS shown=2 total=2 complete=1 seeds=2 related=2 candidates=2 intent=callers bytes=597\n",
+  "wall_ms": 45,
+  "bytes": 682
+ },
+ {
+  "qid": "q-d7",
+  "family": "call_path",
+  "question": "What does Resolver call?",
+  "anchors": [
+   "Resolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Resolver\\ call?\nI callees\nF 1 declaration decl:internal/engine/core.go#1 Resolver\nF 2 declaration decl:internal/engine/core.go#3 NewResolver\nD 1 rank=1 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nD 2 rank=2 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callees bytes=308\n",
+  "wall_ms": 43,
+  "bytes": 393
+ },
+ {
+  "qid": "q-c8",
+  "family": "call_path",
+  "question": "Who calls Decode?",
+  "anchors": [
+   "Decode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Decode?\nI callers\nF 1 declaration decl:internal/util/codec.go#2 Decode\nD 1 rank=1 path=internal/util/codec.go decl=4:56-97 body=4:85-97\nS shown=1 total=1 complete=1 seeds=1 related=0 candidates=0 intent=callers bytes=168\n",
+  "wall_ms": 46,
+  "bytes": 253
+ },
+ {
+  "qid": "q-d8",
+  "family": "call_path",
+  "question": "What does Decode call?",
+  "anchors": [
+   "Decode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Decode\\ call?\nI callees\nF 1 declaration decl:internal/util/codec.go#2 Decode\nD 1 rank=1 path=internal/util/codec.go decl=4:56-97 body=4:85-97\nS shown=1 total=1 complete=1 seeds=1 related=0 candidates=0 intent=callees bytes=174\n",
+  "wall_ms": 52,
+  "bytes": 259
+ },
+ {
+  "qid": "q-c9",
+  "family": "call_path",
+  "question": "Who calls Config?",
+  "anchors": [
+   "Config"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Config?\nI callers\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=callers bytes=62\n",
+  "wall_ms": 49,
+  "bytes": 146
+ },
+ {
+  "qid": "q-d9",
+  "family": "call_path",
+  "question": "What does Config call?",
+  "anchors": [
+   "Config"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Config\\ call?\nI manifest_or_config\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=manifest_or_config bytes=79\n",
+  "wall_ms": 46,
+  "bytes": 174
+ },
+ {
+  "qid": "q-c10",
+  "family": "call_path",
+  "question": "Who calls Handler?",
+  "anchors": [
+   "Handler"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Handler?\nI callers\nF 1 declaration decl:internal/engine/handler.go#1 Handler\nF 2 file file:internal/engine/handler.go internal/engine/handler.go\nD 1 rank=1 path=internal/engine/handler.go decl=4:70-99 body=4:78-99\nD 2 rank=2 path=internal/engine/handler.go\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callers bytes=289\n",
+  "wall_ms": 46,
+  "bytes": 374
+ },
+ {
+  "qid": "q-d10",
+  "family": "call_path",
+  "question": "What does Handler call?",
+  "anchors": [
+   "Handler"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Handler\\ call?\nI callees\nF 1 declaration decl:internal/engine/handler.go#1 Handler\nF 2 file file:internal/engine/handler.go internal/engine/handler.go\nD 1 rank=1 path=internal/engine/handler.go decl=4:70-99 body=4:78-99\nD 2 rank=2 path=internal/engine/handler.go\nS shown=2 total=2 complete=1 seeds=2 related=0 candidates=0 intent=callees bytes=295\n",
+  "wall_ms": 50,
+  "bytes": 380
+ },
+ {
+  "qid": "q-c11",
+  "family": "call_path",
+  "question": "Who calls Store?",
+  "anchors": [
+   "Store"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Who\\ calls\\ Store?\nI callers\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=callers bytes=61\n",
+  "wall_ms": 46,
+  "bytes": 145
+ },
+ {
+  "qid": "q-d11",
+  "family": "call_path",
+  "question": "What does Store call?",
+  "anchors": [
+   "Store"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ Store\\ call?\nI callees\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=callees bytes=67\n",
+  "wall_ms": 48,
+  "bytes": 151
+ },
+ {
+  "qid": "q-m0",
+  "family": "config_control",
+  "question": "What does go.mod control?",
+  "anchors": [
+   "go.mod"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ go.mod\\ control?\nI manifest_or_config\nF 1 file file:go.mod go.mod\nF 2 declaration decl:go.mod#0 go\\ module\\ example.com/mempilot\nF 3 file file:cmd/main.go cmd/main.go\nF 4 file file:internal/engine/cache.go internal/engine/cache.go\nF 5 node call:cmd/main.go#0 engine.NewResolver\nF 6 node call:cmd/main.go#1 engine.NewResolver().ResolveKey\nF 7 node call:internal/engine/cache.go#0 c.Get\nF 8 node file:internal/engine/core_test.go \nF 9 node call:internal/engine/core_test.go#0 NewResolver\nF 10 node call:internal/engine/core_test.go#1 NewResolver().ResolveKey\nF 11 node call:internal/engine/core_test.go#2 t.Fatal\nF 12 node file:internal/engine/handler.go \nF 13 node call:internal/engine/handler.go#0 h.r.ResolveKey\nF 14 node call:internal/engine/handler.go#1 make\nD 1 rank=1 path=go.mod\nD 2 rank=2 path=go.mod decl=1:0-27\nD 3 rank=3 path=cmd/main.go\nD 4 rank=4 path=internal/engine/cache.go\nR contains 3 5 f rule=repodex.containment\nR contains 3 6 f rule=repodex.containment\nR contains 4 7 f rule=repodex.containment\nR contains 8 9 f rule=repodex.containment\nR contains 8 10 f rule=repodex.containment\nR contains 8 11 f rule=repodex.containment\nR contains 12 13 f rule=repodex.containment\nR contains 12 14 f rule=repodex.containment\nG AMBIGUOUS_RESULT shown=4 total=11\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=60\nS shown=4 total=11 complete=1 seeds=4 related=8 candidates=0 intent=manifest_or_config bytes=1359\n",
+  "wall_ms": 56,
+  "bytes": 1457
+ },
+ {
+  "qid": "q-m1",
+  "family": "config_control",
+  "question": "What does internal/engine control?",
+  "anchors": [
+   "internal/engine"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ internal/engine\\ control?\nI ambiguous\nF 1 file file:internal/engine/cache.go internal/engine/cache.go\nF 2 file file:internal/engine/core.go internal/engine/core.go\nF 3 file file:internal/engine/core_test.go internal/engine/core_test.go\nF 4 file file:internal/engine/handler.go internal/engine/handler.go\nF 5 file file:internal/engine/registry.go internal/engine/registry.go\nF 6 node call:internal/engine/cache.go#0 c.Get\nF 7 node call:internal/engine/core_test.go#0 NewResolver\nF 8 node call:internal/engine/core_test.go#1 NewResolver().ResolveKey\nF 9 node call:internal/engine/core_test.go#2 t.Fatal\nF 10 node call:internal/engine/handler.go#0 h.r.ResolveKey\nF 11 node call:internal/engine/handler.go#1 make\nF 12 node call:internal/engine/handler.go#2 len\nF 13 node call:internal/engine/handler.go#3 h.r.ResolveKey\nF 14 node file:internal/util/codec_test.go \nF 15 node call:internal/util/codec_test.go#0 Encode\nF 16 node file:internal/util/resolve.go \nF 17 node call:internal/util/resolve.go#0 len\nD 1 rank=1 path=internal/engine/cache.go\nD 2 rank=2 path=internal/engine/core.go\nD 3 rank=3 path=internal/engine/core_test.go\nD 4 rank=4 path=internal/engine/handler.go\nD 5 rank=5 path=internal/engine/registry.go\nR contains 1 6 f rule=repodex.containment\nR contains 3 7 f rule=repodex.containment\nR contains 3 8 f rule=repodex.containment\nR contains 3 9 f rule=repodex.containment\nR contains 4 10 f rule=repodex.containment\nR contains 4 11 f rule=repodex.containment\nR contains 4 12 f rule=repodex.containment\nR contains 4 13 f rule=repodex.containment\nR contains 14 15 f rule=repodex.containment\nR contains 16 17 f rule=repodex.containment\nG AMBIGUOUS_RESULT shown=5 total=15\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=10 relevant_total=66\nS shown=5 total=15 complete=1 seeds=5 related=10 candidates=0 intent=ambiguous bytes=1815\n",
+  "wall_ms": 51,
+  "bytes": 1905
+ },
+ {
+  "qid": "q-m2",
+  "family": "config_control",
+  "question": "What does internal/util control?",
+  "anchors": [
+   "internal/util"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ internal/util\\ control?\nI ambiguous\nF 1 file file:internal/util/codec.go internal/util/codec.go\nF 2 file file:internal/util/codec_test.go internal/util/codec_test.go\nF 3 file file:internal/util/resolve.go internal/util/resolve.go\nF 4 entity ent:ent-652107ae93aa46f2 internal/util:util\nF 5 declaration decl:internal/util/codec.go#0 util\nF 6 node file:internal/engine/cache.go \nF 7 node call:internal/engine/cache.go#0 c.Get\nF 8 node file:internal/engine/core_test.go \nF 9 node call:internal/engine/core_test.go#0 NewResolver\nF 10 node call:internal/engine/core_test.go#1 NewResolver().ResolveKey\nF 11 node call:internal/engine/core_test.go#2 t.Fatal\nF 12 node file:internal/engine/handler.go \nF 13 node call:internal/engine/handler.go#0 h.r.ResolveKey\nF 14 node call:internal/engine/handler.go#1 make\nF 15 node call:internal/engine/handler.go#2 len\nF 16 node call:internal/engine/handler.go#3 h.r.ResolveKey\nF 17 node call:internal/util/codec_test.go#0 Encode\nF 18 node call:internal/util/resolve.go#0 len\nD 1 rank=1 path=internal/util/codec.go\nD 2 rank=2 path=internal/util/codec_test.go\nD 3 rank=3 path=internal/util/resolve.go\nD 4 rank=4 path=\nD 5 rank=5 path=internal/util/codec.go decl=1:0-12\nR contains 6 7 f rule=repodex.containment\nR contains 8 9 f rule=repodex.containment\nR contains 8 10 f rule=repodex.containment\nR contains 8 11 f rule=repodex.containment\nR contains 12 13 f rule=repodex.containment\nR contains 12 14 f rule=repodex.containment\nR contains 12 15 f rule=repodex.containment\nR contains 12 16 f rule=repodex.containment\nR contains 2 17 f rule=repodex.containment\nR contains 3 18 f rule=repodex.containment\nG AMBIGUOUS_RESULT shown=5 total=13\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=10 relevant_total=64\nS shown=5 total=13 complete=1 seeds=5 related=10 candidates=0 intent=ambiguous bytes=1804\n",
+  "wall_ms": 44,
+  "bytes": 1894
+ },
+ {
+  "qid": "q-m3",
+  "family": "config_control",
+  "question": "What does cmd control?",
+  "anchors": [
+   "cmd"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ What\\ does\\ cmd\\ control?\nI ambiguous\nF 1 file file:cmd/main.go cmd/main.go\nF 2 entity ent:ent-e61e202329495071 cmd:main\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:cmd/main.go#1 engine.NewResolver().ResolveKey\nF 5 node decl:cmd/main.go#0 main\nF 6 node decl:cmd/main.go#1 main\nF 7 node file:go.mod go.mod\nF 8 node imp:cmd/main.go#0 import\\ \"example.com/mempilot/internal/engine\"\nD 1 rank=1 path=cmd/main.go\nD 2 rank=2 path=\nR contains 1 3 f rule=repodex.containment\nR contains 1 4 f rule=repodex.containment\nR package_membership 5 2 f rule=go.package.same_directory\nR contains 1 5 f rule=repodex.containment\nR contains 1 6 f rule=repodex.containment\nR member_of 1 2 f rule=repodex.package_membership\nR owned_by_manifest 1 7 f rule=repodex.manifest_ownership\nR contains 1 8 f rule=repodex.containment\nG AMBIGUOUS_RESULT reason=no_confident_intent\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=9\nS shown=2 total=2 complete=1 seeds=2 related=8 candidates=0 intent=ambiguous bytes=942\n",
+  "wall_ms": 42,
+  "bytes": 1029
+ },
+ {
+  "qid": "q-t0",
+  "family": "test_verification",
+  "question": "Which tests cover main?",
+  "anchors": [
+   "main"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ main?\nI test_evidence\nF 1 declaration decl:cmd/main.go#0 main\nF 2 declaration decl:cmd/main.go#1 main\nF 3 file file:cmd/main.go cmd/main.go\nF 4 entity ent:ent-e61e202329495071 cmd:main\nF 5 node call:cmd/main.go#0 engine.NewResolver\nF 6 node call:cmd/main.go#1 engine.NewResolver().ResolveKey\nF 7 node file:go.mod go.mod\nF 8 node imp:cmd/main.go#0 import\\ \"example.com/mempilot/internal/engine\"\nD 1 rank=1 path=cmd/main.go decl=1:0-12\nD 2 rank=2 path=cmd/main.go decl=5:61-117 body=5:73-117\nD 3 rank=3 path=cmd/main.go\nD 4 rank=4 path=\nR contains 2 5 f rule=repodex.callable_contains\nR contains 2 6 f rule=repodex.callable_contains\nR package_membership 1 4 f rule=go.package.same_directory\nR contains 3 1 f rule=repodex.containment\nR contains 3 2 f rule=repodex.containment\nR member_of 3 4 f rule=repodex.package_membership\nR owned_by_manifest 3 7 f rule=repodex.manifest_ownership\nR contains 3 8 f rule=repodex.containment\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=11\nS shown=4 total=4 complete=1 seeds=4 related=8 candidates=0 intent=test_evidence bytes=1024\n",
+  "wall_ms": 46,
+  "bytes": 1116
+ },
+ {
+  "qid": "q-t1",
+  "family": "test_verification",
+  "question": "Which tests cover Get?",
+  "anchors": [
+   "Get"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Get?\nI test_evidence\nF 1 declaration decl:internal/engine/cache.go#3 Get\nF 2 node file:internal/engine/cache.go internal/engine/cache.go\nD 1 rank=1 path=internal/engine/cache.go decl=6:86-137 body=6:120-137\nR contains 2 1 f rule=repodex.containment\nS shown=1 total=1 complete=1 seeds=1 related=1 candidates=0 intent=test_evidence bytes=290\n",
+  "wall_ms": 47,
+  "bytes": 381
+ },
+ {
+  "qid": "q-t2",
+  "family": "test_verification",
+  "question": "Which tests cover Set?",
+  "anchors": [
+   "Set"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Set?\nI test_evidence\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=test_evidence bytes=74\n",
+  "wall_ms": 43,
+  "bytes": 164
+ },
+ {
+  "qid": "q-t3",
+  "family": "test_verification",
+  "question": "Which tests cover ResolveKey?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ ResolveKey?\nI test_evidence\nF 1 declaration decl:internal/engine/core.go#4 ResolveKey\nF 2 declaration decl:internal/engine/core_test.go#1 TestResolveKey\nF 3 declaration decl:internal/util/resolve.go#1 Resolve\nF 4 file file:internal/util/resolve.go internal/util/resolve.go\nF 5 node decl:internal/engine/cache.go#4 \nF 6 node call:internal/engine/cache.go#0 c.Get\nF 7 node call:internal/engine/core_test.go#0 NewResolver\nF 8 node call:internal/engine/core_test.go#1 NewResolver().ResolveKey\nF 9 node call:internal/engine/core_test.go#2 t.Fatal\nF 10 node call:internal/util/resolve.go#0 len\nF 11 node decl:internal/util/resolve.go#0 util\nF 12 node ent:ent-652107ae93aa46f2 internal/util:util\nF 13 node file:go.mod go.mod\nF 14 node file:internal/engine/cache.go internal/engine/cache.go\nF 15 node file:internal/engine/core.go internal/engine/core.go\nF 16 node file:internal/engine/core_test.go internal/engine/core_test.go\nD 1 rank=1 path=internal/engine/core.go decl=9:222-287 body=9:266-287\nD 2 rank=2 path=internal/engine/core_test.go decl=5:34-135 body=5:68-135\nD 3 rank=3 path=internal/util/resolve.go decl=4:83-127 body=4:110-127\nD 4 rank=4 path=internal/util/resolve.go\nR contains 5 6 f rule=repodex.callable_contains\nR contains 2 7 f rule=repodex.callable_contains\nR contains 2 8 f rule=repodex.callable_contains\nR contains 2 9 f rule=repodex.callable_contains\nR contains 3 10 f rule=repodex.callable_contains\nR contains 4 11 f rule=repodex.containment\nR contains 4 3 f rule=repodex.containment\nR member_of 4 12 f rule=repodex.package_membership\nR owned_by_manifest 4 13 f rule=repodex.manifest_ownership\nR contains 14 5 f rule=repodex.containment\nR contains 15 1 f rule=repodex.containment\nR contains 16 2 f rule=repodex.containment\nG AMBIGUOUS_RESULT shown=4 total=6\nG TRUNCATED_CONTINUATION relevant_shown=12 relevant_total=14\nS shown=4 total=6 complete=1 seeds=4 related=12 candidates=0 intent=test_evidence bytes=1875\n",
+  "wall_ms": 45,
+  "bytes": 1968
+ },
+ {
+  "qid": "q-t4",
+  "family": "test_verification",
+  "question": "Which tests cover NewResolver?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ NewResolver?\nI test_evidence\nF 1 declaration decl:internal/engine/core.go#3 NewResolver\nF 2 declaration decl:internal/engine/core.go#1 Resolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nF 5 node file:internal/engine/core.go internal/engine/core.go\nD 1 rank=1 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nD 2 rank=2 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nR call_candidate 3 1 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 1 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nR contains 5 1 f rule=repodex.containment\nS shown=2 total=2 complete=1 seeds=2 related=3 candidates=2 intent=test_evidence bytes=719\n",
+  "wall_ms": 41,
+  "bytes": 810
+ },
+ {
+  "qid": "q-t5",
+  "family": "test_verification",
+  "question": "Which tests cover Encode?",
+  "anchors": [
+   "Encode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Encode?\nI test_evidence\nF 1 declaration decl:internal/util/codec.go#1 Encode\nF 2 declaration decl:internal/util/codec_test.go#1 TestEncode\nF 3 node call:internal/util/codec_test.go#0 Encode\nF 4 node file:internal/util/codec.go internal/util/codec.go\nF 5 node file:internal/util/codec_test.go internal/util/codec_test.go\nD 1 rank=1 path=internal/util/codec.go decl=3:14-55 body=3:43-55\nD 2 rank=2 path=internal/util/codec_test.go decl=5:32-81 body=5:62-81\nR call_candidate 3 1 c cs=cand-831ffb0c5a9e9568 rule=go.call.package_local_function_candidate\nR contains 2 3 f rule=repodex.callable_contains\nR contains 4 1 f rule=repodex.containment\nR contains 5 2 f rule=repodex.containment\nS shown=2 total=2 complete=1 seeds=2 related=4 candidates=1 intent=test_evidence bytes=722\n",
+  "wall_ms": 45,
+  "bytes": 813
+ },
+ {
+  "qid": "q-t6",
+  "family": "test_verification",
+  "question": "Which tests cover Cache?",
+  "anchors": [
+   "Cache"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Cache?\nI test_evidence\nF 1 declaration decl:internal/engine/cache.go#1 Cache\nF 2 file file:internal/engine/cache.go internal/engine/cache.go\nF 3 node call:internal/engine/cache.go#0 c.Get\nF 4 node decl:internal/engine/cache.go#0 engine\nF 5 node decl:internal/engine/cache.go#2 m\nF 6 node decl:internal/engine/cache.go#3 Get\nF 7 node decl:internal/engine/cache.go#4 Resolve\nF 8 node ent:ent-9c1f9d6e98d52ae0 internal/engine:engine\nF 9 node file:go.mod go.mod\nD 1 rank=1 path=internal/engine/cache.go decl=4:52-84 body=4:58-84\nD 2 rank=2 path=internal/engine/cache.go\nR contains 2 3 f rule=repodex.containment\nR contains 2 4 f rule=repodex.containment\nR contains 2 1 f rule=repodex.containment\nR contains 2 5 f rule=repodex.containment\nR contains 2 6 f rule=repodex.containment\nR contains 2 7 f rule=repodex.containment\nR member_of 2 8 f rule=repodex.package_membership\nR owned_by_manifest 2 9 f rule=repodex.manifest_ownership\nG TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=9\nS shown=2 total=2 complete=1 seeds=2 related=8 candidates=0 intent=test_evidence bytes=1026\n",
+  "wall_ms": 45,
+  "bytes": 1118
+ },
+ {
+  "qid": "q-t7",
+  "family": "test_verification",
+  "question": "Which tests cover Resolver?",
+  "anchors": [
+   "Resolver"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Resolver?\nI test_evidence\nF 1 declaration decl:internal/engine/core.go#1 Resolver\nF 2 declaration decl:internal/engine/core.go#3 NewResolver\nF 3 node call:cmd/main.go#0 engine.NewResolver\nF 4 node call:internal/engine/core_test.go#0 NewResolver\nF 5 node file:internal/engine/core.go internal/engine/core.go\nD 1 rank=1 path=internal/engine/core.go decl=4:54-93 body=4:63-93\nD 2 rank=2 path=internal/engine/core.go decl=6:95-169 body=6:124-169\nR call_candidate 3 2 c cs=cand-522ad70f2c0273ae rule=go.call.imported_package_function_candidate\nR call_candidate 4 2 c cs=cand-10ea156cc325b11a rule=go.call.package_local_function_candidate\nR contains 5 1 f rule=repodex.containment\nS shown=2 total=2 complete=1 seeds=2 related=3 candidates=2 intent=test_evidence bytes=716\n",
+  "wall_ms": 43,
+  "bytes": 807
+ },
+ {
+  "qid": "q-t8",
+  "family": "test_verification",
+  "question": "Which tests cover Decode?",
+  "anchors": [
+   "Decode"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Decode?\nI test_evidence\nF 1 declaration decl:internal/util/codec.go#2 Decode\nF 2 node file:internal/util/codec.go internal/util/codec.go\nD 1 rank=1 path=internal/util/codec.go decl=4:56-97 body=4:85-97\nR contains 2 1 f rule=repodex.containment\nS shown=1 total=1 complete=1 seeds=1 related=1 candidates=0 intent=test_evidence bytes=285\n",
+  "wall_ms": 43,
+  "bytes": 376
+ },
+ {
+  "qid": "q-t9",
+  "family": "test_verification",
+  "question": "Which tests cover Config?",
+  "anchors": [
+   "Config"
+  ],
+  "rdx": "#RDX1 adaptive v2\nQ Which\\ tests\\ cover\\ Config?\nI test_evidence\nG NO_RESULT\nS shown=0 total=0 complete=1 seeds=0 related=0 candidates=0 intent=test_evidence bytes=77\n",
+  "wall_ms": 43,
+  "bytes": 167
+ }
+]

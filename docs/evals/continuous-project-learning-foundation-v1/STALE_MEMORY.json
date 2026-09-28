@@ -1,0 +1,1 @@
+{"STALE_MEMORY_ACCIDENTALLY_USED":0,"STALE_REJECTED":"rebind returns Missing/Stale/Ambiguous; not usable as current","evidence":"tests/learning_gates.rs"}

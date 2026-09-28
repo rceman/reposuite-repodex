@@ -1,0 +1,706 @@
+[
+ {
+  "question_id": "q-e0",
+  "family": "entrypoint",
+  "question": "What does main initialize?",
+  "anchors": [
+   "main"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e1",
+  "family": "entrypoint",
+  "question": "What does Get initialize?",
+  "anchors": [
+   "Get"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e2",
+  "family": "entrypoint",
+  "question": "What does Set initialize?",
+  "anchors": [
+   "Set"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e3",
+  "family": "entrypoint",
+  "question": "What does ResolveKey initialize?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e4",
+  "family": "entrypoint",
+  "question": "What does NewResolver initialize?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e5",
+  "family": "entrypoint",
+  "question": "What does Encode initialize?",
+  "anchors": [
+   "Encode"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e6",
+  "family": "entrypoint",
+  "question": "What does Cache initialize?",
+  "anchors": [
+   "Cache"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e7",
+  "family": "entrypoint",
+  "question": "What does Resolver initialize?",
+  "anchors": [
+   "Resolver"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e8",
+  "family": "entrypoint",
+  "question": "What does Decode initialize?",
+  "anchors": [
+   "Decode"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e9",
+  "family": "entrypoint",
+  "question": "What does Config initialize?",
+  "anchors": [
+   "Config"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e10",
+  "family": "entrypoint",
+  "question": "What does Handler initialize?",
+  "anchors": [
+   "Handler"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-e11",
+  "family": "entrypoint",
+  "question": "What does Store initialize?",
+  "anchors": [
+   "Store"
+  ],
+  "origin": "entrypoint_downstream",
+  "priority": 28,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-c0",
+  "family": "call_path",
+  "question": "Who calls main?",
+  "anchors": [
+   "main"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d0",
+  "family": "call_path",
+  "question": "What does main call?",
+  "anchors": [
+   "main"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c1",
+  "family": "call_path",
+  "question": "Who calls Get?",
+  "anchors": [
+   "Get"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d1",
+  "family": "call_path",
+  "question": "What does Get call?",
+  "anchors": [
+   "Get"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c2",
+  "family": "call_path",
+  "question": "Who calls Set?",
+  "anchors": [
+   "Set"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d2",
+  "family": "call_path",
+  "question": "What does Set call?",
+  "anchors": [
+   "Set"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c3",
+  "family": "call_path",
+  "question": "Who calls ResolveKey?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d3",
+  "family": "call_path",
+  "question": "What does ResolveKey call?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c4",
+  "family": "call_path",
+  "question": "Who calls NewResolver?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d4",
+  "family": "call_path",
+  "question": "What does NewResolver call?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c5",
+  "family": "call_path",
+  "question": "Who calls Encode?",
+  "anchors": [
+   "Encode"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d5",
+  "family": "call_path",
+  "question": "What does Encode call?",
+  "anchors": [
+   "Encode"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c6",
+  "family": "call_path",
+  "question": "Who calls Cache?",
+  "anchors": [
+   "Cache"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d6",
+  "family": "call_path",
+  "question": "What does Cache call?",
+  "anchors": [
+   "Cache"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c7",
+  "family": "call_path",
+  "question": "Who calls Resolver?",
+  "anchors": [
+   "Resolver"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d7",
+  "family": "call_path",
+  "question": "What does Resolver call?",
+  "anchors": [
+   "Resolver"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c8",
+  "family": "call_path",
+  "question": "Who calls Decode?",
+  "anchors": [
+   "Decode"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d8",
+  "family": "call_path",
+  "question": "What does Decode call?",
+  "anchors": [
+   "Decode"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c9",
+  "family": "call_path",
+  "question": "Who calls Config?",
+  "anchors": [
+   "Config"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d9",
+  "family": "call_path",
+  "question": "What does Config call?",
+  "anchors": [
+   "Config"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c10",
+  "family": "call_path",
+  "question": "Who calls Handler?",
+  "anchors": [
+   "Handler"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d10",
+  "family": "call_path",
+  "question": "What does Handler call?",
+  "anchors": [
+   "Handler"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-c11",
+  "family": "call_path",
+  "question": "Who calls Store?",
+  "anchors": [
+   "Store"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-d11",
+  "family": "call_path",
+  "question": "What does Store call?",
+  "anchors": [
+   "Store"
+  ],
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-m0",
+  "family": "config_control",
+  "question": "What does go.mod control?",
+  "anchors": [
+   "go.mod"
+  ],
+  "origin": "manifest_surface",
+  "priority": 24,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-m1",
+  "family": "config_control",
+  "question": "What does internal/engine control?",
+  "anchors": [
+   "internal/engine"
+  ],
+  "origin": "manifest_surface",
+  "priority": 24,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-m2",
+  "family": "config_control",
+  "question": "What does internal/util control?",
+  "anchors": [
+   "internal/util"
+  ],
+  "origin": "manifest_surface",
+  "priority": 24,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-m3",
+  "family": "config_control",
+  "question": "What does cmd control?",
+  "anchors": [
+   "cmd"
+  ],
+  "origin": "manifest_surface",
+  "priority": 24,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-t0",
+  "family": "test_verification",
+  "question": "Which tests cover main?",
+  "anchors": [
+   "main"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t1",
+  "family": "test_verification",
+  "question": "Which tests cover Get?",
+  "anchors": [
+   "Get"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t2",
+  "family": "test_verification",
+  "question": "Which tests cover Set?",
+  "anchors": [
+   "Set"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t3",
+  "family": "test_verification",
+  "question": "Which tests cover ResolveKey?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t4",
+  "family": "test_verification",
+  "question": "Which tests cover NewResolver?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t5",
+  "family": "test_verification",
+  "question": "Which tests cover Encode?",
+  "anchors": [
+   "Encode"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t6",
+  "family": "test_verification",
+  "question": "Which tests cover Cache?",
+  "anchors": [
+   "Cache"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t7",
+  "family": "test_verification",
+  "question": "Which tests cover Resolver?",
+  "anchors": [
+   "Resolver"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t8",
+  "family": "test_verification",
+  "question": "Which tests cover Decode?",
+  "anchors": [
+   "Decode"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t9",
+  "family": "test_verification",
+  "question": "Which tests cover Config?",
+  "anchors": [
+   "Config"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t10",
+  "family": "test_verification",
+  "question": "Which tests cover Handler?",
+  "anchors": [
+   "Handler"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-t11",
+  "family": "test_verification",
+  "question": "Which tests cover Store?",
+  "anchors": [
+   "Store"
+  ],
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "est_cost": 2
+ },
+ {
+  "question_id": "q-o0",
+  "family": "ownership",
+  "question": "Which module owns main?",
+  "anchors": [
+   "main"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o1",
+  "family": "ownership",
+  "question": "Which module owns Get?",
+  "anchors": [
+   "Get"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o2",
+  "family": "ownership",
+  "question": "Which module owns Set?",
+  "anchors": [
+   "Set"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o3",
+  "family": "ownership",
+  "question": "Which module owns ResolveKey?",
+  "anchors": [
+   "ResolveKey"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o4",
+  "family": "ownership",
+  "question": "Which module owns NewResolver?",
+  "anchors": [
+   "NewResolver"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o5",
+  "family": "ownership",
+  "question": "Which module owns Encode?",
+  "anchors": [
+   "Encode"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o6",
+  "family": "ownership",
+  "question": "Which module owns Cache?",
+  "anchors": [
+   "Cache"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o7",
+  "family": "ownership",
+  "question": "Which module owns Resolver?",
+  "anchors": [
+   "Resolver"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o8",
+  "family": "ownership",
+  "question": "Which module owns Decode?",
+  "anchors": [
+   "Decode"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o9",
+  "family": "ownership",
+  "question": "Which module owns Config?",
+  "anchors": [
+   "Config"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o10",
+  "family": "ownership",
+  "question": "Which module owns Handler?",
+  "anchors": [
+   "Handler"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ },
+ {
+  "question_id": "q-o11",
+  "family": "ownership",
+  "question": "Which module owns Store?",
+  "anchors": [
+   "Store"
+  ],
+  "origin": "module_boundary",
+  "priority": 19,
+  "est_cost": 1
+ }
+]

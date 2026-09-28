@@ -1,0 +1,122 @@
+{
+ "c0_B0": {
+  "sessions": 24,
+  "success": 23,
+  "input_tok": 75330,
+  "tools": 6.4,
+  "model_calls": 5.5,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.2,
+  "wall_ms": 24606,
+  "memory_hits": 0
+ },
+ "c0_L1": {
+  "sessions": 24,
+  "success": 23,
+  "input_tok": 78832,
+  "tools": 7.1,
+  "model_calls": 5.8,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.6,
+  "wall_ms": 31167,
+  "memory_hits": 0
+ },
+ "c5_B0": {
+  "sessions": 24,
+  "success": 22,
+  "input_tok": 76272,
+  "tools": 6.7,
+  "model_calls": 5.6,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.2,
+  "wall_ms": 30308,
+  "memory_hits": 0
+ },
+ "c5_L1": {
+  "sessions": 24,
+  "success": 22,
+  "input_tok": 82266,
+  "tools": 7.0,
+  "model_calls": 5.9,
+  "repodex_calls": 1.2,
+  "native_search": 0.0,
+  "source_read": 0.5,
+  "wall_ms": 28687,
+  "memory_hits": 18
+ },
+ "c10_B0": {
+  "sessions": 24,
+  "success": 22,
+  "input_tok": 76855,
+  "tools": 6.8,
+  "model_calls": 5.6,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.1,
+  "wall_ms": 28925,
+  "memory_hits": 0
+ },
+ "c10_L1": {
+  "sessions": 24,
+  "success": 22,
+  "input_tok": 86142,
+  "tools": 7.4,
+  "model_calls": 6.1,
+  "repodex_calls": 1.7,
+  "native_search": 0.1,
+  "source_read": 0.6,
+  "wall_ms": 29842,
+  "memory_hits": 18
+ },
+ "c25_B0": {
+  "sessions": 24,
+  "success": 23,
+  "input_tok": 73689,
+  "tools": 6.1,
+  "model_calls": 5.4,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.1,
+  "wall_ms": 31869,
+  "memory_hits": 0
+ },
+ "c25_L1": {
+  "sessions": 24,
+  "success": 21,
+  "input_tok": 83805,
+  "tools": 7.0,
+  "model_calls": 6.0,
+  "repodex_calls": 1.5,
+  "native_search": 0.1,
+  "source_read": 0.7,
+  "wall_ms": 28830,
+  "memory_hits": 18
+ },
+ "c50_B0": {
+  "sessions": 24,
+  "success": 22,
+  "input_tok": 75691,
+  "tools": 6.4,
+  "model_calls": 5.5,
+  "repodex_calls": 1.0,
+  "native_search": 0.0,
+  "source_read": 0.2,
+  "wall_ms": 26722,
+  "memory_hits": 0
+ },
+ "c50_L1": {
+  "sessions": 24,
+  "success": 21,
+  "input_tok": 81546,
+  "tools": 6.8,
+  "model_calls": 5.9,
+  "repodex_calls": 1.3,
+  "native_search": 0.1,
+  "source_read": 0.7,
+  "wall_ms": 33985,
+  "memory_hits": 18
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "c0": {
+  "success_delta": 0,
+  "input_delta": 3502,
+  "repodex_delta": 0.0
+ },
+ "c5": {
+  "success_delta": 0,
+  "input_delta": 5994,
+  "repodex_delta": 0.17
+ },
+ "c10": {
+  "success_delta": 0,
+  "input_delta": 9287,
+  "repodex_delta": 0.71
+ },
+ "c25": {
+  "success_delta": -2,
+  "input_delta": 10117,
+  "repodex_delta": 0.46
+ },
+ "c50": {
+  "success_delta": -1,
+  "input_delta": 5856,
+  "repodex_delta": 0.33
+ }
+}

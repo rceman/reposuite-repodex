@@ -34,6 +34,7 @@ pub mod derived;
 pub mod graph;
 pub mod incremental;
 pub mod input;
+pub mod learning;
 pub mod links;
 pub mod manifest;
 pub mod memory;

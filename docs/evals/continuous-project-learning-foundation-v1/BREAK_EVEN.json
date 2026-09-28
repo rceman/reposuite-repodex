@@ -1,0 +1,1 @@
+{"result":"NO_MEASURED_BREAK_EVEN","reason":"measured savings <=0 — L1 input and repodex calls are higher than B0 at every checkpoint; no task-cost reduction to amortize learning cost","per_checkpoint":{"C5":"no saving","C10":"no saving","C25":"no saving","C50":"no saving"}}

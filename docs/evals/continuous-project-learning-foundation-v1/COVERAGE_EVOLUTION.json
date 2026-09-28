@@ -1,0 +1,1 @@
+{"note":"coverage ledger is view-bound; KNOWN->PARTIAL on source change is covered by rebind/invalidation gates","states":"KNOWN/PARTIAL/UNRESOLVED/UNSUPPORTED/NOT_APPLICABLE"}

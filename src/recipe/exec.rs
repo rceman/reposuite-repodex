@@ -82,12 +82,17 @@ pub fn execute(
 ) -> RecipeOutcome {
     let mut steps = Vec::new();
     let mut produced = Vec::new();
-    // Anchor: top declaration seed of the current query result.
-    let anchor = anchor_result
+    // Anchor: top declaration seed of the current query result. A single-anchor
+    // recipe requires exactly ONE distinct declaration anchor — pick the first
+    // declaration seed, but if multiple *distinct* declaration keys match the
+    // same top label, the anchor is ambiguous and we must not execute as if it
+    // were unique (§8). We never choose an arbitrary first match.
+    let decl_seeds: Vec<&crate::query::ScoredNode> = anchor_result
         .seeds
         .iter()
-        .find(|s| matches!(s.node.kind, NodeKind::Declaration));
-    let Some(anchor) = anchor else {
+        .filter(|s| matches!(s.node.kind, NodeKind::Declaration))
+        .collect();
+    if decl_seeds.is_empty() {
         steps.push(StepTrace {
             op: "resolve_anchor".into(),
             produced: 0,
@@ -102,7 +107,31 @@ pub fn execute(
             steps,
             fell_back: true,
         };
-    };
+    }
+    // Distinct declaration keys carrying the same top label = ambiguous anchor.
+    let top_label = decl_seeds[0].node.label.clone();
+    let distinct_anchor_keys: std::collections::BTreeSet<&String> = decl_seeds
+        .iter()
+        .filter(|s| s.node.label == top_label)
+        .map(|s| &s.node.key)
+        .collect();
+    if distinct_anchor_keys.len() > 1 {
+        steps.push(StepTrace {
+            op: "resolve_anchor".into(),
+            produced: 0,
+            skipped: true,
+            reason: format!("anchor_ambiguous:{} distinct", distinct_anchor_keys.len()),
+        });
+        return RecipeOutcome {
+            recipe_id: recipe.recipe_id.clone(),
+            family: format!("{:?}", recipe.family),
+            matched: RecipeMatch::Ambiguous,
+            produced,
+            steps,
+            fell_back: true,
+        };
+    }
+    let anchor = decl_seeds[0];
     let anchor_key = anchor.node.key.clone();
     steps.push(StepTrace {
         op: "resolve_anchor".into(),

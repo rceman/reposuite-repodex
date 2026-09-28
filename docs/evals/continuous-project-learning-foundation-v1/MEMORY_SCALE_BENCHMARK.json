@@ -1,0 +1,1 @@
+{"note":"memory candidate lookup is O(active memories, bounded); store open is the eager load design limitation C","sizes":{"100":"bounded","1000":"bounded index needed","10000":"linear risk — flagged for the hardening milestone"}}

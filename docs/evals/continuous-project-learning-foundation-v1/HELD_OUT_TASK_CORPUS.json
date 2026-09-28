@@ -1,0 +1,210 @@
+[
+ {
+  "id": "h-get",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the Cache.Get method defined?",
+  "cohort": "lk",
+  "family": "call_path",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func (c *Cache) Get",
+    "source_path": "internal/engine/cache.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-res",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which file declares the Resolver type?",
+  "cohort": "lk",
+  "family": "ownership",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Resolver|NewResolver",
+    "source_path": "internal/engine/core.go"
+   }
+  ]
+ },
+ {
+  "id": "lk-enc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the util Encode function?",
+  "cohort": "lk",
+  "family": "call_path",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func Encode|codec.go",
+    "source_path": "internal/util/codec.go"
+   }
+  ]
+ },
+ {
+  "id": "h-callers",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Who calls Cache.Get?",
+  "cohort": "cc",
+  "family": "call_path",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Get|none|no caller"
+   }
+  ]
+ },
+ {
+  "id": "h-callees",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which functions does cmd/main.go call?",
+  "cohort": "cc",
+  "family": "call_path",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "NewResolver"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "ResolveKey"
+   }
+  ]
+ },
+ {
+  "id": "h-reach",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "How does the engine reach util.Encode?",
+  "cohort": "cc",
+  "family": "call_path",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Encode|util|codec"
+   }
+  ]
+ },
+ {
+  "id": "h-gomod",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What module does go.mod declare?",
+  "cohort": "mc",
+  "family": "config_control",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "mempilot|micro"
+   }
+  ]
+ },
+ {
+  "id": "h-test",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Is there a test file for the engine package?",
+  "cohort": "mc",
+  "family": "test_verification",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "test|core_test|no test"
+   }
+  ]
+ },
+ {
+  "id": "h-pkg",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What is the package name of the engine module?",
+  "cohort": "mc",
+  "family": "config_control",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "engine|package"
+   }
+  ]
+ },
+ {
+  "id": "h-cd1",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// cache boundary` immediately above the Get method in the engine cache file.",
+  "cohort": "cd",
+  "family": "ownership",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/cache.go",
+    "value": "// cache boundary",
+    "above": "func (c *Cache) Get"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "h-cd2",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// entrypoint` immediately above func main in cmd/main.go.",
+  "cohort": "cd",
+  "family": "entrypoint",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "cmd/main.go",
+    "value": "// entrypoint",
+    "above": "func main"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "cmd/main.go"
+  ]
+ },
+ {
+  "id": "h-cd3",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add a top-level `const MaxSize = 256` to the engine cache file.",
+  "cohort": "cd",
+  "family": "ownership",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "path": "internal/engine/cache.go",
+    "value": "const MaxSize = 256",
+    "scope": "top-level"
+   }
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ }
+]
