@@ -26,9 +26,13 @@ def _is_repodex_invocation(cmd):
             i += 1
     if i >= len(toks):
         return False
-    prog = toks[i]
+    prog = toks[i].rsplit("/", 1)[-1]
+    # the benchmark `repo_query` shim wraps `reposuite-repodex query --nav
+    # adaptive` with an externally bound frozen root (§19-§23) — count it.
+    if prog == "repo_query":
+        return True
     # the executable basename must be the reposuite-repodex binary
-    if prog.rsplit("/", 1)[-1] != "reposuite-repodex":
+    if prog != "reposuite-repodex":
         return False
     # must be invoked with a real subcommand (not just the path mentioned)
     return len(toks) > i + 1

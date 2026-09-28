@@ -1,40 +1,29 @@
 //! Adaptive evidence navigation (RepoDex-first, V1).
 //!
 //! Deterministic intent classification + obligation-aware evidence-unit
-//! selection + semantic dedup + budget, rendered as compact adaptive RDX.
+//! selection + semantic dedup + serialized-byte budget -> compact adaptive RDX.
 //! Intent is routing metadata only — it never upgrades FACT/CANDIDATE (§9,§19).
-//!
-//! Pipeline: query text -> `NavIntent` -> evidence obligations -> bounded
-//! selection over the canonical `EvidenceProjection` -> dedup -> budget ->
-//! compact RDX. No LLM; no natural-language answer generation.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write;
 
 use super::projection::{EvidenceProjection, RelOut, SeedOut};
 
-/// Repository-navigation intents (§8). Routing metadata only.
+/// Repository-navigation intents (§8). Routing metadata only — never repo truth.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NavIntent {
-    /// "where is X" / "find X" — a locator packet.
     Locate,
-    /// "what is X's declaration/signature".
     Definition,
-    /// "who calls X" — bounded caller edges.
     Callers,
-    /// "what does X call" — bounded callee edges.
     Callees,
-    /// "how does A relate to B" — direction between anchors.
     Relationship,
-    /// "how does A reach B" — bounded path/flow.
     PathOrFlow,
-    /// "what manifest/config controls X".
     ManifestConfig,
-    /// "which tests cover X".
     TestEvidence,
-    /// broad structural orientation.
     GeneralStructural,
-    /// cannot be safely classified — bounded evidence + explicit gap.
+    /// No confident cue and the query is not a clear structural question.
+    /// Reachable: a question with no actionable signal returns bounded evidence
+    /// plus an explicit ambiguity gap — never fabricated certainty.
     Ambiguous,
 }
 
@@ -55,12 +44,26 @@ impl NavIntent {
     }
 }
 
-/// Deterministic cue-based classification. No model. Order matters — more
-/// specific cues win. `to`/relationship cues beat plain lookup.
+/// Canonical call-evidence relation kinds (call/ref edges, not structural).
+const CALL_KINDS: &[&str] = &["call_candidate", "call", "calls", "call_ref"];
+/// Structural (non-call) kinds — never emitted as caller/callee evidence.
+const STRUCTURAL_KINDS: &[&str] = &[
+    "contains",
+    "member_of",
+    "owned_by_manifest",
+    "imports",
+    "declares",
+];
+
+fn is_call_edge(r: &RelOut) -> bool {
+    CALL_KINDS.iter().any(|k| r.kind.starts_with(k)) && !r.kind.contains("candidate_set_only")
+}
+
+/// Deterministic cue-based classification. No model. Precedence is explicit:
+/// the most specific call intent wins; generic words like "call" do NOT steal
+/// a TestEvidence / Relationship / Callers question.
 pub fn classify(text: &str, plan_intent: Option<crate::query::QueryIntent>) -> NavIntent {
     use crate::query::QueryIntent as Q;
-    let t = text.to_lowercase();
-    // Explicit typed intent (internal callers/recipes) wins over text cues.
     if let Some(q) = plan_intent {
         return match q {
             Q::Callers => NavIntent::Callers,
@@ -70,21 +73,48 @@ pub fn classify(text: &str, plan_intent: Option<crate::query::QueryIntent>) -> N
             Q::Find => NavIntent::Locate,
         };
     }
+    let t = text.to_lowercase();
     let has = |w: &[&str]| w.iter().any(|s| t.contains(s));
-    // path/flow & relationship first (need two anchors).
+    // TEST first: "which tests call X" / "tests for X" must not be misrouted to
+    // Callers/Callees on the bare word "call".
+    if has(&["test", "tests", "covers", "cover"]) {
+        return NavIntent::TestEvidence;
+    }
+    // caller direction: "who calls X", "who invokes X".
+    if has(&[
+        "who calls",
+        "callers of",
+        "called by",
+        "who invokes",
+        "call sites of",
+        "who calls whom",
+    ]) {
+        return NavIntent::Callers;
+    }
+    // path/flow between two anchors.
     if has(&[
         "reach",
         "path to",
         "path from",
         "route",
         "flow",
-        "how does",
         "trace the call",
+        "how does",
     ]) {
         return NavIntent::PathOrFlow;
     }
-    // manifest/config before callees: "what does go.mod declare" is manifest,
-    // not a call question.
+    // explicit relationship between two anchors.
+    if has(&[
+        "relat",
+        "between",
+        "who calls whom",
+        "how does .* relate",
+        "depend on",
+        "depends on",
+    ]) {
+        return NavIntent::Relationship;
+    }
+    // manifest/config BEFORE callees: "what does go.mod declare" is manifest.
     if has(&[
         "manifest",
         "cargo.toml",
@@ -93,134 +123,120 @@ pub fn classify(text: &str, plan_intent: Option<crate::query::QueryIntent>) -> N
         "dependency",
         "does go.mod",
         "module does",
+        "edition",
+        "package name",
     ]) {
         return NavIntent::ManifestConfig;
     }
+    // callee direction needs an explicit call-directed word — "does X call",
+    // "which functions does X call", "callees", "calls", "invokes", "uses".
+    // A bare "does"/"declare" alone is NOT callee evidence.
     if has(&[
-        "who calls",
-        "callers of",
-        "called by",
-        "who invokes",
-        "call sites of",
-    ]) {
-        return NavIntent::Callers;
-    }
-    // Callees needs an explicit call-directed phrase, not just "what does".
-    if has(&[
-        "functions does",
-        "does .* call",
-        "calls to",
-        "what does .* call",
         "callees",
-        "call",
-        "invoke",
-        "uses",
-    ]) {
+        "functions does",
+        "does ",
+        " call",
+        "calls ",
+        " invoke",
+        "uses ",
+        "which functions",
+        "what does",
+        "functions it calls",
+    ]) && (has(&["call", "invoke", "uses", "callees"]))
+        && !has(&["who calls", "called by"])
+    {
         return NavIntent::Callees;
-    }
-    if has(&["test", "covers", "cover"]) {
-        return NavIntent::TestEvidence;
-    }
-    if has(&["relat", "between", "depend", "who calls whom", "connect"]) {
-        return NavIntent::Relationship;
     }
     if has(&[
         "signature",
         "declaration",
         "what is",
-        "declares",
         "type of",
         "definition",
+        "declares",
     ]) {
         return NavIntent::Definition;
     }
-    if has(&["where is", "find", "locate", "which file", "what file"]) {
+    if has(&[
+        "where is",
+        "find",
+        "locate",
+        "which file",
+        "what file",
+        "which module",
+    ]) {
         return NavIntent::Locate;
     }
-    // Nothing confident -> general structural (bounded), not fabricated intent.
-    NavIntent::GeneralStructural
+    // clear structural intent
+    if has(&[
+        "structure",
+        "architecture",
+        "overview",
+        "layout",
+        "organize",
+        "breakdown",
+    ]) {
+        return NavIntent::GeneralStructural;
+    }
+    // No confident cue + not a clear structural question -> Ambiguous (real,
+    // reachable under this rule). Never fabricate certainty.
+    NavIntent::Ambiguous
 }
 
-/// Evidence-obligation set selected for an intent (§10). Drives which related
-/// edges + how many seeds to keep.
+/// Evidence-obligation set: which units + bounds an intent needs (§10).
 struct Obligation {
-    /// Keep seeds up to this count.
     max_seeds: usize,
-    /// Keep related edges up to this count (after relevance+dedup).
     max_related: usize,
-    /// Whether to keep relationship edges at all.
     want_related: bool,
-    /// Whether to keep connector/path output.
     want_path: bool,
+    /// serialized byte budget for the final packet (§15).
+    byte_budget: usize,
 }
 
 fn obligation(intent: NavIntent) -> Obligation {
-    match intent {
-        NavIntent::Locate | NavIntent::Definition => Obligation {
-            max_seeds: 3,
-            max_related: 0,
-            want_related: false,
-            want_path: false,
-        },
-        NavIntent::Callers | NavIntent::Callees | NavIntent::Relationship => Obligation {
-            max_seeds: 3,
-            max_related: 16,
-            want_related: true,
-            want_path: false,
-        },
-        NavIntent::PathOrFlow => Obligation {
-            max_seeds: 2,
-            max_related: 8,
-            want_related: true,
-            want_path: true,
-        },
-        NavIntent::ManifestConfig => Obligation {
-            max_seeds: 4,
-            max_related: 8,
-            want_related: true,
-            want_path: false,
-        },
-        NavIntent::TestEvidence => Obligation {
-            max_seeds: 4,
-            max_related: 12,
-            want_related: true,
-            want_path: false,
-        },
-        NavIntent::GeneralStructural | NavIntent::Ambiguous => Obligation {
-            max_seeds: 5,
-            max_related: 10,
-            want_related: true,
-            want_path: false,
-        },
+    let (ms, mr, wr, wp, bb) = match intent {
+        // lookup/definition <= 2 KiB
+        NavIntent::Locate | NavIntent::Definition => (3, 0, false, false, 2048),
+        // relationship / manifest / test <= 4 KiB
+        NavIntent::Callers | NavIntent::Callees | NavIntent::Relationship => {
+            (3, 16, true, false, 4096)
+        }
+        NavIntent::ManifestConfig => (4, 8, true, false, 4096),
+        NavIntent::TestEvidence => (4, 12, true, false, 4096),
+        // path / flow <= 8 KiB
+        NavIntent::PathOrFlow => (2, 8, true, true, 8192),
+        NavIntent::GeneralStructural | NavIntent::Ambiguous => (5, 10, true, false, 4096),
+    };
+    Obligation {
+        max_seeds: ms,
+        max_related: mr,
+        want_related: wr,
+        want_path: wp,
+        byte_budget: bb,
     }
 }
 
-/// Is this edge relevant to the intent's evidence obligation? The edge `kind`
-/// is a deterministic relation kind; `evidence` stays untouched (never
-/// upgraded — candidates remain candidates).
+/// Is this edge relevant to the intent's evidence obligation? Call edges are
+/// selected by relation semantics + direction, NOT merely by direction (§7,§8).
 fn edge_relevant(r: &RelOut, intent: NavIntent) -> bool {
     let incoming = r.direction == "incoming";
     match intent {
-        NavIntent::Locate | NavIntent::Definition => false, // locator packet: no rel edges
-        NavIntent::Callers => incoming,
-        NavIntent::Callees => !incoming,
+        NavIntent::Locate | NavIntent::Definition => false,
+        NavIntent::Callers => incoming && is_call_edge(r),
+        NavIntent::Callees => !incoming && is_call_edge(r),
         NavIntent::Relationship => true, // both directions between anchors
         NavIntent::PathOrFlow => true,
         NavIntent::ManifestConfig => {
-            // ownership/membership/manifest edges, not generic call edges
-            matches!(
-                r.kind.as_str(),
-                "contains" | "owns" | "member_of" | "declares" | "manifest"
-            )
+            // only real ownership/membership/manifest structural edges
+            STRUCTURAL_KINDS.iter().any(|k| r.kind.starts_with(k)) || r.kind.contains("manifest")
         }
         NavIntent::TestEvidence => true,
         NavIntent::GeneralStructural | NavIntent::Ambiguous => true,
     }
 }
 
-/// Dedup key for a relationship: kind + direction-resolved endpoints + rule +
-/// candidate set. Distinct witnesses (different rule/candidate set) are kept;
-/// pure repeats collapse.
+/// Dedup key: kind + direction-resolved endpoints + rule + candidate set.
+/// Distinct witnesses are kept; pure repeats collapse.
 fn rel_key(r: &RelOut) -> String {
     format!(
         "{}|{}|{}|{}|{}",
@@ -232,27 +248,30 @@ fn rel_key(r: &RelOut) -> String {
     )
 }
 
-/// Render the adaptive agent-facing RDX for a projection conditioned on the
-/// classified intent. Locator intents emit a small packet; relationship
-/// intents keep only obligation-relevant, deduped edges. FACT/CANDIDATE and
-/// explicit gaps are preserved exactly.
+/// Render the adaptive agent-facing RDX conditioned on the classified intent,
+/// with a real serialized byte budget (§15). Relevance-filtered irrelevant
+/// edges do NOT trigger a truncation gap — only relevant-but-truncated evidence
+/// does. FACT/CANDIDATE preserved; no mid-line cuts.
 pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
     let ob = obligation(intent);
     let seeds: Vec<&SeedOut> = proj.seeds.iter().take(ob.max_seeds).collect();
-    // Relevance-filter + dedup related edges.
+    // Relevance-filter + dedup. Track how many *relevant* edges were dropped by
+    // the bound (truncation) vs irrelevant (filtered — not a gap).
     let mut seen = BTreeSet::new();
-    let related: Vec<&RelOut> = if ob.want_related {
-        proj.related
-            .iter()
-            .filter(|r| edge_relevant(r, intent))
-            .filter(|r| seen.insert(rel_key(r)))
-            .take(ob.max_related)
-            .collect()
-    } else {
-        Vec::new()
-    };
+    let mut relevant_total = 0usize;
+    let mut related: Vec<&RelOut> = Vec::new();
+    if ob.want_related {
+        for r in &proj.related {
+            if !edge_relevant(r, intent) {
+                continue; // IRRELEVANT_FILTERED — not exposed to the Agent.
+            }
+            relevant_total += 1;
+            if seen.insert(rel_key(r)) && related.len() < ob.max_related {
+                related.push(r);
+            }
+        }
+    }
 
-    // Local ids over the *selected* seed+neighbor keys only.
     let mut lid: BTreeMap<String, u32> = BTreeMap::new();
     let mut next = 1u32;
     let mut out = String::from("#RDX1 adaptive v2\n");
@@ -265,29 +284,22 @@ pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
             next += 1;
             n
         });
-        // One canonical line per Agent-relevant node identity: seed kind wins;
-        // a duplicate "node" alias for the same key is not emitted (§14).
+        // one canonical line per Agent-relevant node identity (§14 dedup).
         let _ = writeln!(out, "F {} {} {} {}", id, s.kind, esc(&s.key), esc(&s.label));
         seed_ids.push((id, s));
     }
     for r in &related {
-        // neighbor endpoints only; a seed key is already emitted above.
         for k in [&r.from_key, &r.to_key] {
             if !lid.contains_key(k.as_str()) {
                 let id = next;
                 next += 1;
                 lid.insert((*k).clone(), id);
-                let _ = writeln!(
-                    out,
-                    "F {} node {} {}",
-                    id,
-                    esc(k),
-                    esc(if *k == r.from_key {
-                        &r.from_label
-                    } else {
-                        &r.to_label
-                    })
-                );
+                let lbl = if *k == r.from_key {
+                    &r.from_label
+                } else {
+                    &r.to_label
+                };
+                let _ = writeln!(out, "F {} node {} {}", id, esc(k), esc(lbl));
             }
         }
     }
@@ -337,7 +349,18 @@ pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
             }
         }
     }
-    // Explicit gap lines (§20) — never silent omission.
+    // ---- serialized byte budget (§15): enforce on the whole packet ----
+    let mut truncated_by_budget = false;
+    if out.len() > ob.byte_budget {
+        // cut at the last complete line that fits the budget — never mid-line.
+        let keep = out[..ob.byte_budget]
+            .rfind('\n')
+            .map(|i| i + 1)
+            .unwrap_or(ob.byte_budget);
+        out.truncate(keep);
+        truncated_by_budget = true;
+    }
+    // ---- explicit gaps (§20): only real gaps, not irrelevant-filtered ----
     if proj.seeds.is_empty() {
         let _ = writeln!(out, "G NO_RESULT");
     } else if proj.eligible_seed_count > seeds.len() {
@@ -348,25 +371,36 @@ pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
             proj.eligible_seed_count
         );
     }
-    if ob.want_related && proj.related.len() > related.len() {
+    if intent == NavIntent::Ambiguous {
+        let _ = writeln!(out, "G AMBIGUOUS_RESULT reason=no_confident_intent");
+    }
+    // Truncation only when relevant evidence exceeded the bound or byte budget.
+    let relevant_shown = related.len();
+    if truncated_by_budget || relevant_total > relevant_shown {
         let _ = writeln!(
             out,
-            "G TRUNCATED_CONTINUATION related_shown={} related_total={}",
-            related.len(),
-            proj.related.len()
+            "G TRUNCATED_CONTINUATION relevant_shown={} relevant_total={}{}",
+            relevant_shown,
+            relevant_total,
+            if truncated_by_budget {
+                " over_byte_budget=1"
+            } else {
+                ""
+            }
         );
     }
     let cand = related.iter().filter(|r| r.evidence == "candidate").count();
     let _ = writeln!(
         out,
-        "S shown={} total={} complete={} seeds={} related={} candidates={} intent={}",
+        "S shown={} total={} complete={} seeds={} related={} candidates={} intent={} bytes={}",
         seeds.len(),
         proj.eligible_seed_count,
         u8::from(proj.seed_selection_complete),
         seeds.len(),
-        related.len(),
+        relevant_shown,
         cand,
-        intent.as_str()
+        intent.as_str(),
+        out.len()
     );
     out
 }
