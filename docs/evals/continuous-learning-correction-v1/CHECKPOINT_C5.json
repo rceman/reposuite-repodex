@@ -1,0 +1,11 @@
+{
+ "artifact_ids": [
+  "mem-config_control",
+  "mem-test_verification",
+  "mem-ownership"
+ ],
+ "artifacts": 3,
+ "coverage_known": 1,
+ "coverage_partial": 6,
+ "hash": "sha256:e34dac105"
+}

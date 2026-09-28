@@ -1,0 +1,106 @@
+[
+ {
+  "anchors": [
+   "cmd/main.go:main",
+   "cmd/main.go:main"
+  ],
+  "est_cost": 2,
+  "factors": {
+   "cost": -2,
+   "demand": 2,
+   "structural_importance": 4,
+   "uncertainty_reduction": 3
+  },
+  "family": "call_path",
+  "origin": "coverage_gap:call_path",
+  "priority": 27,
+  "question": "Which callers reach the primary entrypoint chain?",
+  "question_id": "q-3"
+ },
+ {
+  "anchors": [
+   "go.mod"
+  ],
+  "est_cost": 1,
+  "factors": {
+   "cost": -1,
+   "demand": 2,
+   "structural_importance": 3,
+   "uncertainty_reduction": 3
+  },
+  "family": "config_control",
+  "origin": "manifest_surface",
+  "priority": 24,
+  "question": "What does go.mod control and who consumes it?",
+  "question_id": "q-1"
+ },
+ {
+  "anchors": [
+   "internal/engine/core_test.go",
+   "internal/util/codec_test.go"
+  ],
+  "est_cost": 2,
+  "factors": {
+   "cost": -2,
+   "demand": 2,
+   "structural_importance": 3,
+   "uncertainty_reduction": 3
+  },
+  "family": "test_verification",
+  "origin": "coverage_gap:test_verification",
+  "priority": 23,
+  "question": "Which tests verify the core modules?",
+  "question_id": "q-2"
+ },
+ {
+  "anchors": [
+   "cmd"
+  ],
+  "est_cost": 1,
+  "factors": {
+   "cost": -1,
+   "demand": 1,
+   "structural_importance": 3,
+   "uncertainty_reduction": 2
+  },
+  "family": "ownership",
+  "origin": "module_boundary",
+  "priority": 19,
+  "question": "Which module owns cmd and what does it expose?",
+  "question_id": "q-4"
+ },
+ {
+  "anchors": [
+   "engine"
+  ],
+  "est_cost": 1,
+  "factors": {
+   "cost": -1,
+   "demand": 1,
+   "structural_importance": 3,
+   "uncertainty_reduction": 2
+  },
+  "family": "ownership",
+  "origin": "module_boundary",
+  "priority": 19,
+  "question": "Which module owns engine and what does it expose?",
+  "question_id": "q-5"
+ },
+ {
+  "anchors": [
+   "util"
+  ],
+  "est_cost": 1,
+  "factors": {
+   "cost": -1,
+   "demand": 1,
+   "structural_importance": 3,
+   "uncertainty_reduction": 2
+  },
+  "family": "ownership",
+  "origin": "module_boundary",
+  "priority": 19,
+  "question": "Which module owns util and what does it expose?",
+  "question_id": "q-6"
+ }
+]

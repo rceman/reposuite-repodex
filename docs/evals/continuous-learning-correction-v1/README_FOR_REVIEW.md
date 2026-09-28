@@ -1,0 +1,2 @@
+# Review order: REPORT.md -> CURRICULUM_REPRODUCIBILITY -> CHECKPOINT_* ->
+PROBE_RESULTS (mechanical_effect=0) -> MEMORY_SCALE_BENCHMARK -> tests.

@@ -1,0 +1,1 @@
+{"gates":"tests/learning_gates.rs","cases":["anchor missing->Missing","anchor duplicated->Ambiguous","dep gone->Stale","unrelated change (deps intact, view differs)->CurrentPartial","deps intact+same view->CurrentValid","no candidate->fact upgrade"],"all_pass":true}

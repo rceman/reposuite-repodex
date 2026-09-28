@@ -253,24 +253,69 @@ fn rel_key(r: &RelOut) -> String {
 /// edges do NOT trigger a truncation gap — only relevant-but-truncated evidence
 /// does. FACT/CANDIDATE preserved; no mid-line cuts.
 pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
+    adaptive_rdx_biased(proj, intent, None)
+}
+
+/// Adaptive RDX with an optional internal route bias from learned memory. The
+/// bias only *reorders* which current relations/seeds are surfaced first — it
+/// changes nothing about FACT/CANDIDATE, never adds Agent-visible text, and
+/// never emits historical data. Same evidence set, better ordering.
+pub fn adaptive_rdx_biased(
+    proj: &EvidenceProjection,
+    intent: NavIntent,
+    bias: Option<&crate::learning::RouteBias>,
+) -> String {
     let ob = obligation(intent);
-    let seeds: Vec<&SeedOut> = proj.seeds.iter().take(ob.max_seeds).collect();
+    // Seed order: learned-preferred anchors surface first (internal reordering).
+    let mut seed_order: Vec<&SeedOut> = proj.seeds.iter().collect();
+    if let Some(b) = bias {
+        if !b.prefer_anchors.is_empty() {
+            seed_order.sort_by_key(|s| {
+                if b.prefer_anchors
+                    .iter()
+                    .any(|a| s.key.contains(a) || s.label == *a)
+                {
+                    0
+                } else {
+                    1
+                }
+            });
+        }
+    }
+    let seeds: Vec<&SeedOut> = seed_order.into_iter().take(ob.max_seeds).collect();
     // Relevance-filter + dedup. Track how many *relevant* edges were dropped by
     // the bound (truncation) vs irrelevant (filtered — not a gap).
     let mut seen = BTreeSet::new();
     let mut relevant_total = 0usize;
-    let mut related: Vec<&RelOut> = Vec::new();
+    let mut relevant: Vec<&RelOut> = Vec::new();
     if ob.want_related {
         for r in &proj.related {
             if !edge_relevant(r, intent) {
                 continue; // IRRELEVANT_FILTERED — not exposed to the Agent.
             }
             relevant_total += 1;
-            if seen.insert(rel_key(r)) && related.len() < ob.max_related {
-                related.push(r);
+            if seen.insert(rel_key(r)) {
+                relevant.push(r);
             }
         }
     }
+    // Internal route bias: learned-productive relation kinds surface first —
+    // answer-bearing evidence earlier in the bounded packet (§13-§14).
+    if let Some(b) = bias {
+        if !b.prefer_kinds.is_empty() {
+            relevant.sort_by_key(|r| {
+                if b.prefer_kinds
+                    .iter()
+                    .any(|k| r.kind.starts_with(k.as_str()))
+                {
+                    0
+                } else {
+                    1
+                }
+            });
+        }
+    }
+    let related: Vec<&RelOut> = relevant.into_iter().take(ob.max_related).collect();
 
     let mut lid: BTreeMap<String, u32> = BTreeMap::new();
     let mut next = 1u32;

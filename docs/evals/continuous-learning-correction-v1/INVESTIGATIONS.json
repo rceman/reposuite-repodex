@@ -1,0 +1,68 @@
+[
+ {
+  "bytes": 193,
+  "family": "call_path",
+  "qid": "q-3",
+  "question": "Which callers reach the primary entrypoint chain?",
+  "route": []
+ },
+ {
+  "bytes": 1469,
+  "family": "config_control",
+  "qid": "q-1",
+  "question": "What does go.mod control and who consumes it?",
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest"
+  ]
+ },
+ {
+  "bytes": 1611,
+  "family": "test_verification",
+  "qid": "q-2",
+  "question": "Which tests verify the core modules?",
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest"
+  ]
+ },
+ {
+  "bytes": 382,
+  "family": "ownership",
+  "qid": "q-4",
+  "question": "Which module owns cmd and what does it expose?",
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest",
+   "package_membership"
+  ]
+ },
+ {
+  "bytes": 502,
+  "family": "ownership",
+  "qid": "q-5",
+  "question": "Which module owns engine and what does it expose?",
+  "route": [
+   "contains",
+   "import_path",
+   "member_of",
+   "owned_by_manifest",
+   "package_membership"
+  ]
+ },
+ {
+  "bytes": 488,
+  "family": "ownership",
+  "qid": "q-6",
+  "question": "Which module owns util and what does it expose?",
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest",
+   "package_membership"
+  ]
+ }
+]

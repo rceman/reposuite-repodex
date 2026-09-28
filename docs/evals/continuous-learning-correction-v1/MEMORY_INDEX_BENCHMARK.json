@@ -1,0 +1,1 @@
+{"lookup":"bounded by family+anchor fan-out (intersect), never a full store scan","at_10k":"~103 candidates per anchor probe, not 10k","index":"in-memory MemoryIndex built once; durable index is the store's own term->id catalog"}

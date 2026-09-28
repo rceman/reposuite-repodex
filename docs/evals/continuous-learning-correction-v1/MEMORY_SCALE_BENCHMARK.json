@@ -1,0 +1,29 @@
+{
+ "100": {
+  "bounded": true,
+  "candidates_scanned_avg": 1.033,
+  "index_build_ms": 0.2542,
+  "lookup_p50_us": 2745.6,
+  "lookup_total_ms": 2.7456,
+  "lookups": 1000,
+  "records": 100
+ },
+ "1000": {
+  "bounded": true,
+  "candidates_scanned_avg": 10.33,
+  "index_build_ms": 1.6815,
+  "lookup_p50_us": 6905.001,
+  "lookup_total_ms": 6.905001,
+  "lookups": 1000,
+  "records": 1000
+ },
+ "10000": {
+  "bounded": true,
+  "candidates_scanned_avg": 103.099,
+  "index_build_ms": 8.003601000000002,
+  "lookup_p50_us": 45358.609000000004,
+  "lookup_total_ms": 45.358609,
+  "lookups": 1000,
+  "records": 10000
+ }
+}

@@ -165,3 +165,84 @@ fn priority_is_deterministic() {
 // --- unique-anchor recipe enforcement (precursor defect B) ---
 // covered by the exec.rs change: multiple same-label declaration anchors now
 // yield Ambiguous, not an arbitrary first-match execution.
+
+// ---- correction-V1 gates (dependency-aware rebind + reproducibility) ----
+
+#[test]
+fn dep_aware_rebind_unrelated_change_stays_valid() {
+    // anchor + dep both still resolve, view digest differs -> CurrentPartial
+    // (not Stale) since the actual dependency identities are intact.
+    let idx = index_with(vec![node("decl:a.go#1", "Get")]);
+    let mut m = mem(&["Get"], &["decl:a.go#1"], "v1");
+    m.last_validated_view = "v1".into();
+    assert_eq!(rebind_memory(&m, &idx, "v2"), MemoryRebind::CurrentPartial);
+    // same view digest -> fully current.
+    assert_eq!(rebind_memory(&m, &idx, "v1"), MemoryRebind::CurrentValid);
+}
+
+#[test]
+fn dep_aware_rebind_missing_dep_is_stale() {
+    // anchor resolves but a stored dependency node is gone -> Stale.
+    let idx = index_with(vec![node("decl:a.go#1", "Get")]);
+    let m = mem(&["Get"], &["decl:gone.go#9"], "v1");
+    assert_eq!(rebind_memory(&m, &idx, "v1"), MemoryRebind::Stale);
+}
+
+#[test]
+fn memory_index_bounded_lookup() {
+    // 10k records; candidates() must be bounded by family/anchor, not a scan.
+    let arts: Vec<MemoryArtifact> = (0..10_000)
+        .map(|i| {
+            let mut m = mem(
+                &[Box::leak(format!("a{}", i % 97).into_boxed_str())],
+                &[],
+                "v1",
+            );
+            m.memory_id = format!("m{i}");
+            m
+        })
+        .collect();
+    let idx = MemoryIndex::build(arts);
+    let c = idx.candidates(QuestionFamily::CallPath, &["a0".to_string()]);
+    // bounded by the anchor/family fan-out, not the full 10k.
+    assert!(c.len() < 10_000);
+    assert_eq!(idx.len(), 10_000);
+}
+
+#[test]
+fn curriculum_generation_is_reproducible() {
+    let idx = empty_index();
+    let mut inv = ProjectInventory::default();
+    inv.entrypoints.push("cmd/main.go:main".into());
+    inv.manifests.push("go.mod".into());
+    inv.modules.push("engine".into());
+    let led = coverage(&idx, &inv, "v1");
+    let a = generate_questions(&led, &inv);
+    let b = generate_questions(&led, &inv);
+    assert_eq!(
+        serde_json::to_string(&a).unwrap(),
+        serde_json::to_string(&b).unwrap()
+    );
+}
+
+#[test]
+fn internal_route_only_bias_current_valid() {
+    let idx = index_with(vec![node("decl:a.go#1", "Get")]);
+    let arts = vec![{
+        let mut m = mem(&["Get"], &[], "v1");
+        m.route = vec!["call_candidate".into()];
+        m.state = MemoryState::Validated;
+        m
+    }];
+    let mi = MemoryIndex::build(arts);
+    let d = internal_route(
+        &mi,
+        &idx,
+        repodex::query::adaptive::NavIntent::Callers,
+        &["Get".to_string()],
+        "v1",
+    );
+    assert!(d.applied);
+    assert_eq!(d.rebind, Some(MemoryRebind::CurrentValid));
+    assert!(d.bias.prefer_kinds.contains(&"call_candidate".to_string()));
+}

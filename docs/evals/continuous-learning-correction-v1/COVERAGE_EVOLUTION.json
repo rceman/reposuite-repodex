@@ -1,0 +1,1 @@
+{"note":"frozen repo -> identical coverage ledger at every checkpoint (no source evolution); transitions none because state is current-view bound and the view is fixed"}

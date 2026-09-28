@@ -1,0 +1,1 @@
+{"AGENT_VISIBLE_LEARNED_NAV_HINT":false,"AGENT_FACING_MEMORY_BLOB":false,"AGENT_VISIBLE_TREATMENT_PROMPT_DELTA_BYTES":0,"note":"memory now acts internally via RouteBias reordering; no hint text injected into prompt/RDX; B0==L1 Agent-visible contract"}

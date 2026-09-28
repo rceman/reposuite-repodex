@@ -12,7 +12,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
-use crate::graph::{GraphIndex, GraphNode, NodeKind};
+use crate::graph::{GraphIndex, NodeKind};
+use crate::query::adaptive::NavIntent;
 
 // ---------------------------------------------------------------------------
 // Coverage ledger (§12-§14)
@@ -554,51 +555,203 @@ pub fn generate_questions(
 // Rebind + lifecycle (§5-§8,§14,§24-§26)
 // ---------------------------------------------------------------------------
 
-/// Rebind a memory artifact's anchors to the current view. Only CurrentValid
-/// becomes usable evidence; a disappeared anchor -> Missing, a now-ambiguous
-/// anchor -> Ambiguous, a changed dependency -> Stale. Never partial-as-full.
+/// Resolve an anchor name against the current view (unique declaration/entity).
+fn resolve_anchor(index: &GraphIndex, name: &str) -> AnchorResolution {
+    let n = index
+        .nodes()
+        .iter()
+        .filter(|n| n.label == name || n.key == name)
+        .count();
+    match n {
+        0 => AnchorResolution::Missing,
+        1 => AnchorResolution::Unique,
+        _ => AnchorResolution::Ambiguous,
+    }
+}
+
+enum AnchorResolution {
+    Unique,
+    Missing,
+    Ambiguous,
+}
+
+/// Dependency-aware rebind (§17-§18): validate each stored dependency *identity*
+/// (anchor key / node id) against the current view — NOT whole-view equality.
+/// An unrelated file change leaves unchanged dependencies valid; a changed or
+/// absent dependency yields Stale/Missing. An anchor that now resolves to >1
+/// distinct node yields Ambiguous.
 pub fn rebind_memory(mem: &MemoryArtifact, index: &GraphIndex, view_digest: &str) -> MemoryRebind {
-    // dependency changed -> stale
-    if !mem.source_dependencies.is_empty() && view_digest != mem.last_validated_view {
-        // only stale if a dependency actually changed; we treat any view digest
-        // change for a memory with deps as needing revalidation.
-        let mut all_present = true;
-        let mut ambiguous = false;
-        for name in &mem.anchor_names {
-            let matches: Vec<&GraphNode> = index
-                .nodes()
-                .iter()
-                .filter(|n| n.label == *name || n.key == *name)
-                .collect();
-            if matches.is_empty() {
-                all_present = false;
-            } else if matches.len() > 1 {
-                ambiguous = true;
+    // 1. resolve every anchor uniquely in the current view.
+    let mut any_missing = false;
+    for name in &mem.anchor_names {
+        match resolve_anchor(index, name) {
+            AnchorResolution::Missing => any_missing = true,
+            AnchorResolution::Ambiguous => return MemoryRebind::Ambiguous,
+            AnchorResolution::Unique => {}
+        }
+    }
+    if any_missing {
+        return MemoryRebind::Missing;
+    }
+    // 2. dependency validation: a stored dependency is a stable node/key id.
+    //    If the memory carries deps and any is absent in the current view -> the
+    //    route's basis changed -> Stale (needs revalidation), even if anchors ok.
+    if !mem.source_dependencies.is_empty() {
+        let mut deps_ok = true;
+        for dep in &mem.source_dependencies {
+            if index.node(dep).is_none() {
+                deps_ok = false;
             }
         }
-        if !all_present {
-            return MemoryRebind::Missing;
+        if !deps_ok {
+            return MemoryRebind::Stale;
         }
-        if ambiguous {
-            return MemoryRebind::Ambiguous;
-        }
-        return MemoryRebind::Stale; // deps changed; anchors present but not revalidated
-    }
-    // same view -> resolve anchors
-    for name in &mem.anchor_names {
-        let matches: Vec<&GraphNode> = index
-            .nodes()
-            .iter()
-            .filter(|n| n.label == *name || n.key == *name)
-            .collect();
-        if matches.is_empty() {
-            return MemoryRebind::Missing;
-        }
-        if matches.len() > 1 {
-            return MemoryRebind::Ambiguous;
+        // anchors+deps resolve, but the view changed since last validation ->
+        // revalidated dependencies are still current; mark Partial only when the
+        // origin view genuinely diverged and deps are intact but unverified.
+        if view_digest != mem.last_validated_view {
+            return MemoryRebind::CurrentPartial;
         }
     }
     MemoryRebind::CurrentValid
+}
+
+/// Bounded durable memory lookup index (§12,§22): family+anchor -> memory ids.
+/// Lookup is bounded by the candidate set for the current family/anchors — it
+/// never enumerates the whole store at query time.
+#[derive(Debug, Default)]
+pub struct MemoryIndex {
+    /// family -> memory ids (bounded), built once at open.
+    by_family: BTreeMap<QuestionFamily, Vec<usize>>,
+    /// anchor name -> memory ids.
+    by_anchor: BTreeMap<String, Vec<usize>>,
+    /// the artifacts (lazy — only candidates are touched).
+    pub artifacts: Vec<MemoryArtifact>,
+}
+
+impl MemoryIndex {
+    pub fn build(artifacts: Vec<MemoryArtifact>) -> Self {
+        let mut by_family: BTreeMap<QuestionFamily, Vec<usize>> = BTreeMap::new();
+        let mut by_anchor: BTreeMap<String, Vec<usize>> = BTreeMap::new();
+        for (i, m) in artifacts.iter().enumerate() {
+            by_family.entry(m.family).or_default().push(i);
+            for a in &m.anchor_names {
+                by_anchor.entry(a.clone()).or_default().push(i);
+            }
+        }
+        Self {
+            by_family,
+            by_anchor,
+            artifacts,
+        }
+    }
+
+    /// Bounded candidate ids for (family, anchors) — never a full scan. When
+    /// anchors are present they narrow the set (intersect with family); the
+    /// result is bounded by the anchor fan-out, not the store size.
+    pub fn candidates(&self, family: QuestionFamily, anchors: &[String]) -> Vec<usize> {
+        let fam: Option<BTreeSet<usize>> = self
+            .by_family
+            .get(&family)
+            .map(|v| v.iter().copied().collect());
+        if anchors.is_empty() {
+            return fam.map(|s| s.into_iter().collect()).unwrap_or_default();
+        }
+        // anchor-narrowed candidates, intersected with family when present.
+        let mut out = BTreeSet::new();
+        for a in anchors {
+            if let Some(v) = self.by_anchor.get(a) {
+                for &i in v {
+                    if fam.as_ref().map(|f| f.contains(&i)).unwrap_or(true) {
+                        out.insert(i);
+                    }
+                }
+            }
+        }
+        out.into_iter().collect()
+    }
+
+    pub fn len(&self) -> usize {
+        self.artifacts.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.artifacts.is_empty()
+    }
+}
+
+/// An internal route bias applied to adaptive selection (§9,§13-§14): memory
+/// reorders/prioritizes WHICH current relations/seeds are surfaced first. It
+/// never adds Agent-visible text and never emits historical facts.
+#[derive(Debug, Clone, Default)]
+pub struct RouteBias {
+    /// relation kinds the learned route found productive — surface first.
+    pub prefer_kinds: Vec<String>,
+    /// anchor keys the learned route found productive — promote first.
+    pub prefer_anchors: Vec<String>,
+}
+
+/// The internal decision for one query: which memory candidate applied, its
+/// rebind state, and the resulting bias. Internal observability only (§16).
+#[derive(Debug, Clone)]
+pub struct MemoryDecision {
+    pub candidate_memory: Option<String>,
+    pub rebind: Option<MemoryRebind>,
+    pub applied: bool,
+    pub bias: RouteBias,
+}
+
+/// Select the bounded best memory for (intent, anchors), rebind to the current
+/// view, and derive an internal route bias. Only a CurrentValid rebound memory
+/// contributes a bias; everything else is a no-op (and gets demoted).
+pub fn internal_route(
+    index: &MemoryIndex,
+    view: &GraphIndex,
+    intent: NavIntent,
+    anchors: &[String],
+    view_digest: &str,
+) -> MemoryDecision {
+    let family = intent_to_family(intent);
+    let cand_ids = index.candidates(family, anchors);
+    let mut decision = MemoryDecision {
+        candidate_memory: None,
+        rebind: None,
+        applied: false,
+        bias: RouteBias::default(),
+    };
+    for cid in cand_ids {
+        let mem = &index.artifacts[cid];
+        if mem.state != MemoryState::Validated && mem.state != MemoryState::Candidate {
+            continue;
+        }
+        let rb = rebind_memory(mem, view, view_digest);
+        decision.candidate_memory = Some(mem.memory_id.clone());
+        decision.rebind = Some(rb);
+        if rb == MemoryRebind::CurrentValid {
+            decision.applied = true;
+            decision.bias = RouteBias {
+                prefer_kinds: mem.route.clone(),
+                prefer_anchors: mem.anchor_names.clone(),
+            };
+            return decision;
+        }
+    }
+    decision
+}
+
+/// Map a navigation intent to its learning question family (bounded).
+pub fn intent_to_family(intent: NavIntent) -> QuestionFamily {
+    match intent {
+        NavIntent::Callers
+        | NavIntent::Callees
+        | NavIntent::Relationship
+        | NavIntent::PathOrFlow => QuestionFamily::CallPath,
+        NavIntent::ManifestConfig => QuestionFamily::ConfigControl,
+        NavIntent::TestEvidence => QuestionFamily::TestVerification,
+        NavIntent::Definition | NavIntent::Locate => QuestionFamily::Ownership,
+        NavIntent::GeneralStructural => QuestionFamily::CrossCuttingBehavior,
+        NavIntent::Ambiguous => QuestionFamily::Ambiguity,
+    }
 }
 
 /// Conservative promotion: a derived route becomes Candidate; only a real

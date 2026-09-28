@@ -1,0 +1,111 @@
+[
+ {
+  "anchor_names": [
+   "go.mod"
+  ],
+  "evidence_classes": [
+   "fact",
+   "candidate"
+  ],
+  "failed_reuse_count": 0,
+  "family": "config_control",
+  "last_validated_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "memory_id": "mem-config_control",
+  "origin_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "reuse_count": 0,
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest"
+  ],
+  "source_dependencies": [
+   "file:go.mod",
+   "decl:go.mod#0",
+   "file:cmd/main.go",
+   "file:internal/engine/cache.go",
+   "file:internal/engine/core.go",
+   "file:internal/engine/core_test.go",
+   "file:internal/engine/handler.go",
+   "file:internal/engine/registry.go",
+   "file:internal/util/codec.go",
+   "file:internal/util/codec_test.go",
+   "file:internal/util/resolve.go"
+  ],
+  "state": "candidate",
+  "useful_reuse_count": 0
+ },
+ {
+  "anchor_names": [
+   "internal/engine/core_test.go",
+   "internal/util/codec_test.go"
+  ],
+  "evidence_classes": [
+   "fact",
+   "candidate"
+  ],
+  "failed_reuse_count": 0,
+  "family": "test_verification",
+  "last_validated_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "memory_id": "mem-test_verification",
+  "origin_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "reuse_count": 0,
+  "route": [
+   "contains",
+   "member_of",
+   "owned_by_manifest"
+  ],
+  "source_dependencies": [
+   "file:internal/engine/core.go",
+   "file:internal/engine/core_test.go"
+  ],
+  "state": "candidate",
+  "useful_reuse_count": 0
+ },
+ {
+  "anchor_names": [
+   "cmd"
+  ],
+  "evidence_classes": [
+   "fact",
+   "candidate"
+  ],
+  "failed_reuse_count": 0,
+  "family": "ownership",
+  "last_validated_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "memory_id": "mem-ownership",
+  "origin_view": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44",
+  "reuse_count": 0,
+  "route": [
+   "contains",
+   "import_path",
+   "member_of",
+   "owned_by_manifest",
+   "package_membership"
+  ],
+  "source_dependencies": [
+   "decl:go.mod#0",
+   "decl:internal/engine/cache.go#0",
+   "decl:internal/engine/core.go#0",
+   "decl:internal/engine/core_test.go#0",
+   "decl:internal/engine/handler.go#0",
+   "decl:internal/engine/registry.go#0",
+   "decl:internal/util/codec.go#0",
+   "decl:internal/util/codec_test.go#0",
+   "decl:internal/util/resolve.go#0",
+   "ent:ent-652107ae93aa46f2",
+   "ent:ent-9c1f9d6e98d52ae0",
+   "ent:ent-e61e202329495071",
+   "file:cmd/main.go",
+   "file:internal/engine/cache.go",
+   "file:internal/engine/core.go",
+   "file:internal/engine/core_test.go",
+   "file:internal/engine/handler.go",
+   "file:internal/engine/registry.go",
+   "file:internal/util/codec.go",
+   "file:internal/util/codec_test.go",
+   "file:internal/util/resolve.go"
+  ],
+  "state": "candidate",
+  "useful_reuse_count": 0
+ }
+]

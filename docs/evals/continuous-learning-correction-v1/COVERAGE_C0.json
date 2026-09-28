@@ -1,0 +1,89 @@
+{
+ "items": [
+  {
+   "basis": "entrypoints=2",
+   "dimension": "entrypoint",
+   "reason": null,
+   "state": "known",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "modules=3",
+   "dimension": "module_boundaries",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "manifests=1",
+   "dimension": "config_control",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "test_files=2",
+   "dimension": "test_verification",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "calls=12",
+   "dimension": "call_path",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "manifest dependency surface",
+   "dimension": "dependency",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "no runtime failure signal in static index",
+   "dimension": "failure_recovery",
+   "reason": null,
+   "state": "unsupported",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "state mutation is runtime evidence",
+   "dimension": "state_storage",
+   "reason": null,
+   "state": "unsupported",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "lifecycle requires path tracing",
+   "dimension": "lifecycle",
+   "reason": null,
+   "state": "unresolved",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "containment/membership edges",
+   "dimension": "ownership",
+   "reason": null,
+   "state": "partial",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "import/link surface",
+   "dimension": "external_boundary",
+   "reason": null,
+   "state": "unresolved",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  },
+  {
+   "basis": "cross-cutting requires multi-anchor",
+   "dimension": "cross_cutting_behavior",
+   "reason": null,
+   "state": "unresolved",
+   "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+  }
+ ],
+ "view_digest": "sha256:b63341cbe5f5cbb289cf0c025509acb4487736225e25e80622a9d6a19f273b44"
+}
