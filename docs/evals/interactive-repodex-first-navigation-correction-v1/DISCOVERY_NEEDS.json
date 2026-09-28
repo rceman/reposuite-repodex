@@ -1,0 +1,1 @@
+{"note":"per-task declared in TASK_CORPUS.discovery_needs (locate/find caller,callee,relationship,path,manifest,test)","example":{"cc-who-calls":["find caller"],"mc-gomod":["find manifest fact"]}}

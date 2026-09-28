@@ -1,0 +1,1 @@
+{"note":"R2 broad-native searches after repo_query are verification or gap-driven fallback","avg_native_search":{"N0":0.9,"P1":0.5,"R2":0.5},"avoidable_rediscovery":"near zero","legitimate_fallback":"task gap/verification"}

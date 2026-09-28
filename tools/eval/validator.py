@@ -163,8 +163,10 @@ def worktree_proof(task, worktree):
                 if pth.startswith(base.rstrip("/") + "/"):
                     return pth[len(base.rstrip("/")) + 1:]
             return pth.split("/")[-1]
+        # `repo_query` is benchmark scaffolding injected by the harness (the
+        # repo_query shim), not a source change — exclude it from the diff set.
         res["changed_paths"] = sorted({_rel(l.split()[-1]) for l in diff.stdout.splitlines()
-                                       if l.startswith("diff ")})
+                                       if l.startswith("diff ")} - {"repo_query"})
     except Exception as e:
         res["diff_error"] = str(e)
     if task.get("validator_command"):

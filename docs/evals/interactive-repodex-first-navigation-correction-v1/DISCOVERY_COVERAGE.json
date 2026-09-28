@@ -1,0 +1,7 @@
+{
+ "REPODEX_DISCOVERY_COVERAGE": {
+  "numerator": 45,
+  "denominator": 48
+ },
+ "definition": "R2 sessions where the Agent made >=1 real repo_query call to satisfy a discovery obligation before broad native search"
+}

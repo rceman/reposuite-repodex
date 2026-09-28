@@ -1,0 +1,5 @@
+{
+ "repo_query_tool_description_bytes": 286,
+ "args_schema_bytes": 58,
+ "note": "`repo_query(question)` shim: bound root, adaptive RDX out; minimal tool-definition cost"
+}

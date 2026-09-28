@@ -1,0 +1,722 @@
+[
+ {
+  "task": "lk-get",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-get",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-get",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-res",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-res",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-res",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-sig",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-sig",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-sig",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-enc",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-enc",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-enc",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-relate",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-relate",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-relate",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-reach",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cc-reach",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-reach",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-whom",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cc-whom",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cc-whom",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-edition",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-edition",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-edition",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-test",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-test",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-test",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "R2",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "N0",
+  "rep": 0
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "P1",
+  "rep": 0
+ },
+ {
+  "task": "lk-get",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-get",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "lk-get",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-res",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "lk-res",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-res",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-intent",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "lk-sig",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-sig",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "lk-sig",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-enc",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "lk-enc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-enc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-rust-proj",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-who-calls",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-what-call",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-test-call",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-relate",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-relate",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-relate",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-reach",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cc-reach",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-reach",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-whom",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-whom",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-whom",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-gomod",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-cargo",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-edition",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-edition",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-edition",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-test",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-test",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-test",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-pkgname",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "mc-mod2",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache-cap",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-get-doc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-enc-doc",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-main-doc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "R2",
+  "rep": 1
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-res-doc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache2",
+  "arm": "R2",
+  "rep": 1
+ }
+]

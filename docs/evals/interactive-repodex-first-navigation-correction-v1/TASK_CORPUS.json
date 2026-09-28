@@ -1,0 +1,489 @@
+[
+ {
+  "id": "lk-get",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the Cache.Get method defined?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func (c *Cache) Get",
+    "source_path": "internal/engine/cache.go"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ]
+ },
+ {
+  "id": "lk-res",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which file declares the Resolver type?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Resolver|NewResolver",
+    "source_path": "internal/engine/core.go"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ]
+ },
+ {
+  "id": "lk-rust-intent",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which file declares the QueryIntent enum?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "QueryIntent"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ]
+ },
+ {
+  "id": "lk-sig",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What is the signature of Cache.Set?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func (c *Cache) Set|Set(k string, v int)",
+    "source_path": "internal/engine/cache.go"
+   }
+  ],
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ]
+ },
+ {
+  "id": "lk-enc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Where is the util Encode function?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "func Encode|internal/util/codec.go",
+    "source_path": "internal/util/codec.go"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ]
+ },
+ {
+  "id": "lk-rust-proj",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Which module builds the EvidenceProjection?",
+  "cohort": "lk",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "projection|EvidenceProjection"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ]
+ },
+ {
+  "id": "cc-who-calls",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Who calls Cache.Get?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Get|none|no caller"
+   }
+  ],
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ]
+ },
+ {
+  "id": "cc-what-call",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which functions does cmd/main.go call?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "NewResolver"
+   },
+   {
+    "id": "o2",
+    "kind": "written_call",
+    "caller": "cmd/main.go",
+    "callee": "ResolveKey"
+   }
+  ],
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ]
+ },
+ {
+  "id": "cc-test-call",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Which tests call or exercise the cache?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "test|none|no test"
+   }
+  ],
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ]
+ },
+ {
+  "id": "cc-relate",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "How does cmd/main.go relate to internal/engine?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "import|engine|call"
+   }
+  ],
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ]
+ },
+ {
+  "id": "cc-reach",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "How does the engine reach util.Encode?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "Encode|util|codec"
+   }
+  ],
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ]
+ },
+ {
+  "id": "cc-whom",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "In cmd/main.go, who calls whom?",
+  "cohort": "cc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "main|NewResolver|ResolveKey"
+   }
+  ],
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ]
+ },
+ {
+  "id": "mc-gomod",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What module does go.mod declare and does it pin a Go version?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "absence",
+    "value": "go\\s*\\d",
+    "source_path": "go.mod"
+   },
+   {
+    "id": "o2",
+    "kind": "contains_text",
+    "value": "mempilot|micro"
+   }
+  ],
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ]
+ },
+ {
+  "id": "mc-cargo",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "Name one dependency in this crate's Cargo.toml.",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "value": "serde|tree-sitter|clap|regex|toml",
+    "source_path": "Cargo.toml"
+   }
+  ],
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ]
+ },
+ {
+  "id": "mc-edition",
+  "root": "/tmp/baseline-wt",
+  "pristine_root": "/tmp/baseline-wt",
+  "task": "What Rust edition does Cargo.toml declare?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "manifest_dependency",
+    "value": "2021|edition",
+    "source_path": "Cargo.toml"
+   }
+  ],
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ]
+ },
+ {
+  "id": "mc-test",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Is there a test file for the engine package?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "test|core_test|no test"
+   }
+  ],
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ]
+ },
+ {
+  "id": "mc-pkgname",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "What is the package name of the engine module?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "engine|package"
+   }
+  ],
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ]
+ },
+ {
+  "id": "mc-mod2",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Does go.mod require any external dependencies?",
+  "cohort": "mc",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "contains_text",
+    "value": "no |none|does not|no require"
+   }
+  ],
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ]
+ },
+ {
+  "id": "cd-cache-cap",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add a top-level `const MaxSize = 256` to the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "path": "internal/engine/cache.go",
+    "value": "const MaxSize = 256",
+    "scope": "top-level"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-get-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// cache boundary` immediately above the Get method in the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/cache.go",
+    "value": "// cache boundary",
+    "above": "func (c *Cache) Get"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ },
+ {
+  "id": "cd-enc-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// encodes keys` immediately above the Encode function in the util codec file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/util/codec.go",
+    "value": "// encodes keys",
+    "above": "func Encode"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/util/codec.go"
+  ]
+ },
+ {
+  "id": "cd-main-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// entrypoint` immediately above func main in cmd/main.go.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "cmd/main.go",
+    "value": "// entrypoint",
+    "above": "func main"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "cmd/main.go"
+  ]
+ },
+ {
+  "id": "cd-res-doc",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add `// resolves keys via the codec` immediately above ResolveKey in the engine core file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_position",
+    "path": "internal/engine/core.go",
+    "value": "// resolves keys via the codec",
+    "above": "func (r *Resolver) ResolveKey"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/core.go"
+  ]
+ },
+ {
+  "id": "cd-cache2",
+  "root": "/tmp/mempilot/repo",
+  "pristine_root": "/tmp/mempilot/repo",
+  "task": "Add a top-level `const DefaultSize = 64` to the engine cache file.",
+  "cohort": "cd",
+  "obligations": [
+   {
+    "id": "o1",
+    "kind": "mutation_scope",
+    "path": "internal/engine/cache.go",
+    "value": "const DefaultSize = 64",
+    "scope": "top-level"
+   }
+  ],
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "mutating": true,
+  "allowed_changed_paths": [
+   "internal/engine/cache.go"
+  ]
+ }
+]

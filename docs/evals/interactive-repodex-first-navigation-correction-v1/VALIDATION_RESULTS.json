@@ -1,0 +1,1154 @@
+[
+ {
+  "session": "cc-reach.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-reach.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-reach.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-reach.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-reach.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 3
+ },
+ {
+  "session": "cc-reach.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 3
+ },
+ {
+  "session": "cc-relate.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-relate.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-relate.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-relate.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-relate.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cc-relate.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cc-test-call.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-test-call.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-test-call.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-test-call.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-test-call.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 3
+ },
+ {
+  "session": "cc-test-call.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 3
+ },
+ {
+  "session": "cc-what-call.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-what-call.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-what-call.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-what-call.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-what-call.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cc-what-call.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 2
+ },
+ {
+  "session": "cc-who-calls.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-who-calls.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-who-calls.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-who-calls.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-who-calls.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cc-who-calls.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 2
+ },
+ {
+  "session": "cc-whom.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-whom.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-whom.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-whom.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cc-whom.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 2
+ },
+ {
+  "session": "cc-whom.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache-cap.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache-cap.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache-cap.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache-cap.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache-cap.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-cache-cap.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-cache2.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache2.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache2.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache2.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-cache2.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-cache2.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-enc-doc.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-enc-doc.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-enc-doc.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-enc-doc.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-enc-doc.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-enc-doc.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-get-doc.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-get-doc.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-get-doc.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-get-doc.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-get-doc.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-get-doc.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-main-doc.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-main-doc.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-main-doc.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-main-doc.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-main-doc.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-main-doc.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-res-doc.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-res-doc.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-res-doc.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-res-doc.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "cd-res-doc.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "cd-res-doc.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-enc.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-enc.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-enc.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-enc.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-enc.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-enc.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-get.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-get.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-get.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-get.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-get.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-get.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-res.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-res.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-res.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-res.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-res.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-res.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-rust-intent.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-intent.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-intent.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-intent.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-intent.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-rust-intent.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-rust-proj.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-proj.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-proj.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-proj.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-rust-proj.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 2
+ },
+ {
+  "session": "lk-rust-proj.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "lk-sig.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-sig.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-sig.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-sig.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "lk-sig.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 2
+ },
+ {
+  "session": "lk-sig.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 2
+ },
+ {
+  "session": "mc-cargo.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-cargo.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-cargo.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-cargo.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-cargo.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-cargo.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-edition.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-edition.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-edition.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-edition.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-edition.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-edition.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-gomod.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-gomod.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-gomod.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-gomod.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "correct": false,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-gomod.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-gomod.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-mod2.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-mod2.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-mod2.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-mod2.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-mod2.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-mod2.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-pkgname.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-pkgname.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-pkgname.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-pkgname.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-pkgname.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-pkgname.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-test.N0.r0",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-test.N0.r1",
+  "arm": "N0",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-test.P1.r0",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-test.P1.r1",
+  "arm": "P1",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 0
+ },
+ {
+  "session": "mc-test.R2.r0",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ },
+ {
+  "session": "mc-test.R2.r1",
+  "arm": "R2",
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "correct": true,
+  "repodex_calls": 1
+ }
+]

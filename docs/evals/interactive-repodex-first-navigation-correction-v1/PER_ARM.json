@@ -1,0 +1,41 @@
+{
+ "N0": {
+  "sessions": 48,
+  "success": 36,
+  "input_tok": 77208,
+  "output_tok": 886,
+  "tools": 7.5,
+  "model_calls": 5.6,
+  "repodex_calls": 0,
+  "native_search": 0.9,
+  "source_read": 1.2,
+  "edit": 12,
+  "combined_wall_ms": 33772
+ },
+ "P1": {
+  "sessions": 48,
+  "success": 43,
+  "input_tok": 57870,
+  "output_tok": 723,
+  "tools": 5.4,
+  "model_calls": 4.2,
+  "repodex_calls": 0,
+  "native_search": 0.5,
+  "source_read": 1.4,
+  "edit": 12,
+  "combined_wall_ms": 24660
+ },
+ "R2": {
+  "sessions": 48,
+  "success": 42,
+  "input_tok": 78301,
+  "output_tok": 874,
+  "tools": 6.8,
+  "model_calls": 5.7,
+  "repodex_calls": 59,
+  "native_search": 0.5,
+  "source_read": 1.3,
+  "edit": 12,
+  "combined_wall_ms": 29972
+ }
+}

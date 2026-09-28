@@ -1,0 +1,2306 @@
+[
+ {
+  "session_id": "cc-reach.N0.r0",
+  "task": "cc-reach",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.N0.r0.json",
+  "sha256": "318a7959ea12d8e5f45f03e3e9782a91da527ec4c0709562794d472fae30cdeb"
+ },
+ {
+  "session_id": "cc-reach.N0.r1",
+  "task": "cc-reach",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.N0.r1.json",
+  "sha256": "91bd107edb62347d744c6f97302d0b9f9718c1be9d5b2e8548a452da2a641e4f"
+ },
+ {
+  "session_id": "cc-reach.P1.r0",
+  "task": "cc-reach",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.P1.r0.json",
+  "sha256": "040093ff0e9f4c210d4da12aa936e62835ac80e118ccd67a2248157798ada220"
+ },
+ {
+  "session_id": "cc-reach.P1.r1",
+  "task": "cc-reach",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.P1.r1.json",
+  "sha256": "f93009c3d0dff1e5260b4df35c9a976a35c78fe51e56cda519e47921e5dd30b2"
+ },
+ {
+  "session_id": "cc-reach.R2.r0",
+  "task": "cc-reach",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 3,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.R2.r0.json",
+  "sha256": "fb71098b4c8ab34a322077c4ff28d39e3a01ece6be3d88b7399b98831839fed1"
+ },
+ {
+  "session_id": "cc-reach.R2.r1",
+  "task": "cc-reach",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 3,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find path"
+  ],
+  "trace_path": "traces/cc-reach.R2.r1.json",
+  "sha256": "49910fdd78f2ef888fa0804f8464f989df114bbdff460524bbe260ec19e073c4"
+ },
+ {
+  "session_id": "cc-relate.N0.r0",
+  "task": "cc-relate",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.N0.r0.json",
+  "sha256": "2eb1bdd55b4e601af572ec21956c40a72711aa8c1381788585de124c873a39f3"
+ },
+ {
+  "session_id": "cc-relate.N0.r1",
+  "task": "cc-relate",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.N0.r1.json",
+  "sha256": "5d844326265096696700ff7a8d23d65c768fd346b3edbfff362cb96d1b30c042"
+ },
+ {
+  "session_id": "cc-relate.P1.r0",
+  "task": "cc-relate",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.P1.r0.json",
+  "sha256": "d613de93a4f8a400a43fea0cbf50bd0bdb69ac01a141e0e292100f6abe6d503a"
+ },
+ {
+  "session_id": "cc-relate.P1.r1",
+  "task": "cc-relate",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.P1.r1.json",
+  "sha256": "be180ac8111c936752670e964f7af1ad76d4e3806f34fa3a9f4dc943e11ec2d7"
+ },
+ {
+  "session_id": "cc-relate.R2.r0",
+  "task": "cc-relate",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.R2.r0.json",
+  "sha256": "209918552ac1b0ff1092d61f0460aabf257100ffcb474f6098c50f57139c6b23"
+ },
+ {
+  "session_id": "cc-relate.R2.r1",
+  "task": "cc-relate",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "path_or_flow",
+  "discovery_needs": [
+   "find relationship"
+  ],
+  "trace_path": "traces/cc-relate.R2.r1.json",
+  "sha256": "6031bd7bccf58c3d4727699667e197ce1faccc8bc9ecc9fb9b17b6861f9eb0bd"
+ },
+ {
+  "session_id": "cc-test-call.N0.r0",
+  "task": "cc-test-call",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.N0.r0.json",
+  "sha256": "705741ae3c4a741070b46a2c2f7491e21cbfe969e9a4a4617cf43bb2546267dd"
+ },
+ {
+  "session_id": "cc-test-call.N0.r1",
+  "task": "cc-test-call",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.N0.r1.json",
+  "sha256": "af9e25ae804a52e847235b136cea9acd06ec446b11e9a5a63652ae459c7238bd"
+ },
+ {
+  "session_id": "cc-test-call.P1.r0",
+  "task": "cc-test-call",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.P1.r0.json",
+  "sha256": "e09b78237502042fc1458b6e5b82fe540d8ed54a0d8c36fb4e3b3392cf5ee182"
+ },
+ {
+  "session_id": "cc-test-call.P1.r1",
+  "task": "cc-test-call",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.P1.r1.json",
+  "sha256": "5c8181de993463a3d3b4e3b731b5328d036bac6b7752143916fca2cf89ae2dd6"
+ },
+ {
+  "session_id": "cc-test-call.R2.r0",
+  "task": "cc-test-call",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 3,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.R2.r0.json",
+  "sha256": "4e09f684c6fc908cd793ab1947706381ea60ce9551457d71ca8fcc74484fa2d5"
+ },
+ {
+  "session_id": "cc-test-call.R2.r1",
+  "task": "cc-test-call",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 3,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/cc-test-call.R2.r1.json",
+  "sha256": "b36cabae86f434c13486c402c63ffb43058a14e6e301088993dfea4be5699299"
+ },
+ {
+  "session_id": "cc-what-call.N0.r0",
+  "task": "cc-what-call",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.N0.r0.json",
+  "sha256": "1bd4f300d0bb04269c3f5e079c84530a7b712e0527f1e829e0550fa1443b232f"
+ },
+ {
+  "session_id": "cc-what-call.N0.r1",
+  "task": "cc-what-call",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.N0.r1.json",
+  "sha256": "0dd2b80503398e860432819431216be1702aa426766f113b60f13583d04d855e"
+ },
+ {
+  "session_id": "cc-what-call.P1.r0",
+  "task": "cc-what-call",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.P1.r0.json",
+  "sha256": "e19df5b43fac5e461dc1aed22cc53bafb2ef09dd4ac443124471032b821cbe70"
+ },
+ {
+  "session_id": "cc-what-call.P1.r1",
+  "task": "cc-what-call",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.P1.r1.json",
+  "sha256": "8b4deaafa7e5e57e1e8999c5e66045c972a660a8478503c1ea609e41fd85aada"
+ },
+ {
+  "session_id": "cc-what-call.R2.r0",
+  "task": "cc-what-call",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.R2.r0.json",
+  "sha256": "b03851c4dac2ab975f5e6c93026fa1f9cedc0f9dc343cb90f57147dc00a1e4bc"
+ },
+ {
+  "session_id": "cc-what-call.R2.r1",
+  "task": "cc-what-call",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-what-call.R2.r1.json",
+  "sha256": "dfbbda05c3ef51b4d56c33d803fca2781773f35e7c452b927df1a7800f943f1b"
+ },
+ {
+  "session_id": "cc-who-calls.N0.r0",
+  "task": "cc-who-calls",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.N0.r0.json",
+  "sha256": "10dc5140934e8f0e24c1e4ad5921ec11780182fa9b5ef29cff9d310f9b07577e"
+ },
+ {
+  "session_id": "cc-who-calls.N0.r1",
+  "task": "cc-who-calls",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.N0.r1.json",
+  "sha256": "e05d324476c865897aace001e0f3233954050e907979895259b72e2cc5497d94"
+ },
+ {
+  "session_id": "cc-who-calls.P1.r0",
+  "task": "cc-who-calls",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.P1.r0.json",
+  "sha256": "a59a3043e37784af1d7a02b372ab37e31abd72c953232619394d246b9e4a3ae5"
+ },
+ {
+  "session_id": "cc-who-calls.P1.r1",
+  "task": "cc-who-calls",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.P1.r1.json",
+  "sha256": "448f8038a0570f93a11fda73be0deed149fe805a00ef306477df7189c95925cd"
+ },
+ {
+  "session_id": "cc-who-calls.R2.r0",
+  "task": "cc-who-calls",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.R2.r0.json",
+  "sha256": "c37c9be7000867ee193d6544f47aa3eabc566ffc4f7e994e960e1d597a43f067"
+ },
+ {
+  "session_id": "cc-who-calls.R2.r1",
+  "task": "cc-who-calls",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "callers",
+  "discovery_needs": [
+   "find caller"
+  ],
+  "trace_path": "traces/cc-who-calls.R2.r1.json",
+  "sha256": "cef4d1fda90e1252e539946b5397f4228ae1fb3c1e6438fa42c0c8eec123814a"
+ },
+ {
+  "session_id": "cc-whom.N0.r0",
+  "task": "cc-whom",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.N0.r0.json",
+  "sha256": "ac2fb5eb91162895f4bfdcac7a0a2f00fcc8e96d10393de8ce7b2160a3b14ac5"
+ },
+ {
+  "session_id": "cc-whom.N0.r1",
+  "task": "cc-whom",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.N0.r1.json",
+  "sha256": "01bc12b895e166ce395c9ec21a05a7dc30666aec486f33e3af467f3ee4b58add"
+ },
+ {
+  "session_id": "cc-whom.P1.r0",
+  "task": "cc-whom",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.P1.r0.json",
+  "sha256": "f2fa64b90f5118f7a63855640a4e07cf526ff9c7d08aac554449fd9ea03bf75c"
+ },
+ {
+  "session_id": "cc-whom.P1.r1",
+  "task": "cc-whom",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.P1.r1.json",
+  "sha256": "afaa57bba88943692d4b25882ece2d3d88683bdf4a253fde4c37e472e909ff2d"
+ },
+ {
+  "session_id": "cc-whom.R2.r0",
+  "task": "cc-whom",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.R2.r0.json",
+  "sha256": "2a8fb20fc8033fe7c2d2b5db961f8a72b22f0080ebe7ab702aa49807b67a07aa"
+ },
+ {
+  "session_id": "cc-whom.R2.r1",
+  "task": "cc-whom",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "callees",
+  "discovery_needs": [
+   "find callee"
+  ],
+  "trace_path": "traces/cc-whom.R2.r1.json",
+  "sha256": "9c9d6d46a11b42ad99b56e8bd174222cfff98019a6a5ba8784bcd76edc45214b"
+ },
+ {
+  "session_id": "cd-cache-cap.N0.r0",
+  "task": "cd-cache-cap",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.N0.r0.json",
+  "sha256": "c83a9d62d8c66a9de75add1eec7747b191711c8dad6b751049452667631a74ca"
+ },
+ {
+  "session_id": "cd-cache-cap.N0.r1",
+  "task": "cd-cache-cap",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.N0.r1.json",
+  "sha256": "ed6557ea9700e2274a6ae23fdd4f5510972bbe533e18140f456216f59a428c4a"
+ },
+ {
+  "session_id": "cd-cache-cap.P1.r0",
+  "task": "cd-cache-cap",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.P1.r0.json",
+  "sha256": "13fed9f77ab405beee76521f3897998f2c3e808451f33760c387175992c49ee3"
+ },
+ {
+  "session_id": "cd-cache-cap.P1.r1",
+  "task": "cd-cache-cap",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.P1.r1.json",
+  "sha256": "95fa0c676a823ddfa137ec7369e317e48c5bffc9cbeee392498f9bdca5dcd5f1"
+ },
+ {
+  "session_id": "cd-cache-cap.R2.r0",
+  "task": "cd-cache-cap",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.R2.r0.json",
+  "sha256": "4a6b27e13ab4533ad7ca3d809619ebeb790ab52bf7894a7844666c26ef7a9c49"
+ },
+ {
+  "session_id": "cd-cache-cap.R2.r1",
+  "task": "cd-cache-cap",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache-cap.R2.r1.json",
+  "sha256": "913f5ff0f5dc7f3fd80dae8fc1f97db99cc6e9dddb276e0f2a6c5ace96b27f83"
+ },
+ {
+  "session_id": "cd-cache2.N0.r0",
+  "task": "cd-cache2",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.N0.r0.json",
+  "sha256": "682e58c0637b9ad61c56cb57028671ebeeb57eebba4a8af15417fd79a4d2a31e"
+ },
+ {
+  "session_id": "cd-cache2.N0.r1",
+  "task": "cd-cache2",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.N0.r1.json",
+  "sha256": "8c53da01075be83bce2b22a5348b2c5ddd7770b8d11227e667231edebdd3348b"
+ },
+ {
+  "session_id": "cd-cache2.P1.r0",
+  "task": "cd-cache2",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.P1.r0.json",
+  "sha256": "6b6ba488d8832f89128819cdea9710a49a8ead9c322d9f0ddbf9151bf18dadd0"
+ },
+ {
+  "session_id": "cd-cache2.P1.r1",
+  "task": "cd-cache2",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.P1.r1.json",
+  "sha256": "8b277d40c801bebe3f4edfa2e6da273fd3ebcabfe558990f3f49cb5c302e5d40"
+ },
+ {
+  "session_id": "cd-cache2.R2.r0",
+  "task": "cd-cache2",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.R2.r0.json",
+  "sha256": "3792d552c93e1f065e72b48074c62a49ae93e0f0f0bc31b264cfa1a17aaff631"
+ },
+ {
+  "session_id": "cd-cache2.R2.r1",
+  "task": "cd-cache2",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/cd-cache2.R2.r1.json",
+  "sha256": "d0df2677720339eb038263c1ad52db73062bea2fc3ee8b71e3fb422068965b53"
+ },
+ {
+  "session_id": "cd-enc-doc.N0.r0",
+  "task": "cd-enc-doc",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.N0.r0.json",
+  "sha256": "6ac6070caf2228461d7067a83377dd4a646554fafc3b613482828e7dea34f1d7"
+ },
+ {
+  "session_id": "cd-enc-doc.N0.r1",
+  "task": "cd-enc-doc",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.N0.r1.json",
+  "sha256": "1b05cac57296ab655d7689571a865cb1a50d9ff11f6dcc2fab1e153a8f272203"
+ },
+ {
+  "session_id": "cd-enc-doc.P1.r0",
+  "task": "cd-enc-doc",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.P1.r0.json",
+  "sha256": "7bc25a6395f36889095d9f2798cb1299d1b5314f7d1b38962f7fe37ef9e46754"
+ },
+ {
+  "session_id": "cd-enc-doc.P1.r1",
+  "task": "cd-enc-doc",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.P1.r1.json",
+  "sha256": "3c806587f4062e7280bfc71434683b7595f8b07cfcc392b7a1fa3f67a60e5b0e"
+ },
+ {
+  "session_id": "cd-enc-doc.R2.r0",
+  "task": "cd-enc-doc",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.R2.r0.json",
+  "sha256": "61176474faf9d007153e48e850d6b1c035b95ac5af7851d598a16899cf4a191b"
+ },
+ {
+  "session_id": "cd-enc-doc.R2.r1",
+  "task": "cd-enc-doc",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-enc-doc.R2.r1.json",
+  "sha256": "ebec8dd1d0e004ab8339e15dc67119cba874c5f73940dab2e871a15d1e16946d"
+ },
+ {
+  "session_id": "cd-get-doc.N0.r0",
+  "task": "cd-get-doc",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.N0.r0.json",
+  "sha256": "ab890dc5ace429a7ce7ab6d6777d0a8d5212e9272cab2eea40a822aeceb07220"
+ },
+ {
+  "session_id": "cd-get-doc.N0.r1",
+  "task": "cd-get-doc",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.N0.r1.json",
+  "sha256": "876c4a4d2a9f22b12560b0edffb95923d285304c68e1ae283ff4518b65a65720"
+ },
+ {
+  "session_id": "cd-get-doc.P1.r0",
+  "task": "cd-get-doc",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.P1.r0.json",
+  "sha256": "9febeb9ce80404577cb721ee15f059584046eb58af19989c5e5cfed802760878"
+ },
+ {
+  "session_id": "cd-get-doc.P1.r1",
+  "task": "cd-get-doc",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.P1.r1.json",
+  "sha256": "0afcfd6b8de210687cd25a6a3d92bd85688cba5885b37510f1db498e1eaeefec"
+ },
+ {
+  "session_id": "cd-get-doc.R2.r0",
+  "task": "cd-get-doc",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.R2.r0.json",
+  "sha256": "2560205138f2155342159e20530e27ce462b8b32f0adc504a7c68d66787aa8d5"
+ },
+ {
+  "session_id": "cd-get-doc.R2.r1",
+  "task": "cd-get-doc",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-get-doc.R2.r1.json",
+  "sha256": "e0806e4bceb4e091717ad2c118e9aee22faeeae8a3da5da5d40b0d11ebf6e47f"
+ },
+ {
+  "session_id": "cd-main-doc.N0.r0",
+  "task": "cd-main-doc",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.N0.r0.json",
+  "sha256": "5e61dbf22f4d99de13d7593a404ef003747b5967596bcc9d8cd24fed6c352c39"
+ },
+ {
+  "session_id": "cd-main-doc.N0.r1",
+  "task": "cd-main-doc",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.N0.r1.json",
+  "sha256": "c50a1592bc10f2984aae184f53c77ec897bdf3cee3158318c84fc27001c38645"
+ },
+ {
+  "session_id": "cd-main-doc.P1.r0",
+  "task": "cd-main-doc",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.P1.r0.json",
+  "sha256": "ae0ebd1e9df609c1b494020b5a84c50966fb177d21cc3f6631a3b7ec1208f591"
+ },
+ {
+  "session_id": "cd-main-doc.P1.r1",
+  "task": "cd-main-doc",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.P1.r1.json",
+  "sha256": "662b095cba7c953f40db109bc850223c79367b97f35ef7dc5a4819e140a4bf6d"
+ },
+ {
+  "session_id": "cd-main-doc.R2.r0",
+  "task": "cd-main-doc",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.R2.r0.json",
+  "sha256": "a4ff54f6517388b726d88de330359875f53a5bb6aa7416ae88e4cfa52987aa3a"
+ },
+ {
+  "session_id": "cd-main-doc.R2.r1",
+  "task": "cd-main-doc",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-main-doc.R2.r1.json",
+  "sha256": "347969120207293a69adfc167763b11d4faadc59f1eb1eb922f0a57aa48b51c4"
+ },
+ {
+  "session_id": "cd-res-doc.N0.r0",
+  "task": "cd-res-doc",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.N0.r0.json",
+  "sha256": "115effcbc2001409880b8d9bb7bb7860c5a35955ec3e13a5a4a377deb76d0dc1"
+ },
+ {
+  "session_id": "cd-res-doc.N0.r1",
+  "task": "cd-res-doc",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.N0.r1.json",
+  "sha256": "22f412ed11f2b1bd67181bfb51761cfa44aac3fe7f7295f26c8eaff886ed5e0c"
+ },
+ {
+  "session_id": "cd-res-doc.P1.r0",
+  "task": "cd-res-doc",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.P1.r0.json",
+  "sha256": "fa5eea096f931dbbb688cbb8c356a6a103def27567c18ef157e9ac819cfaa2fe"
+ },
+ {
+  "session_id": "cd-res-doc.P1.r1",
+  "task": "cd-res-doc",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.P1.r1.json",
+  "sha256": "03ac199e2b8fbb3089ddb96ff056141dec81b2f202e947248369b43ed96f033c"
+ },
+ {
+  "session_id": "cd-res-doc.R2.r0",
+  "task": "cd-res-doc",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.R2.r0.json",
+  "sha256": "1317431de8167d427ca6aefb87d6896014ee914fe24087543026652ffff0c274"
+ },
+ {
+  "session_id": "cd-res-doc.R2.r1",
+  "task": "cd-res-doc",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/cd-res-doc.R2.r1.json",
+  "sha256": "289759ee40b3e574f82292d6560f59e775e11f3af7c5d36e3993e6047ef97f74"
+ },
+ {
+  "session_id": "lk-enc.N0.r0",
+  "task": "lk-enc",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.N0.r0.json",
+  "sha256": "28913e6bbd3ddd8ede7f105f6cfd61f93511bb69989db48e7423dccc01270939"
+ },
+ {
+  "session_id": "lk-enc.N0.r1",
+  "task": "lk-enc",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.N0.r1.json",
+  "sha256": "ff9cf21ad2692ba23111784e340b2ae49aff324da76dd1217532a942fbaf0e65"
+ },
+ {
+  "session_id": "lk-enc.P1.r0",
+  "task": "lk-enc",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.P1.r0.json",
+  "sha256": "356725e0a5ee8e7bb2c8b88fbdc8b8c96b987e224ec33949b013c48ff1e3da0e"
+ },
+ {
+  "session_id": "lk-enc.P1.r1",
+  "task": "lk-enc",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.P1.r1.json",
+  "sha256": "49de55757453bf88f3d078d6a3004c264f8475cd3a8e8c6d009a4d96a43bdbb4"
+ },
+ {
+  "session_id": "lk-enc.R2.r0",
+  "task": "lk-enc",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.R2.r0.json",
+  "sha256": "611599742e284b6c3e87002fa68268e46cd57119f500dcb3ed28dd19ee41045e"
+ },
+ {
+  "session_id": "lk-enc.R2.r1",
+  "task": "lk-enc",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-enc.R2.r1.json",
+  "sha256": "66712cbdc195f3f953692a7c63106539a499a494324e08f65def92b03b0a3b4d"
+ },
+ {
+  "session_id": "lk-get.N0.r0",
+  "task": "lk-get",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.N0.r0.json",
+  "sha256": "788040155b72e05a87a655043a4f738ca214036801945620332a9fbd730b1016"
+ },
+ {
+  "session_id": "lk-get.N0.r1",
+  "task": "lk-get",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.N0.r1.json",
+  "sha256": "be55c471c5131ec1374b02f51d6f8c1c14c1d4295b45a99d2c5eead35ba3ab1a"
+ },
+ {
+  "session_id": "lk-get.P1.r0",
+  "task": "lk-get",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.P1.r0.json",
+  "sha256": "9d98997c10b150cf919a67a5d8b4cd95d1ce6b8cfa2e69fafd2e9f1465ef21b5"
+ },
+ {
+  "session_id": "lk-get.P1.r1",
+  "task": "lk-get",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.P1.r1.json",
+  "sha256": "570561665158ff994228357a9be6e7273a311d0fae40398ec97f23d33f900769"
+ },
+ {
+  "session_id": "lk-get.R2.r0",
+  "task": "lk-get",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.R2.r0.json",
+  "sha256": "70ae422b6ec35d17f37f23860850611087c0bf38c50786a7bf0b7e1a280fbfc8"
+ },
+ {
+  "session_id": "lk-get.R2.r1",
+  "task": "lk-get",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-get.R2.r1.json",
+  "sha256": "13905f095f8f594055785ee084f6b4a4d2696143395e13273188395a66ad5973"
+ },
+ {
+  "session_id": "lk-res.N0.r0",
+  "task": "lk-res",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.N0.r0.json",
+  "sha256": "9dafb09f1d86cc2ad201e9ea0ab2a54fdd40b62bc945089abdfcdefebcdc6860"
+ },
+ {
+  "session_id": "lk-res.N0.r1",
+  "task": "lk-res",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.N0.r1.json",
+  "sha256": "0ce2c07f9954a736a8a2a1550cd6c7bbb870f284da12ad7f7b4ad38e1bf1cae2"
+ },
+ {
+  "session_id": "lk-res.P1.r0",
+  "task": "lk-res",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.P1.r0.json",
+  "sha256": "adfc557f0f0420a8dcbe3f1385dbca2627823f18dc7a96ae501585eba85ec721"
+ },
+ {
+  "session_id": "lk-res.P1.r1",
+  "task": "lk-res",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.P1.r1.json",
+  "sha256": "110313a0843f105e91fe0c8d2b60938dcfefaef5016ca287c22b5ffa06eb2314"
+ },
+ {
+  "session_id": "lk-res.R2.r0",
+  "task": "lk-res",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.R2.r0.json",
+  "sha256": "fdede693f9b7b81626cfc4c581804ac02e9a41e5af4e72298bc02b7c989e5e79"
+ },
+ {
+  "session_id": "lk-res.R2.r1",
+  "task": "lk-res",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-res.R2.r1.json",
+  "sha256": "ce88b1b1fe108a38f13cf7e9b36beae71ee9d6742b8dd8f529dc4e0bbc756fc2"
+ },
+ {
+  "session_id": "lk-rust-intent.N0.r0",
+  "task": "lk-rust-intent",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.N0.r0.json",
+  "sha256": "63726e51ffc220f32705ad9b995adae997ad188b3943a2186c5992e6b614cad4"
+ },
+ {
+  "session_id": "lk-rust-intent.N0.r1",
+  "task": "lk-rust-intent",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.N0.r1.json",
+  "sha256": "96ad5140f4f6886498c01df9f66cb8bdb1f49e3f205962c476d841b436fd7be1"
+ },
+ {
+  "session_id": "lk-rust-intent.P1.r0",
+  "task": "lk-rust-intent",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.P1.r0.json",
+  "sha256": "679e3b9e0b12a27565232316c10ff480cf0fd073a84de5c072a887af4f2833ef"
+ },
+ {
+  "session_id": "lk-rust-intent.P1.r1",
+  "task": "lk-rust-intent",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.P1.r1.json",
+  "sha256": "565263fe369c54a83aefba8dc278b7748da0f08ce798618768eeca4102d5d5bd"
+ },
+ {
+  "session_id": "lk-rust-intent.R2.r0",
+  "task": "lk-rust-intent",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.R2.r0.json",
+  "sha256": "aeb8e1a71d3844e3a185a04f51722dbf4dd666dc036d1d568633c68cd711f8c7"
+ },
+ {
+  "session_id": "lk-rust-intent.R2.r1",
+  "task": "lk-rust-intent",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate symbol"
+  ],
+  "trace_path": "traces/lk-rust-intent.R2.r1.json",
+  "sha256": "5f2f710c3d781fa27c485aabdb3511a19cabfe821c9bcc339ed53bfe4a264954"
+ },
+ {
+  "session_id": "lk-rust-proj.N0.r0",
+  "task": "lk-rust-proj",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.N0.r0.json",
+  "sha256": "804d5145feb0459448751c6090511a8767f4ea74d8643458b629084e621baf3b"
+ },
+ {
+  "session_id": "lk-rust-proj.N0.r1",
+  "task": "lk-rust-proj",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.N0.r1.json",
+  "sha256": "8cf1b36a6cec6d5672d2e1a7a771ad0162c570f215c98df95692cc8c0493944e"
+ },
+ {
+  "session_id": "lk-rust-proj.P1.r0",
+  "task": "lk-rust-proj",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.P1.r0.json",
+  "sha256": "79837649cc198748e0e528251b38ccc3c2c77dc2ddb055d3362c8d91b2bec993"
+ },
+ {
+  "session_id": "lk-rust-proj.P1.r1",
+  "task": "lk-rust-proj",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.P1.r1.json",
+  "sha256": "90c9dedddb7a4532626cb5c6be356dcca269d3484f446564d82d01a25eda9930"
+ },
+ {
+  "session_id": "lk-rust-proj.R2.r0",
+  "task": "lk-rust-proj",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.R2.r0.json",
+  "sha256": "b7cff3b3dcfa3ac9b15755cb7bc8e7edfadda44793ebb0830c9e5e0117891b8c"
+ },
+ {
+  "session_id": "lk-rust-proj.R2.r1",
+  "task": "lk-rust-proj",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "locate",
+  "discovery_needs": [
+   "locate file"
+  ],
+  "trace_path": "traces/lk-rust-proj.R2.r1.json",
+  "sha256": "86cd9e9bf6001cae9297fcb1b55eeafbc553eafa7b34679c2721f046b23c17e1"
+ },
+ {
+  "session_id": "lk-sig.N0.r0",
+  "task": "lk-sig",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.N0.r0.json",
+  "sha256": "aacb977640a0df84d98dbb7cefa2d08d4b7a1d2b8535fbe3ceaab170e529ee9e"
+ },
+ {
+  "session_id": "lk-sig.N0.r1",
+  "task": "lk-sig",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.N0.r1.json",
+  "sha256": "77395b45552d9e3b56deaa09679fcbb42db22bb39dbc9836e0744031210f9760"
+ },
+ {
+  "session_id": "lk-sig.P1.r0",
+  "task": "lk-sig",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.P1.r0.json",
+  "sha256": "65c16dae26245711e06ee8713be843f640ba24f6714336ec18d0cbd6d9b9b588"
+ },
+ {
+  "session_id": "lk-sig.P1.r1",
+  "task": "lk-sig",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.P1.r1.json",
+  "sha256": "c8d2559f8864bf2fa62074d1fefb6a8b49f94c42b8513c36218d93483737b0ce"
+ },
+ {
+  "session_id": "lk-sig.R2.r0",
+  "task": "lk-sig",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.R2.r0.json",
+  "sha256": "d05edd94489e1b086a26420e5fc6d1139d7afa43f1945f4c71070ceb136fcb88"
+ },
+ {
+  "session_id": "lk-sig.R2.r1",
+  "task": "lk-sig",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 2,
+  "expected_intent": "definition",
+  "discovery_needs": [
+   "find declaration"
+  ],
+  "trace_path": "traces/lk-sig.R2.r1.json",
+  "sha256": "d71b45b02472f60ab4339891b0eb94318476e9f814a199b87d632b819b11c831"
+ },
+ {
+  "session_id": "mc-cargo.N0.r0",
+  "task": "mc-cargo",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.N0.r0.json",
+  "sha256": "7a0bf5e87ebe9482210e5cc7d20a567e69ee4bb2dc108222f5215715bf3a1c2e"
+ },
+ {
+  "session_id": "mc-cargo.N0.r1",
+  "task": "mc-cargo",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.N0.r1.json",
+  "sha256": "43f8ecd2df1242e2f53599bb0b63c4945341b637c9d2d3a96ba2b85607ecded6"
+ },
+ {
+  "session_id": "mc-cargo.P1.r0",
+  "task": "mc-cargo",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.P1.r0.json",
+  "sha256": "4f0733b466a30a9456d69f557f52f2c0d9978c106a859696d69dd863d4460b64"
+ },
+ {
+  "session_id": "mc-cargo.P1.r1",
+  "task": "mc-cargo",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.P1.r1.json",
+  "sha256": "0bab73cf2f8329937a9fddb4d6546c54dd761260fe6a77c3b3726afe1a1effd1"
+ },
+ {
+  "session_id": "mc-cargo.R2.r0",
+  "task": "mc-cargo",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.R2.r0.json",
+  "sha256": "7e428b0a66198a63a9b2afe6ffc9172f24939926a2eb65aa14f7e5d0aea3c1b9"
+ },
+ {
+  "session_id": "mc-cargo.R2.r1",
+  "task": "mc-cargo",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-cargo.R2.r1.json",
+  "sha256": "1ecd44ba0c320a87afb5ba93e235c894cdf1a68d7c38aa8c91f710debc19979a"
+ },
+ {
+  "session_id": "mc-edition.N0.r0",
+  "task": "mc-edition",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.N0.r0.json",
+  "sha256": "1f1c4499449d0b4fe24b3c6af293c08e2f6dabaac8468a0462e7920c7fd0d806"
+ },
+ {
+  "session_id": "mc-edition.N0.r1",
+  "task": "mc-edition",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.N0.r1.json",
+  "sha256": "94fad2d17edd2dc6b34489a1aad1404a20caf960f28298eed6d2c1b5e53bd1ac"
+ },
+ {
+  "session_id": "mc-edition.P1.r0",
+  "task": "mc-edition",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.P1.r0.json",
+  "sha256": "54fa0f0852f8dfec7d830c6f4801ea5202e3e6019460a1fd6c796b7a5ddf36ed"
+ },
+ {
+  "session_id": "mc-edition.P1.r1",
+  "task": "mc-edition",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.P1.r1.json",
+  "sha256": "9c98938c47229e99d378986cb63871917983f9603fe0087ad18b20d6eeb47e3d"
+ },
+ {
+  "session_id": "mc-edition.R2.r0",
+  "task": "mc-edition",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.R2.r0.json",
+  "sha256": "1730e5ff35f9561fcd0ac7ae9a9e9dc5fa880e86b0d0ef2d65558365b6dd10e6"
+ },
+ {
+  "session_id": "mc-edition.R2.r1",
+  "task": "mc-edition",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-edition.R2.r1.json",
+  "sha256": "dfe44224090397483751adc43f95963aa3075cc85fd38fab311021ca3b039a40"
+ },
+ {
+  "session_id": "mc-gomod.N0.r0",
+  "task": "mc-gomod",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.N0.r0.json",
+  "sha256": "604f3542b1bcf1c0b253b66394bce83641c36fd0ad4a97ece4a64b6c08c0d5d1"
+ },
+ {
+  "session_id": "mc-gomod.N0.r1",
+  "task": "mc-gomod",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.N0.r1.json",
+  "sha256": "e4c34e23705533d97751d789d576f4f841ab3fc684d985d02c1c1cbf0dc9478c"
+ },
+ {
+  "session_id": "mc-gomod.P1.r0",
+  "task": "mc-gomod",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.P1.r0.json",
+  "sha256": "656f71c1a48b4b9dbaa0292f8e16e0efc8598d49fe732b43d3c5cfb743f0050e"
+ },
+ {
+  "session_id": "mc-gomod.P1.r1",
+  "task": "mc-gomod",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_FAILURE",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.P1.r1.json",
+  "sha256": "7523618c6ae46922bc5d9749a427827db1f3cf2163930ea0fb71da683a521f0f"
+ },
+ {
+  "session_id": "mc-gomod.R2.r0",
+  "task": "mc-gomod",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.R2.r0.json",
+  "sha256": "b11dd370b432947dd2438bac3959ffb63338fbab72fb2cb4f4409045a9be0a81"
+ },
+ {
+  "session_id": "mc-gomod.R2.r1",
+  "task": "mc-gomod",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-gomod.R2.r1.json",
+  "sha256": "33d65816bc88296ce6a82fe7e1c70bf2f4a69fe912d9631df8b8feda657a9d9d"
+ },
+ {
+  "session_id": "mc-mod2.N0.r0",
+  "task": "mc-mod2",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.N0.r0.json",
+  "sha256": "20456dbfdbfe7f6541e77706939a645dbc9a88daf38ca7ec431a716b143a935b"
+ },
+ {
+  "session_id": "mc-mod2.N0.r1",
+  "task": "mc-mod2",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.N0.r1.json",
+  "sha256": "90434d38290af3037aa955f8c7ba3214b2375eafd38656d718abdae4c5d26a38"
+ },
+ {
+  "session_id": "mc-mod2.P1.r0",
+  "task": "mc-mod2",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.P1.r0.json",
+  "sha256": "038197ab9ac9aa29d0b065ba7da7bd04adc27e19e8c1f0e7370040cd9b945250"
+ },
+ {
+  "session_id": "mc-mod2.P1.r1",
+  "task": "mc-mod2",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.P1.r1.json",
+  "sha256": "52c5be461926de13618a1fd14af62df8a282a3f50e6a83d957aecd35f27ed4f4"
+ },
+ {
+  "session_id": "mc-mod2.R2.r0",
+  "task": "mc-mod2",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.R2.r0.json",
+  "sha256": "1f026187d381bd9f02470238a1446fc211ca7c0d4eba51cb359e437dc03ef192"
+ },
+ {
+  "session_id": "mc-mod2.R2.r1",
+  "task": "mc-mod2",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-mod2.R2.r1.json",
+  "sha256": "2d0389b807c23ecb7d9c56314883255ffd406ba8af4a9509544a02a01ae750b7"
+ },
+ {
+  "session_id": "mc-pkgname.N0.r0",
+  "task": "mc-pkgname",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.N0.r0.json",
+  "sha256": "e820e88b2bf515b8c09a6f9ac818b72fc5331a5278e362a37e4cff11fce17bb1"
+ },
+ {
+  "session_id": "mc-pkgname.N0.r1",
+  "task": "mc-pkgname",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.N0.r1.json",
+  "sha256": "db65961ef59e8ceab7a0b64aeb191b5ec7411d363df6806963d52cccd193dc6f"
+ },
+ {
+  "session_id": "mc-pkgname.P1.r0",
+  "task": "mc-pkgname",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.P1.r0.json",
+  "sha256": "0402c0f646d07a14dd8e6cb9484496b4f7d757f681e3caada55f74e1337dc600"
+ },
+ {
+  "session_id": "mc-pkgname.P1.r1",
+  "task": "mc-pkgname",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.P1.r1.json",
+  "sha256": "98e0226c509d4f646acee44a6cd65871922c8e54d80881f451fda6fbc355d42e"
+ },
+ {
+  "session_id": "mc-pkgname.R2.r0",
+  "task": "mc-pkgname",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.R2.r0.json",
+  "sha256": "3bdfc47a682476b087f6a4bc183a34e6ce956fe24cb7185e4d97b83dda962819"
+ },
+ {
+  "session_id": "mc-pkgname.R2.r1",
+  "task": "mc-pkgname",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "manifest_or_config",
+  "discovery_needs": [
+   "find manifest fact"
+  ],
+  "trace_path": "traces/mc-pkgname.R2.r1.json",
+  "sha256": "138fcf6400de0322e747ad87977f0484bc6c3c4c9d85aa79f358d9bce870fdf1"
+ },
+ {
+  "session_id": "mc-test.N0.r0",
+  "task": "mc-test",
+  "arm": "N0",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.N0.r0.json",
+  "sha256": "71c2fe41a41f7ac2978fd0081517f9e5f6b130c1504733b9d068fce0ebd2ffc2"
+ },
+ {
+  "session_id": "mc-test.N0.r1",
+  "task": "mc-test",
+  "arm": "N0",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.N0.r1.json",
+  "sha256": "b097ec38c6226f7e1a81690abcca17da8f98a76b944abd15a210e9acfbae53ac"
+ },
+ {
+  "session_id": "mc-test.P1.r0",
+  "task": "mc-test",
+  "arm": "P1",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.P1.r0.json",
+  "sha256": "f88ba01e106fdbf0b428bc69009e5bbfe6ebf011f918072ef71defbd5101b50a"
+ },
+ {
+  "session_id": "mc-test.P1.r1",
+  "task": "mc-test",
+  "arm": "P1",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 0,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.P1.r1.json",
+  "sha256": "419734fca6ac7080695140f2800a5f16d4b5fa2adce68c5330b32352825059b2"
+ },
+ {
+  "session_id": "mc-test.R2.r0",
+  "task": "mc-test",
+  "arm": "R2",
+  "rep": 0,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.R2.r0.json",
+  "sha256": "2ff2271de7f58c85d89b99c9a0eb4c3472345b3abfd20c4e0a03330ba1368367"
+ },
+ {
+  "session_id": "mc-test.R2.r1",
+  "task": "mc-test",
+  "arm": "R2",
+  "rep": 1,
+  "execution_status": "EXECUTION_VALID",
+  "validation_status": "TASK_SUCCESS",
+  "executor_mode": "dangerous",
+  "repodex_calls": 1,
+  "expected_intent": "test_evidence",
+  "discovery_needs": [
+   "find test candidate"
+  ],
+  "trace_path": "traces/mc-test.R2.r1.json",
+  "sha256": "ef9a93fd5fed2e0021d6f9abd5404b0c72df8ca1d575e82da5bcc38cb26ce9e6"
+ }
+]
