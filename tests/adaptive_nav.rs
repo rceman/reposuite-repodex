@@ -499,3 +499,31 @@ fn no_dangling_local_references() {
         );
     }
 }
+
+#[test]
+fn packet_validator_accepts_wellformed() {
+    use repodex::query::adaptive::validate_packet;
+    let mut p = fixture();
+    p.seeds.push(mseed("decl:b.go#2", "Set"));
+    p.related
+        .push(mrel("call", "decl:a.go#1", "decl:b.go#2", "fact"));
+    let out = adaptive_rdx(&p, NavIntent::Locate);
+    let errs = validate_packet(&out, 2048);
+    assert!(errs.is_empty(), "validator errors: {errs:?}\n{out}");
+}
+
+#[test]
+fn packet_validator_catches_violations() {
+    use repodex::query::adaptive::validate_packet;
+    assert!(!validate_packet("no header\n", 2048).is_empty());
+    let bad = format!(
+        "#RDX1 adaptive v2\nR call 9 4 f\nS bytes=10\n{}",
+        "x".repeat(3000)
+    );
+    let errs = validate_packet(&bad, 2048);
+    assert!(
+        errs.iter()
+            .any(|e| e.contains("exceeds") || e.contains("dangling") || e.contains("bytes")),
+        "{errs:?}"
+    );
+}

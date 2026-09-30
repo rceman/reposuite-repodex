@@ -769,24 +769,38 @@ pub fn adaptive_rdx_biased(
         .take(emitted_related)
         .filter(|r| r.evidence == "candidate")
         .count();
-    let _ = writeln!(
-        trailer,
-        "S seeds={} eligible={} related={} rel_eligible={} candidates={} intent={} bytes={} complete={}",
-        emitted_seeds,
-        proj.eligible_seed_count,
-        emitted_related,
-        relevant_total,
-        cand,
-        intent.as_str(),
-        out.len() + trailer.len(),
-        u8::from(proj.seed_selection_complete && !relevant_dropped)
-    );
-    // emit the trailer — it always fits within the reserved space.
+    // emit gap lines first, then S with the TRUE final byte count (§24).
     for line in trailer.lines() {
         if out.len() + line.len() < budget {
             out.push_str(line);
             out.push('\n');
         }
+    }
+    // bytes= must equal the final packet size including this S line itself —
+    // iterate to the digit-width fixpoint (converges in ≤3 passes).
+    let mut s_line = String::new();
+    let mut bytes = out.len();
+    for _ in 0..3 {
+        let cand_line = format!(
+            "S seeds={} eligible={} related={} rel_eligible={} candidates={} intent={} bytes={} complete={}\n",
+            emitted_seeds,
+            proj.eligible_seed_count,
+            emitted_related,
+            relevant_total,
+            cand,
+            intent.as_str(),
+            bytes,
+            u8::from(proj.seed_selection_complete && !relevant_dropped)
+        );
+        let b = out.len() + cand_line.len();
+        s_line = cand_line;
+        if b == bytes {
+            break;
+        }
+        bytes = b;
+    }
+    if out.len() + s_line.len() <= budget {
+        out.push_str(&s_line);
     }
     out
 }
@@ -796,4 +810,64 @@ fn esc(s: &str) -> String {
         .replace(' ', "\\ ")
         .replace('\n', "\\n")
         .replace('\t', "\\t")
+}
+
+/// Native adaptive-packet self-consistency validator (§29). Returns the list of
+/// contract violations found in a rendered packet; empty = valid. Used by the
+/// native gates to verify every emitted packet is well-formed.
+pub fn validate_packet(rdx: &str, byte_budget: usize) -> Vec<String> {
+    let mut errs = Vec::new();
+    if !rdx.starts_with("#RDX1 adaptive v2\n") {
+        errs.push("missing/invalid header".into());
+    }
+    if rdx.len() > byte_budget {
+        errs.push(format!(
+            "packet {} exceeds budget {}",
+            rdx.len(),
+            byte_budget
+        ));
+    }
+    if std::str::from_utf8(rdx.as_bytes()).is_err() {
+        errs.push("invalid UTF-8".into());
+    }
+    let mut fids = BTreeSet::new();
+    let mut s_seen = false;
+    for line in rdx.lines() {
+        match line.split(' ').next() {
+            Some("F") => {
+                if let Some(id) = line.split(' ').nth(1).and_then(|s| s.parse::<u32>().ok()) {
+                    fids.insert(id);
+                }
+            }
+            Some("R") => {
+                let v: Vec<&str> = line.split_whitespace().collect();
+                if v.len() < 5 {
+                    errs.push(format!("malformed R line: {line}"));
+                } else if let (Ok(fs), Ok(ts)) = (v[2].parse::<u32>(), v[3].parse::<u32>()) {
+                    if fs != 0 && ts != 0 && (!fids.contains(&fs) || !fids.contains(&ts)) {
+                        errs.push(format!("dangling local ref in {line}"));
+                    }
+                }
+            }
+            Some("S") => {
+                s_seen = true;
+                // declared byte count must equal actual packet size.
+                if let Some(b) = line
+                    .split("bytes=")
+                    .nth(1)
+                    .and_then(|s| s.split(' ').next())
+                    .and_then(|s| s.parse::<usize>().ok())
+                {
+                    if b != rdx.len() {
+                        errs.push(format!("summary bytes={b} but actual {}", rdx.len()));
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    if !s_seen {
+        errs.push("missing S summary line".into());
+    }
+    errs
 }
