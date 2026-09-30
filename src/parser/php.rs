@@ -74,7 +74,30 @@ impl LanguageAdapter for PhpAdapter {
 
     fn extract(&self, builder: &mut FactBuilder<'_>, tree: &Tree) {
         visit_program(builder, tree.root_node());
+        prune_dead_opaque_writes(builder);
     }
+}
+
+/// A `local_opaque_write` can only influence the last-write rule when the same
+/// receiver in the same callable scope also has a parameter hint (which the
+/// write may invalidate) or a literal-`new` write (which it may supersede).
+/// Receivers that only ever get opaque writes are unknown either way, so those
+/// records are pruned — this keeps the evidence artifact proportional to what
+/// the bounded rule can actually use.
+fn prune_dead_opaque_writes(builder: &mut FactBuilder<'_>) {
+    let mut live: std::collections::HashSet<(u32, String)> = std::collections::HashSet::new();
+    for ev in builder.receiver_evidence() {
+        if matches!(
+            ev.kind,
+            ReceiverEvidenceKind::ParameterTypeHint | ReceiverEvidenceKind::LocalLiteralNew
+        ) {
+            live.insert((ev.scope_id, ev.receiver.clone()));
+        }
+    }
+    builder.retain_receiver_evidence(|ev| {
+        ev.kind != ReceiverEvidenceKind::LocalOpaqueWrite
+            || live.contains(&(ev.scope_id, ev.receiver.clone()))
+    });
 }
 
 /// `program` is special: an unbracketed `namespace Foo;` keeps its scope open

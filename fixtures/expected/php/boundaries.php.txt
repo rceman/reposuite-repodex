@@ -23,4 +23,3 @@ ref 1 kind=include_target written='required.php' scope=1 decl=- range=95..109 (6
 ref 2 kind=trait_composition written=First scope=6 decl=- range=266..271 (24:8..24:13)
 ref 3 kind=trait_composition written=Second scope=6 decl=- range=273..279 (24:15..24:21)
 call 0 form=member_selector callee=$this->$method scope=7 expr=447..463 (32:8..32:24) callee_range=447..461 (32:8..32:22) type_args=- type_args_range=- dyn=true nullsafe=false
-recv_evidence 0 kind=local_opaque_write receiver=$method scope=7 receiver_range=419..426 (31:8..31:15)                  written='shared' written_range=429..437 (31:18..31:26) evidence_range=419..437 (31:8..31:26) lang=php path=php/boundaries.php snapshot=snap-006d949c1eddcd04

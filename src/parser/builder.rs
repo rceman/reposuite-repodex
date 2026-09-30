@@ -358,6 +358,22 @@ impl<'a> FactBuilder<'a> {
         evidence_id
     }
 
+    /// Read access to the receiver-type evidence collected so far.
+    pub fn receiver_evidence(&self) -> &[crate::model::ReceiverTypeEvidence] {
+        &self.receiver_type_evidence
+    }
+
+    /// Retain receiver-type evidence records for which `keep` returns true —
+    /// used by adapters to prune evidence that provably cannot change any
+    /// downstream decision (e.g. opaque writes to receivers with no other
+    /// evidence in scope).
+    pub fn retain_receiver_evidence(
+        &mut self,
+        keep: impl Fn(&crate::model::ReceiverTypeEvidence) -> bool,
+    ) {
+        self.receiver_type_evidence.retain(|e| keep(e));
+    }
+
     pub fn push_diagnostic(&mut self, diagnostic: Diagnostic) {
         self.diagnostics.push(diagnostic);
     }
