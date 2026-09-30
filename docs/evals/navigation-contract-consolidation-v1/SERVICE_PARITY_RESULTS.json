@@ -1,0 +1,5 @@
+{"method":"live daemon, identical query across --direct / --service / auto-routed",
+ "queries":["What does main call?","Who calls Encode?","How does engine reach Encode?","Where is Get?","What does ResolveKey call?"],
+ "result":"byte-identical adaptive RDX on all three transports for all queries",
+ "fields_forwarded":["intent","target","to","depth","max_results","memory_mode","context_policy","recipes","utility_policy","source_witness","vocab_bridge","vocab_native"],
+ "mismatches":0}

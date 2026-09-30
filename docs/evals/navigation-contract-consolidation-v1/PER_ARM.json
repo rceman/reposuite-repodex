@@ -1,0 +1,17 @@
+{
+ "A2": {
+  "success": 47,
+  "sessions": 48,
+  "rate": 0.979
+ },
+ "F1": {
+  "success": 48,
+  "sessions": 48,
+  "rate": 1.0
+ },
+ "N0": {
+  "success": 46,
+  "sessions": 48,
+  "rate": 0.958
+ }
+}

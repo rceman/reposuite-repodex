@@ -1,0 +1,1 @@
+{"validator":"adaptive::validate_packet + native gates","gates":["header","utf8","budget","dangling_refs","summary_bytes","record_integrity"],"test_result":"18/18 adaptive_nav green; 77 live campaign packets validated, 0 violations"}

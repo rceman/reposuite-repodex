@@ -1,0 +1,27 @@
+#RDX1 adaptive v2
+Q How\ does\ engine\ reach\ Encode?
+I path_or_flow
+F 1 declaration decl:internal/engine/cache.go#0 engine
+F 2 declaration decl:internal/engine/core.go#0 engine
+F 3 node call:internal/engine/core.go#0 util.Encode
+F 4 node decl:internal/util/codec.go#1 
+F 5 node file:internal/engine/core.go 
+F 6 node ent:ent-9c1f9d6e98d52ae0 
+F 7 node file:internal/engine/cache.go 
+F 8 node decl:internal/engine/cache.go#1 Cache
+F 9 node decl:internal/engine/cache.go#2 m
+F 10 node decl:internal/engine/cache.go#3 Get
+F 11 node decl:internal/engine/cache.go#4 Set
+D 1 rank=1 path=internal/engine/cache.go decl=1:0-14
+D 2 rank=2 path=internal/engine/core.go decl=1:0-14
+R call_candidate 3 4 c cs=cand-7a086fd4d6361d7a rule=go.call.imported_package_function_candidate
+R contains 5 3 f rule=repodex.containment
+R package_membership 1 6 f rule=go.package.same_directory
+R contains 7 1 f rule=repodex.containment
+R contains 7 8 f rule=repodex.containment
+R contains 7 9 f rule=repodex.containment
+R contains 7 10 f rule=repodex.containment
+R contains 7 11 f rule=repodex.containment
+G AMBIGUOUS_RESULT shown=2 total=6
+G TRUNCATED_CONTINUATION relevant_shown=8 relevant_total=24
+S shown=2 total=6 complete=1 seeds=2 related=8 candidates=1 intent=path_or_flow bytes=1175

@@ -1,0 +1,14 @@
+{
+ "A2": {
+  "avg_input_tokens": 71531,
+  "avg_wall_ms": 36523
+ },
+ "F1": {
+  "avg_input_tokens": 69834,
+  "avg_wall_ms": 33801
+ },
+ "N0": {
+  "avg_input_tokens": 55891,
+  "avg_wall_ms": 28058
+ }
+}

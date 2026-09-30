@@ -1,0 +1,10 @@
+#RDX1 adaptive v2
+Q How\ does\ engine\ reach\ Encode?
+I path_or_flow
+F 1 declaration decl:internal/engine/cache.go#0 engine
+F 2 declaration decl:internal/engine/core.go#0 engine
+D 1 rank=1 path=internal/engine/cache.go decl=1:0-14
+D 2 rank=2 path=internal/engine/core.go decl=1:0-14
+P none bounded_no_route
+G NO_ROUTE bounded
+S seeds=2 eligible=2 related=0 rel_eligible=0 candidates=0 intent=path_or_flow bytes=326 complete=1

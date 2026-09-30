@@ -1,0 +1,31 @@
+{
+ "A2": {
+  "todo_write": 16,
+  "repodex": 77,
+  "source_read": 93,
+  "native_search": 32,
+  "other_exec": 14,
+  "sidekick": 4,
+  "edit": 8
+ },
+ "F1": {
+  "todo_write": 16,
+  "repodex": 58,
+  "source_read": 108,
+  "native_search": 23,
+  "other_exec": 15,
+  "sidekick": 4,
+  "edit": 8,
+  "get_output": 1,
+  "enumeration": 1
+ },
+ "N0": {
+  "todo_write": 8,
+  "enumeration": 17,
+  "native_search": 99,
+  "source_read": 108,
+  "sidekick": 3,
+  "other_exec": 19,
+  "edit": 10
+ }
+}

@@ -1,0 +1,386 @@
+{
+ "tasks": [
+  {
+   "task_id": "lk-get",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "internal/engine/cache.go contains func (c *Cache) Get"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "lk-res",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "internal/engine/core.go contains Resolver|NewResolver"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "lk-rust-intent",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "src/query/engine.rs",
+     "digest": "c07f112c6932eb2fbbcf41fed4be190c0f6e582417963259075589e7f03fbcf9",
+     "evidence": "src/query/engine.rs contains QueryIntent"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "lk-sig",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "internal/engine/cache.go contains func (c *Cache) Set|Set(k string, v int)"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "lk-enc",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/util/codec.go",
+     "digest": "8435e2fcf36a4c1a4045ee78b4707fd43c83587c8e3a22c76e7c30c76337764b",
+     "evidence": "internal/util/codec.go contains func Encode|internal/util/codec.go"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "lk-rust-proj",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "src/query/projection.rs",
+     "digest": "512d368a7649a05c1d1bdcacc925eb7c363ac568191b027bf6f1d5467dfaac71",
+     "evidence": "src/query/projection.rs contains projection|EvidenceProjection"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-who-calls",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-what-call",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls NewResolver"
+    },
+    {
+     "id": "o2",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls ResolveKey"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-test-call",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-relate",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "relation_direction",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "core.go calls util.Encode"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-reach",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "core.go calls Encode"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cc-whom",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls NewResolver"
+    },
+    {
+     "id": "o2",
+     "kind": "written_call",
+     "ok": true,
+     "proof_type": "RELATION_PROVEN",
+     "source_path": "/tmp/navc/go-repo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "main.go calls ResolveKey"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-gomod",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "absence",
+     "ok": true,
+     "proof_type": "ABSENCE_PROVEN",
+     "source_path": "go.mod",
+     "digest": "aef2523fc663c792f01fa5dac392ec707ce7347649ce7cac5568cb4bb0f34439",
+     "evidence": "'go\\s*\\d' provably absent"
+    },
+    {
+     "id": "o2",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "go.mod",
+     "digest": "aef2523fc663c792f01fa5dac392ec707ce7347649ce7cac5568cb4bb0f34439",
+     "evidence": "go.mod contains example.com/micro"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-cargo",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "manifest_dependency",
+     "ok": true,
+     "proof_type": "DEPENDENCY_PROVEN",
+     "source_path": "Cargo.toml",
+     "digest": "585bb9d24bbbec113e9a76a056e40c7f1e0a83980c01a15d3f1282d72341486d",
+     "evidence": "Cargo.toml contains serde|tree-sitter|clap|regex|toml"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-edition",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "manifest_dependency",
+     "ok": true,
+     "proof_type": "DEPENDENCY_PROVEN",
+     "source_path": "Cargo.toml",
+     "digest": "585bb9d24bbbec113e9a76a056e40c7f1e0a83980c01a15d3f1282d72341486d",
+     "evidence": "Cargo.toml contains 2021|edition"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-test",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "EXPLICITLY_NONFACTUAL",
+     "evidence": "answer-format obligation \u2014 explicitly nonfactual"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-pkgname",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "contains_text",
+     "ok": true,
+     "proof_type": "SOURCE_PROVEN",
+     "source_path": "internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "internal/engine/core.go contains package engine"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "mc-mod2",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "absence",
+     "ok": true,
+     "proof_type": "ABSENCE_PROVEN",
+     "source_path": "go.mod",
+     "digest": "aef2523fc663c792f01fa5dac392ec707ce7347649ce7cac5568cb4bb0f34439",
+     "evidence": "'require' provably absent"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-cache-cap",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_scope",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-get-doc",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_position",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-enc-doc",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_position",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/internal/util/codec.go",
+     "digest": "8435e2fcf36a4c1a4045ee78b4707fd43c83587c8e3a22c76e7c30c76337764b",
+     "evidence": "mutation target codec.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-main-doc",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_position",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/cmd/main.go",
+     "digest": "3ba0ac191eb8344b1747d699b85ebfdd7912bcf2cf63e2b7bba05118d25ed9c1",
+     "evidence": "mutation target main.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-res-doc",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_position",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/internal/engine/core.go",
+     "digest": "16c1f201a75b0a03fb1e0e424e6ad6e31d21496b07c3c1e2e560fecdd649b7a6",
+     "evidence": "mutation target core.go exists"
+    }
+   ],
+   "all_proven": true
+  },
+  {
+   "task_id": "cd-cache2",
+   "proofs": [
+    {
+     "id": "o1",
+     "kind": "mutation_scope",
+     "ok": true,
+     "proof_type": "MUTATION_VALIDATED",
+     "source_path": "/tmp/navc/go-repo/internal/engine/cache.go",
+     "digest": "ca31e7fb88b4aaf71580aaa04e2e850fe60b6f03ee143c44d02d8a30b1ae729f",
+     "evidence": "mutation target cache.go exists"
+    }
+   ],
+   "all_proven": true
+  }
+ ],
+ "FROZEN_GOLD_SOURCE_AUDIT_PASS": true
+}

@@ -1,0 +1,4 @@
+#RDX1 v2 (service)
+S1 declaration internal/engine/core.go ResolveKey decl=13:186-315
+R contains  -> util.Encode fact
+R contains internal/engine/core.go ->  fact

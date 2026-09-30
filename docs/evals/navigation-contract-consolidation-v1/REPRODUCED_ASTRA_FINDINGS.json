@@ -1,0 +1,4 @@
+{"A_intent_after_retrieval":{"reproduced":true,"evidence":"traces/What_does_ResolveKey_call__OLD.txt — I callees with related=0 via generic Find; NEW shows real call_candidate edge"},
+ "B_service_semantics_dropped":{"reproduced":true,"evidence":"traces/service_OLD.txt — canonical RDX1 render, adaptive never applied, no intent/target/to/depth forwarded"},
+ "C_utf8_byte_slice":{"reproduced":true,"evidence":"traces/unicode_OLD.txt — out[..byte_budget].rfind('\n') panics on non-boundary; NEW record-aware emission, utf8 test green"},
+ "D_prebudget_metadata":{"reproduced":true,"evidence":"old S line reported pre-budget seeds/related; NEW bytes= fixpoint + emitted-state counts verified by validate_packet"}}

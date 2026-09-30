@@ -47,8 +47,14 @@ def eval_obligation(ob, answer, worktree, pristine):
         sp = Path(worktree) / ob.get("source_path", "")
         src = sp.read_text() if sp.exists() else ""
         source_has = bool(re.search(val, src, re.I))
-        asserts = bool(re.search(val, answer, re.I))
-        neg = bool(re.search(r"no |not |absent|does not|doesn't|none|missing|undeclared|no go|no version", answer, re.I))
+        # §35: "has no `require` directives" mentions the value but negates it —
+        # a bare mention inside a negated phrase is NOT an assertion.
+        raw_asserts = bool(re.search(val, answer, re.I))
+        negated = bool(re.search(
+            r"(?:no|not|without|any|never|lacks?|missing|absent|none)[\s\S]{0,24}?" + val,
+            str(answer), re.I))
+        asserts = raw_asserts and not negated
+        neg = bool(re.search(r"no |not |absent|does not|doesn't|none|missing|undeclared|no go|no version|zero", answer, re.I))
         ok = (not source_has) and (not asserts) and neg
         why = ("source lacks claim and answer reports absence" if ok else
                ("answer asserts a value the source lacks" if asserts else
@@ -79,8 +85,13 @@ def eval_obligation(ob, answer, worktree, pristine):
         caller_pkg = Path(ob["from_path"]).parent.name  # e.g. 'engine'
         callee_name = re.escape(callee.split(".")[0])   # e.g. 'util'
         a = str(answer).lower()
-        correct_dir = bool(re.search(caller_pkg + r".{0,40}(call|use|invoke|depend|->|import).{0,40}" + callee_name, a))
-        reversed_dir = bool(re.search(callee_name + r".{0,40}(call|use|invoke|depend|->|import).{0,40}" + caller_pkg, a))
+        verbs = r"(call|use|using|invoke|depend|import|via|through|wrap|delegate|leverage|utili[sz]e|->)"
+        correct_dir = bool(re.search(caller_pkg + r"[\s\S]{0,120}" + verbs + r"[\s\S]{0,120}" + callee_name, a))
+        # reversed claims: only an explicit call/import assertion the other way
+        # (narrow verbs + tighter window) counts — narrative mentions like
+        # "call returns -1" between `util` and `engine` are not a claim.
+        rev_verbs = r"(call|invoke|import|->)"
+        reversed_dir = bool(re.search(callee_name + r"[\s\S]{0,60}" + rev_verbs + r"[\s\S]{0,60}" + caller_pkg, a))
         ok = a_calls_b and correct_dir and not reversed_dir
         return {"id": ob["id"], "kind": kind, "ok": ok,
                 "why": f"{ob['from_path']} {'calls' if a_calls_b else 'no call to'} {callee}; answer direction {'correct' if ok else 'wrong/missing'}"}

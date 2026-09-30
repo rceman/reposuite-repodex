@@ -1,0 +1,8 @@
+#RDX1 adaptive v2
+Q Who\ calls\ Encode?
+I callers
+F 1 declaration decl:internal/util/codec.go#1 Encode
+F 2 node call:internal/engine/core.go#0 util.Encode
+D 1 rank=1 path=internal/util/codec.go decl=3:14-65 body=3:43-65
+R call_candidate 2 1 c cs=cand-7a086fd4d6361d7a rule=go.call.imported_package_function_candidate
+S seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callers bytes=317 complete=1

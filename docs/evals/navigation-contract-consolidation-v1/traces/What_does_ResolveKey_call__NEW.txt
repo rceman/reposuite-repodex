@@ -1,0 +1,8 @@
+#RDX1 adaptive v2
+Q What\ does\ ResolveKey\ call?
+I callees
+F 1 declaration decl:internal/engine/core.go#4 ResolveKey
+F 2 node decl:internal/util/codec.go#1 Encode
+D 1 rank=1 path=internal/engine/core.go decl=13:186-315 body=13:230-315
+R call_candidate 1 2 c cs=cand-7a086fd4d6361d7a rule=go.call.imported_package_function_candidate
+S seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=333 complete=1

@@ -1,0 +1,19 @@
+{
+ "adaptive_packets_inspected": 77,
+ "budget_violations": 0,
+ "utf8_panics": 0,
+ "dangling_local_refs": 0,
+ "candidate_fact_marker_violations": 0,
+ "summary_bytes_mismatch": 6,
+ "max_bytes_by_intent": {
+  "path_or_flow": 645,
+  "callees": 533,
+  "ambiguous": 1641,
+  "callers": 381,
+  "manifest_or_config": 2076,
+  "test_evidence": 1905,
+  "locate": 693,
+  "relationship": 274,
+  "definition": 726
+ }
+}

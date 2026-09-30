@@ -1,0 +1,7 @@
+{
+ "sessions": 144,
+ "INFRA_INVALID": 0,
+ "VALID": 144,
+ "SUCCESS": 141,
+ "note": "post-revalidation with corrected absence/direction validators"
+}

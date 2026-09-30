@@ -1,0 +1,50 @@
+{
+ "cc.A2": {
+  "success": 11,
+  "sessions": 12
+ },
+ "cc.F1": {
+  "success": 12,
+  "sessions": 12
+ },
+ "cc.N0": {
+  "success": 10,
+  "sessions": 12
+ },
+ "cd.A2": {
+  "success": 12,
+  "sessions": 12
+ },
+ "cd.F1": {
+  "success": 12,
+  "sessions": 12
+ },
+ "cd.N0": {
+  "success": 12,
+  "sessions": 12
+ },
+ "lk.A2": {
+  "success": 12,
+  "sessions": 12
+ },
+ "lk.F1": {
+  "success": 12,
+  "sessions": 12
+ },
+ "lk.N0": {
+  "success": 12,
+  "sessions": 12
+ },
+ "mc.A2": {
+  "success": 12,
+  "sessions": 12
+ },
+ "mc.F1": {
+  "success": 12,
+  "sessions": 12
+ },
+ "mc.N0": {
+  "success": 12,
+  "sessions": 12
+ }
+}

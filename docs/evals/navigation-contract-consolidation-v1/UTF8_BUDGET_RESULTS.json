@@ -1,0 +1,4 @@
+{"test":"utf8_budget_never_panics_never_splits_scalar + whole_packet_budget_includes_trailer",
+ "inputs":["60x U+20AC in query+labels","8 seeds + 8 candidate rels","budgets 64..4096 incl 2047/2048/2049"],
+ "panics":0,"invalid_utf8_outputs":0,"over_budget_outputs":0,"mid_record_cuts":0,
+ "note":"post-fixpoint bytes=; the 6 PACKET_METRICS bytes_mismatch packets ran on the pre-fixpoint campaign binary"}

@@ -1,0 +1,8 @@
+193:    byte_budget: usize,
+215:        byte_budget: bb,
+253:/// edges do NOT trigger a truncation gap — only relevant-but-truncated evidence
+398:    let mut truncated_by_budget = false;
+399:    if out.len() > ob.byte_budget {
+401:        let keep = out[..ob.byte_budget]
+402:            .rfind('\n')
+404:            .unwrap_or(ob.byte_budget);
