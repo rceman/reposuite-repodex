@@ -1,0 +1,9 @@
+file schema=3 path=phpnav/src/Dup/B.php lang=php bytes=111 lines=6 final_newline=true status=clean snapshot=snap-42150bdc02afd54c
+scope 0 kind=file parent=- name=- range=0..111 (0:0..6:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Dup range=6..24 (1:0..1:18) header=- lang=php
+scope 2 kind=function parent=1 name=collide range=26..63 (3:0..3:37) header=- lang=php
+scope 3 kind=function parent=1 name=use_dup range=65..110 (5:0..5:45) header=- lang=php
+decl 0 kind=namespace name=App\\Dup scope=0 flags=[] range=6..24 (1:0..1:18) name_range=16..23 (1:10..1:17) body=- lang=php path=phpnav/src/Dup/B.php snapshot=snap-42150bdc02afd54c tests=[]
+decl 1 kind=function name=collide scope=1 flags=[] range=26..63 (3:0..3:37) name_range=35..42 (3:9..3:16) body=50..63 (3:24..3:37) lang=php path=phpnav/src/Dup/B.php snapshot=snap-42150bdc02afd54c tests=[]
+decl 2 kind=function name=use_dup scope=1 flags=[] range=65..110 (5:0..5:45) name_range=74..81 (5:9..5:16) body=89..110 (5:24..5:45) lang=php path=phpnav/src/Dup/B.php snapshot=snap-42150bdc02afd54c tests=[]
+call 0 form=plain_name callee=collide scope=3 expr=98..107 (5:33..5:42) callee_range=98..105 (5:33..5:40) type_args=- type_args_range=- dyn=false nullsafe=false

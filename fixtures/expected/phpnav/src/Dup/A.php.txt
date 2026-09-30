@@ -1,0 +1,6 @@
+file schema=3 path=phpnav/src/Dup/A.php lang=php bytes=64 lines=4 final_newline=true status=clean snapshot=snap-c7304187faf020a6
+scope 0 kind=file parent=- name=- range=0..64 (0:0..4:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Dup range=6..24 (1:0..1:18) header=- lang=php
+scope 2 kind=function parent=1 name=collide range=26..63 (3:0..3:37) header=- lang=php
+decl 0 kind=namespace name=App\\Dup scope=0 flags=[] range=6..24 (1:0..1:18) name_range=16..23 (1:10..1:17) body=- lang=php path=phpnav/src/Dup/A.php snapshot=snap-c7304187faf020a6 tests=[]
+decl 1 kind=function name=collide scope=1 flags=[] range=26..63 (3:0..3:37) name_range=35..42 (3:9..3:16) body=50..63 (3:24..3:37) lang=php path=phpnav/src/Dup/A.php snapshot=snap-c7304187faf020a6 tests=[]

@@ -630,8 +630,11 @@ fn check_call_locator(
     Ok(())
 }
 
-/// A candidate declaration locator must name a `function` declaration in the
-/// snapshot file the candidate claims to live in.
+/// A candidate declaration locator must name a real declaration in the
+/// snapshot file the candidate claims to live in, and the claimed kind must
+/// match its actual kind and be one of the kinds a candidate may target —
+/// `function`, `method`, or a class-like kind (PHP_CALL_CANDIDATES_V1 added
+/// `method` + class-like targets alongside the original `function`).
 fn check_candidate_declaration(
     analyses: &BTreeMap<String, FileAnalysis>,
     record: &CallCandidateRecord,
@@ -647,7 +650,16 @@ fn check_candidate_declaration(
     let Some(declaration) = analysis.declarations.get(candidate.declaration_id as usize) else {
         return Err(CandidateError::MissingCandidate { locator });
     };
-    if declaration.kind != DeclarationKind::Function {
+    let allowed = matches!(
+        declaration.kind,
+        DeclarationKind::Function
+            | DeclarationKind::Method
+            | DeclarationKind::Class
+            | DeclarationKind::Interface
+            | DeclarationKind::Trait
+            | DeclarationKind::Enum
+    ) && candidate.declaration_kind == declaration.kind.as_str();
+    if !allowed {
         return Err(CandidateError::ForbiddenCandidateKind {
             locator,
             kind: declaration.kind.as_str().to_string(),

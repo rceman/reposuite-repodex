@@ -784,7 +784,11 @@ fn emit_call(builder: &mut FactBuilder<'_>, node: Node) {
             (CallLikeForm::MemberSelector, dynamic, true)
         }
         "scoped_call_expression" => {
-            let dynamic = node
+            // Both sides must be literal: the scope (`Foo::`) AND the member
+            // name (`::bar`). `Foo::{$m}()` has a literal scope but a dynamic
+            // selector — marking only the scope would fabricate a literal
+            // method identity the source does not provide.
+            let scope_dynamic = node
                 .child_by_field_name("scope")
                 .map(|scope| {
                     !matches!(
@@ -793,7 +797,15 @@ fn emit_call(builder: &mut FactBuilder<'_>, node: Node) {
                     )
                 })
                 .unwrap_or(false);
-            (CallLikeForm::StaticScoped, dynamic, false)
+            let name_dynamic = node
+                .child_by_field_name("name")
+                .map(|name| name.kind() != "name")
+                .unwrap_or(false);
+            (
+                CallLikeForm::StaticScoped,
+                scope_dynamic || name_dynamic,
+                false,
+            )
         }
         _ => (CallLikeForm::Indirect, false, false),
     };

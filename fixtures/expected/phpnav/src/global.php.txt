@@ -1,0 +1,7 @@
+file schema=3 path=phpnav/src/global.php lang=php bytes=157 lines=6 final_newline=true status=clean snapshot=snap-d6da8beebe958373
+scope 0 kind=file parent=- name=- range=0..157 (0:0..6:0) header=- lang=php
+scope 1 kind=function parent=0 name=global_helper range=7..55 (2:0..2:48) header=- lang=php
+scope 2 kind=function parent=0 name=boot range=105..156 (5:0..5:51) header=- lang=php
+decl 0 kind=function name=global_helper scope=0 flags=[] range=7..55 (2:0..2:48) name_range=16..29 (2:9..2:22) body=40..55 (2:33..2:48) lang=php path=phpnav/src/global.php snapshot=snap-d6da8beebe958373 tests=[]
+decl 1 kind=function name=boot scope=0 flags=[] range=105..156 (5:0..5:51) name_range=114..118 (5:9..5:13) body=129..156 (5:24..5:51) lang=php path=phpnav/src/global.php snapshot=snap-d6da8beebe958373 tests=[]
+call 0 form=plain_name callee=global_helper scope=2 expr=138..153 (5:33..5:48) callee_range=138..151 (5:33..5:46) type_args=- type_args_range=- dyn=false nullsafe=false

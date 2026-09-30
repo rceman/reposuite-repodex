@@ -1,0 +1,9 @@
+file schema=3 path=phpnav/src/Util/local.php lang=php bytes=153 lines=7 final_newline=true status=clean snapshot=snap-bb760b4a35f3e0c5
+scope 0 kind=file parent=- name=- range=0..153 (0:0..7:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Util range=6..25 (1:0..1:19) header=- lang=php
+scope 2 kind=function parent=1 name=localfn range=27..64 (3:0..3:37) header=- lang=php
+scope 3 kind=function parent=1 name=caller range=98..152 (6:0..6:54) header=- lang=php
+decl 0 kind=namespace name=App\\Util scope=0 flags=[] range=6..25 (1:0..1:19) name_range=16..24 (1:10..1:18) body=- lang=php path=phpnav/src/Util/local.php snapshot=snap-bb760b4a35f3e0c5 tests=[]
+decl 1 kind=function name=localfn scope=1 flags=[] range=27..64 (3:0..3:37) name_range=36..43 (3:9..3:16) body=51..64 (3:24..3:37) lang=php path=phpnav/src/Util/local.php snapshot=snap-bb760b4a35f3e0c5 tests=[]
+decl 2 kind=function name=caller scope=1 flags=[] range=98..152 (6:0..6:54) name_range=107..113 (6:9..6:15) body=121..152 (6:23..6:54) lang=php path=phpnav/src/Util/local.php snapshot=snap-bb760b4a35f3e0c5 tests=[]
+call 0 form=qualified_path callee=namespace\\localfn scope=3 expr=130..149 (6:32..6:51) callee_range=130..147 (6:32..6:49) type_args=- type_args_range=- dyn=false nullsafe=false

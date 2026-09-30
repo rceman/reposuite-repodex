@@ -1,0 +1,15 @@
+file schema=3 path=phpnav/src/Util/strings.php lang=php bytes=380 lines=11 final_newline=true status=clean snapshot=snap-dcff8c50d82bc7f5
+scope 0 kind=file parent=- name=- range=0..380 (0:0..11:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Util range=6..25 (1:0..1:19) header=- lang=php
+scope 2 kind=function parent=1 name=slugify range=27..89 (3:0..3:62) header=- lang=php
+scope 3 kind=function parent=1 name=version range=90..134 (4:0..4:44) header=- lang=php
+scope 4 kind=function parent=1 name=describe range=197..246 (7:0..7:49) header=- lang=php
+scope 5 kind=function parent=1 name=fallback range=324..379 (10:0..10:55) header=- lang=php
+decl 0 kind=namespace name=App\\Util scope=0 flags=[] range=6..25 (1:0..1:19) name_range=16..24 (1:10..1:18) body=- lang=php path=phpnav/src/Util/strings.php snapshot=snap-dcff8c50d82bc7f5 tests=[]
+decl 1 kind=function name=slugify scope=1 flags=[] range=27..89 (3:0..3:62) name_range=36..43 (3:9..3:16) body=63..89 (3:36..3:62) lang=php path=phpnav/src/Util/strings.php snapshot=snap-dcff8c50d82bc7f5 tests=[]
+decl 2 kind=function name=version scope=1 flags=[] range=90..134 (4:0..4:44) name_range=99..106 (4:9..4:16) body=117..134 (4:27..4:44) lang=php path=phpnav/src/Util/strings.php snapshot=snap-dcff8c50d82bc7f5 tests=[]
+decl 3 kind=function name=describe scope=1 flags=[] range=197..246 (7:0..7:49) name_range=206..214 (7:9..7:17) body=225..246 (7:28..7:49) lang=php path=phpnav/src/Util/strings.php snapshot=snap-dcff8c50d82bc7f5 tests=[]
+decl 4 kind=function name=fallback scope=1 flags=[] range=324..379 (10:0..10:55) name_range=333..341 (10:9..10:17) body=352..379 (10:28..10:55) lang=php path=phpnav/src/Util/strings.php snapshot=snap-dcff8c50d82bc7f5 tests=[]
+call 0 form=plain_name callee=strtolower scope=2 expr=72..86 (3:45..3:59) callee_range=72..82 (3:45..3:55) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=version scope=4 expr=234..243 (7:37..7:46) callee_range=234..241 (7:37..7:44) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=global_helper scope=5 expr=361..376 (10:37..10:52) callee_range=361..374 (10:37..10:50) type_args=- type_args_range=- dyn=false nullsafe=false

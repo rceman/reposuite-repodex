@@ -410,3 +410,30 @@ fn malformed_source_reports_recovery_and_keeps_neighbours() {
         .iter()
         .any(|diagnostic| diagnostic.kind == repodex::DiagnosticKind::MissingSyntax));
 }
+
+#[test]
+fn scoped_call_dynamic_member_name_is_flagged() {
+    // §21 regression: `Foo::{$m}()` / `Foo::$m()` have a literal scope but a
+    // dynamic selector. Before the fix only the scope's literalness was
+    // checked, so these were marked non-dynamic and could feed candidates.
+    let source = br#"<?php
+namespace A;
+function f(string $m): void {
+    Helper::{$m}();
+    Helper::$m();
+    Helper::literal();
+}
+"#;
+    let analysis = analyze_source(LanguageId::Php, "dyn_scope.php", source);
+    assert_eq!(analysis.status, repodex::AnalysisStatus::Clean);
+    let get = |w: &str| {
+        analysis
+            .calls
+            .iter()
+            .find(|c| c.callee_written == w)
+            .unwrap_or_else(|| panic!("missing call {w}"))
+    };
+    assert!(get("Helper::{$m}").dynamic_callee);
+    assert!(get("Helper::$m").dynamic_callee);
+    assert!(!get("Helper::literal").dynamic_callee);
+}

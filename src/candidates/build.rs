@@ -33,7 +33,7 @@ use super::model::{
     CardinalityCounts, CANDIDATE_MANIFEST_VERSION, CANDIDATE_RULE_ABI_VERSION,
     CANDIDATE_SCHEMA_VERSION,
 };
-use super::{rule_go, rule_rust};
+use super::{rule_go, rule_php, rule_rust};
 
 /// Wall-clock cost of each candidate-build phase, in milliseconds.
 #[derive(Debug, Clone, Default, PartialEq)]
@@ -152,6 +152,9 @@ pub fn build_candidates(
     // TASK 4C: Go package-local plain-name function candidates. Reads the same
     // snapshot facts + the TASK 4A `go_package` entities from the link artifact.
     records.extend(rule_go::candidates(&analyses, &links, &entities));
+    // PHP_CALL_CANDIDATES_V1: bounded PHP candidate rules — namespace/import/
+    // lexical-class evidence only; never runtime dispatch.
+    records.extend(rule_php::candidates(&analyses, &links, &entities));
     artifact::order_records(&mut records)?;
     phases.derive_ms = elapsed_ms(derive_started);
 

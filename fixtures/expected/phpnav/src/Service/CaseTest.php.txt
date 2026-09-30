@@ -1,0 +1,12 @@
+file schema=3 path=phpnav/src/Service/CaseTest.php lang=php bytes=349 lines=12 final_newline=true status=clean snapshot=snap-06dad1b4a7eb9f7c
+scope 0 kind=file parent=- name=- range=0..349 (0:0..12:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Service range=6..28 (1:0..1:22) header=- lang=php
+scope 2 kind=class parent=1 name=CaseTest range=62..348 (5:0..11:1) header=62..77 (5:0..5:15) lang=php
+scope 3 kind=method parent=2 name=check range=83..346 (6:4..10:5) header=- lang=php
+decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=6..28 (1:0..1:22) name_range=16..27 (1:10..1:21) body=- lang=php path=phpnav/src/Service/CaseTest.php snapshot=snap-06dad1b4a7eb9f7c tests=[]
+decl 1 kind=class name=CaseTest scope=1 flags=[] range=62..348 (5:0..11:1) name_range=68..76 (5:6..5:14) body=77..348 (5:15..11:1) lang=php path=phpnav/src/Service/CaseTest.php snapshot=snap-06dad1b4a7eb9f7c tests=[]
+decl 2 kind=method name=check scope=2 flags=[] range=83..346 (6:4..10:5) name_range=99..104 (6:20..6:25) body=113..346 (6:34..10:5) lang=php path=phpnav/src/Service/CaseTest.php snapshot=snap-06dad1b4a7eb9f7c tests=[]
+import 0 form=single module=- module_range=- relative=- scope=1 range=30..60 (3:0..3:30) lang=php path=phpnav/src/Service/CaseTest.php snapshot=snap-06dad1b4a7eb9f7c text=use function App\\Util\\slugify; items=[{target=App\\Util\\slugify target_range=43..59 (3:13..3:29) alias=- alias_range=- wildcard=false cat=function range=34..59 (3:4..3:29)}]
+call 0 form=plain_name callee=SLUGIFY scope=3 expr=123..135 (7:8..7:20) callee_range=123..130 (7:8..7:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=explicit_construction callee=repo scope=3 expr=198..208 (8:8..8:18) callee_range=202..206 (8:12..8:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=static_scoped callee=helper::RUN scope=3 expr=270..283 (9:8..9:21) callee_range=270..281 (9:8..9:19) type_args=- type_args_range=- dyn=false nullsafe=false

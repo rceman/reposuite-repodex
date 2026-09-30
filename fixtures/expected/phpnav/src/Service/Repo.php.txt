@@ -1,0 +1,43 @@
+file schema=3 path=phpnav/src/Service/Repo.php lang=php bytes=1577 lines=42 final_newline=true status=clean snapshot=snap-008b9c12ceb22a85
+scope 0 kind=file parent=- name=- range=0..1577 (0:0..42:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Service range=6..28 (1:0..1:22) header=- lang=php
+scope 2 kind=class parent=1 name=Helper range=146..214 (8:0..10:1) header=146..159 (8:0..8:13) lang=php
+scope 3 kind=method parent=2 name=run range=165..212 (9:4..9:51) header=- lang=php
+scope 4 kind=class parent=1 name=Repo range=216..1492 (12:0..37:1) header=216..227 (12:0..12:11) lang=php
+scope 5 kind=method parent=4 name=create range=265..325 (15:4..15:64) header=- lang=php
+scope 6 kind=method parent=4 name=save range=331..1440 (17:4..34:5) header=- lang=php
+scope 7 kind=method parent=4 name=persist range=1446..1490 (36:4..36:48) header=- lang=php
+scope 8 kind=class parent=1 name=Child range=1494..1576 (39:0..41:1) header=1494..1519 (39:0..39:25) lang=php
+scope 9 kind=method parent=8 name=go range=1525..1574 (40:4..40:53) header=- lang=php
+decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=6..28 (1:0..1:22) name_range=16..27 (1:10..1:21) body=- lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 1 kind=class name=Helper scope=1 flags=[] range=146..214 (8:0..10:1) name_range=152..158 (8:6..8:12) body=159..214 (8:13..10:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 2 kind=method name=run scope=2 flags=[static] range=165..212 (9:4..9:51) name_range=188..191 (9:27..9:30) body=199..212 (9:38..9:51) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 3 kind=class name=Repo scope=1 flags=[] range=216..1492 (12:0..37:1) name_range=222..226 (12:6..12:10) body=227..1492 (12:11..37:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 4 kind=property name=name scope=4 flags=[] range=248..258 (13:19..13:29) name_range=249..253 (13:20..13:24) body=- lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 5 kind=method name=create scope=4 flags=[static] range=265..325 (15:4..15:64) name_range=288..294 (15:27..15:33) body=303..325 (15:42..15:64) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 6 kind=method name=save scope=4 flags=[] range=331..1440 (17:4..34:5) name_range=347..351 (17:20..17:24) body=370..1440 (17:43..34:5) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 7 kind=method name=persist scope=4 flags=[] range=1446..1490 (36:4..36:48) name_range=1463..1470 (36:21..36:28) body=1488..1490 (36:46..36:48) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 8 kind=class name=Child scope=1 flags=[] range=1494..1576 (39:0..41:1) name_range=1500..1505 (39:6..39:11) body=1519..1576 (39:25..41:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 9 kind=method name=go scope=8 flags=[] range=1525..1574 (40:4..40:53) name_range=1541..1543 (40:20..40:22) body=1552..1574 (40:31..40:53) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=1 range=30..43 (3:0..3:13) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 text=use App\\Util; items=[{target=App\\Util target_range=34..42 (3:4..3:12) alias=- alias_range=- wildcard=false cat=normal range=34..42 (3:4..3:12)}]
+import 1 form=single module=- module_range=- relative=- scope=1 range=44..76 (4:0..4:32) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 text=use App\\Service\\Helper as Alias; items=[{target=App\\Service\\Helper target_range=48..66 (4:4..4:22) alias=Alias alias_range=70..75 (4:26..4:31) wildcard=false cat=normal range=48..75 (4:4..4:31)}]
+import 2 form=single module=- module_range=- relative=- scope=1 range=77..107 (5:0..5:30) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 text=use function App\\Util\\slugify; items=[{target=App\\Util\\slugify target_range=90..106 (5:13..5:29) alias=- alias_range=- wildcard=false cat=function range=81..106 (5:4..5:29)}]
+import 3 form=single module=- module_range=- relative=- scope=1 range=108..144 (6:0..6:36) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 text=use function App\\Util\\slugify as sl; items=[{target=App\\Util\\slugify target_range=121..137 (6:13..6:29) alias=sl alias_range=141..143 (6:33..6:35) wildcard=false cat=function range=112..143 (6:4..6:35)}]
+ref 0 kind=base_class written=Repo scope=1 decl=8 range=1514..1518 (39:20..39:24)
+call 0 form=explicit_construction callee=self scope=5 expr=312..322 (15:51..15:61) callee_range=316..320 (15:55..15:59) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=plain_name callee=slugify scope=6 expr=385..398 (18:13..18:26) callee_range=385..392 (18:13..18:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=plain_name callee=sl scope=6 expr=447..455 (19:13..19:21) callee_range=447..449 (19:13..19:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=qualified_path callee=Util\\version scope=6 expr=508..522 (20:13..20:27) callee_range=508..520 (20:13..20:25) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=member_selector callee=$this->persist scope=6 expr=585..603 (21:8..21:26) callee_range=585..599 (21:8..21:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=member_selector callee=$this->missing scope=6 expr=655..673 (22:8..22:26) callee_range=655..669 (22:8..22:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 6 form=qualified_path callee=\\App\\Util\\slugify scope=6 expr=736..757 (23:8..23:29) callee_range=736..753 (23:8..23:25) type_args=- type_args_range=- dyn=false nullsafe=false
+call 7 form=explicit_construction callee=Repo scope=6 expr=803..813 (24:8..24:18) callee_range=807..811 (24:12..24:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 8 form=explicit_construction callee=Alias scope=6 expr=873..884 (25:8..25:19) callee_range=877..882 (25:12..25:17) type_args=- type_args_range=- dyn=false nullsafe=false
+call 9 form=explicit_construction callee=\\App\\Service\\Helper scope=6 expr=942..967 (26:8..26:33) callee_range=946..965 (26:12..26:31) type_args=- type_args_range=- dyn=false nullsafe=false
+call 10 form=static_scoped callee=Helper::run scope=6 expr=1000..1013 (27:8..27:21) callee_range=1000..1011 (27:8..27:19) type_args=- type_args_range=- dyn=false nullsafe=false
+call 11 form=static_scoped callee=Alias::run scope=6 expr=1064..1076 (28:8..28:20) callee_range=1064..1074 (28:8..28:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 12 form=static_scoped callee=self::create scope=6 expr=1128..1142 (29:8..29:22) callee_range=1128..1140 (29:8..29:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 13 form=static_scoped callee=static::create scope=6 expr=1189..1205 (30:8..30:24) callee_range=1189..1203 (30:8..30:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 14 form=explicit_construction callee=static scope=6 expr=1267..1279 (31:8..31:20) callee_range=1271..1277 (31:12..31:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 15 form=explicit_construction callee=parent scope=6 expr=1345..1357 (32:8..32:20) callee_range=1349..1355 (32:12..32:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 16 form=static_scoped callee=parent::save scope=9 expr=1554..1571 (40:33..40:50) callee_range=1554..1566 (40:33..40:45) type_args=- type_args_range=- dyn=false nullsafe=false

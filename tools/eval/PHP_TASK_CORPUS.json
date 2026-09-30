@@ -1,0 +1,537 @@
+[
+ {
+  "id": "lk-slugify",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "lk",
+  "task": "Where is the `slugify` function defined? Give the file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Text/strings.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "slugify",
+    "source_path": "src/Text/strings.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-repo",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "lk",
+  "task": "Where is the `Repo` class defined? Give the file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Store/Repo.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-cachemake",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "lk",
+  "task": "Where is the `Cache::make` method declared? Give file and class.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Store/Cache.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Cache",
+    "source_path": "src/Store/Cache.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-shout",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "lk",
+  "task": "Where is `Shout::of` declared? Give file and class.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Text/Case.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Shout",
+    "source_path": "src/Text/Case.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-ctrl",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "lk",
+  "task": "Where is the `HomeController` class defined? Give the file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Http/HomeController.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-pages",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "lk",
+  "task": "Where is the `Pages::lookup` static method declared? Give file and class.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Repo/Pages.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Pages",
+    "source_path": "src/Repo/Pages.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-esc",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "lk",
+  "task": "Where is the `esc` function defined? Give the file path and namespace.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Support/helpers.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Acme\\App\\Support",
+    "source_path": "src/Support/helpers.php"
+   }
+  ]
+ },
+ {
+  "id": "lk-version",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "lk",
+  "task": "Where is the `version` function defined? Give the file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Text/strings.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-put",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cc",
+  "task": "What does `Repo::put` call? List the called functions/methods.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "slugify",
+    "source_path": "src/Store/Repo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "write",
+    "source_path": "src/Store/Repo.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-whoslug",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cc",
+  "task": "Which methods call the `slugify` function?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "put",
+    "source_path": "src/Store/Repo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "lookup",
+    "source_path": "src/Store/Repo.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-cache",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cc",
+  "task": "What does `Support::cache` call or construct?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "Cache",
+    "source_path": "src/Support.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "make",
+    "source_path": "src/Store/Cache.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-shout",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cc",
+  "task": "What does `Shout::of` call?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "upper",
+    "source_path": "src/Text/Case.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-index",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cc",
+  "task": "What does `HomeController::index` call?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "renderHome",
+    "source_path": "src/Http/HomeController.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "esc",
+    "source_path": "src/Http/HomeController.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-find",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cc",
+  "task": "What does `PageService::find` call? List all callee names.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "page_slug",
+    "source_path": "src/Service/PageService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "log_line",
+    "source_path": "src/Service/PageService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "lookup",
+    "source_path": "src/Service/PageService.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-whopages",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cc",
+  "task": "Which code calls `Pages::lookup`?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "find",
+    "source_path": "src/Service/PageService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "query",
+    "source_path": "src/Repo/Pages.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-render",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cc",
+  "task": "What does `PageService::renderHome` call?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "find",
+    "source_path": "src/Service/PageService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "frame",
+    "source_path": "src/Service/PageService.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-repoctor",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cc",
+  "task": "Where is `new Repo()` used (which file and method constructs a Repo)?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/Support.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "repo",
+    "source_path": "src/Support.php"
+   }
+  ]
+ },
+ {
+  "id": "cc-dbfetch",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cc",
+  "task": "What calls the global `db_fetch` function?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "lookup",
+    "source_path": "src/Repo/Pages.php"
+   }
+  ]
+ },
+ {
+  "id": "st-ns",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "st",
+  "task": "Which namespace declares the `slugify` function?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "Acme\\TextLib\\Text",
+    "source_path": "src/Text/strings.php"
+   }
+  ]
+ },
+ {
+  "id": "st-dup",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "st",
+  "task": "Which classes named `Item` exist in this repository and in which files?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "src/DupA.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/DupB.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Acme\\TextLib\\Dup",
+    "source_path": "src/DupA.php"
+   }
+  ]
+ },
+ {
+  "id": "st-ns2",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "st",
+  "task": "What namespace does `PageService` live in?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "Acme\\App\\Service",
+    "source_path": "src/Service/PageService.php"
+   }
+  ]
+ },
+ {
+  "id": "st-test",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "st",
+  "task": "Where is the test covering `Repo`, and which test method exercises `put`?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "tests/RepoTest.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "testPutLookup",
+    "source_path": "tests/RepoTest.php"
+   }
+  ]
+ },
+ {
+  "id": "st-test2",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "st",
+  "task": "Where is the `HomeController` test and what does it exercise?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "tests/HomeControllerTest.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "index",
+    "source_path": "tests/HomeControllerTest.php"
+   }
+  ]
+ },
+ {
+  "id": "st-helpers",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "st",
+  "task": "Which free functions does the `Acme\\App\\Support` namespace declare?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "esc",
+    "source_path": "src/Support/helpers.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "log_line",
+    "source_path": "src/Support/helpers.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "page_slug",
+    "source_path": "src/Support/helpers.php"
+   }
+  ]
+ },
+ {
+  "id": "cd-slugify",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cd",
+  "task": "The function that `Repo::put` calls to normalize keys should replace spaces with hyphens. Update it so `put('Hello World')` produces `hello world` lowercased then hyphenated to `hello-world` (add a str_replace on spaces).",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Text/strings.php",
+    "value": "str_replace"
+   }
+  ]
+ },
+ {
+  "id": "cd-write",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cd",
+  "task": "In the class containing the caller of `slugify`, add a public method `count` that returns `count($this->rows)`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Store/Repo.php",
+    "value": "function count"
+   }
+  ]
+ },
+ {
+  "id": "cd-cache",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cd",
+  "task": "The class that `Support::cache` constructs should gain a `flush()` method returning void. Add it.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Store/Cache.php",
+    "value": "function flush"
+   }
+  ]
+ },
+ {
+  "id": "cd-render",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cd",
+  "task": "The private helper that `PageService::renderHome` delegates framing to should wrap output in a <div> tag instead of <main>. Change it.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Service/PageService.php",
+    "value": "<div>"
+   }
+  ]
+ },
+ {
+  "id": "cd-esc",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cd",
+  "task": "The escaping function that `HomeController` imports should also strip slashes: make it return `stripslashes(htmlspecialchars($s))`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Support/helpers.php",
+    "value": "stripslashes"
+   }
+  ]
+ },
+ {
+  "id": "cd-pages",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cd",
+  "task": "The static lookup that `PageService::find` calls should query the `pages_v2` table instead of `pages`. Update it.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Repo/Pages.php",
+    "value": "pages_v2"
+   }
+  ]
+ },
+ {
+  "id": "cd-version",
+  "root": "tools/eval/fixtures/php-lib",
+  "pristine_root": "tools/eval/fixtures/php-lib",
+  "cohort": "cd",
+  "task": "The `version` function in `Acme\\TextLib\\Text` should return '3.0'. Change it.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Text/strings.php",
+    "value": "'3.0'"
+   }
+  ]
+ },
+ {
+  "id": "cd-logline",
+  "root": "tools/eval/fixtures/php-app",
+  "pristine_root": "tools/eval/fixtures/php-app",
+  "cohort": "cd",
+  "task": "The logging helper called by `PageService::find` should write the message to STDERR: add `fwrite(STDERR, $m);` inside it.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Support/helpers.php",
+    "value": "STDERR"
+   }
+  ]
+ }
+]

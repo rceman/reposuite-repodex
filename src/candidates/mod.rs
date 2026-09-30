@@ -50,6 +50,7 @@ pub mod build;
 pub mod model;
 pub mod query;
 pub mod rule_go;
+pub mod rule_php;
 pub mod rule_rust;
 
 pub use artifact::{

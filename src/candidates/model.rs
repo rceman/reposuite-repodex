@@ -64,7 +64,11 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 /// * `7` — added `go.call.imported_package_function_candidate`: a direct
 ///   `member_selector` `pkg.Func()` may produce `function` candidates from a
 ///   repo-local imported package after root-shadowing/export/namespace rules.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 7;
+/// * `8` — added the bounded PHP call-candidate rules
+///   (`php.call.*_candidate`): namespace/imported free functions, literal
+///   construction to class declarations, static/self/`$this` direct methods.
+///   Candidate target kinds now include `function`, `class` and `method`.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 8;
 
 /// Per-language candidate-policy versions.
 ///
@@ -95,6 +99,17 @@ pub const POLICY_VERSION_RUST_CALL: u32 = 5;
 ///   `member_selector` `pkg.Func()` may name a source-written `function` in a
 ///   repo-local imported package after root-shadowing/export/namespace rules.
 pub const POLICY_VERSION_GO_CALL: u32 = 2;
+
+/// PHP candidate-policy version.
+///
+/// * `1` — bounded PHP call candidates (PHP_CALL_CANDIDATES_V1):
+///   namespace/qualified/imported free-function lookup with PHP fallback
+///   semantics (functions fall back `ns\name` -> global; classes never do);
+///   literal construction to `class` declarations (`new Foo`, `new self`);
+///   literal static/self/`$this` calls to directly declared `method`s only.
+///   `static::`/`parent::`/unknown-receiver/dynamic names are `OutOfScope`.
+///   PHP case-insensitivity for class/function/method names is applied.
+pub const POLICY_VERSION_PHP_CALL: u32 = 1;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -134,12 +149,49 @@ pub mod candidate_rule {
     pub const GO_CALL_IMPORTED_PACKAGE_FUNCTION_CANDIDATE: &str =
         "go.call.imported_package_function_candidate";
 
+    /// Bounded PHP namespace/qualified/free-function candidates. Covers
+    /// fully-qualified `\A\B\f()`, qualified `A\B\f()` (first-segment alias
+    /// or current-namespace prefix), `namespace\f()`, same-namespace
+    /// unqualified `f()` and the PHP global-function fallback tier.
+    pub const PHP_CALL_NAMESPACE_FUNCTION_CANDIDATE: &str = "php.call.namespace_function_candidate";
+
+    /// Bounded PHP `use function` import candidates — direct and aliased.
+    pub const PHP_CALL_IMPORTED_FUNCTION_CANDIDATE: &str = "php.call.imported_function_candidate";
+
+    /// Bounded PHP construction candidates: `new Foo`/`new \A\B\Foo`/
+    /// `new namespace\Foo`/`new self`. The target is the class-like
+    /// declaration — never a `__construct` claim. `new static`/`new parent`
+    /// are `OutOfScope` (late static binding / unmodeled inheritance).
+    pub const PHP_CALL_CONSTRUCTION_CLASS_CANDIDATE: &str = "php.call.construction_class_candidate";
+
+    /// Bounded PHP literal static/scoped calls `Foo::m()`/`Alias::m()`/
+    /// `\A\B\Foo::m()`/`namespace\Foo::m()`: bounded class candidate +
+    /// directly declared `method` only. `static::`/`parent::` are OutOfScope.
+    pub const PHP_CALL_STATIC_METHOD_CANDIDATE: &str = "php.call.static_method_candidate";
+
+    /// `self::m()` inside a known lexical class -> that class's directly
+    /// declared methods. Inherited/trait/magic members stay out of V1.
+    pub const PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE: &str =
+        "php.call.lexical_self_method_candidate";
+
+    /// `$this->m()` inside a known lexical class -> that class's directly
+    /// declared methods. An unknown receiver (`$obj->m()`) or dynamic member
+    /// name is `OutOfScope` — no repository-wide method-name scan.
+    pub const PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE: &str =
+        "php.call.lexical_this_method_candidate";
+
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
         RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
         RUST_CALL_STRUCTURAL_PATH_FUNCTION_CANDIDATE,
         GO_CALL_PACKAGE_LOCAL_FUNCTION_CANDIDATE,
         GO_CALL_IMPORTED_PACKAGE_FUNCTION_CANDIDATE,
+        PHP_CALL_NAMESPACE_FUNCTION_CANDIDATE,
+        PHP_CALL_IMPORTED_FUNCTION_CANDIDATE,
+        PHP_CALL_CONSTRUCTION_CLASS_CANDIDATE,
+        PHP_CALL_STATIC_METHOD_CANDIDATE,
+        PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE,
+        PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE,
     ];
 }
 
@@ -154,7 +206,8 @@ pub struct CandidateTarget {
     pub relative_path: String,
     /// Snapshot-local declaration id.
     pub declaration_id: u32,
-    /// The declaration kind, always `function` for the only implemented rule.
+    /// The declaration kind — `function` for the Rust/Go rules; `function`,
+    /// `class` or `method` for the PHP rules (PHP_CALL_CANDIDATES_V1).
     pub declaration_kind: String,
     /// The written declaration name.
     pub name: String,
@@ -433,12 +486,13 @@ pub struct CandidateFingerprint {
 impl CandidateFingerprint {
     pub fn current() -> Self {
         let text = format!(
-            "manifest={} schema={} rule_abi={} rust={} go={}",
+            "manifest={} schema={} rule_abi={} rust={} go={} php={}",
             CANDIDATE_MANIFEST_VERSION,
             CANDIDATE_SCHEMA_VERSION,
             CANDIDATE_RULE_ABI_VERSION,
             POLICY_VERSION_RUST_CALL,
             POLICY_VERSION_GO_CALL,
+            POLICY_VERSION_PHP_CALL,
         );
         Self {
             digest: digest::sha256_text(&format!("repodex-candidate-fingerprint\n{text}")),
@@ -694,6 +748,134 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "package-level function-valued variables (var Handler func())".to_string(),
                 "generic selector calls (represented as a different form)".to_string(),
                 "Go internal/ visibility and build-tag evaluation".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_NAMESPACE_FUNCTION_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "Bounded PHP namespace/qualified/free-function candidate                   search with PHP fallback tiers."
+                .to_string(),
+            in_scope_calls: "a PHP `function_call_expression` with a literal                          `name` (`f()`), `qualified_name` (`A\\B\\f()`,
+                         `\\A\\B\\f()`) or `relative_name` (`namespace\\f()`)."
+                .to_string(),
+            candidate_declarations: "source-written PHP `function` declarations                                  in the resolved namespace/global tier                                  (case-insensitive per PHP semantics)."
+                .to_string(),
+            selection_rule: "unqualified: `use function` is handled by the                          imported rule; then the call's own namespace                          `ns\\f`; then the PHP global-function fallback `f`.                          qualified: `\\`-leading is FQN; `namespace\\` prefixes                          the current namespace; otherwise the first segment                          substitutes through a class/namespace import alias,                          else the current-namespace prefix."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate under this                                    bounded rule — evidence, never proof of                                    runtime dispatch."
+                .to_string(),
+            no_candidate_meaning: "no candidate in the bounded namespace/global                                index — never 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "dynamic/variable callables `$f()`".to_string(),
+                "first-class callable creation `f(...)` (a reference, not a call)".to_string(),
+                "member/static/construction forms (separate rules)".to_string(),
+                "constant/variable lookup (case-sensitive, not modeled)".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_IMPORTED_FUNCTION_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "Bounded PHP `use function` import candidates (direct and                   aliased)."
+                .to_string(),
+            in_scope_calls: "an unqualified `f()` whose name matches a                          `use function` local name or alias in the file."
+                .to_string(),
+            candidate_declarations: "source-written PHP `function` declarations                                  at the imported qualified target."
+                .to_string(),
+            selection_rule: "the file's `use function` alias table (case-                         insensitive local name) -> written qualified target                          -> indexed function declarations."
+                .to_string(),
+            single_candidate_meaning: "one syntactic candidate — evidence, not                                    a resolved call."
+                .to_string(),
+            no_candidate_meaning: "the imported target names no indexed                                function declaration (e.g. external/vendor code                                outside the snapshot)."
+                .to_string(),
+            known_exclusions: vec![
+                "class/constant imports (different alias tables)".to_string(),
+                "runtime autoload provenance".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_CONSTRUCTION_CLASS_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "Bounded PHP construction candidates `new Foo`/`new                   \\A\\B\\Foo`/`new namespace\\Foo`/`new self` -> class-like                   declarations."
+                .to_string(),
+            in_scope_calls: "a PHP `object_creation_expression` with a literal                          name/qualified_name/relative_name or `self` target."
+                .to_string(),
+            candidate_declarations: "source-written `class`/`interface`/`trait`/                                 `enum` declarations (case-insensitive)."
+                .to_string(),
+            selection_rule: "PHP class-name resolution: `\\` FQN; `namespace\\`                          current-namespace; unqualified/qualified via import                          alias else current-namespace prefix. `self` binds the                          lexical class. Classes have NO global fallback."
+                .to_string(),
+            single_candidate_meaning: "one class candidate — never a                                    `__construct` resolution claim."
+                .to_string(),
+            no_candidate_meaning: "no indexed class-like declaration at the                                resolved name."
+                .to_string(),
+            known_exclusions: vec![
+                "new static() / static:: — late static binding".to_string(),
+                "new parent() / parent:: — inherited dispatch not modeled in V1".to_string(),
+                "anonymous classes and dynamic `new $cls()`".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_STATIC_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "Bounded PHP literal scoped calls `Foo::m()` -> bounded                   class candidate + directly declared `method`."
+                .to_string(),
+            in_scope_calls: "a `scoped_call_expression` with literal scope AND                          literal `name` (`Foo::m()`, `Alias::m()`,                          `\\A\\B\\Foo::m()`, `namespace\\Foo::m()`)."
+                .to_string(),
+            candidate_declarations: "`method` declarations directly declared                                  on each bounded class candidate                                  (case-insensitive) — never a global                                  method-name scan."
+                .to_string(),
+            selection_rule: "split `Scope::name`; resolve the scope as a class                          name (alias/FQN/ns-prefix); collect directly declared                          methods named `name` from each class candidate."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — evidence, not                                    dispatch proof."
+                .to_string(),
+            no_candidate_meaning: "no bounded class or no directly declared                                method — never 'no runtime target' (inherited/                               trait/magic dispatch unmodeled)."
+                .to_string(),
+            known_exclusions: vec![
+                "static::m() — late static binding".to_string(),
+                "parent::m() — inherited dispatch not modeled".to_string(),
+                "Foo::{$m}() — dynamic member name".to_string(),
+                "static property/constant access `Foo::$x`/`Foo::C`".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "`self::m()` inside a known lexical class -> directly                   declared methods of that class."
+                .to_string(),
+            in_scope_calls: "a `scoped_call_expression` whose scope is the                          literal `self` inside a class-like lexical scope."
+                .to_string(),
+            candidate_declarations: "`method` declarations directly declared                                  on the lexical class (case-insensitive)."
+                .to_string(),
+            selection_rule: "lexical class via scope chain -> directly                          declared method set only."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — never a virtual                                    dispatch claim."
+                .to_string(),
+            no_candidate_meaning: "no directly declared method of that name;                                inherited/trait/magic dispatch is not modeled                                in V1 — this is not 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "inherited/trait-adapted/magic `__call` methods".to_string(),
+                "self:: outside a lexical class".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "`$this->m()` inside a known lexical class -> directly                   declared methods of that class."
+                .to_string(),
+            in_scope_calls: "a `member_call_expression` with a literal `name`                          whose receiver is the written `$this`."
+                .to_string(),
+            candidate_declarations: "`method` declarations directly declared                                  on the lexical class (case-insensitive)."
+                .to_string(),
+            selection_rule: "receiver must be the literal `$this`; lexical                          class via scope chain; direct method set only."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — not a dispatch                                    proof."
+                .to_string(),
+            no_candidate_meaning: "no directly declared method of that name —                                inherited/trait/magic dispatch unmodeled; not                                'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "$obj->m() — receiver type unavailable (no inference)".to_string(),
+                "$obj?->m() nullsafe on unknown receiver".to_string(),
+                "$this->$m() dynamic member name".to_string(),
+                "inherited/trait-adapted/magic methods".to_string(),
             ],
         },
     ]
