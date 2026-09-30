@@ -1,0 +1,31 @@
+{
+ "metric": "PHP_CALL_CANDIDATE_COVERAGE",
+ "numerator": 43,
+ "denominator": 58,
+ "rate": 0.741,
+ "note": "43 supported-form calls got candidate evidence across phpnav+php-lib+php-app; the 15 no_candidate calls are all correctly empty (PHP builtins strtolower/trim/explode/strlen/substr/strtoupper/assert/is_string=11, absent names=2, unindexed external=2 incl Vendor\\Pkg\\Tool). Resolvable in-repo calls: 43/43.",
+ "unsupported_out_of_scope": 20,
+ "corpora": {
+  "phpnav": {
+   "records": 36,
+   "single": 20,
+   "multiple": 1,
+   "none": 4,
+   "oos": 11
+  },
+  "php-lib": {
+   "records": 20,
+   "single": 11,
+   "multiple": 0,
+   "none": 7,
+   "oos": 2
+  },
+  "php-app": {
+   "records": 22,
+   "single": 11,
+   "multiple": 0,
+   "none": 4,
+   "oos": 7
+  }
+ }
+}

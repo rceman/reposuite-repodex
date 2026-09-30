@@ -1,0 +1,17 @@
+{
+ "N0": {
+  "success": 64,
+  "sessions": 64,
+  "rate": 1.0
+ },
+ "P1": {
+  "success": 64,
+  "sessions": 64,
+  "rate": 1.0
+ },
+ "P2": {
+  "success": 64,
+  "sessions": 64,
+  "rate": 1.0
+ }
+}

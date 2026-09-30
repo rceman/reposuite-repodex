@@ -1,0 +1,12 @@
+{
+ "sessions": 192,
+ "INFRA_INVALID": 0,
+ "SUCCESS": 192,
+ "arms": {
+  "N0": "64/64",
+  "P1": "64/64",
+  "P2": "64/64"
+ },
+ "wave1": "96/96 gate-passed before wave 2",
+ "note": "uniform success: corpus compensatable; P2 shows more candidate evidence but no success delta"
+}

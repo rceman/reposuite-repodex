@@ -1,0 +1,50 @@
+{
+ "cc.N0": {
+  "success": 20,
+  "sessions": 20
+ },
+ "cc.P1": {
+  "success": 20,
+  "sessions": 20
+ },
+ "cc.P2": {
+  "success": 20,
+  "sessions": 20
+ },
+ "cd.N0": {
+  "success": 16,
+  "sessions": 16
+ },
+ "cd.P1": {
+  "success": 16,
+  "sessions": 16
+ },
+ "cd.P2": {
+  "success": 16,
+  "sessions": 16
+ },
+ "lk.N0": {
+  "success": 16,
+  "sessions": 16
+ },
+ "lk.P1": {
+  "success": 16,
+  "sessions": 16
+ },
+ "lk.P2": {
+  "success": 16,
+  "sessions": 16
+ },
+ "st.N0": {
+  "success": 12,
+  "sessions": 12
+ },
+ "st.P1": {
+  "success": 12,
+  "sessions": 12
+ },
+ "st.P2": {
+  "success": 12,
+  "sessions": 12
+ }
+}

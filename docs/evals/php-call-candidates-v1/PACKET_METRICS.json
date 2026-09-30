@@ -1,0 +1,23 @@
+{
+ "adaptive_packets_inspected": 99,
+ "budget_violations": 0,
+ "dangling_local_refs": 0,
+ "candidate_marked_fact": 0,
+ "marker_violations": 0,
+ "summary_bytes_mismatch": 2,
+ "max_bytes_by_intent": {
+  "callees": 433,
+  "definition": 710,
+  "callers": 1189,
+  "ambiguous": 2053,
+  "locate": 658,
+  "test_evidence": 2367
+ },
+ "php_rule_edges_in_packets": {
+  "php.call.construction_class_candidate": 22,
+  "php.call.imported_function_candidate": 11,
+  "php.call.lexical_self_method_candidate": 1,
+  "php.call.static_method_candidate": 1
+ },
+ "p2_sessions_using_php_candidate_evidence": 15
+}

@@ -1,0 +1,54 @@
+{
+ "method": "all campaign failures + residual nav gaps classified",
+ "task_failures_total": 0,
+ "residual_navigation_gaps": {
+  "TYPE_INFORMATION": {
+   "count": 8,
+   "examples": [
+    "$this->pages->renderHome (property receiver)",
+    "$service->handle (param receiver)",
+    "$repo->save / $c->index (local var receiver)"
+   ]
+  },
+  "DYNAMIC_RECEIVER_OR_NAME": {
+   "count": 7,
+   "examples": [
+    "$this->{$m}()",
+    "$this->$m()",
+    "Helper::{$m}()",
+    "$cb()",
+    "new $cls()"
+   ]
+  },
+  "INHERITED_OR_LATE_STATIC_DISPATCH": {
+   "count": 5,
+   "examples": [
+    "static::create",
+    "new static()",
+    "parent::save",
+    "new parent()"
+   ]
+  },
+  "COMPOSER_TOPOLOGY": {
+   "count": 1,
+   "examples": [
+    "Tool::work -> Vendor\\Pkg\\Tool not indexed"
+   ]
+  },
+  "CANDIDATE_RULE_GAP": {
+   "count": 1,
+   "examples": [
+    "$this->missing -> honest no_candidate (inherited/magic not modeled)"
+   ]
+  },
+  "QUERY_EVIDENCE_GAP": {
+   "count": 1,
+   "examples": [
+    "'Locate Repo::put' natural-language anchor did not seed the method decl -> NO_RESULT; agent recovered via definition query"
+   ]
+  },
+  "PARSER_FACT_GAP": 0,
+  "AGENT_BEHAVIOR": 0
+ },
+ "composer_files_inert": true
+}

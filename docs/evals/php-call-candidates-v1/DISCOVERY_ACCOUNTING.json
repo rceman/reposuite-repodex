@@ -1,0 +1,27 @@
+{
+ "N0": {
+  "native_search": 140,
+  "source_read": 155,
+  "enumeration": 20,
+  "edit": 15,
+  "other_exec": 56,
+  "todo_write": 8,
+  "sidekick": 2
+ },
+ "P1": {
+  "repodex": 96,
+  "source_read": 150,
+  "other_exec": 95,
+  "native_search": 35,
+  "enumeration": 22,
+  "edit": 16
+ },
+ "P2": {
+  "repodex": 102,
+  "native_search": 38,
+  "source_read": 143,
+  "other_exec": 144,
+  "enumeration": 25,
+  "edit": 18
+ }
+}

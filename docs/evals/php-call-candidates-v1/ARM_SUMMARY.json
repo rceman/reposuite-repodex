@@ -1,0 +1,20 @@
+{
+ "N0": {
+  "avg_input_tokens": 56891,
+  "avg_output_tokens": 0,
+  "avg_model_calls": 0.0,
+  "avg_wall_ms": 23259
+ },
+ "P1": {
+  "avg_input_tokens": 65215,
+  "avg_output_tokens": 0,
+  "avg_model_calls": 0.0,
+  "avg_wall_ms": 25410
+ },
+ "P2": {
+  "avg_input_tokens": 68935,
+  "avg_output_tokens": 0,
+  "avg_model_calls": 0.0,
+  "avg_wall_ms": 26754
+ }
+}
