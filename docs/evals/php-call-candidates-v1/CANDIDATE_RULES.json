@@ -1,0 +1,24 @@
+{
+ "rules": [
+  "php.call.namespace_function_candidate",
+  "php.call.imported_function_candidate",
+  "php.call.construction_class_candidate",
+  "php.call.static_method_candidate",
+  "php.call.lexical_self_method_candidate",
+  "php.call.lexical_this_method_candidate"
+ ],
+ "target_kinds": [
+  "function",
+  "class",
+  "interface",
+  "trait",
+  "enum",
+  "method"
+ ],
+ "cardinality": [
+  "no_candidate",
+  "single_candidate",
+  "multiple_candidates",
+  "out_of_scope"
+ ]
+}

@@ -1,0 +1,962 @@
+[
+ {
+  "task": "lk-slugify",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-slugify",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-slugify",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-slugify",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-slugify",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-slugify",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-repo",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-repo",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-repo",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-repo",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-repo",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-repo",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-cachemake",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-shout",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-shout",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-shout",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-shout",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-shout",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-shout",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-ctrl",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-pages",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-pages",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-pages",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-pages",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-pages",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-pages",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-esc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-esc",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-esc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-esc",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-esc",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-esc",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "lk-version",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "lk-version",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "lk-version",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "lk-version",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "lk-version",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "lk-version",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-put",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-put",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-put",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-put",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-put",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-put",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-whoslug",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-cache",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-cache",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-cache",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-cache",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-cache",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-cache",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-shout",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-shout",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-shout",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-shout",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-shout",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-shout",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-index",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-index",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-index",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-index",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-index",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-index",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-find",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-find",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-find",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-find",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-find",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-find",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-whopages",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-render",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-render",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-render",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-render",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-render",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-render",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-repoctor",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cc-dbfetch",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-ns",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-ns",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-ns",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-ns",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-ns",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-ns",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-dup",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-dup",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-dup",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-dup",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-dup",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-dup",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-ns2",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-ns2",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-ns2",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-ns2",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-ns2",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-ns2",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-test",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-test",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-test",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-test",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-test",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-test",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-test2",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-test2",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-test2",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-test2",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-test2",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-test2",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "st-helpers",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "st-helpers",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "st-helpers",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "st-helpers",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "st-helpers",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "st-helpers",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-slugify",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-write",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-write",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-write",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-write",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-write",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-write",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-cache",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-cache",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-cache",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-cache",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-render",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-render",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-render",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-render",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-render",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-render",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-esc",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-esc",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-esc",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-esc",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-esc",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-esc",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-pages",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-pages",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-pages",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-pages",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-pages",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-pages",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-version",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-version",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-version",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-version",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-version",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-version",
+  "arm": "P2",
+  "rep": 2
+ },
+ {
+  "task": "cd-logline",
+  "arm": "N0",
+  "rep": 1
+ },
+ {
+  "task": "cd-logline",
+  "arm": "N0",
+  "rep": 2
+ },
+ {
+  "task": "cd-logline",
+  "arm": "P1",
+  "rep": 1
+ },
+ {
+  "task": "cd-logline",
+  "arm": "P1",
+  "rep": 2
+ },
+ {
+  "task": "cd-logline",
+  "arm": "P2",
+  "rep": 1
+ },
+ {
+  "task": "cd-logline",
+  "arm": "P2",
+  "rep": 2
+ }
+]

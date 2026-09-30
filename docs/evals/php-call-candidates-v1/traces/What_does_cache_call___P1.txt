@@ -1,0 +1,6 @@
+#RDX1 adaptive v2
+Q What\ does\ cache\ call?
+I callees
+F 1 declaration decl:src/Support.php#3 cache
+D 1 rank=1 path=src/Support.php decl=10:222-278 body=10:253-278
+S seeds=1 eligible=1 related=0 rel_eligible=0 candidates=0 intent=callees bytes=259 complete=1

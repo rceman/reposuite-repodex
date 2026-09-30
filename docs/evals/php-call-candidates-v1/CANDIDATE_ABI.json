@@ -1,0 +1,7 @@
+{
+ "CANDIDATE_RULE_ABI_VERSION_from": 7,
+ "CANDIDATE_RULE_ABI_VERSION_to": 8,
+ "POLICY_VERSION_PHP_CALL": 1,
+ "fingerprint_includes_php": true,
+ "old_artifact_reuse": "refused \u2014 fingerprint text now carries php=1"
+}

@@ -1,0 +1,53 @@
+{
+ "phpnav": {
+  "records": 36,
+  "single": 20,
+  "multiple": 1,
+  "no_candidate": 4,
+  "out_of_scope": 11
+ },
+ "php-lib": {
+  "records": 20,
+  "single": 11,
+  "multiple": 0,
+  "no_candidate": 7,
+  "out_of_scope": 2
+ },
+ "php-app": {
+  "records": 22,
+  "single": 11,
+  "multiple": 0,
+  "no_candidate": 4,
+  "out_of_scope": 7
+ },
+ "candidates_per_supported_call": {
+  "p50": 1,
+  "p95": 1,
+  "max": 2,
+  "n_supported": 43
+ },
+ "largest_candidate_set": {
+  "size": 2,
+  "why": "duplicate same-FQN declarations (App\\Dup\\collide) preserved as MultipleCandidates"
+ },
+ "out_of_scope_reasons": {
+  "receiver_type_unavailable": 8,
+  "dynamic_member_name": 3,
+  "indirect_or_variable_callable": 2,
+  "dynamic_scope_or_member": 1,
+  "dynamic_class_expression": 1,
+  "late_static_binding": 3,
+  "parent_scope_not_modeled_in_v1": 2
+ },
+ "no_candidate_reasons": {
+  "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)": 1,
+  "no_global_function": 13,
+  "no_indexed_class_for_scope": 1
+ },
+ "candidate_build_ms": {
+  "phpnav": 9.1,
+  "php-lib": 106.5,
+  "php-app": 65.2
+ },
+ "explosion_check": "no rule produces an unbounded same-name set; all method candidates are bounded to named class candidates"
+}

@@ -1,0 +1,10 @@
+#RDX1 adaptive v2
+Q Who\ calls\ slugify?
+I callers
+F 1 declaration decl:src/Text/strings.php#1 slugify
+F 2 node call:src/Store/Repo.php#1 slugify
+F 3 node call:src/Store/Repo.php#3 slugify
+D 1 rank=1 path=src/Text/strings.php decl=4:36-104 body=4:72-104
+R call_candidate 2 1 c cs=cand-777a59e2fa522ecb rule=php.call.imported_function_candidate
+R call_candidate 3 1 c cs=cand-326160a0930781ac rule=php.call.imported_function_candidate
+S seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callers bytes=529 complete=1

@@ -1,0 +1,4 @@
+{
+ "executor": "devin CLI (-p --permission-mode dangerous)",
+ "model": "devin default (SWE)"
+}

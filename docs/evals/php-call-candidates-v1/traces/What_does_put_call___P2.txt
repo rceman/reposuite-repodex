@@ -1,0 +1,10 @@
+#RDX1 adaptive v2
+Q What\ does\ put\ call?
+I callees
+F 1 declaration decl:src/Store/Repo.php#4 put
+F 2 node decl:src/Store/Repo.php#6 write
+F 3 node decl:src/Text/strings.php#1 slugify
+D 1 rank=1 path=src/Store/Repo.php decl=12:214-358 body=12:270-358
+R call_candidate 1 2 c cs=cand-baeabb375b52d2a9 rule=php.call.lexical_this_method_candidate
+R call_candidate 1 3 c cs=cand-777a59e2fa522ecb rule=php.call.imported_function_candidate
+S seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callees bytes=529 complete=1

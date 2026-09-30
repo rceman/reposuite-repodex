@@ -1,0 +1,12 @@
+{
+ "baseline": {
+  "commit": "07791c08a53ebc7bad7e1eeafe508cbfb81bcad1",
+  "binary_sha256": "be663eff1912f7a3c6ce74312c84029b5f4db3a0785d7dffa4383c468bd78235",
+  "label": "CURRENT_PHP_REPODEX (no PHP candidate rules)"
+ },
+ "candidate": {
+  "commit": "1acebb1",
+  "binary_sha256": "c058d532ec0bff0b21a795bc5a54b81f32bef5891fc33e10a6ea09e1895f39fa",
+  "label": "PHP_CALL_CANDIDATES_V1"
+ }
+}

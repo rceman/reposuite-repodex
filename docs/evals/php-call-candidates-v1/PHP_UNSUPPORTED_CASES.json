@@ -1,0 +1,50 @@
+[
+ {
+  "written": "$repo->save",
+  "reason": "receiver_type_unavailable"
+ },
+ {
+  "written": "$repo?->save",
+  "reason": "receiver_type_unavailable"
+ },
+ {
+  "written": "$this->pages->renderHome",
+  "reason": "receiver_type_unavailable"
+ },
+ {
+  "written": "$this->{$method}",
+  "reason": "dynamic_member_name"
+ },
+ {
+  "written": "$this->$method",
+  "reason": "dynamic_member_name"
+ },
+ {
+  "written": "Helper::{$method}",
+  "reason": "dynamic_scope_or_member"
+ },
+ {
+  "written": "$cb",
+  "reason": "indirect_or_variable_callable"
+ },
+ {
+  "written": "$cls",
+  "reason": "dynamic_class_expression"
+ },
+ {
+  "written": "static::create",
+  "reason": "late_static_binding"
+ },
+ {
+  "written": "static",
+  "reason": "late_static_binding"
+ },
+ {
+  "written": "parent",
+  "reason": "parent_scope_not_modeled_in_v1"
+ },
+ {
+  "written": "parent::save",
+  "reason": "parent_scope_not_modeled_in_v1"
+ }
+]

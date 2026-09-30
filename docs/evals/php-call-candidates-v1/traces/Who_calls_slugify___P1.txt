@@ -1,0 +1,6 @@
+#RDX1 adaptive v2
+Q Who\ calls\ slugify?
+I callers
+F 1 declaration decl:src/Text/strings.php#1 slugify
+D 1 rank=1 path=src/Text/strings.php decl=4:36-104 body=4:72-104
+S seeds=1 eligible=1 related=0 rel_eligible=0 candidates=0 intent=callers bytes=263 complete=1

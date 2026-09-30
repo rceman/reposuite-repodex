@@ -1,0 +1,10 @@
+{
+ "test_file": "tests/php_call_candidates.rs",
+ "tests": 14,
+ "result": "all pass",
+ "FALSE_FACT_PROMOTIONS": 0,
+ "ARBITRARY_AMBIGUITY_COLLAPSE": 0,
+ "DYNAMIC_CALL_FALSE_CANDIDATES": 0,
+ "FIRST_CLASS_CALLABLE_FALSE_INVOCATIONS": 0,
+ "GLOBAL_METHOD_NAME_SCAN_INCIDENTS": 0
+}

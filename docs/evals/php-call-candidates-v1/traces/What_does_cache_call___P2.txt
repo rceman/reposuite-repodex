@@ -1,0 +1,8 @@
+#RDX1 adaptive v2
+Q What\ does\ cache\ call?
+I callees
+F 1 declaration decl:src/Support.php#3 cache
+F 2 node decl:src/Store/Cache.php#2 make
+D 1 rank=1 path=src/Support.php decl=10:222-278 body=10:253-278
+R call_candidate 1 2 c cs=cand-a50109f5eadb852e rule=php.call.static_method_candidate
+S seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=386 complete=1

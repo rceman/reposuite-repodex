@@ -1,0 +1,194 @@
+{
+ "corpus": "fixtures/phpnav (committed)",
+ "cases": [
+  {
+   "written": "slugify",
+   "rule": "php.call.imported_function_candidate",
+   "expect": "single_candidate",
+   "target": "src/Util/strings.php#function:slugify"
+  },
+  {
+   "written": "sl",
+   "rule": "php.call.imported_function_candidate",
+   "expect": "single_candidate",
+   "target": "src/Util/strings.php#function:slugify"
+  },
+  {
+   "written": "\\App\\Util\\slugify",
+   "rule": "php.call.namespace_function_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "Util\\version",
+   "rule": "php.call.namespace_function_candidate",
+   "expect": "single_candidate",
+   "note": "first-segment alias substitution"
+  },
+  {
+   "written": "namespace\\localfn",
+   "rule": "php.call.namespace_function_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "version",
+   "rule": "php.call.namespace_function_candidate",
+   "expect": "single_candidate",
+   "tier": "current_namespace"
+  },
+  {
+   "written": "global_helper",
+   "rule": "php.call.namespace_function_candidate",
+   "expect": "single_candidate",
+   "tier": "global_fallback"
+  },
+  {
+   "written": "collide",
+   "expect": "multiple_candidates",
+   "count": 2,
+   "note": "duplicate FQN preserved"
+  },
+  {
+   "written": "self",
+   "rule": "php.call.construction_class_candidate",
+   "expect": "single_candidate",
+   "target": "class Repo"
+  },
+  {
+   "written": "Repo",
+   "rule": "php.call.construction_class_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "Alias",
+   "rule": "php.call.construction_class_candidate",
+   "expect": "single_candidate",
+   "target": "class Helper"
+  },
+  {
+   "written": "\\App\\Service\\Helper",
+   "rule": "php.call.construction_class_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "Helper::run",
+   "rule": "php.call.static_method_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "Alias::run",
+   "rule": "php.call.static_method_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "self::create",
+   "rule": "php.call.lexical_self_method_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "static::create",
+   "expect": "out_of_scope",
+   "reason": "late_static_binding"
+  },
+  {
+   "written": "static",
+   "expect": "out_of_scope",
+   "reason": "late_static_binding"
+  },
+  {
+   "written": "parent",
+   "expect": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1"
+  },
+  {
+   "written": "parent::save",
+   "expect": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1"
+  },
+  {
+   "written": "$this->persist",
+   "rule": "php.call.lexical_this_method_candidate",
+   "expect": "single_candidate"
+  },
+  {
+   "written": "$this->missing",
+   "expect": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class"
+  },
+  {
+   "written": "$this->pages->renderHome",
+   "expect": "out_of_scope",
+   "reason": "receiver_type_unavailable"
+  },
+  {
+   "written": "$repo->save",
+   "expect": "out_of_scope",
+   "reason": "receiver_type_unavailable"
+  },
+  {
+   "written": "$repo?->save",
+   "expect": "out_of_scope",
+   "reason": "receiver_type_unavailable"
+  },
+  {
+   "written": "$this->{$method}",
+   "expect": "out_of_scope",
+   "reason": "dynamic_member_name"
+  },
+  {
+   "written": "$this->$method",
+   "expect": "out_of_scope",
+   "reason": "dynamic_member_name"
+  },
+  {
+   "written": "$cb",
+   "expect": "out_of_scope",
+   "reason": "indirect_or_variable_callable"
+  },
+  {
+   "written": "Helper::{$method}",
+   "expect": "out_of_scope",
+   "reason": "dynamic_scope_or_member"
+  },
+  {
+   "written": "$cls",
+   "expect": "out_of_scope",
+   "reason": "dynamic_class_expression"
+  },
+  {
+   "written": "Tool::work",
+   "expect": "no_candidate",
+   "reason": "no_indexed_class_for_scope",
+   "note": "vendor dep not indexed"
+  },
+  {
+   "written": "unknown_global",
+   "expect": "no_candidate",
+   "reason": "no_global_function"
+  },
+  {
+   "written": "SLUGIFY",
+   "expect": "single_candidate",
+   "note": "case-insensitive function"
+  },
+  {
+   "written": "repo",
+   "expect": "single_candidate",
+   "note": "case-insensitive class"
+  },
+  {
+   "written": "helper::RUN",
+   "expect": "single_candidate",
+   "note": "case-insensitive method"
+  },
+  {
+   "written": "slugify(...)",
+   "expect": "no_call_record",
+   "note": "first-class callable = reference"
+  },
+  {
+   "written": "Helper::run(...)",
+   "expect": "no_call_record",
+   "note": "first-class callable = reference"
+  }
+ ]
+}

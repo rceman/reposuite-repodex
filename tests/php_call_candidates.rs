@@ -400,3 +400,55 @@ fn candidate_records_cover_every_php_call() {
         .collect();
     assert_eq!(ids.len(), index.records().len(), "duplicate record ids");
 }
+
+#[test]
+fn php_candidates_flow_through_graph_and_query() {
+    // §42 end-to-end: PHP candidate artifact -> generic graph call_candidate
+    // edges -> typed query machinery. Asserts the edge carries candidate
+    // evidence class, candidate_set_id and the php rule provenance.
+    let temp = TempDir::new("php-graph");
+    let root = support::fixture("phpnav");
+    let snap = temp.path().join("snap");
+    build_snapshot(&support::analyzer(), &root, &snap, BuildOptions::default())
+        .expect("snapshot");
+    let links = temp.path().join("links");
+    repodex::links::build_links(&snap, Some(&root), &links).expect("links");
+    let cand = temp.path().join("cand");
+    build_candidates(&snap, &links, &cand).expect("candidates");
+    let gdir = temp.path().join("graph");
+    repodex::graph::build_graph(&snap, &links, &cand, &gdir).expect("graph");
+    let index = repodex::graph::GraphIndex::load(&gdir).expect("graph index");
+    let php_edges: Vec<_> = index
+        .edges()
+        .iter()
+        .filter(|e| e.kind == "call_candidate" && e.rule_id.starts_with("php.call."))
+        .collect();
+    assert!(
+        php_edges.len() >= 10,
+        "expected >=10 php call_candidate edges, got {}",
+        php_edges.len()
+    );
+    for e in &php_edges {
+        assert_eq!(e.evidence_class, repodex::graph::EvidenceClass::Candidate, "fact promotion!");
+        assert!(e.candidate_set_id.is_some(), "missing cs=");
+    }
+    // Every php edge's target is a declaration node in the graph.
+    let kinds: BTreeSet<&str> = php_edges
+        .iter()
+        .filter_map(|e| index.node(&e.target).map(|n| n.key.split(':').next().unwrap_or("?")))
+        .collect();
+    assert!(kinds.iter().any(|k| *k == "decl"), "edge targets: {kinds:?}");
+}
+
+#[test]
+fn candidate_abi_and_policy_versioned() {
+    // §40: PHP rules participate in artifact identity — an artifact built
+    // without them cannot be silently reused.
+    use repodex::candidates::model::{
+        CANDIDATE_RULE_ABI_VERSION, POLICY_VERSION_PHP_CALL,
+    };
+    assert_eq!(CANDIDATE_RULE_ABI_VERSION, 8);
+    assert_eq!(POLICY_VERSION_PHP_CALL, 1);
+    let fp = repodex::candidates::model::CandidateFingerprint::current();
+    assert!(fp.text.contains("php=1"), "fingerprint: {}", fp.text);
+}

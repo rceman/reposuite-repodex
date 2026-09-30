@@ -1,0 +1,6 @@
+{
+ "php-lib": "tools/eval/fixtures/php-lib",
+ "php-app": "tools/eval/fixtures/php-app",
+ "phpnav_static": "fixtures/phpnav",
+ "note": "committed; composer.json files are inert"
+}
