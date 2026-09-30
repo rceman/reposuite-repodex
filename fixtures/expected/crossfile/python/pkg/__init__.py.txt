@@ -1,4 +1,4 @@
-file schema=3 path=crossfile/python/pkg/__init__.py lang=python bytes=74 lines=3 final_newline=true status=clean snapshot=snap-1386ee5d8a31df53
+file schema=4 path=crossfile/python/pkg/__init__.py lang=python bytes=74 lines=3 final_newline=true status=clean snapshot=snap-1386ee5d8a31df53
 scope 0 kind=file parent=- name=- range=0..74 (0:0..3:0) header=- lang=python
 import 0 form=single module=helper module_range=6..12 (0:6..0:12) relative=1 scope=0 range=0..29 (0:0..0:29) lang=python path=crossfile/python/pkg/__init__.py snapshot=snap-1386ee5d8a31df53 text=from .helper import helper_fn items=[{target=helper_fn target_range=20..29 (0:20..0:29) alias=- alias_range=- wildcard=false cat=normal range=20..29 (0:20..0:29)}]
 import 1 form=single module=- module_range=- relative=1 scope=0 range=30..47 (1:0..1:17) lang=python path=crossfile/python/pkg/__init__.py snapshot=snap-1386ee5d8a31df53 text=from . import mod items=[{target=mod target_range=44..47 (1:14..1:17) alias=- alias_range=- wildcard=false cat=normal range=44..47 (1:14..1:17)}]

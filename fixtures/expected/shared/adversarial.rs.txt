@@ -1,4 +1,4 @@
-file schema=3 path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
+file schema=4 path=shared/adversarial.rs lang=rust bytes=973 lines=51 final_newline=true status=clean snapshot=snap-3eac2d46abffefa3
 scope 0 kind=file parent=- name=- range=0..973 (0:0..51:0) header=- lang=rust
 scope 1 kind=function parent=0 name=multibyte_after_utf8 range=142..170 (4:0..4:28) header=- lang=rust
 scope 2 kind=impl parent=0 name=- range=234..296 (10:0..14:1) header=234..249 (10:0..10:15) lang=rust

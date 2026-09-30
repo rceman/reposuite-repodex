@@ -1,4 +1,4 @@
-file schema=3 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
+file schema=4 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
 scope 0 kind=file parent=- name=- range=0..1195 (0:0..67:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
 scope 2 kind=interface parent=1 name=HandlerInterface range=191..305 (10:0..15:1) header=191..218 (10:0..11:0) lang=php
@@ -43,3 +43,13 @@ ref 0 kind=implemented_interface written=HandlerInterface scope=1 decl=6 range=4
 ref 1 kind=trait_composition written=Loggable scope=5 decl=- range=451..459 (26:8..26:16)
 ref 2 kind=base_class written=BaseService scope=1 decl=14 range=797..808 (40:28..40:39)
 call 0 form=explicit_construction callee=static scope=8 expr=886..903 (44:15..44:32) callee_range=890..896 (44:19..44:25) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$message scope=4 receiver_range=355..363 (19:31..19:39)                  written=string written_range=348..354 (19:24..19:30) evidence_range=348..363 (19:24..19:39) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 1 kind=property_type_hint receiver=$this->cacheKey scope=5 receiver_range=532..540 (29:30..29:38)                  written=?string written_range=523..530 (29:21..29:28) evidence_range=531..547 (29:29..29:45) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 2 kind=property_type_hint receiver=$this->version scope=5 receiver_range=574..581 (30:25..30:32)                  written=int written_range=569..572 (30:20..30:23) evidence_range=573..581 (30:24..30:32) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 3 kind=parameter_type_hint receiver=$name scope=6 receiver_range=631..636 (32:47..32:52)                  written=string written_range=624..630 (32:40..32:46) evidence_range=616..636 (32:32..32:52) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 4 kind=property_type_hint receiver=$this->name scope=5 receiver_range=632..636 (32:48..32:52)                  written=string written_range=624..630 (32:40..32:46) evidence_range=616..636 (32:32..32:52) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 5 kind=parameter_type_hint receiver=$limit scope=6 receiver_range=652..658 (32:68..32:74)                  written=int written_range=648..651 (32:64..32:67) evidence_range=638..663 (32:54..32:79) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 6 kind=property_type_hint receiver=$this->limit scope=5 receiver_range=653..658 (32:69..32:74)                  written=int written_range=648..651 (32:64..32:67) evidence_range=638..663 (32:54..32:79) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 7 kind=property_opaque_write receiver=$this->version scope=6 receiver_range=679..693 (34:8..34:22)                  written=1 written_range=696..697 (34:25..34:26) evidence_range=679..697 (34:8..34:26) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 8 kind=parameter_type_hint receiver=$name scope=8 receiver_range=850..855 (42:39..42:44)                  written=string written_range=843..849 (42:32..42:38) evidence_range=843..855 (42:32..42:44) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478
+recv_evidence 9 kind=parameter_type_hint receiver=$value scope=9 receiver_range=946..952 (47:34..47:40)                  written=string written_range=939..945 (47:27..47:33) evidence_range=939..952 (47:27..47:40) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478

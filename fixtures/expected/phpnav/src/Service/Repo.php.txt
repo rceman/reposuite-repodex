@@ -1,4 +1,4 @@
-file schema=3 path=phpnav/src/Service/Repo.php lang=php bytes=1577 lines=42 final_newline=true status=clean snapshot=snap-008b9c12ceb22a85
+file schema=4 path=phpnav/src/Service/Repo.php lang=php bytes=1577 lines=42 final_newline=true status=clean snapshot=snap-008b9c12ceb22a85
 scope 0 kind=file parent=- name=- range=0..1577 (0:0..42:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=6..28 (1:0..1:22) header=- lang=php
 scope 2 kind=class parent=1 name=Helper range=146..214 (8:0..10:1) header=146..159 (8:0..8:13) lang=php
@@ -41,3 +41,9 @@ call 13 form=static_scoped callee=static::create scope=6 expr=1189..1205 (30:8..
 call 14 form=explicit_construction callee=static scope=6 expr=1267..1279 (31:8..31:20) callee_range=1271..1277 (31:12..31:18) type_args=- type_args_range=- dyn=false nullsafe=false
 call 15 form=explicit_construction callee=parent scope=6 expr=1345..1357 (32:8..32:20) callee_range=1349..1355 (32:12..32:18) type_args=- type_args_range=- dyn=false nullsafe=false
 call 16 form=static_scoped callee=parent::save scope=9 expr=1554..1571 (40:33..40:50) callee_range=1554..1566 (40:33..40:45) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=property_type_hint receiver=$this->name scope=4 receiver_range=249..253 (13:20..13:24)                  written=string written_range=241..247 (13:12..13:18) evidence_range=248..258 (13:19..13:29) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85
+recv_evidence 1 kind=parameter_type_hint receiver=$key scope=6 receiver_range=359..363 (17:32..17:36)                  written=string written_range=352..358 (17:25..17:31) evidence_range=352..363 (17:25..17:36) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85
+recv_evidence 2 kind=local_opaque_write receiver=$k scope=6 receiver_range=380..382 (18:8..18:10)                  written=slugify($key) written_range=385..398 (18:13..18:26) evidence_range=380..398 (18:8..18:26) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85
+recv_evidence 3 kind=local_opaque_write receiver=$l scope=6 receiver_range=442..444 (19:8..19:10)                  written=sl($key) written_range=447..455 (19:13..19:21) evidence_range=442..455 (19:8..19:21) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85
+recv_evidence 4 kind=local_opaque_write receiver=$v scope=6 receiver_range=503..505 (20:8..20:10)                  written=Util\\version() written_range=508..522 (20:13..20:27) evidence_range=503..522 (20:8..20:27) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85
+recv_evidence 5 kind=parameter_type_hint receiver=$k scope=7 receiver_range=1478..1480 (36:36..36:38)                  written=string written_range=1471..1477 (36:29..36:35) evidence_range=1471..1480 (36:29..36:38) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85

@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 
 use super::{
     CallLikeOccurrence, Declaration, Diagnostic, DiagnosticKind, DiagnosticSeverity,
-    ImportOccurrence, LanguageId, LocalBindingOccurrence, ReferenceOccurrence, Scope, SourceRange,
-    TestEvidence,
+    ImportOccurrence, LanguageId, LocalBindingOccurrence, ReceiverTypeEvidence,
+    ReferenceOccurrence, Scope, SourceRange, TestEvidence,
 };
 
 /// Version of the normalized fact schema. Bumped when the shape of the
@@ -18,7 +18,10 @@ use super::{
 ///   `method_receiver`, `function_literal_parameter`, `function_literal_result`,
 ///   `range_variable`, `type_switch_variable`, `select_receive_variable`), which
 ///   changes the serialized `bindings` schema.
-pub const SCHEMA_VERSION: u32 = 3;
+/// * `4` — added `receiver_type_evidence` (`ReceiverTypeEvidence`), the PHP
+///   receiver-type facts (parameter/property type hints, literal `new`
+///   writes, opaque writes) consumed by the typed-receiver candidate rule.
+pub const SCHEMA_VERSION: u32 = 4;
 
 /// The analyzed source snapshot.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -103,6 +106,13 @@ pub struct FileAnalysis {
     /// parameter, or pattern with the source regions where it may shadow an
     /// outer name. They are not resolved values and not call targets.
     pub bindings: Vec<LocalBindingOccurrence>,
+    /// Bounded receiver-type evidence ordered by evidence range.
+    /// `evidence_id` is the index.
+    ///
+    /// These are *syntax* facts: written type hints and receiver writes that
+    /// a bounded rule may combine into receiver-type candidates. They are not
+    /// resolved types and not runtime guarantees.
+    pub receiver_type_evidence: Vec<ReceiverTypeEvidence>,
     /// File-level test evidence, e.g. a `_test.go` file name convention.
     pub file_test_evidence: Vec<TestEvidence>,
     /// Byte ranges where Tree-sitter had to recover.
@@ -129,6 +139,7 @@ impl FileAnalysis {
             references: Vec::new(),
             calls: Vec::new(),
             bindings: Vec::new(),
+            receiver_type_evidence: Vec::new(),
             file_test_evidence: Vec::new(),
             recovery_regions: Vec::new(),
         }
@@ -176,6 +187,25 @@ impl FileAnalysis {
         });
         for (index, call) in self.calls.iter_mut().enumerate() {
             call.call_id = index as u32;
+        }
+        self.receiver_type_evidence.sort_by(|left, right| {
+            (
+                left.evidence_range.byte_start,
+                left.evidence_range.byte_end,
+                left.receiver.as_str(),
+                left.kind,
+                left.written.as_str(),
+            )
+                .cmp(&(
+                    right.evidence_range.byte_start,
+                    right.evidence_range.byte_end,
+                    right.receiver.as_str(),
+                    right.kind,
+                    right.written.as_str(),
+                ))
+        });
+        for (index, evidence) in self.receiver_type_evidence.iter_mut().enumerate() {
+            evidence.evidence_id = index as u32;
         }
         self.bindings.sort_by(|left, right| {
             (
@@ -513,6 +543,22 @@ impl FileAnalysis {
                 binding.language.as_str(),
                 escape_field(&binding.relative_path),
                 binding.snapshot_id,
+            ));
+        }
+        for evidence in &self.receiver_type_evidence {
+            lines.push(format!(
+                "recv_evidence {} kind={} receiver={} scope={} receiver_range={}                  written={} written_range={} evidence_range={} lang={} path={} snapshot={}",
+                evidence.evidence_id,
+                evidence.kind.as_str(),
+                escape_field(&evidence.receiver),
+                evidence.scope_id,
+                evidence.receiver_range.render(),
+                escape_field(&evidence.written),
+                evidence.written_range.render(),
+                evidence.evidence_range.render(),
+                evidence.language.as_str(),
+                escape_field(&evidence.relative_path),
+                evidence.snapshot_id,
             ));
         }
         for evidence in &self.file_test_evidence {

@@ -1,4 +1,4 @@
-file schema=3 path=callcandidates/rust/src/ext.rs lang=rust bytes=81 lines=6 final_newline=true status=clean snapshot=snap-dddf958f22b2f912
+file schema=4 path=callcandidates/rust/src/ext.rs lang=rust bytes=81 lines=6 final_newline=true status=clean snapshot=snap-dddf958f22b2f912
 scope 0 kind=file parent=- name=- range=0..81 (0:0..6:0) header=- lang=rust
 scope 1 kind=extern_block parent=0 name=- range=0..48 (0:0..2:1) header=0..11 (0:0..0:11) lang=rust
 scope 2 kind=function parent=0 name=run range=49..80 (3:0..5:1) header=- lang=rust

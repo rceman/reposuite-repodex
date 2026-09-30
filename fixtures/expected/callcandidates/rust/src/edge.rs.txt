@@ -1,4 +1,4 @@
-file schema=3 path=callcandidates/rust/src/edge.rs lang=rust bytes=192 lines=14 final_newline=true status=clean snapshot=snap-f0090d81c7442209
+file schema=4 path=callcandidates/rust/src/edge.rs lang=rust bytes=192 lines=14 final_newline=true status=clean snapshot=snap-f0090d81c7442209
 scope 0 kind=file parent=- name=- range=0..192 (0:0..14:0) header=- lang=rust
 scope 1 kind=impl parent=0 name=- range=10..38 (1:0..3:1) header=10..17 (1:0..1:7) lang=rust
 scope 2 kind=method parent=1 name=assoc range=23..36 (2:4..2:17) header=- lang=rust

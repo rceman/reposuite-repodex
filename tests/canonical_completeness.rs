@@ -189,6 +189,15 @@ const DIAGNOSTIC_KINDS: [DiagnosticKind; 12] = [
     DiagnosticKind::GrammarLoadError,
 ];
 
+const RECEIVER_EVIDENCE_KINDS: [repodex::model::ReceiverEvidenceKind; 6] = [
+    repodex::model::ReceiverEvidenceKind::ParameterTypeHint,
+    repodex::model::ReceiverEvidenceKind::PropertyTypeHint,
+    repodex::model::ReceiverEvidenceKind::LocalLiteralNew,
+    repodex::model::ReceiverEvidenceKind::PropertyLiteralNew,
+    repodex::model::ReceiverEvidenceKind::LocalOpaqueWrite,
+    repodex::model::ReceiverEvidenceKind::PropertyOpaqueWrite,
+];
+
 const DIAGNOSTIC_SEVERITIES: [DiagnosticSeverity; 3] = [
     DiagnosticSeverity::Info,
     DiagnosticSeverity::Warning,
@@ -559,6 +568,53 @@ fn mutations(analysis: &FileAnalysis) -> Vec<(String, FileAnalysis)> {
         out.push((format!("recovery_regions[{index}] column"), clone));
     }
 
+    // --- Receiver-type evidence -------------------------------------------
+    for (index, evidence) in analysis.receiver_type_evidence.iter().enumerate() {
+        let label = format!("receiver_type_evidence[{index}]");
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].kind =
+            different(evidence.kind, &RECEIVER_EVIDENCE_KINDS);
+        out.push((format!("{label}.kind"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].receiver = different_string(&evidence.receiver);
+        out.push((format!("{label}.receiver"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].scope_id = foreign_id();
+        out.push((format!("{label}.scope_id"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].receiver_range = shift_points(evidence.receiver_range);
+        out.push((format!("{label}.receiver_range row/column"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].written = different_string(&evidence.written);
+        out.push((format!("{label}.written"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].written_range = shift_columns(evidence.written_range);
+        out.push((format!("{label}.written_range column"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].evidence_range = shift_points(evidence.evidence_range);
+        out.push((format!("{label}.evidence_range row/column"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].language = different(evidence.language, &LANGUAGES);
+        out.push((format!("{label}.language"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].relative_path =
+            different_string(&evidence.relative_path);
+        out.push((format!("{label}.relative_path"), clone));
+
+        let mut clone = analysis.clone();
+        clone.receiver_type_evidence[index].snapshot_id = different_string(&evidence.snapshot_id);
+        out.push((format!("{label}.snapshot_id"), clone));
+    }
+
     // --- Diagnostics ------------------------------------------------------
     for (index, diagnostic) in analysis.diagnostics.iter().enumerate() {
         let label = format!("diagnostics[{index}]");
@@ -593,7 +649,7 @@ fn every_normalized_field_is_visible_to_both_comparisons() {
     for relative in support::all_fixture_files() {
         let analysis = support::analyze_fixture(&relative);
         kinds_seen.insert(format!(
-            "{} scopes={} decls={} imports={} refs={} calls={} file_tests={} recovery={} diags={}",
+            "{} scopes={} decls={} imports={} refs={} calls={} file_tests={} recovery={} diags={} rxev={}",
             relative,
             analysis.scopes.len(),
             analysis.declarations.len(),
@@ -603,6 +659,7 @@ fn every_normalized_field_is_visible_to_both_comparisons() {
             analysis.file_test_evidence.len(),
             analysis.recovery_regions.len(),
             analysis.diagnostics.len(),
+            analysis.receiver_type_evidence.len(),
         ));
 
         let original_text = analysis.canonical_text();
@@ -645,6 +702,7 @@ fn the_completeness_sweep_covers_every_fact_kind() {
     let mut has_file_test_evidence = false;
     let mut has_recovery_region = false;
     let mut has_diagnostic_range = false;
+    let mut has_receiver_type_evidence = false;
     let mut has_optional_alias_range = false;
     let mut has_optional_module_range = false;
 
@@ -678,6 +736,7 @@ fn the_completeness_sweep_covers_every_fact_kind() {
             .diagnostics
             .iter()
             .any(|diagnostic| diagnostic.range.is_some());
+        has_receiver_type_evidence |= !analysis.receiver_type_evidence.is_empty();
     }
 
     for (present, what) in [
@@ -689,6 +748,7 @@ fn the_completeness_sweep_covers_every_fact_kind() {
         (has_file_test_evidence, "file-level test evidence"),
         (has_recovery_region, "recovery regions"),
         (has_diagnostic_range, "diagnostic ranges"),
+        (has_receiver_type_evidence, "receiver-type evidence"),
     ] {
         assert!(
             present,

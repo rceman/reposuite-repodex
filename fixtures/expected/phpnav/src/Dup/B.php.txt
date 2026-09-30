@@ -1,4 +1,4 @@
-file schema=3 path=phpnav/src/Dup/B.php lang=php bytes=111 lines=6 final_newline=true status=clean snapshot=snap-42150bdc02afd54c
+file schema=4 path=phpnav/src/Dup/B.php lang=php bytes=111 lines=6 final_newline=true status=clean snapshot=snap-42150bdc02afd54c
 scope 0 kind=file parent=- name=- range=0..111 (0:0..6:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Dup range=6..24 (1:0..1:18) header=- lang=php
 scope 2 kind=function parent=1 name=collide range=26..63 (3:0..3:37) header=- lang=php

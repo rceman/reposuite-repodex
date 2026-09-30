@@ -1,4 +1,4 @@
-file schema=3 path=go/calls.go lang=go bytes=307 lines=18 final_newline=true status=clean snapshot=snap-fe4c1f59b11f365a
+file schema=4 path=go/calls.go lang=go bytes=307 lines=18 final_newline=true status=clean snapshot=snap-fe4c1f59b11f365a
 scope 0 kind=file parent=- name=- range=0..307 (0:0..18:0) header=- lang=go
 scope 1 kind=function parent=0 name=helper range=52..95 (3:0..5:1) header=- lang=go
 scope 2 kind=function parent=0 name=calls range=97..306 (7:0..17:1) header=- lang=go

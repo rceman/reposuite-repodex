@@ -578,3 +578,75 @@ impl TestEvidenceKind {
         }
     }
 }
+
+/// Bounded receiver-type evidence: a source-written indication that a simple
+/// receiver (`$x` or `$this->p`) may carry a class type.
+///
+/// This is a *syntax* fact. It records that the source contains explicit type
+/// evidence for a receiver — a parameter type hint, a property type hint, or
+/// a literal `new`/`opaque` write — not that the runtime object definitely has
+/// that type. Ordering-sensitive consumers combine these records per lexical
+/// scope; nothing here claims control-flow knowledge.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReceiverTypeEvidence {
+    /// Index of this evidence inside its file analysis. Deterministic.
+    pub evidence_id: u32,
+    /// Local snapshot identifier of the source file this evidence came from.
+    pub snapshot_id: String,
+    pub language: LanguageId,
+    /// Path relative to the analysis root, always with `/` separators.
+    pub relative_path: String,
+    /// Lexical scope the evidence is written in: the callable scope for
+    /// parameters and writes, the class-body scope for property hints.
+    pub scope_id: u32,
+    pub kind: ReceiverEvidenceKind,
+    /// Receiver exactly as written at a use site: `$service`, `$repo` or
+    /// `$this->pages`.
+    pub receiver: String,
+    /// Range of the receiver token (`$x` or the `$this->p` access).
+    pub receiver_range: SourceRange,
+    /// The written type-ish text the evidence names: the type hint as written
+    /// (`?Repo`, `A|B`, `\App\X`, `self`), the class written after `new` for
+    /// literal writes, or the opaque RHS expression text for writes that are
+    /// not literal `new` (`$x = makeService()` records `makeService()`).
+    pub written: String,
+    /// Range of `written` (the type node, the `new` class name, or the RHS
+    /// expression).
+    pub written_range: SourceRange,
+    /// Range of the whole evidence-bearing syntax (the parameter element, the
+    /// property declaration, or the assignment expression).
+    pub evidence_range: SourceRange,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ReceiverEvidenceKind {
+    /// `function f(Service $x)` — a written parameter type hint.
+    ParameterTypeHint,
+    /// `private Service $s;` or a promoted constructor property — a written
+    /// property type hint belonging to the declaring class.
+    PropertyTypeHint,
+    /// `$x = new Foo(...)` — a literal `new` write to a local receiver.
+    LocalLiteralNew,
+    /// `$this->p = new Foo(...)` — a literal `new` write to a property of the
+    /// enclosing class.
+    PropertyLiteralNew,
+    /// `$x = <expr>` where `<expr>` is not a literal `new` — an opaque write
+    /// that invalidates earlier local type evidence.
+    LocalOpaqueWrite,
+    /// `$this->p = <expr>` where `<expr>` is not a literal `new`.
+    PropertyOpaqueWrite,
+}
+
+impl ReceiverEvidenceKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ReceiverEvidenceKind::ParameterTypeHint => "parameter_type_hint",
+            ReceiverEvidenceKind::PropertyTypeHint => "property_type_hint",
+            ReceiverEvidenceKind::LocalLiteralNew => "local_literal_new",
+            ReceiverEvidenceKind::PropertyLiteralNew => "property_literal_new",
+            ReceiverEvidenceKind::LocalOpaqueWrite => "local_opaque_write",
+            ReceiverEvidenceKind::PropertyOpaqueWrite => "property_opaque_write",
+        }
+    }
+}

@@ -1,4 +1,4 @@
-file schema=3 path=php/malformed.php lang=php bytes=191 lines=19 final_newline=true status=recovered snapshot=snap-b14047293965a5e9
+file schema=4 path=php/malformed.php lang=php bytes=191 lines=19 final_newline=true status=recovered snapshot=snap-b14047293965a5e9
 scope 0 kind=file parent=- name=- range=0..191 (0:0..19:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Malformed range=7..31 (2:0..2:24) header=- lang=php
 scope 2 kind=function parent=1 name=validBefore range=33..65 (4:0..6:1) header=- lang=php

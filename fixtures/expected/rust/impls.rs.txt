@@ -1,4 +1,4 @@
-file schema=3 path=rust/impls.rs lang=rust bytes=627 lines=40 final_newline=true status=clean snapshot=snap-a6fcf61097a5c4ae
+file schema=4 path=rust/impls.rs lang=rust bytes=627 lines=40 final_newline=true status=clean snapshot=snap-a6fcf61097a5c4ae
 scope 0 kind=file parent=- name=- range=0..627 (0:0..40:0) header=- lang=rust
 scope 1 kind=trait parent=0 name=Describe range=106..220 (5:0..11:1) header=106..121 (5:0..5:15) lang=rust
 scope 2 kind=method parent=1 name=kind range=162..218 (8:4..10:5) header=- lang=rust

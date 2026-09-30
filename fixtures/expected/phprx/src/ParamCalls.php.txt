@@ -1,0 +1,89 @@
+file schema=4 path=phprx/src/ParamCalls.php lang=php bytes=1621 lines=85 final_newline=true status=clean snapshot=snap-3462b42981cdc116
+scope 0 kind=file parent=- name=- range=0..1621 (0:0..85:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Rx range=6..23 (1:0..1:17) header=- lang=php
+scope 2 kind=class parent=1 name=ParamCaller range=74..1620 (6:0..84:1) header=74..92 (6:0..6:18) lang=php
+scope 3 kind=method parent=2 name=direct range=98..180 (7:4..9:5) header=- lang=php
+scope 4 kind=method parent=2 name=aliased range=186..250 (11:4..13:5) header=- lang=php
+scope 5 kind=method parent=2 name=qualified range=256..332 (15:4..17:5) header=- lang=php
+scope 6 kind=method parent=2 name=nullable range=338..407 (19:4..21:5) header=- lang=php
+scope 7 kind=method parent=2 name=unioned range=413..506 (23:4..26:5) header=- lang=php
+scope 8 kind=method parent=2 name=intersected range=512..588 (28:4..30:5) header=- lang=php
+scope 9 kind=method parent=2 name=builtin range=594..658 (32:4..34:5) header=- lang=php
+scope 10 kind=method parent=2 name=selfTyped range=664..734 (36:4..38:5) header=- lang=php
+scope 11 kind=method parent=2 name=parentTyped range=740..816 (40:4..42:5) header=- lang=php
+scope 12 kind=method parent=2 name=overwritten range=822..918 (44:4..47:5) header=- lang=php
+scope 13 kind=method parent=2 name=reassigned range=924..1018 (49:4..52:5) header=- lang=php
+scope 14 kind=method parent=2 name=sequential range=1024..1134 (54:4..58:5) header=- lang=php
+scope 15 kind=method parent=2 name=branched range=1140..1314 (60:4..67:5) header=- lang=php
+scope 16 kind=method parent=2 name=lateOpaque range=1320..1428 (69:4..73:5) header=- lang=php
+scope 17 kind=method parent=2 name=external range=1434..1501 (75:4..77:5) header=- lang=php
+scope 18 kind=method parent=2 name=duplicated range=1507..1578 (79:4..81:5) header=- lang=php
+scope 19 kind=method parent=2 name=helper range=1584..1618 (83:4..83:38) header=- lang=php
+decl 0 kind=namespace name=App\\Rx scope=0 flags=[] range=6..23 (1:0..1:17) name_range=16..22 (1:10..1:16) body=- lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 1 kind=class name=ParamCaller scope=1 flags=[] range=74..1620 (6:0..84:1) name_range=80..91 (6:6..6:17) body=92..1620 (6:18..84:1) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 2 kind=method name=direct scope=2 flags=[] range=98..180 (7:4..9:5) name_range=114..120 (7:20..7:26) body=145..180 (7:51..9:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 3 kind=method name=aliased scope=2 flags=[] range=186..250 (11:4..13:5) name_range=202..209 (11:20..11:27) body=224..250 (11:42..13:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 4 kind=method name=qualified scope=2 flags=[] range=256..332 (15:4..17:5) name_range=272..281 (15:20..15:29) body=305..332 (15:53..17:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 5 kind=method name=nullable scope=2 flags=[] range=338..407 (19:4..21:5) name_range=354..362 (19:20..19:28) body=380..407 (19:46..21:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 6 kind=method name=unioned scope=2 flags=[] range=413..506 (23:4..26:5) name_range=429..436 (23:20..23:27) body=461..506 (23:52..26:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 7 kind=method name=intersected scope=2 flags=[] range=512..588 (28:4..30:5) name_range=528..539 (28:20..28:31) body=561..588 (28:53..30:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 8 kind=method name=builtin scope=2 flags=[] range=594..658 (32:4..34:5) name_range=610..617 (32:20..32:27) body=632..658 (32:42..34:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 9 kind=method name=selfTyped scope=2 flags=[] range=664..734 (36:4..38:5) name_range=680..689 (36:20..36:29) body=705..734 (36:45..38:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 10 kind=method name=parentTyped scope=2 flags=[] range=740..816 (40:4..42:5) name_range=756..767 (40:20..40:31) body=785..816 (40:49..42:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 11 kind=method name=overwritten scope=2 flags=[] range=822..918 (44:4..47:5) name_range=838..849 (44:20..44:31) body=868..918 (44:50..47:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 12 kind=method name=reassigned scope=2 flags=[] range=924..1018 (49:4..52:5) name_range=940..950 (49:20..49:30) body=969..1018 (49:49..52:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 13 kind=method name=sequential scope=2 flags=[] range=1024..1134 (54:4..58:5) name_range=1040..1050 (54:20..54:30) body=1059..1134 (54:39..58:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 14 kind=method name=branched scope=2 flags=[] range=1140..1314 (60:4..67:5) name_range=1156..1164 (60:20..60:28) body=1183..1314 (60:47..67:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 15 kind=method name=lateOpaque scope=2 flags=[] range=1320..1428 (69:4..73:5) name_range=1336..1346 (69:20..69:30) body=1355..1428 (69:39..73:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 16 kind=method name=external scope=2 flags=[] range=1434..1501 (75:4..77:5) name_range=1450..1458 (75:20..75:28) body=1474..1501 (75:44..77:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 17 kind=method name=duplicated scope=2 flags=[] range=1507..1578 (79:4..81:5) name_range=1523..1533 (79:20..79:30) body=1554..1578 (79:51..81:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 18 kind=method name=helper scope=2 flags=[] range=1584..1618 (83:4..83:38) name_range=1601..1607 (83:21..83:27) body=1616..1618 (83:36..83:38) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=1 range=25..51 (3:0..3:26) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 text=use App\\Rx\\Service as Svc; items=[{target=App\\Rx\\Service target_range=29..43 (3:4..3:18) alias=Svc alias_range=47..50 (3:22..3:25) wildcard=false cat=normal range=29..50 (3:4..3:25)}]
+import 1 form=single module=- module_range=- relative=- scope=1 range=52..72 (4:0..4:20) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 text=use Vendor\\Pkg\\Tool; items=[{target=Vendor\\Pkg\\Tool target_range=56..71 (4:4..4:19) alias=- alias_range=- wildcard=false cat=normal range=56..71 (4:4..4:19)}]
+call 0 form=member_selector callee=$service->handle scope=3 expr=155..173 (8:8..8:26) callee_range=155..171 (8:8..8:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$s->run scope=4 expr=234..243 (12:8..12:17) callee_range=234..241 (12:8..12:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=member_selector callee=$r->save scope=5 expr=315..325 (16:8..16:18) callee_range=315..323 (16:8..16:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=member_selector callee=$c?->get scope=6 expr=390..400 (20:8..20:18) callee_range=390..398 (20:8..20:16) type_args=- type_args_range=- dyn=false nullsafe=true
+call 4 form=member_selector callee=$x->run scope=7 expr=471..480 (24:8..24:17) callee_range=471..478 (24:8..24:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=member_selector callee=$x->get scope=7 expr=490..499 (25:8..25:17) callee_range=490..497 (25:8..25:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 6 form=member_selector callee=$x->save scope=8 expr=571..581 (29:8..29:18) callee_range=571..579 (29:8..29:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 7 form=member_selector callee=$n->abs scope=9 expr=642..651 (33:8..33:17) callee_range=642..649 (33:8..33:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 8 form=member_selector callee=$s->helper scope=10 expr=715..727 (37:8..37:20) callee_range=715..725 (37:8..37:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 9 form=member_selector callee=$p->anything scope=11 expr=795..809 (41:8..41:22) callee_range=795..807 (41:8..41:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 10 form=plain_name callee=dynMake scope=12 expr=883..892 (45:13..45:22) callee_range=883..890 (45:13..45:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 11 form=member_selector callee=$x->run scope=12 expr=902..911 (46:8..46:17) callee_range=902..909 (46:8..46:15) type_args=- type_args_range=- dyn=false nullsafe=false
+call 12 form=explicit_construction callee=Alt scope=13 expr=984..993 (50:13..50:22) callee_range=988..991 (50:17..50:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 13 form=member_selector callee=$x->go scope=13 expr=1003..1011 (51:8..51:16) callee_range=1003..1009 (51:8..51:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 14 form=explicit_construction callee=Alt scope=14 expr=1074..1083 (55:13..55:22) callee_range=1078..1081 (55:17..55:20) type_args=- type_args_range=- dyn=false nullsafe=false
+call 15 form=explicit_construction callee=Local scope=14 expr=1098..1109 (56:13..56:24) callee_range=1102..1107 (56:17..56:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 16 form=member_selector callee=$x->go scope=14 expr=1119..1127 (57:8..57:16) callee_range=1119..1125 (57:8..57:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 17 form=explicit_construction callee=Alt scope=15 expr=1223..1232 (62:17..62:26) callee_range=1227..1230 (62:21..62:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 18 form=explicit_construction callee=Local scope=15 expr=1268..1279 (64:17..64:28) callee_range=1272..1277 (64:21..64:26) type_args=- type_args_range=- dyn=false nullsafe=false
+call 19 form=member_selector callee=$x->go scope=15 expr=1299..1307 (66:8..66:16) callee_range=1299..1305 (66:8..66:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 20 form=explicit_construction callee=Local scope=16 expr=1370..1381 (70:13..70:24) callee_range=1374..1379 (70:17..70:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 21 form=plain_name callee=weird scope=16 expr=1396..1403 (71:13..71:20) callee_range=1396..1401 (71:13..71:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 22 form=member_selector callee=$x->go scope=16 expr=1413..1421 (72:8..72:16) callee_range=1413..1419 (72:8..72:14) type_args=- type_args_range=- dyn=false nullsafe=false
+call 23 form=member_selector callee=$t->work scope=17 expr=1484..1494 (76:8..76:18) callee_range=1484..1492 (76:8..76:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 24 form=member_selector callee=$t->m scope=18 expr=1564..1571 (80:8..80:15) callee_range=1564..1569 (80:8..80:13) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$service scope=3 receiver_range=129..137 (7:35..7:43)                  written=Service written_range=121..128 (7:27..7:34) evidence_range=121..137 (7:27..7:43) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 1 kind=parameter_type_hint receiver=$s scope=4 receiver_range=214..216 (11:32..11:34)                  written=Svc written_range=210..213 (11:28..11:31) evidence_range=210..216 (11:28..11:34) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 2 kind=parameter_type_hint receiver=$r scope=5 receiver_range=295..297 (15:43..15:45)                  written=\\App\\Rx\\Repo written_range=282..294 (15:30..15:42) evidence_range=282..297 (15:30..15:45) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 3 kind=parameter_type_hint receiver=$c scope=6 receiver_range=370..372 (19:36..19:38)                  written=?Cache written_range=363..369 (19:29..19:35) evidence_range=363..372 (19:29..19:38) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 4 kind=parameter_type_hint receiver=$x scope=7 receiver_range=451..453 (23:42..23:44)                  written=Service|Cache written_range=437..450 (23:28..23:41) evidence_range=437..453 (23:28..23:44) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 5 kind=parameter_type_hint receiver=$x scope=8 receiver_range=551..553 (28:43..28:45)                  written=Repo&Cache written_range=540..550 (28:32..28:42) evidence_range=540..553 (28:32..28:45) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 6 kind=parameter_type_hint receiver=$n scope=9 receiver_range=622..624 (32:32..32:34)                  written=int written_range=618..621 (32:28..32:31) evidence_range=618..624 (32:28..32:34) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 7 kind=parameter_type_hint receiver=$s scope=10 receiver_range=695..697 (36:35..36:37)                  written=self written_range=690..694 (36:30..36:34) evidence_range=690..697 (36:30..36:37) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 8 kind=parameter_type_hint receiver=$p scope=11 receiver_range=775..777 (40:39..40:41)                  written=parent written_range=768..774 (40:32..40:38) evidence_range=768..777 (40:32..40:41) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 9 kind=parameter_type_hint receiver=$x scope=12 receiver_range=858..860 (44:40..44:42)                  written=Service written_range=850..857 (44:32..44:39) evidence_range=850..860 (44:32..44:42) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 10 kind=local_opaque_write receiver=$x scope=12 receiver_range=878..880 (45:8..45:10)                  written=dynMake() written_range=883..892 (45:13..45:22) evidence_range=878..892 (45:8..45:22) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 11 kind=parameter_type_hint receiver=$x scope=13 receiver_range=959..961 (49:39..49:41)                  written=Service written_range=951..958 (49:31..49:38) evidence_range=951..961 (49:31..49:41) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 12 kind=local_literal_new receiver=$x scope=13 receiver_range=979..981 (50:8..50:10)                  written=Alt written_range=988..991 (50:17..50:20) evidence_range=979..993 (50:8..50:22) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 13 kind=local_literal_new receiver=$x scope=14 receiver_range=1069..1071 (55:8..55:10)                  written=Alt written_range=1078..1081 (55:17..55:20) evidence_range=1069..1083 (55:8..55:22) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 14 kind=local_literal_new receiver=$x scope=14 receiver_range=1093..1095 (56:8..56:10)                  written=Local written_range=1102..1107 (56:17..56:22) evidence_range=1093..1109 (56:8..56:24) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 15 kind=parameter_type_hint receiver=$flag scope=15 receiver_range=1170..1175 (60:34..60:39)                  written=bool written_range=1165..1169 (60:29..60:33) evidence_range=1165..1175 (60:29..60:39) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 16 kind=local_literal_new receiver=$x scope=15 receiver_range=1218..1220 (62:12..62:14)                  written=Alt written_range=1227..1230 (62:21..62:24) evidence_range=1218..1232 (62:12..62:26) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 17 kind=local_literal_new receiver=$x scope=15 receiver_range=1263..1265 (64:12..64:14)                  written=Local written_range=1272..1277 (64:21..64:26) evidence_range=1263..1279 (64:12..64:28) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 18 kind=local_literal_new receiver=$x scope=16 receiver_range=1365..1367 (70:8..70:10)                  written=Local written_range=1374..1379 (70:17..70:22) evidence_range=1365..1381 (70:8..70:24) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 19 kind=local_opaque_write receiver=$x scope=16 receiver_range=1391..1393 (71:8..71:10)                  written=weird() written_range=1396..1403 (71:13..71:20) evidence_range=1391..1403 (71:8..71:20) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 20 kind=parameter_type_hint receiver=$t scope=17 receiver_range=1464..1466 (75:34..75:36)                  written=Tool written_range=1459..1463 (75:29..75:33) evidence_range=1459..1466 (75:29..75:36) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116
+recv_evidence 21 kind=parameter_type_hint receiver=$t scope=18 receiver_range=1544..1546 (79:41..79:43)                  written=Dup\\Thing written_range=1534..1543 (79:31..79:40) evidence_range=1534..1546 (79:31..79:43) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116

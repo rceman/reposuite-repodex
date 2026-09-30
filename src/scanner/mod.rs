@@ -543,6 +543,7 @@ mod tests {
             references: Vec::new(),
             calls: Vec::new(),
             bindings: Vec::new(),
+            receiver_type_evidence: Vec::new(),
             file_test_evidence: Vec::new(),
             recovery_regions: Vec::new(),
         }

@@ -289,14 +289,26 @@ fn this_method_boundary() {
 fn negative_controls_no_false_candidates() {
     let temp = TempDir::new("php-cand");
     let index = candidates_index(&temp);
+    // `Repo $repo` is a parameter type hint — V1->V2: typed receiver now
+    // produces bounded candidates (asserted fully in php_receiver_type.rs).
+    for (written, rule) in [
+        ("$repo->save", "src/Service/Repo.php#6:method:save"),
+        ("$repo?->save", "src/Service/Repo.php#6:method:save"),
+    ] {
+        let r = record_by(&index, NEG, written);
+        assert_eq!(
+            r.rule_id,
+            candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE
+        );
+        assert_eq!(r.outcome.as_str(), "single_candidate", "{written}");
+        assert!(targets(r).contains(rule));
+    }
     for (written, reason) in [
-        ("$repo->save", "receiver_type_unavailable"),
-        ("$repo?->save", "receiver_type_unavailable"),
         ("$this->{$method}", "dynamic_member_name"),
         ("$this->$method", "dynamic_member_name"),
         ("Helper::{$method}", "dynamic_scope_or_member"),
-        // `$this->pages->renderHome` dispatches on the property value, not
-        // `$this` — the receiver type is unavailable.
+        // `$this->pages->renderHome`: no `pages` property hint/write exists
+        // in `Negatives` — the receiver type remains unavailable.
         ("$this->pages->renderHome", "receiver_type_unavailable"),
     ] {
         let r = record_by(&index, NEG, written);
@@ -455,8 +467,8 @@ fn candidate_abi_and_policy_versioned() {
     // §40: PHP rules participate in artifact identity — an artifact built
     // without them cannot be silently reused.
     use repodex::candidates::model::{CANDIDATE_RULE_ABI_VERSION, POLICY_VERSION_PHP_CALL};
-    assert_eq!(CANDIDATE_RULE_ABI_VERSION, 8);
-    assert_eq!(POLICY_VERSION_PHP_CALL, 1);
+    assert_eq!(CANDIDATE_RULE_ABI_VERSION, 9);
+    assert_eq!(POLICY_VERSION_PHP_CALL, 2);
     let fp = repodex::candidates::model::CandidateFingerprint::current();
-    assert!(fp.text.contains("php=1"), "fingerprint: {}", fp.text);
+    assert!(fp.text.contains("php=2"), "fingerprint: {}", fp.text);
 }

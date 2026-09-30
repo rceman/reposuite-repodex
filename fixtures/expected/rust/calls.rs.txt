@@ -1,4 +1,4 @@
-file schema=3 path=rust/calls.rs lang=rust bytes=352 lines=15 final_newline=true status=clean snapshot=snap-6b6e75240ccee0d4
+file schema=4 path=rust/calls.rs lang=rust bytes=352 lines=15 final_newline=true status=clean snapshot=snap-6b6e75240ccee0d4
 scope 0 kind=file parent=- name=- range=0..352 (0:0..15:0) header=- lang=rust
 scope 1 kind=function parent=0 name=callees range=39..351 (2:0..14:1) header=- lang=rust
 scope 2 kind=closure parent=1 name=- range=264..268 (10:18..10:22) header=- lang=rust

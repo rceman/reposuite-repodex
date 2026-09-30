@@ -1,4 +1,4 @@
-file schema=3 path=crossfile/python/pkg/sub/__init__.py lang=python bytes=24 lines=2 final_newline=true status=clean snapshot=snap-b6cfd24cdb8ea522
+file schema=4 path=crossfile/python/pkg/sub/__init__.py lang=python bytes=24 lines=2 final_newline=true status=clean snapshot=snap-b6cfd24cdb8ea522
 scope 0 kind=file parent=- name=- range=0..24 (0:0..2:0) header=- lang=python
 scope 1 kind=function parent=0 name=sibling range=0..23 (0:0..1:8) header=- lang=python
 decl 0 kind=function name=sibling scope=0 flags=[] range=0..23 (0:0..1:8) name_range=4..11 (0:4..0:11) body=19..23 (1:4..1:8) lang=python path=crossfile/python/pkg/sub/__init__.py snapshot=snap-b6cfd24cdb8ea522 tests=[]

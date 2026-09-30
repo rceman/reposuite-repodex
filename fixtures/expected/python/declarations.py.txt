@@ -1,4 +1,4 @@
-file schema=3 path=python/declarations.py lang=python bytes=836 lines=50 final_newline=true status=clean snapshot=snap-0007baa311352641
+file schema=4 path=python/declarations.py lang=python bytes=836 lines=50 final_newline=true status=clean snapshot=snap-0007baa311352641
 scope 0 kind=file parent=- name=- range=0..836 (0:0..50:0) header=- lang=python
 scope 1 kind=class parent=0 name=Base range=319..556 (17:0..29:12) header=- lang=python
 scope 2 kind=method parent=1 name=__init__ range=390..459 (22:4..23:26) header=- lang=python

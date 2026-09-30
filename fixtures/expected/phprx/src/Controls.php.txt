@@ -1,0 +1,27 @@
+file schema=4 path=phprx/src/Controls.php lang=php bytes=409 lines=21 final_newline=true status=clean snapshot=snap-c363cfbae64a3ac1
+scope 0 kind=file parent=- name=- range=0..409 (0:0..21:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Rx range=6..23 (1:0..1:17) header=- lang=php
+scope 2 kind=class parent=1 name=Controls range=25..408 (3:0..20:1) header=25..40 (3:0..3:15) lang=php
+scope 3 kind=method parent=2 name=unknown range=46..121 (4:4..6:5) header=- lang=php
+scope 4 kind=method parent=2 name=dynamic range=127..207 (8:4..10:5) header=- lang=php
+scope 5 kind=method parent=2 name=chained range=213..294 (12:4..14:5) header=- lang=php
+scope 6 kind=method parent=2 name=arrow range=300..406 (16:4..19:5) header=- lang=php
+scope 7 kind=arrow_function parent=6 name=- range=345..372 (17:13..17:40) header=- lang=php
+decl 0 kind=namespace name=App\\Rx scope=0 flags=[] range=6..23 (1:0..1:17) name_range=16..22 (1:10..1:16) body=- lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+decl 1 kind=class name=Controls scope=1 flags=[] range=25..408 (3:0..20:1) name_range=31..39 (3:6..3:14) body=40..408 (3:15..20:1) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+decl 2 kind=method name=unknown scope=2 flags=[] range=46..121 (4:4..6:5) name_range=62..69 (4:20..4:27) body=86..121 (4:44..6:5) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+decl 3 kind=method name=dynamic scope=2 flags=[] range=127..207 (8:4..10:5) name_range=143..150 (8:20..8:27) body=180..207 (8:57..10:5) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+decl 4 kind=method name=chained scope=2 flags=[] range=213..294 (12:4..14:5) name_range=229..236 (12:20..12:27) body=255..294 (12:46..14:5) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+decl 5 kind=method name=arrow scope=2 flags=[] range=300..406 (16:4..19:5) name_range=316..321 (16:20..16:25) body=330..406 (16:34..19:5) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1 tests=[]
+call 0 form=member_selector callee=$service->handle scope=3 expr=96..114 (5:8..5:26) callee_range=96..112 (5:8..5:24) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$s->{$m} scope=4 expr=190..200 (9:8..9:18) callee_range=190..198 (9:8..9:16) type_args=- type_args_range=- dyn=true nullsafe=false
+call 2 form=member_selector callee=$s->factory scope=5 expr=265..278 (13:8..13:21) callee_range=265..276 (13:8..13:19) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=member_selector callee=$s->factory()->build scope=5 expr=265..287 (13:8..13:30) callee_range=265..285 (13:8..13:28) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=member_selector callee=$s->run scope=7 expr=363..372 (17:31..17:40) callee_range=363..370 (17:31..17:38) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=indirect callee=$f scope=6 expr=382..399 (18:8..18:25) callee_range=382..384 (18:8..18:10) type_args=- type_args_range=- dyn=true nullsafe=false
+call 6 form=explicit_construction callee=Service scope=6 expr=385..398 (18:11..18:24) callee_range=389..396 (18:15..18:22) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$s scope=4 receiver_range=159..161 (8:36..8:38)                  written=Service written_range=151..158 (8:28..8:35) evidence_range=151..161 (8:28..8:38) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1
+recv_evidence 1 kind=parameter_type_hint receiver=$m scope=4 receiver_range=170..172 (8:47..8:49)                  written=string written_range=163..169 (8:40..8:46) evidence_range=163..172 (8:40..8:49) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1
+recv_evidence 2 kind=parameter_type_hint receiver=$s scope=5 receiver_range=245..247 (12:36..12:38)                  written=Service written_range=237..244 (12:28..12:35) evidence_range=237..247 (12:28..12:38) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1
+recv_evidence 3 kind=local_opaque_write receiver=$f scope=6 receiver_range=340..342 (17:8..17:10)                  written=fn(Service $s) => $s->run() written_range=345..372 (17:13..17:40) evidence_range=340..372 (17:8..17:40) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1
+recv_evidence 4 kind=parameter_type_hint receiver=$s scope=7 receiver_range=356..358 (17:24..17:26)                  written=Service written_range=348..355 (17:16..17:23) evidence_range=348..358 (17:16..17:26) lang=php path=phprx/src/Controls.php snapshot=snap-c363cfbae64a3ac1

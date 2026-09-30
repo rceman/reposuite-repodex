@@ -1,4 +1,4 @@
-file schema=3 path=callcandidates/rust/src/lonely.rs lang=rust bytes=27 lines=3 final_newline=true status=clean snapshot=snap-c02b7d8ee3c7955d
+file schema=4 path=callcandidates/rust/src/lonely.rs lang=rust bytes=27 lines=3 final_newline=true status=clean snapshot=snap-c02b7d8ee3c7955d
 scope 0 kind=file parent=- name=- range=0..27 (0:0..3:0) header=- lang=rust
 scope 1 kind=function parent=0 name=run range=0..26 (0:0..2:1) header=- lang=rust
 decl 0 kind=function name=run scope=0 flags=[] range=0..26 (0:0..2:1) name_range=3..6 (0:3..0:6) body=9..26 (0:9..2:1) lang=rust path=callcandidates/rust/src/lonely.rs snapshot=snap-c02b7d8ee3c7955d tests=[]

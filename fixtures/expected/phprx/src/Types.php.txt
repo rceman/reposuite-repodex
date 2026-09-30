@@ -1,0 +1,32 @@
+file schema=4 path=phprx/src/Types.php lang=php bytes=466 lines=28 final_newline=true status=clean snapshot=snap-1988259651047202
+scope 0 kind=file parent=- name=- range=0..466 (0:0..28:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Rx range=6..23 (1:0..1:17) header=- lang=php
+scope 2 kind=class parent=1 name=Repo range=25..125 (3:0..6:1) header=25..36 (3:0..3:11) lang=php
+scope 3 kind=method parent=2 name=save range=42..73 (4:4..4:35) header=- lang=php
+scope 4 kind=method parent=2 name=query range=78..123 (5:4..5:49) header=- lang=php
+scope 5 kind=class parent=1 name=Cache range=127..194 (8:0..10:1) header=127..139 (8:0..8:12) lang=php
+scope 6 kind=method parent=5 name=get range=145..192 (9:4..9:51) header=- lang=php
+scope 7 kind=class parent=1 name=Service range=196..296 (12:0..15:1) header=196..210 (12:0..12:14) lang=php
+scope 8 kind=method parent=7 name=run range=216..246 (13:4..13:34) header=- lang=php
+scope 9 kind=method parent=7 name=handle range=251..294 (14:4..14:47) header=- lang=php
+scope 10 kind=class parent=1 name=Pages range=298..365 (17:0..19:1) header=298..310 (17:0..17:12) lang=php
+scope 11 kind=method parent=10 name=render range=316..363 (18:4..18:51) header=- lang=php
+scope 12 kind=class parent=1 name=Local range=367..416 (21:0..23:1) header=367..379 (21:0..21:12) lang=php
+scope 13 kind=method parent=12 name=go range=385..414 (22:4..22:33) header=- lang=php
+scope 14 kind=class parent=1 name=Alt range=418..465 (25:0..27:1) header=418..428 (25:0..25:10) lang=php
+scope 15 kind=method parent=14 name=go range=434..463 (26:4..26:33) header=- lang=php
+decl 0 kind=namespace name=App\\Rx scope=0 flags=[] range=6..23 (1:0..1:17) name_range=16..22 (1:10..1:16) body=- lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 1 kind=class name=Repo scope=1 flags=[] range=25..125 (3:0..6:1) name_range=31..35 (3:6..3:10) body=36..125 (3:11..6:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 2 kind=method name=save scope=2 flags=[] range=42..73 (4:4..4:35) name_range=58..62 (4:20..4:24) body=71..73 (4:33..4:35) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 3 kind=method name=query scope=2 flags=[] range=78..123 (5:4..5:49) name_range=94..99 (5:20..5:25) body=109..123 (5:35..5:49) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 4 kind=class name=Cache scope=1 flags=[] range=127..194 (8:0..10:1) name_range=133..138 (8:6..8:11) body=139..194 (8:12..10:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 5 kind=method name=get scope=5 flags=[] range=145..192 (9:4..9:51) name_range=161..164 (9:20..9:23) body=176..192 (9:35..9:51) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 6 kind=class name=Service scope=1 flags=[] range=196..296 (12:0..15:1) name_range=202..209 (12:6..12:13) body=210..296 (12:14..15:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 7 kind=method name=run scope=7 flags=[] range=216..246 (13:4..13:34) name_range=232..235 (13:20..13:23) body=244..246 (13:32..13:34) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 8 kind=method name=handle scope=7 flags=[] range=251..294 (14:4..14:47) name_range=267..273 (14:20..14:26) body=281..294 (14:34..14:47) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 9 kind=class name=Pages scope=1 flags=[] range=298..365 (17:0..19:1) name_range=304..309 (17:6..17:11) body=310..365 (17:12..19:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 10 kind=method name=render scope=10 flags=[] range=316..363 (18:4..18:51) name_range=332..338 (18:20..18:26) body=349..363 (18:37..18:51) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 11 kind=class name=Local scope=1 flags=[] range=367..416 (21:0..23:1) name_range=373..378 (21:6..21:11) body=379..416 (21:12..23:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 12 kind=method name=go scope=12 flags=[] range=385..414 (22:4..22:33) name_range=401..403 (22:20..22:22) body=412..414 (22:31..22:33) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 13 kind=class name=Alt scope=1 flags=[] range=418..465 (25:0..27:1) name_range=424..427 (25:6..25:9) body=428..465 (25:10..27:1) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]
+decl 14 kind=method name=go scope=14 flags=[] range=434..463 (26:4..26:33) name_range=450..452 (26:20..26:22) body=461..463 (26:31..26:33) lang=php path=phprx/src/Types.php snapshot=snap-1988259651047202 tests=[]

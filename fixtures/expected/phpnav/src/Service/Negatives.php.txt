@@ -1,4 +1,4 @@
-file schema=3 path=phpnav/src/Service/Negatives.php lang=php bytes=1062 lines=20 final_newline=true status=clean snapshot=snap-eb67cedcaf17e894
+file schema=4 path=phpnav/src/Service/Negatives.php lang=php bytes=1062 lines=20 final_newline=true status=clean snapshot=snap-eb67cedcaf17e894
 scope 0 kind=file parent=- name=- range=0..1062 (0:0..20:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=6..28 (1:0..1:22) header=- lang=php
 scope 2 kind=class parent=1 name=Negatives range=30..1061 (3:0..19:1) header=30..46 (3:0..3:16) lang=php
@@ -19,3 +19,9 @@ call 5 form=member_selector callee=$this->dyn scope=3 expr=521..533 (10:8..10:20
 call 6 form=member_selector callee=$this->pages->renderHome scope=3 expr=595..621 (11:8..11:34) callee_range=595..619 (11:8..11:32) type_args=- type_args_range=- dyn=false nullsafe=false
 call 7 form=static_scoped callee=Helper::{$method} scope=3 expr=671..690 (12:8..12:27) callee_range=671..688 (12:8..12:25) type_args=- type_args_range=- dyn=true nullsafe=false
 call 8 form=explicit_construction callee=$cls scope=3 expr=779..789 (14:8..14:18) callee_range=783..787 (14:12..14:16) type_args=- type_args_range=- dyn=true nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$repo scope=3 receiver_range=77..82 (4:29..4:34)                  written=Repo written_range=72..76 (4:24..4:28) evidence_range=72..82 (4:24..4:34) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894
+recv_evidence 1 kind=parameter_type_hint receiver=$cb scope=3 receiver_range=93..96 (4:45..4:48)                  written=callable written_range=84..92 (4:36..4:44) evidence_range=84..96 (4:36..4:48) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894
+recv_evidence 2 kind=parameter_type_hint receiver=$method scope=3 receiver_range=105..112 (4:57..4:64)                  written=string written_range=98..104 (4:50..4:56) evidence_range=98..112 (4:50..4:64) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894
+recv_evidence 3 kind=local_opaque_write receiver=$cls scope=3 receiver_range=751..755 (13:8..13:12)                  written=Repo::class written_range=758..769 (13:15..13:26) evidence_range=751..769 (13:8..13:26) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894
+recv_evidence 4 kind=local_opaque_write receiver=$f scope=3 receiver_range=862..864 (15:8..15:10)                  written=slugify(...) written_range=867..879 (15:13..15:25) evidence_range=862..879 (15:8..15:25) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894
+recv_evidence 5 kind=local_opaque_write receiver=$g scope=3 receiver_range=944..946 (16:8..16:10)                  written=Helper::run(...) written_range=949..965 (16:13..16:29) evidence_range=944..965 (16:8..16:29) lang=php path=phpnav/src/Service/Negatives.php snapshot=snap-eb67cedcaf17e894

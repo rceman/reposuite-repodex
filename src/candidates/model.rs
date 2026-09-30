@@ -68,7 +68,11 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 ///   (`php.call.*_candidate`): namespace/imported free functions, literal
 ///   construction to class declarations, static/self/`$this` direct methods.
 ///   Candidate target kinds now include `function`, `class` and `method`.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 8;
+/// * `9` — `php.call.typed_receiver_method_candidate`
+///   (PHP_BOUNDED_RECEIVER_TYPE_EVIDENCE_V1): bounded parameter/property type
+///   hints and literal `new` writes produce receiver class candidates; direct
+///   methods only. Consumes the normalized `receiver_type_evidence` fact.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 9;
 
 /// Per-language candidate-policy versions.
 ///
@@ -109,7 +113,15 @@ pub const POLICY_VERSION_GO_CALL: u32 = 2;
 ///   literal static/self/`$this` calls to directly declared `method`s only.
 ///   `static::`/`parent::`/unknown-receiver/dynamic names are `OutOfScope`.
 ///   PHP case-insensitivity for class/function/method names is applied.
-pub const POLICY_VERSION_PHP_CALL: u32 = 1;
+/// * `2` — bounded receiver-type evidence (PHP_BOUNDED_RECEIVER_TYPE_
+///   EVIDENCE_V1): `$x->m()` and `$this->p->m()` calls gain candidates from
+///   written parameter/property type hints and literal `new` writes.
+///   `?T`, unions `A|B` (all named class arms), `self`; builtins, `static`,
+///   `parent` and `A&B` intersections yield no candidates. Parameter evidence
+///   applies only while no write to the receiver precedes the call; literal
+///   `new` writes union conservatively, and a nearest opaque write leaves the
+///   type unknown. Still `CANDIDATE`, never resolved dispatch.
+pub const POLICY_VERSION_PHP_CALL: u32 = 2;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -180,6 +192,13 @@ pub mod candidate_rule {
     pub const PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE: &str =
         "php.call.lexical_this_method_candidate";
 
+    /// `$x->m()` / `$this->p->m()` where the receiver carries bounded type
+    /// evidence (parameter/property type hint, literal `new` write) -> the
+    /// resolved class candidates' directly declared methods. Unknown or
+    /// opaquely-overwritten receivers stay `OutOfScope`.
+    pub const PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE: &str =
+        "php.call.typed_receiver_method_candidate";
+
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
         RUST_CALL_IMPORTED_FUNCTION_CANDIDATE,
@@ -192,6 +211,7 @@ pub mod candidate_rule {
         PHP_CALL_STATIC_METHOD_CANDIDATE,
         PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE,
         PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE,
+        PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
     ];
 }
 
@@ -876,6 +896,29 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "$obj?->m() nullsafe on unknown receiver".to_string(),
                 "$this->$m() dynamic member name".to_string(),
                 "inherited/trait-adapted/magic methods".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "Bounded receiver-type method candidates: `$x->m()` and                   `$this->p->m()` where the receiver carries written type                   evidence (parameter/property type hints, literal `new`                   writes) resolve through that evidence's class candidates."
+                .to_string(),
+            in_scope_calls: "a `member_call_expression`/`nullsafe_member_call_expression`                          with a literal `name` whose receiver is a simple variable                          (`$x`) or a literal `$this->prop` property access."
+                .to_string(),
+            candidate_declarations: "`method` declarations directly declared on                                  each bounded receiver class candidate                                  (case-insensitive). Receiver classes come from written                                  type hints resolved by PHP name rules, or from literal                                  `new` writes — never from inference or scanning."
+                .to_string(),
+            selection_rule: "local variable: the callable-scope parameter type                          hint applies only while no assignment to that receiver                          precedes the call; with writes, union the literal `new`                          classes written after the last opaque write (a nearest                          opaque write makes the type unknown). property: union                          of the declared/promoted type hint's class arms and all                          literal `new` writes to that property in the same class.                          `?T` -> `T`; `A|B` unions -> all named class arms;                          builtins/`static`/`parent`/`A&B` -> no candidate."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — evidence the                                    receiver MAY carry the type, not a dispatch proof."
+                .to_string(),
+            no_candidate_meaning: "type evidence existed but resolved no                                indexed class, or no directly declared method of that                                name — never 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "untyped/unknown receivers (OutOfScope receiver_type_unavailable)".to_string(),
+                "receivers opaquely reassigned before the call".to_string(),
+                "intersection types and `static`/`parent` type hints".to_string(),
+                "inherited/trait-adapted/magic methods".to_string(),
+                "return-type propagation through chained calls".to_string(),
             ],
         },
     ]

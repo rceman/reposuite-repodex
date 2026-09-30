@@ -1,4 +1,4 @@
-file schema=3 path=php/tests.php lang=php bytes=404 lines=29 final_newline=true status=clean snapshot=snap-637da2bdd5a67d0d
+file schema=4 path=php/tests.php lang=php bytes=404 lines=29 final_newline=true status=clean snapshot=snap-637da2bdd5a67d0d
 scope 0 kind=file parent=- name=- range=0..404 (0:0..29:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Tests range=7..27 (2:0..2:20) header=- lang=php
 scope 2 kind=class parent=1 name=ServiceTest range=101..322 (7:0..21:1) header=101..142 (7:0..8:0) lang=php

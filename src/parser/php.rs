@@ -14,7 +14,7 @@ use tree_sitter::{Language, Node, Tree};
 
 use crate::model::{
     CallLikeForm, DeclarationFlag, DeclarationKind, ImportCategory, ImportForm, LanguageId,
-    ReferenceKind, ScopeKind, SourceRange, TestEvidence, TestEvidenceKind,
+    ReceiverEvidenceKind, ReferenceKind, ScopeKind, SourceRange, TestEvidence, TestEvidenceKind,
 };
 
 use super::builder::{import_item, DeclarationDraft, FactBuilder};
@@ -148,6 +148,10 @@ fn visit(builder: &mut FactBuilder<'_>, node: Node) {
         | "require_expression"
         | "require_once_expression" => {
             emit_include(builder, node);
+            visit_children(builder, node);
+        }
+        "assignment_expression" => {
+            emit_receiver_write(builder, node);
             visit_children(builder, node);
         }
         _ => visit_children(builder, node),
@@ -423,6 +427,9 @@ fn handle_function(builder: &mut FactBuilder<'_>, node: Node) {
     emit_php_test_evidence(builder, node, name_node, &name, declaration_id);
     if let Some(body) = body {
         builder.push_scope(ScopeKind::Function, Some(name), range, None);
+        if let Some(parameters) = node.child_by_field_name("parameters") {
+            emit_parameter_type_annotations(builder, parameters);
+        }
         visit_children(builder, body);
         builder.pop_scope();
     }
@@ -458,6 +465,9 @@ fn handle_method(builder: &mut FactBuilder<'_>, node: Node) {
 
     if let Some(body) = body {
         builder.push_scope(ScopeKind::Method, Some(name), range, None);
+        if let Some(parameters) = node.child_by_field_name("parameters") {
+            emit_parameter_type_annotations(builder, parameters);
+        }
         visit_children(builder, body);
         builder.pop_scope();
     }
@@ -495,6 +505,17 @@ fn emit_promoted_properties(builder: &mut FactBuilder<'_>, parameters: Node) {
             draft = draft.with_flag(DeclarationFlag::Readonly);
         }
         builder.push_declaration(draft);
+        // A promoted property is a class-scoped type hint on `$this->name`.
+        if let Some(type_node) = child.child_by_field_name("type") {
+            builder.push_receiver_evidence(
+                ReceiverEvidenceKind::PropertyTypeHint,
+                format!("$this->{}", builder.text(identifier)),
+                builder.range(identifier),
+                builder.text(type_node),
+                builder.range(type_node),
+                builder.range(child),
+            );
+        }
     }
 }
 
@@ -522,6 +543,16 @@ fn handle_property(builder: &mut FactBuilder<'_>, node: Node) {
         );
         draft = apply_modifiers(builder, node, draft);
         builder.push_declaration(draft);
+        if let Some(type_node) = node.child_by_field_name("type") {
+            builder.push_receiver_evidence(
+                ReceiverEvidenceKind::PropertyTypeHint,
+                format!("$this->{}", builder.text(identifier)),
+                builder.range(identifier),
+                builder.text(type_node),
+                builder.range(type_node),
+                builder.range(child),
+            );
+        }
     }
 }
 
@@ -567,6 +598,9 @@ fn handle_trait_use(builder: &mut FactBuilder<'_>, node: Node) {
 fn handle_anonymous_function(builder: &mut FactBuilder<'_>, node: Node) {
     let range = builder.range(node);
     builder.push_scope(ScopeKind::Closure, None::<String>, range, None);
+    if let Some(parameters) = node.child_by_field_name("parameters") {
+        emit_parameter_type_annotations(builder, parameters);
+    }
     let mut cursor = node.walk();
     for child in node.children(&mut cursor) {
         if child.kind() == "anonymous_function_use_clause" {
@@ -605,6 +639,9 @@ fn emit_closure_captures(builder: &mut FactBuilder<'_>, clause: Node) {
 fn handle_arrow_function(builder: &mut FactBuilder<'_>, node: Node) {
     let range = builder.range(node);
     builder.push_scope(ScopeKind::ArrowFunction, None::<String>, range, None);
+    if let Some(parameters) = node.child_by_field_name("parameters") {
+        emit_parameter_type_annotations(builder, parameters);
+    }
     visit_children(builder, node);
     builder.pop_scope();
 }
@@ -718,6 +755,107 @@ fn attribute_test_evidence(
         }
     }
     None
+}
+
+/// Emit `parameter_type_hint` receiver evidence for every typed parameter.
+/// Runs inside the pushed callable scope so `scope_id` is the callable scope
+/// the parameter is visible in. Untyped parameters emit nothing — absence of
+/// a hint is itself a fact (the receiver stays untyped).
+fn emit_parameter_type_annotations(builder: &mut FactBuilder<'_>, parameters: Node) {
+    let mut cursor = parameters.walk();
+    for child in parameters.children(&mut cursor) {
+        let Some(type_node) = child.child_by_field_name("type") else {
+            continue;
+        };
+        let Some(name_node) = child.child_by_field_name("name") else {
+            continue;
+        };
+        if inner_variable_name(builder, name_node).is_none() {
+            continue;
+        }
+        builder.push_receiver_evidence(
+            ReceiverEvidenceKind::ParameterTypeHint,
+            builder.text(name_node).to_string(),
+            builder.range(name_node),
+            builder.text(type_node),
+            builder.range(type_node),
+            builder.range(child),
+        );
+    }
+}
+
+/// `$x = <expr>` / `$this->p = <expr>` — a direct write to a simple receiver
+/// slot. Literal `new` right-hand sides carry the written class name; every
+/// other RHS is an opaque write that (per the candidate rule's last-write
+/// boundary) invalidates earlier local evidence. Writes whose receiver is not
+/// a bare variable or a literal `$this->prop` access are ignored: subscripts
+/// and property writes do not change the receiver's own type.
+fn emit_receiver_write(builder: &mut FactBuilder<'_>, node: Node) {
+    let Some(left) = node.child_by_field_name("left") else {
+        return;
+    };
+    let Some(right) = node.child_by_field_name("right") else {
+        return;
+    };
+    let (receiver, kind) = if left.kind() == "variable_name" {
+        (builder.text(left).to_string(), false)
+    } else if left.kind() == "member_access_expression" {
+        let is_this_prop = left
+            .child_by_field_name("object")
+            .is_some_and(|o| o.kind() == "variable_name" && builder.text(o) == "$this")
+            && left
+                .child_by_field_name("name")
+                .is_some_and(|n| n.kind() == "name");
+        if !is_this_prop {
+            return;
+        }
+        (builder.text(left).to_string(), true)
+    } else {
+        return;
+    };
+    // Literal `new` right side: the class-name child of the creation node.
+    let mut literal_class: Option<Node> = None;
+    if right.kind() == "object_creation_expression" {
+        let mut cursor = right.walk();
+        for child in right.children(&mut cursor) {
+            if !child.is_named() || child.kind() == "arguments" {
+                continue;
+            }
+            if matches!(child.kind(), "name" | "qualified_name" | "relative_name") {
+                literal_class = Some(child);
+            }
+            break;
+        }
+    }
+    let (kind, written, written_range) = if let Some(class) = literal_class {
+        (
+            if kind {
+                ReceiverEvidenceKind::PropertyLiteralNew
+            } else {
+                ReceiverEvidenceKind::LocalLiteralNew
+            },
+            builder.text(class).to_string(),
+            builder.range(class),
+        )
+    } else {
+        (
+            if kind {
+                ReceiverEvidenceKind::PropertyOpaqueWrite
+            } else {
+                ReceiverEvidenceKind::LocalOpaqueWrite
+            },
+            builder.text(right).to_string(),
+            builder.range(right),
+        )
+    };
+    builder.push_receiver_evidence(
+        kind,
+        receiver,
+        builder.range(left),
+        written,
+        written_range,
+        builder.range(node),
+    );
 }
 
 /// `foo(...)` is first-class callable creation, not an invocation.

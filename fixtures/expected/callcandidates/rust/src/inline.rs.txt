@@ -1,4 +1,4 @@
-file schema=3 path=callcandidates/rust/src/inline.rs lang=rust bytes=219 lines=18 final_newline=true status=clean snapshot=snap-fb23e12b43cc7a18
+file schema=4 path=callcandidates/rust/src/inline.rs lang=rust bytes=219 lines=18 final_newline=true status=clean snapshot=snap-fb23e12b43cc7a18
 scope 0 kind=file parent=- name=- range=0..219 (0:0..18:0) header=- lang=rust
 scope 1 kind=module parent=0 name=left range=0..70 (0:0..5:1) header=0..9 (0:0..0:9) lang=rust
 scope 2 kind=function parent=1 name=helper range=15..29 (1:4..1:18) header=- lang=rust

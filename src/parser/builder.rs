@@ -66,6 +66,7 @@ pub struct FactBuilder<'a> {
     references: Vec<ReferenceOccurrence>,
     calls: Vec<CallLikeOccurrence>,
     bindings: Vec<LocalBindingOccurrence>,
+    receiver_type_evidence: Vec<crate::model::ReceiverTypeEvidence>,
     diagnostics: Vec<Diagnostic>,
     recovery_regions: Vec<SourceRange>,
     file_test_evidence: Vec<TestEvidence>,
@@ -87,6 +88,7 @@ impl<'a> FactBuilder<'a> {
             references: Vec::new(),
             calls: Vec::new(),
             bindings: Vec::new(),
+            receiver_type_evidence: Vec::new(),
             diagnostics: Vec::new(),
             recovery_regions: Vec::new(),
             file_test_evidence: Vec::new(),
@@ -326,6 +328,36 @@ impl<'a> FactBuilder<'a> {
         binding_id
     }
 
+    /// Push a bounded receiver-type evidence fact. `evidence_id` is the
+    /// position in the evidence vector; `scope_id` is the lexically enclosing
+    /// scope at emission time.
+    pub fn push_receiver_evidence(
+        &mut self,
+        kind: crate::model::ReceiverEvidenceKind,
+        receiver: impl Into<String>,
+        receiver_range: SourceRange,
+        written: impl Into<String>,
+        written_range: SourceRange,
+        evidence_range: SourceRange,
+    ) -> u32 {
+        let evidence_id = self.receiver_type_evidence.len() as u32;
+        self.receiver_type_evidence
+            .push(crate::model::ReceiverTypeEvidence {
+                evidence_id,
+                snapshot_id: self.file.snapshot_id.clone(),
+                language: self.file.language,
+                relative_path: self.file.relative_path.clone(),
+                scope_id: self.scope_id(),
+                kind,
+                receiver: receiver.into(),
+                receiver_range,
+                written: written.into(),
+                written_range,
+                evidence_range,
+            });
+        evidence_id
+    }
+
     pub fn push_diagnostic(&mut self, diagnostic: Diagnostic) {
         self.diagnostics.push(diagnostic);
     }
@@ -369,6 +401,7 @@ impl<'a> FactBuilder<'a> {
             references: self.references,
             calls: self.calls,
             bindings: self.bindings,
+            receiver_type_evidence: self.receiver_type_evidence,
             file_test_evidence: self.file_test_evidence,
             recovery_regions: self.recovery_regions,
         };

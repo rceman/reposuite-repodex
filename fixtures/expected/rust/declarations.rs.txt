@@ -1,4 +1,4 @@
-file schema=3 path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
+file schema=4 path=rust/declarations.rs lang=rust bytes=728 lines=48 final_newline=true status=clean snapshot=snap-4f23d7232af5c47d
 scope 0 kind=file parent=- name=- range=0..728 (0:0..48:0) header=- lang=rust
 scope 1 kind=module parent=0 name=inline range=57..146 (2:0..8:1) header=57..68 (2:0..2:11) lang=rust
 scope 2 kind=module parent=1 name=nested range=74..121 (3:4..5:5) header=74..89 (3:4..3:19) lang=rust

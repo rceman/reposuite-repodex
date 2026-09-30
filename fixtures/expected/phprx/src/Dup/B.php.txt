@@ -1,0 +1,8 @@
+file schema=4 path=phprx/src/Dup/B.php lang=php bytes=93 lines=6 final_newline=true status=clean snapshot=snap-f1901fde6a642d17
+scope 0 kind=file parent=- name=- range=0..93 (0:0..6:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Rx\\Dup range=6..27 (1:0..1:21) header=- lang=php
+scope 2 kind=class parent=1 name=Thing range=29..92 (3:0..5:1) header=29..41 (3:0..3:12) lang=php
+scope 3 kind=method parent=2 name=m range=47..90 (4:4..4:47) header=- lang=php
+decl 0 kind=namespace name=App\\Rx\\Dup scope=0 flags=[] range=6..27 (1:0..1:21) name_range=16..26 (1:10..1:20) body=- lang=php path=phprx/src/Dup/B.php snapshot=snap-f1901fde6a642d17 tests=[]
+decl 1 kind=class name=Thing scope=1 flags=[] range=29..92 (3:0..5:1) name_range=35..40 (3:6..3:11) body=41..92 (3:12..5:1) lang=php path=phprx/src/Dup/B.php snapshot=snap-f1901fde6a642d17 tests=[]
+decl 2 kind=method name=m scope=2 flags=[] range=47..90 (4:4..4:47) name_range=63..64 (4:20..4:21) body=75..90 (4:32..4:47) lang=php path=phprx/src/Dup/B.php snapshot=snap-f1901fde6a642d17 tests=[]
