@@ -2821,12 +2821,32 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
     if use_service {
         return query_via_service(&state, &locator, &text, options);
     }
-    let intent = match options.domain.as_deref() {
+    let explicit_intent = match options.domain.as_deref() {
         None => None,
         Some(d) => match crate::query::QueryIntent::parse(d) {
             Some(i) => Some(i),
             None => return Err(format!("unknown query intent `{d}`")),
         },
+    };
+    // §4-§9 defect A: when the adaptive navigation profile is requested, plan
+    // the typed retrieval operation BEFORE the query runs — classify the
+    // question and map it to the engine operation + anchors, so "Who calls X?"
+    // executes real caller machinery instead of generic Find + relabel.
+    let adaptive_nav = matches!(options.nav.as_deref(), Some("adaptive"));
+    let planned = if adaptive_nav {
+        Some(crate::query::adaptive::plan(
+            &text,
+            explicit_intent,
+            options.target.as_deref(),
+            options.to.as_deref(),
+        ))
+    } else {
+        None
+    };
+    let (intent, target, to) = if let Some(p) = &planned {
+        (Some(p.query_intent), p.target.clone(), p.to.clone())
+    } else {
+        (explicit_intent, options.target.clone(), options.to.clone())
     };
     let mode = if options.exhaustive {
         crate::query::QueryMode::Exhaustive
@@ -2837,8 +2857,8 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         query_text: &text,
         mode,
         intent,
-        target: options.target.clone(),
-        to: options.to.clone(),
+        target,
+        to,
         max_results: options.max_results.unwrap_or(50),
         token_budget: options.tokens,
         depth: options.depth.unwrap_or(4),
@@ -2876,13 +2896,12 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
         println!("view: {}", outcome.view.canonical_root.display());
         println!("fingerprint: {}", outcome.ensure.fingerprint);
         print!("{}", proj.to_human());
-    } else if matches!(options.nav.as_deref(), Some("adaptive")) {
-        // RepoDex-first adaptive evidence packet (§6-§18): deterministic intent
-        // classification -> obligation-aware selection -> dedup -> budget.
-        let ni = crate::query::adaptive::classify(&text, intent);
-        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, ni));
+    } else if let Some(p) = &planned {
+        // RepoDex-first adaptive evidence packet (§6-§18): the nav intent comes
+        // from the SAME plan that drove retrieval — never relabel generic Find.
+        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, p.nav));
     } else {
-        // Default agent-facing output: RDX2 (faithful: rank/path/range/via, §39).
+        // Default detailed/debug profile: RDX2 (faithful: rank/path/range/via, §39).
         print!("{}", proj.to_rdx());
     }
     Ok(EXIT_OK)
@@ -2911,18 +2930,88 @@ fn query_via_service(
         "no running RepoDex service (--service requires `repodex start`)".to_string()
     })?;
     let token = token::load_or_generate(&state)?;
-    // Build the request matching the request.v1 locator semantics.
-    let req = match locator {
+    // §14-§17 defect B: forward EVERY semantically relevant normalized field —
+    // transport must not change meaning. intent/target/to/depth/mode/budgets
+    // and the supported policies are all part of the request contract.
+    let mut req = match locator {
         crate::view::ViewLocator::Root(p) => serde_json::json!({
             "schema": crate::view::QUERY_REQUEST_SCHEMA,
             "root": p, "query": text,
-            "max_results": options.max_results,
         }),
         crate::view::ViewLocator::Project { project, view } => serde_json::json!({
             "schema": crate::view::QUERY_REQUEST_SCHEMA,
             "project": project, "view": view, "query": text,
-            "max_results": options.max_results,
         }),
+    };
+    let o = req.as_object_mut().unwrap();
+    if let Some(d) = &options.domain {
+        o.insert("intent".into(), serde_json::json!(d));
+    }
+    if let Some(t) = &options.target {
+        o.insert("target".into(), serde_json::json!(t));
+    }
+    if let Some(t) = &options.to {
+        o.insert("to".into(), serde_json::json!(t));
+    }
+    if let Some(d) = options.depth {
+        o.insert("depth".into(), serde_json::json!(d));
+    }
+    o.insert(
+        "max_results".into(),
+        serde_json::json!(options.max_results.unwrap_or(50)),
+    );
+    // forward the public supported policies verbatim (default "off"/"static").
+    for (k, v) in [
+        ("memory_mode", options.memory.as_deref().unwrap_or("off")),
+        (
+            "context_policy",
+            options.context.as_deref().unwrap_or("static"),
+        ),
+        ("recipes", options.recipes.as_deref().unwrap_or("off")),
+        (
+            "utility_policy",
+            options.utility_policy.as_deref().unwrap_or("off"),
+        ),
+        (
+            "source_witness",
+            options.source_witness.as_deref().unwrap_or("off"),
+        ),
+        (
+            "vocab_bridge",
+            options.vocab_bridge.as_deref().unwrap_or("off"),
+        ),
+        (
+            "vocab_native",
+            options.vocab_native.as_deref().unwrap_or("off"),
+        ),
+    ] {
+        o.insert(k.into(), serde_json::json!(v));
+    }
+    // §8: when --nav adaptive is requested and no explicit intent was given,
+    // plan the typed operation on the SAME planning code as the direct path —
+    // then forward the resolved intent/target/to so the service executes the
+    // identical typed query.
+    let adaptive_nav = matches!(options.nav.as_deref(), Some("adaptive"));
+    let planned = if adaptive_nav {
+        let p = crate::query::adaptive::plan(
+            text,
+            options
+                .domain
+                .as_deref()
+                .and_then(crate::query::QueryIntent::parse),
+            options.target.as_deref(),
+            options.to.as_deref(),
+        );
+        o.insert("intent".into(), serde_json::json!(p.query_intent.as_str()));
+        if let Some(t) = &p.target {
+            o.insert("target".into(), serde_json::json!(t));
+        }
+        if let Some(t) = &p.to {
+            o.insert("to".into(), serde_json::json!(t));
+        }
+        Some(p)
+    } else {
+        None
     };
     let (st, body) = http::post_json(
         &desc.host,
@@ -2938,11 +3027,16 @@ fn query_via_service(
         let msg = body["error"]["message"].as_str().unwrap_or("query failed");
         return Err(format!("{code}: {msg}"));
     }
-    // Render the service's canonical projection faithfully (§36): the service
-    // already returned the full EvidenceProjection JSON, so rank/path/locator/
-    // evidence/via/candidate_set/ranges are all preserved — no lossy re-render.
+    // Render from the SAME canonical projection the service produced — the
+    // renderer is transport-orthogonal (§17-§18). Deserialize the projection
+    // and run the identical renderer code path as the direct path.
     if options.json {
         print_json(&body)?;
+    } else if let Some(p) = &planned {
+        let proj: crate::query::projection::EvidenceProjection =
+            serde_json::from_value(body["result"].clone())
+                .map_err(|e| format!("service projection decode: {e}"))?;
+        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, p.nav));
     } else {
         print!("{}", render_projection_text(&body["result"], options.human));
     }

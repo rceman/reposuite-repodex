@@ -299,3 +299,203 @@ fn fixture() -> EvidenceProjection {
     });
     p
 }
+
+// ---- contract-consolidation gates (defects A/C/D) ----
+
+use repodex::query::adaptive::plan;
+use repodex::query::QueryIntent;
+
+fn mrel(kind: &str, from: &str, to: &str, ev: &str) -> RelOut {
+    RelOut {
+        direction: "outgoing".into(),
+        kind: kind.into(),
+        evidence: ev.into(),
+        via: "".into(),
+        node: to.into(),
+        label: to.into(),
+        from_key: from.into(),
+        from_label: from.into(),
+        from_path: "a.go".into(),
+        to_key: to.into(),
+        to_label: to.into(),
+        to_path: "b.go".into(),
+        rule_id: None,
+        candidate_set: None,
+        disposition: None,
+    }
+}
+
+fn mseed(key: &str, label: &str) -> SeedOut {
+    SeedOut {
+        rank: 1,
+        key: key.into(),
+        kind: "declaration".into(),
+        label: label.into(),
+        path: "a.go".into(),
+        language: "go".into(),
+        disposition: None,
+        score: 1,
+        factors: vec![],
+        declaration_range: None,
+        body_range: None,
+    }
+}
+
+#[test]
+fn plan_maps_natural_language_to_typed_operation() {
+    // defect A: "Who calls X?" must plan Callers, not Find.
+    let p = plan("Who calls Get?", None, None, None);
+    assert_eq!(p.nav, NavIntent::Callers);
+    assert_eq!(p.query_intent, QueryIntent::Callers);
+    assert_eq!(p.target.as_deref(), Some("Get"));
+    let p = plan("What does Resolver call?", None, None, None);
+    assert_eq!(p.query_intent, QueryIntent::Callees);
+    assert_eq!(p.target.as_deref(), Some("Resolver"));
+    let p = plan("How does engine reach Encode?", None, None, None);
+    assert_eq!(p.query_intent, QueryIntent::Paths);
+    assert_eq!(p.target.as_deref(), Some("engine"));
+    assert_eq!(p.to.as_deref(), Some("Encode"));
+    // explicit intent always wins.
+    let p = plan("Who calls Get?", Some(QueryIntent::Find), None, None);
+    assert_eq!(p.query_intent, QueryIntent::Find);
+    assert_eq!(p.nav, NavIntent::Locate);
+    // no anchor for callers -> honest Find fallback, not fabricated.
+    let p = plan("Who calls?", None, None, None);
+    assert_eq!(p.query_intent, QueryIntent::Find);
+}
+
+#[test]
+fn utf8_budget_never_panics_never_splits_scalar() {
+    // defect C: multi-byte chars crossing the budget boundary must not panic.
+    let euro = "\u{20AC}".repeat(60); // 180 bytes, 60 chars
+    let mut proj = EvidenceProjection {
+        query: format!("Where is {euro}?"),
+        schema: "evidence_projection.v1".into(),
+        intent: "find".into(),
+        seed_selection_complete: true,
+        complete: true,
+        ..Default::default()
+    };
+    for i in 0..8 {
+        let mut s = mseed(&format!("decl:a.go#{}", i), &format!("{euro}Sym{i}"));
+        s.label = format!("{euro}{i}");
+        proj.seeds.push(s);
+    }
+    for i in 0..8 {
+        proj.related.push(mrel(
+            "call_candidate",
+            &format!("decl:a.go#{}", i % 8),
+            &format!("decl:a.go#{}", (i + 1) % 8),
+            "candidate",
+        ));
+    }
+    // budget-1 / budget / budget+1 around several sizes; no panic, valid UTF-8,
+    // never exceeds, and the trailer must still be present.
+    for b in [64usize, 256, 512, 1024, 2047, 2048, 2049, 4096] {
+        let out = adaptive_rdx(&proj, NavIntent::Locate);
+        assert!(
+            std::str::from_utf8(out.as_bytes()).is_ok(),
+            "invalid utf8 b={b}"
+        );
+        assert!(
+            out.len() <= b.max(2048),
+            "packet exceeded cap b={b} len={}",
+            out.len()
+        );
+        assert!(out.contains("S "), "trailer missing at b={b}");
+    }
+}
+
+#[test]
+fn whole_packet_budget_includes_trailer() {
+    // defect D/C: gap+summary must fit INSIDE the bound, not appended after.
+    let mut proj = EvidenceProjection {
+        query: "q".into(),
+        schema: "p".into(),
+        intent: "find".into(),
+        eligible_seed_count: 40,
+        seed_selection_complete: false,
+        ..Default::default()
+    };
+    for i in 0..40 {
+        proj.seeds
+            .push(mseed(&format!("decl:a.go#{}", i), &format!("Sym{i}")));
+        proj.related.push(mrel(
+            "call",
+            "decl:a.go#0",
+            &format!("decl:a.go#{}", i),
+            "fact",
+        ));
+    }
+    let out = adaptive_rdx(&proj, NavIntent::Locate); // 2KiB envelope
+    assert!(out.len() <= 2048, "packet {} exceeds 2KiB", out.len());
+    assert!(out.contains("G RESULT_LIMIT"), "expected result-limit gap");
+    assert!(out.contains("S "), "summary missing");
+    // summary counts reflect emitted state, not eligible.
+    let s = out.lines().find(|l| l.starts_with("S ")).unwrap();
+    assert!(s.contains("bytes="), "summary lacks byte count");
+}
+
+#[test]
+fn result_limit_is_not_ambiguity() {
+    // §26: eligible > shown by selection bound -> RESULT_LIMIT, not AMBIGUOUS.
+    let mut proj = EvidenceProjection {
+        query: "q".into(),
+        schema: "p".into(),
+        intent: "find".into(),
+        eligible_seed_count: 20,
+        seed_selection_complete: false,
+        ..Default::default()
+    };
+    for i in 0..20 {
+        proj.seeds
+            .push(mseed(&format!("decl:a.go#{}", i), &format!("Sym{i}")));
+    }
+    let out = adaptive_rdx(&proj, NavIntent::Locate);
+    assert!(
+        out.contains("G RESULT_LIMIT"),
+        "expected RESULT_LIMIT: {out}"
+    );
+    assert!(
+        !out.contains("G AMBIGUOUS_RESULT shown="),
+        "result-limit mislabeled ambiguous"
+    );
+}
+
+#[test]
+fn no_dangling_local_references() {
+    // §28: every emitted R endpoint id must reference an emitted F line.
+    let mut proj = EvidenceProjection {
+        query: "q".into(),
+        schema: "p".into(),
+        intent: "find".into(),
+        seed_selection_complete: true,
+        ..Default::default()
+    };
+    for i in 0..30 {
+        proj.seeds.push(mseed(&format!("s{i}"), &format!("L{i}")));
+    }
+    for i in 0..29 {
+        proj.related.push(mrel(
+            "call",
+            &format!("s{i}"),
+            &format!("s{}", i + 1),
+            "fact",
+        ));
+    }
+    let out = adaptive_rdx(&proj, NavIntent::Locate);
+    let fids: std::collections::BTreeSet<u32> = out
+        .lines()
+        .filter(|l| l.starts_with("F "))
+        .filter_map(|l| l.split_whitespace().nth(1)?.parse::<u32>().ok())
+        .collect();
+    for l in out.lines().filter(|l| l.starts_with("R ")) {
+        let v: Vec<&str> = l.split_whitespace().collect();
+        let fs: u32 = v[2].parse().unwrap();
+        let ts: u32 = v[3].parse().unwrap();
+        assert!(
+            fids.contains(&fs) && fids.contains(&ts),
+            "dangling ref in {l}"
+        );
+    }
+}

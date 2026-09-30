@@ -248,6 +248,277 @@ fn rel_key(r: &RelOut) -> String {
     )
 }
 
+/// A deterministic navigation plan produced BEFORE retrieval (§4-§9): the
+/// typed query operation plus resolved anchor strings. Explicit flags always
+/// win over natural-language classification.
+#[derive(Debug, Clone)]
+pub struct NavPlan {
+    /// The navigation intent (for adaptive rendering + obligations).
+    pub nav: NavIntent,
+    /// The typed engine operation to actually execute.
+    pub query_intent: crate::query::QueryIntent,
+    /// Anchor for callers/callees/paths-from (extracted when not explicit).
+    pub target: Option<String>,
+    /// Second endpoint for a two-anchor path question.
+    pub to: Option<String>,
+}
+
+/// Extract identifier-like anchor candidates from a question: tokens joined by
+/// `.`/`::`/`/` and PascalCase/camelCase or `snake_case` words, minus bounded
+/// stopwords. Deterministic, no model, no NLP (§9).
+pub fn extract_anchors(question: &str) -> Vec<String> {
+    const STOP: &[&str] = &[
+        "who",
+        "what",
+        "how",
+        "where",
+        "which",
+        "does",
+        "is",
+        "are",
+        "do",
+        "can",
+        "could",
+        "should",
+        "would",
+        "will",
+        "the",
+        "a",
+        "an",
+        "and",
+        "or",
+        "to",
+        "from",
+        "in",
+        "on",
+        "of",
+        "for",
+        "by",
+        "it",
+        "its",
+        "that",
+        "this",
+        "reach",
+        "reaches",
+        "route",
+        "calls",
+        "call",
+        "called",
+        "invoke",
+        "invokes",
+        "uses",
+        "use",
+        "relate",
+        "relates",
+        "related",
+        "between",
+        "module",
+        "file",
+        "path",
+        "paths",
+        "function",
+        "functions",
+        "func",
+        "method",
+        "methods",
+        "class",
+        "classes",
+        "struct",
+        "structs",
+        "test",
+        "tests",
+        "verify",
+        "verifies",
+        "control",
+        "controls",
+        "manifest",
+        "config",
+        "configuration",
+        "signature",
+        "depend",
+        "depends",
+        "dependency",
+        "dependencies",
+        "via",
+        "initialize",
+        "initializes",
+        "init",
+        "declare",
+        "declares",
+        "declared",
+        "declaration",
+        "definition",
+        "expose",
+        "exposes",
+        "own",
+        "owns",
+        "owned",
+        "owner",
+        "when",
+        "why",
+        "show",
+        "list",
+        "give",
+        "me",
+        "tell",
+        "into",
+        "through",
+        "across",
+        "all",
+        "any",
+        "each",
+        "edge",
+        "edges",
+        "node",
+        "nodes",
+        "directory",
+        "directories",
+        "repo",
+        "repository",
+        "code",
+        "codebase",
+        "project",
+        "implementation",
+        "detail",
+        "details",
+        "evidence",
+        "example",
+        "primary",
+        "core",
+        "edition",
+        "whom",
+        "points",
+        "point",
+        "references",
+        "reference",
+        "directly",
+        "indirectly",
+        "inside",
+        "outside",
+        "top",
+        "first",
+        "last",
+        "most",
+        "after",
+        "before",
+        "under",
+        "over",
+        "part",
+        "parts",
+        "layer",
+        "layers",
+        "entry",
+        "entrypoint",
+        "entrypoints",
+        "drives",
+        "driven",
+        "flow",
+        "flows",
+        "trace",
+        "traces",
+        "step",
+        "steps",
+        "returns",
+        "return",
+        "takes",
+        "accepts",
+        "belong",
+        "belongs",
+        "contain",
+        "contains",
+        "cover",
+        "covers",
+    ];
+    let mut out = Vec::new();
+    for tok in
+        question.split(|c: char| !(c.is_alphanumeric() || matches!(c, '.' | ':' | '_' | '/')))
+    {
+        let t = tok.trim_matches(|c: char| matches!(c, '.' | '/' | ':'));
+        if t.len() < 2 || t.chars().all(|c| c.is_ascii_digit()) {
+            continue;
+        }
+        if STOP.contains(&t.to_lowercase().as_str()) {
+            continue;
+        }
+        // keep token if it looks identifier-ish (contains a capital, underscore,
+        // dot/:: path, or is fully lowercase-but-dotted like util.encode).
+        if out.last() != Some(&t.to_string()) {
+            out.push(t.to_string());
+        }
+    }
+    out
+}
+
+/// Plan the typed retrieval operation for a navigation request (§4-§8).
+/// `explicit_*` are the parsed flag/structured values — they always win.
+/// `None` explicit intent + `--nav adaptive` => classify the question first,
+/// then map the intent to the engine operation and extract anchors.
+pub fn plan(
+    question: &str,
+    explicit_intent: Option<crate::query::QueryIntent>,
+    explicit_target: Option<&str>,
+    explicit_to: Option<&str>,
+) -> NavPlan {
+    use crate::query::QueryIntent as Q;
+    let nav = classify(question, explicit_intent);
+    let anchors = extract_anchors(question);
+    // anchors only feed typed operations (callers/callees/paths); a generic
+    // Find is driven by the query text, not a guessed anchor.
+    let anchored = matches!(
+        nav,
+        NavIntent::Callers | NavIntent::Callees | NavIntent::PathOrFlow | NavIntent::Relationship
+    ) || explicit_target.is_some();
+    let target = explicit_target.map(|s| s.to_string()).or_else(|| {
+        if anchored {
+            anchors.first().cloned()
+        } else {
+            None
+        }
+    });
+    let to = explicit_to.map(|s| s.to_string()).or_else(|| {
+        if anchored {
+            anchors.get(1).cloned()
+        } else {
+            None
+        }
+    });
+    let query_intent = if let Some(q) = explicit_intent {
+        q
+    } else {
+        match nav {
+            NavIntent::Callers => {
+                if target.is_some() {
+                    Q::Callers
+                } else {
+                    Q::Find
+                }
+            }
+            NavIntent::Callees => {
+                if target.is_some() {
+                    Q::Callees
+                } else {
+                    Q::Find
+                }
+            }
+            NavIntent::PathOrFlow => {
+                if target.is_some() && to.is_some() {
+                    Q::Paths
+                } else {
+                    Q::Find
+                }
+            }
+            NavIntent::Relationship => Q::Related,
+            _ => Q::Find,
+        }
+    };
+    NavPlan {
+        nav,
+        query_intent,
+        target,
+        to,
+    }
+}
+
 /// Render the adaptive agent-facing RDX conditioned on the classified intent,
 /// with a real serialized byte budget (§15). Relevance-filtered irrelevant
 /// edges do NOT trigger a truncation gap — only relevant-but-truncated evidence
@@ -317,51 +588,68 @@ pub fn adaptive_rdx_biased(
     }
     let related: Vec<&RelOut> = relevant.into_iter().take(ob.max_related).collect();
 
+    // ---- record-aware emission (§19-§22,§28): build lines, then emit whole
+    // records within the byte budget. Never byte-slice a String; never cut a
+    // record mid-line; reserve mandatory trailer space before filling body.
+    const TRAILER_RESERVE: usize = 512; // bounded worst-case G+S trailer bytes
     let mut lid: BTreeMap<String, u32> = BTreeMap::new();
     let mut next = 1u32;
-    let mut out = String::from("#RDX1 adaptive v2\n");
-    let _ = writeln!(out, "Q {}", esc(&proj.query));
-    let _ = writeln!(out, "I {}", intent.as_str());
-    let mut seed_ids = Vec::new();
     for s in &seeds {
-        let id = *lid.entry(s.key.clone()).or_insert_with(|| {
+        lid.entry(s.key.clone()).or_insert_with(|| {
             let n = next;
             next += 1;
             n
         });
-        // one canonical line per Agent-relevant node identity (§14 dedup).
-        let _ = writeln!(out, "F {} {} {} {}", id, s.kind, esc(&s.key), esc(&s.label));
-        seed_ids.push((id, s));
     }
     for r in &related {
         for k in [&r.from_key, &r.to_key] {
-            if !lid.contains_key(k.as_str()) {
-                let id = next;
+            lid.entry((*k).clone()).or_insert_with(|| {
+                let n = next;
                 next += 1;
-                lid.insert((*k).clone(), id);
-                let lbl = if *k == r.from_key {
-                    &r.from_label
-                } else {
-                    &r.to_label
-                };
-                let _ = writeln!(out, "F {} node {} {}", id, esc(k), esc(lbl));
+                n
+            });
+        }
+    }
+    let seed_id = |s: &SeedOut| -> u32 { lid[&s.key] };
+    let mut head = String::from("#RDX1 adaptive v2\n");
+    let _ = writeln!(head, "Q {}", esc(&proj.query));
+    let _ = writeln!(head, "I {}", intent.as_str());
+    // body record groups, emitted in order: seed F, endpoint F, D, R, P.
+    let seed_keys: BTreeSet<&String> = seeds.iter().map(|s| &s.key).collect();
+    let mut f_lines: Vec<String> = Vec::new();
+    for s in &seeds {
+        f_lines.push(format!(
+            "F {} {} {} {}\n",
+            seed_id(s),
+            s.kind,
+            esc(&s.key),
+            esc(&s.label)
+        ));
+    }
+    let mut endpoint_emitted: BTreeSet<String> = BTreeSet::new();
+    for r in &related {
+        for (k, lbl) in [(&r.from_key, &r.from_label), (&r.to_key, &r.to_label)] {
+            if !seed_keys.contains(k) && endpoint_emitted.insert(k.clone()) {
+                f_lines.push(format!("F {} node {} {}\n", lid[k], esc(k), esc(lbl)));
             }
         }
     }
-    for (id, s) in &seed_ids {
-        let mut d = format!("D {} rank={} path={}", id, s.rank, esc(&s.path));
+    let mut d_lines: Vec<String> = Vec::new();
+    for s in &seeds {
+        let mut d = format!("D {} rank={} path={}", seed_id(s), s.rank, esc(&s.path));
         if let Some(r) = &s.declaration_range {
             let _ = write!(d, " decl={}:{}-{}", r.start_line, r.byte_start, r.byte_end);
         }
         if let Some(r) = &s.body_range {
             let _ = write!(d, " body={}:{}-{}", r.start_line, r.byte_start, r.byte_end);
         }
-        out.push_str(&d);
-        out.push('\n');
+        d.push('\n');
+        d_lines.push(d);
     }
+    let mut r_lines: Vec<(String, u32, u32)> = Vec::new();
     for r in &related {
-        let fs = lid.get(&r.from_key).copied().unwrap_or(0);
-        let ts = lid.get(&r.to_key).copied().unwrap_or(0);
+        let fs = lid[&r.from_key];
+        let ts = lid[&r.to_key];
         let ev = if r.evidence == "fact" { 'f' } else { 'c' };
         let mut line = format!("R {} {} {} {}", r.kind, fs, ts, ev);
         if let Some(cs) = &r.candidate_set {
@@ -370,9 +658,10 @@ pub fn adaptive_rdx_biased(
         if let Some(rule) = &r.rule_id {
             let _ = write!(line, " rule={}", esc(rule));
         }
-        out.push_str(&line);
-        out.push('\n');
+        line.push('\n');
+        r_lines.push((line, fs, ts));
     }
+    let mut p_lines: Vec<String> = Vec::new();
     if ob.want_path {
         if let Some(c) = &proj.connector {
             for (i, rt) in c.routes.iter().enumerate() {
@@ -386,67 +675,119 @@ pub fn adaptive_rdx_biased(
                         esc(&st.to_key)
                     );
                 }
-                out.push_str(&p);
-                out.push('\n');
+                p.push('\n');
+                p_lines.push(p);
             }
             if !c.found {
-                let _ = writeln!(out, "P none bounded_no_route depth<=3");
+                p_lines.push("P none bounded_no_route\n".into());
             }
         }
     }
-    // ---- serialized byte budget (§15): enforce on the whole packet ----
-    let mut truncated_by_budget = false;
-    if out.len() > ob.byte_budget {
-        // cut at the last complete line that fits the budget — never mid-line.
-        let keep = out[..ob.byte_budget]
-            .rfind('\n')
-            .map(|i| i + 1)
-            .unwrap_or(ob.byte_budget);
-        out.truncate(keep);
-        truncated_by_budget = true;
+    // ---- emit within budget: head + body, reserving trailer space ----
+    let budget = ob.byte_budget;
+    let mut out = head.clone();
+    let mut emitted_f: std::collections::BTreeSet<u32> = BTreeSet::new();
+    let mut budget_dropped = 0usize;
+    let body_limit = budget.saturating_sub(TRAILER_RESERVE).max(head.len());
+    let emit = |out: &mut String, line: &str, dropped: &mut usize| -> bool {
+        if out.len() + line.len() <= body_limit {
+            out.push_str(line);
+            true
+        } else {
+            *dropped += 1;
+            false
+        }
+    };
+    for l in &f_lines {
+        if emit(&mut out, l, &mut budget_dropped) {
+            if let Some(id) = l
+                .strip_prefix("F ")
+                .and_then(|t| t.split(' ').next())
+                .and_then(|t| t.parse::<u32>().ok())
+            {
+                emitted_f.insert(id);
+            }
+        }
     }
-    // ---- explicit gaps (§20): only real gaps, not irrelevant-filtered ----
+    for l in &d_lines {
+        emit(&mut out, l, &mut budget_dropped);
+    }
+    let mut emitted_related = 0usize;
+    for (l, fs, ts) in &r_lines {
+        // no dangling local refs: R only emitted when both endpoint F ids are.
+        if emitted_f.contains(fs) && emitted_f.contains(ts) {
+            if emit(&mut out, l, &mut budget_dropped) {
+                emitted_related += 1;
+            }
+        } else {
+            budget_dropped += 1;
+        }
+    }
+    for l in &p_lines {
+        emit(&mut out, l, &mut budget_dropped);
+    }
+    // ---- truthful gaps from FINAL emitted state (§24-§27) ----
+    let emitted_seeds = seeds.len().min(emitted_f.len());
+    let mut trailer = String::new();
     if proj.seeds.is_empty() {
-        let _ = writeln!(out, "G NO_RESULT");
-    } else if proj.eligible_seed_count > seeds.len() {
+        let _ = writeln!(trailer, "G NO_RESULT");
+    } else if proj.eligible_seed_count > emitted_seeds || !proj.seed_selection_complete {
+        // selection bound reduced eligible results -> RESULT_LIMIT, not
+        // identity ambiguity (§26). Ambiguity is an intent/anchor signal only.
         let _ = writeln!(
-            out,
-            "G AMBIGUOUS_RESULT shown={} total={}",
-            seeds.len(),
-            proj.eligible_seed_count
+            trailer,
+            "G RESULT_LIMIT shown={} eligible={}",
+            emitted_seeds, proj.eligible_seed_count
         );
     }
     if intent == NavIntent::Ambiguous {
-        let _ = writeln!(out, "G AMBIGUOUS_RESULT reason=no_confident_intent");
+        let _ = writeln!(trailer, "G AMBIGUOUS_RESULT reason=no_confident_intent");
     }
-    // Truncation only when relevant evidence exceeded the bound or byte budget.
-    let relevant_shown = related.len();
-    if truncated_by_budget || relevant_total > relevant_shown {
-        let _ = writeln!(
-            out,
-            "G TRUNCATED_CONTINUATION relevant_shown={} relevant_total={}{}",
-            relevant_shown,
-            relevant_total,
-            if truncated_by_budget {
-                " over_byte_budget=1"
-            } else {
-                ""
+    if proj.relationship_limit_reached {
+        let _ = writeln!(trailer, "G RELATIONSHIP_LIMIT");
+    }
+    if ob.want_path {
+        if let Some(c) = &proj.connector {
+            if !c.found {
+                let _ = writeln!(trailer, "G NO_ROUTE bounded");
             }
+        }
+    }
+    let relevant_dropped = relevant_total > emitted_related || budget_dropped > 0;
+    if relevant_dropped {
+        let _ = writeln!(
+            trailer,
+            "G TRUNCATED_CONTINUATION relevant_shown={} relevant_total={}",
+            emitted_related, relevant_total
         );
     }
-    let cand = related.iter().filter(|r| r.evidence == "candidate").count();
+    if let Some(tr) = &proj.truncated_reason {
+        let _ = writeln!(trailer, "G UPSTREAM_TRUNCATED reason={}", esc(tr));
+    }
+    let cand = related
+        .iter()
+        .take(emitted_related)
+        .filter(|r| r.evidence == "candidate")
+        .count();
     let _ = writeln!(
-        out,
-        "S shown={} total={} complete={} seeds={} related={} candidates={} intent={} bytes={}",
-        seeds.len(),
+        trailer,
+        "S seeds={} eligible={} related={} rel_eligible={} candidates={} intent={} bytes={} complete={}",
+        emitted_seeds,
         proj.eligible_seed_count,
-        u8::from(proj.seed_selection_complete),
-        seeds.len(),
-        relevant_shown,
+        emitted_related,
+        relevant_total,
         cand,
         intent.as_str(),
-        out.len()
+        out.len() + trailer.len(),
+        u8::from(proj.seed_selection_complete && !relevant_dropped)
     );
+    // emit the trailer — it always fits within the reserved space.
+    for line in trailer.lines() {
+        if out.len() + line.len() < budget {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
     out
 }
 

@@ -51,3 +51,30 @@ exhaustive enum      -> query --exhaustive "term"
 
 Every result keeps its evidence class (`f`/`c` in RDX1) and candidate-set id so
 uncertainty is never hidden.
+
+## Navigation profiles (public contract)
+
+One normalized request drives retrieval; the renderer is transport-orthogonal:
+
+- `--nav adaptive` — the normal Agent profile. The question is planned BEFORE
+  retrieval: deterministic intent classification -> typed query operation
+  (`callers`/`callees`/`paths`/`related`/`find`) -> anchors -> engine ->
+  adaptive evidence selection -> bounded RDX packet (UTF-8-safe whole-record
+  emission; trailer/summary describe the FINAL emitted packet).
+- default (full RDX) — explicit detailed/debug/research profile: the faithful
+  RDX2 projection render, no intent filtering.
+- `--json` — canonical EvidenceProjection, the machine/internal surface.
+- `--human` — the human-inspection renderer.
+
+All four render the SAME canonical projection for the same normalized request;
+they differ in representation, never in evidence meaning.
+
+## Transport parity
+
+`query --direct`, `query --service`, and auto-routed `query` (daemon running)
+execute the identical normalized request. The flag-mode forwarder sends
+intent/target/to/depth/max_results and the supported policies verbatim; adaptive
+planning runs identically on the client and the service executes the same
+typed operation. `--nav adaptive` renders from the service's canonical
+projection with the identical renderer code path.
+

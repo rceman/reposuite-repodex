@@ -5,7 +5,7 @@ untruncated visible messages, per-call token metrics, timestamps.
 Hidden reasoning_content is stripped. No 2000-char caps.
 """
 import hashlib
-from classify import classify_tool, is_rejected_result, exit_code_of
+from classify import classify_tool_ops, is_rejected_result, exit_code_of
 
 SECRET_KEYS = ("token", "bearer", "apikey", "authorization", "password", "secret", "cookie")
 
@@ -32,10 +32,11 @@ def extract(export):
         for tc in s.get("tool_calls", []) or []:
             if not isinstance(tc, dict):
                 continue
-            cat = classify_tool(tc.get("function_name"), tc.get("arguments"))
-            tools.append(cat)
+            cats = classify_tool_ops(tc.get("function_name"), tc.get("arguments"))
+            tools.extend(cats)  # §39: one category per executed operation
             evs.append({**base, "ev": "TOOL_REQUEST", "id": tc.get("tool_call_id"),
-                        "tool": tc.get("function_name"), "category": cat,
+                        "tool": tc.get("function_name"), "category": cats[0],
+                        "categories": cats,
                         "args": _clean(tc.get("arguments"))})
         obs = s.get("observation") or {}
         for res in obs.get("results", []) or []:

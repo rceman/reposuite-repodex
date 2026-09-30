@@ -28,7 +28,7 @@ pub struct RangeOut {
 }
 
 /// One emitted seed with explicit rank + current-view navigation identity.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct SeedOut {
     /// Explicit retrieval rank: 1 = highest-ranked emitted seed (§7). Never a
     /// local node id and never derived from canonical-key order (§8).
@@ -41,24 +41,24 @@ pub struct SeedOut {
     pub path: String,
     pub language: String,
     /// Call/import disposition where present (`single_candidate`, ...).
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disposition: Option<String>,
     /// Integer relevance score — ordering metadata only, not certainty.
     pub score: i64,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub factors: Vec<String>,
     /// Current declaration/header range (§11-§14), when resolvable.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub declaration_range: Option<RangeOut>,
     /// Current body range, when the declaration has a body.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body_range: Option<RangeOut>,
 }
 
 /// One relationship with both endpoints + provenance preserved (§15-§19).
 /// `from_*`/`to_*` are direction-resolved endpoints; `node`/`label`/`via` retain
 /// the legacy names (additive, backward-compatible).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct RelOut {
     pub direction: String,
     pub kind: String,
@@ -72,25 +72,25 @@ pub struct RelOut {
     /// Direction-resolved endpoints (§15).
     pub from_key: String,
     pub from_label: String,
-    #[serde(skip_serializing_if = "String::is_empty")]
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub from_path: String,
     pub to_key: String,
     pub to_label: String,
-    #[serde(skip_serializing_if = "String::is_empty")]
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub to_path: String,
     /// Upstream deterministic rule identity (§19).
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rule_id: Option<String>,
     /// Candidate-set identity when this edge is one member of a bounded set (§18).
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub candidate_set: Option<String>,
     /// Neighbor disposition (candidate resolution state), when present.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disposition: Option<String>,
 }
 
 /// One connector step: from -[relation]-> to with evidence + provenance (§26).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct ConnectorStep {
     pub from_key: String,
     pub from_label: String,
@@ -99,26 +99,26 @@ pub struct ConnectorStep {
     pub to_label: String,
     /// `fact` | `candidate`.
     pub evidence: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rule_id: Option<String>,
     /// Repo-relative path of the `to` endpoint (current locator).
-    #[serde(skip_serializing_if = "String::is_empty")]
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub to_path: String,
 }
 
 /// One bounded route (a path through the graph).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct Route {
     /// `structural path` | `candidate path` — precise, not a global claim.
     pub evidence_label: String,
     pub steps: Vec<ConnectorStep>,
     /// Distinct candidate sets this route depends on (empty for fact-only).
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub candidate_sets: Vec<String>,
 }
 
 /// The bounded connector packet for a `paths` query (§25-§28).
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, serde::Deserialize)]
 pub struct ConnectorPacket {
     /// True when >=1 route was found within the bound. `found:false` means only
     /// "no route within this bounded search" — NOT global absence (§27).
@@ -128,12 +128,12 @@ pub struct ConnectorPacket {
     pub max_routes: u32,
     pub max_depth: u32,
     /// Explicit no-route semantics when `found` is false.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub no_route_meaning: Option<String>,
 }
 
 /// Explicit output bounds applied (§32).
-#[derive(Debug, Clone, Default, Serialize)]
+#[derive(Debug, Clone, Default, Serialize, serde::Deserialize)]
 pub struct Bounds {
     pub max_seeds: usize,
     pub max_related: usize,
@@ -142,7 +142,7 @@ pub struct Bounds {
 }
 
 /// The canonical projection — the single source every transport renders from.
-#[derive(Debug, Clone, Default, Serialize)]
+#[derive(Debug, Clone, Default, Serialize, serde::Deserialize)]
 pub struct EvidenceProjection {
     pub schema: String,
     pub query: String,
@@ -153,7 +153,7 @@ pub struct EvidenceProjection {
     pub eligible_seed_count: usize,
     /// `true` = every matching seed was emitted within the seed bound.
     pub seed_selection_complete: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub truncated_reason: Option<String>,
     /// `true` when the related-edge bound was reached (more neighbors exist).
     pub relationship_limit_reached: bool,
@@ -164,43 +164,43 @@ pub struct EvidenceProjection {
     pub shown: usize,
     /// Legacy: `seed_selection_complete` (all matching seeds emitted in bound).
     pub complete: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub terms: Vec<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub so_query: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub so_rerank: Option<String>,
     pub seeds: Vec<SeedOut>,
     pub related: Vec<RelOut>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector: Option<ConnectorPacket>,
     /// Optional memory composition (additive guidance; never replaces seeds).
     /// Absent when memory mode is `off` or memory is unavailable.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<serde_json::Value>,
     /// Adaptive Context Compiler block: query shape + obligation ledger +
     /// budget-limited flag. Present only for `context_policy=adaptive`.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<serde_json::Value>,
     /// Guarded Evidence Recipe block: recipe_id/family/produced/fell_back.
     /// Compact provenance only — verbose step trace is debug-only (§28).
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recipe: Option<serde_json::Value>,
     /// Utility-policy block: decision_id + policy + diverged (debug trace).
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub utility: Option<serde_json::Value>,
     /// Current-source witnesses: the exact current bytes for bounded evidence
     /// ranges. Present only for `source_witness=bounded` (§5, §16).
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub witnesses: Vec<serde_json::Value>,
     /// Source-exposure accounting (§11): witness bytes ARE source exposure;
     /// navigation metadata is not.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_exposure: Option<serde_json::Value>,
     pub bounds: Bounds,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub diagnostics: Vec<String>,
 }
 
