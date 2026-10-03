@@ -1,0 +1,12 @@
+{
+ "probes": [
+  "Who calls handle?",
+  "What does index call?",
+  "Who calls save?",
+  "$repo?->save (nullsafe)",
+  "$this->pages->renderHome (property)",
+  "unsupported dynamic"
+ ],
+ "result": "direct == service == auto byte-identical on all typed-receiver probes",
+ "mismatches": 0
+}

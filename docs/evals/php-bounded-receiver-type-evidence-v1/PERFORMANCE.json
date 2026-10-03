@@ -1,0 +1,15 @@
+{
+ "big_php_4mib": {
+  "t0_ms": 3130.7,
+  "t1_ms": 2568.2,
+  "delta_pct": -18.0,
+  "note": "T1 faster after dead-opaque-write pruning; param-hint volume is inherent (+34k records on 4MiB)"
+ },
+ "repodex_bench_php": {
+  "normalized_extraction": {
+   "1mib_ms": 233.3,
+   "4mib_ms": 989.7
+  },
+  "note": "baseline 165/742 pre-prune; see REPORT for final numbers"
+ }
+}

@@ -1,0 +1,91 @@
+{
+ "changed": 17,
+ "unchanged": 6,
+ "deltas": [
+  {
+   "query": "What does direct call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ direct\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#2 direct\nF 2 node decl:src/Types.php#8 handle\nD 1 rank=1 path=src/ParamCalls.php decl=8:98-180 body=8:145-180\nR call_candidate 1 2 c cs=cand-9df8a2788822843c rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=395 complete=1\n"
+  },
+  {
+   "query": "What does aliased call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ aliased\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#3 aliased\nF 2 node decl:src/Types.php#7 run\nD 1 rank=1 path=src/ParamCalls.php decl=12:186-250 body=12:224-250\nR call_candidate 1 2 c cs=cand-5f370981c9d83384 rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=397 complete=1\n"
+  },
+  {
+   "query": "What does qualified call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ qualified\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#4 qualified\nF 2 node decl:src/Types.php#2 save\nD 1 rank=1 path=src/ParamCalls.php decl=16:256-332 body=16:305-332\nR call_candidate 1 2 c cs=cand-bf346d51883b65f2 rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=402 complete=1\n"
+  },
+  {
+   "query": "What does nullable call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ nullable\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#5 nullable\nF 2 node decl:src/Types.php#5 get\nD 1 rank=1 path=src/ParamCalls.php decl=20:338-407 body=20:380-407\nR call_candidate 1 2 c cs=cand-5266fadfeaeae785 rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=399 complete=1\n"
+  },
+  {
+   "query": "What does unioned call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ unioned\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#6 unioned\nF 2 node decl:src/Types.php#5 get\nF 3 node decl:src/Types.php#7 run\nD 1 rank=1 path=src/ParamCalls.php decl=24:413-506 body=24:461-506\nR call_candidate 1 2 c cs=cand-11f743d9a7f5cdec rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 3 c cs=cand-47fb87d1cf16043d rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callees bytes=525 complete=1\n"
+  },
+  {
+   "query": "What does home call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ home\\ call?\nI callees\nF 1 declaration decl:src/PropCalls.php#8 home\nF 2 node decl:src/Types.php#10 render\nD 1 rank=1 path=src/PropCalls.php decl=19:368-445 body=19:399-445\nR call_candidate 1 2 c cs=cand-3d1dd6975dbb5522 rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=1 rel_eligible=1 candidates=1 intent=callees bytes=393 complete=1\n"
+  },
+  {
+   "query": "What does read call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ read\\ call?\nI callees\nF 1 declaration decl:src/PropCalls.php#9 read\nF 2 node decl:src/Types.php#10 render\nF 3 node decl:src/Types.php#12 go\nF 4 node decl:src/Types.php#14 go\nF 5 node decl:src/Types.php#2 save\nF 6 node decl:src/Types.php#5 get\nF 7 node decl:src/Types.php#8 handle\nD 1 rank=1 path=src/PropCalls.php decl=23:451-635 body=23:480-635\nR call_candidate 1 2 c cs=cand-57f272cfab720f7f rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 3 c cs=cand-400bddabaab3a368 rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 4 c cs=cand-400bddabaab3a368 rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 5 c cs=cand-edd31c6f699f8dbf rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 6 c cs=cand-95f5b04688ebca2"
+  },
+  {
+   "query": "What does reassigned call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ reassigned\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#12 reassigned\nF 2 node decl:src/Types.php#13 Alt\nF 3 node decl:src/Types.php#14 go\nD 1 rank=1 path=src/ParamCalls.php decl=50:924-1018 body=50:969-1018\nR call_candidate 1 2 c cs=cand-6bb4d4ff8eb73568 rule=php.call.construction_class_candidate\nR call_candidate 1 3 c cs=cand-69c3cf4f2fef38cd rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callees bytes=532 complete=1\n"
+  },
+  {
+   "query": "What does sequential call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ sequential\\ call?\nI callees\nF 1 declaration decl:src/ParamCalls.php#13 sequential\nF 2 node decl:src/Types.php#11 Local\nF 3 node decl:src/Types.php#12 go\nF 4 node decl:src/Types.php#13 Alt\nF 5 node decl:src/Types.php#14 go\nD 1 rank=1 path=src/ParamCalls.php decl=55:1024-1134 body=55:1059-1134\nR call_candidate 1 2 c cs=cand-be29355471de52a2 rule=php.call.construction_class_candidate\nR call_candidate 1 3 c cs=cand-57bf5697c1b9fcec rule=php.call.typed_receiver_method_candidate\nR call_candidate 1 4 c cs=cand-ff389ed078b3100a rule=php.call.construction_class_candidate\nR call_candidate 1 5 c cs=cand-57bf5697c1b9fcec rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=4 rel_eligible=4 candidates=4 intent=callees bytes=790 complete=1\n"
+  },
+  {
+   "query": "What does arrow call?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ What\\ does\\ arrow\\ call?\nI callees\nF 1 declaration decl:src/Controls.php#5 arrow\nF 2 node decl:src/Types.php#6 Service\nF 3 node decl:src/Types.php#7 run\nD 1 rank=1 path=src/Controls.php decl=17:300-406 body=17:330-406\nR call_candidate 1 2 c cs=cand-402f13ffe0bb8b8d rule=php.call.construction_class_candidate\nR call_candidate 1 3 c cs=cand-788c7993c698cd44 rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callees bytes=518 complete=1\n"
+  },
+  {
+   "query": "Who calls handle?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ handle?\nI callers\nF 1 declaration decl:src/Types.php#8 handle\nF 2 node call:src/ParamCalls.php#0 $service->handle\nF 3 node call:src/PropCalls.php#5 $this->svc->handle\nD 1 rank=1 path=src/Types.php decl=15:251-294 body=15:281-294\nR call_candidate 2 1 c cs=cand-9df8a2788822843c rule=php.call.typed_receiver_method_candidate\nR call_candidate 3 1 c cs=cand-860bfa656d603f9b rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callers bytes=544 complete=1\n"
+  },
+  {
+   "query": "Who calls get?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ get?\nI callers\nF 1 declaration decl:src/Types.php#5 get\nF 2 node call:src/ParamCalls.php#3 $c?->get\nF 3 node call:src/ParamCalls.php#5 $x->get\nF 4 node call:src/PropCalls.php#6 $this->cache->get\nD 1 rank=1 path=src/Types.php decl=10:145-192 body=10:176-192\nR call_candidate 2 1 c cs=cand-5266fadfeaeae785 rule=php.call.typed_receiver_method_candidate\nR call_candidate 3 1 c cs=cand-11f743d9a7f5cdec rule=php.call.typed_receiver_method_candidate\nR call_candidate 4 1 c cs=cand-95f5b04688ebca2f rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=3 rel_eligible=3 candidates=3 intent=callers bytes=666 complete=1\n"
+  },
+  {
+   "query": "Who calls run?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ run?\nI callers\nF 1 declaration decl:src/Types.php#7 run\nF 2 node call:src/Controls.php#4 $s->run\nF 3 node call:src/ParamCalls.php#1 $s->run\nF 4 node call:src/ParamCalls.php#4 $x->run\nD 1 rank=1 path=src/Types.php decl=14:216-246 body=14:244-246\nR call_candidate 2 1 c cs=cand-788c7993c698cd44 rule=php.call.typed_receiver_method_candidate\nR call_candidate 3 1 c cs=cand-5f370981c9d83384 rule=php.call.typed_receiver_method_candidate\nR call_candidate 4 1 c cs=cand-47fb87d1cf16043d rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=3 rel_eligible=3 candidates=3 intent=callers bytes=654 complete=1\n"
+  },
+  {
+   "query": "Who calls render?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ render?\nI callers\nF 1 declaration decl:src/Types.php#10 render\nF 2 node call:src/PropCalls.php#4 $this->pages->render\nF 3 node call:src/PropCalls.php#9 $this->plain->render\nD 1 rank=1 path=src/Types.php decl=19:316-363 body=19:349-363\nR call_candidate 2 1 c cs=cand-3d1dd6975dbb5522 rule=php.call.typed_receiver_method_candidate\nR call_candidate 3 1 c cs=cand-57f272cfab720f7f rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callers bytes=550 complete=1\n"
+  },
+  {
+   "query": "Who calls save?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ save?\nI callers\nF 1 declaration decl:src/Types.php#2 save\nF 2 node call:src/ParamCalls.php#2 $r->save\nF 3 node call:src/PropCalls.php#7 $this->maybe?->save\nD 1 rank=1 path=src/Types.php decl=5:42-73 body=5:71-73\nR call_candidate 2 1 c cs=cand-bf346d51883b65f2 rule=php.call.typed_receiver_method_candidate\nR call_candidate 3 1 c cs=cand-edd31c6f699f8dbf rule=php.call.typed_receiver_method_candidate\nS seeds=1 eligible=1 related=2 rel_eligible=2 candidates=2 intent=callers bytes=527 complete=1\n"
+  },
+  {
+   "query": "Who calls go?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ go?\nI callers\nF 1 declaration decl:src/Types.php#12 go\nF 2 declaration decl:src/Types.php#14 go\nF 3 node call:src/ParamCalls.php#13 $x->go\nF 4 node call:src/ParamCalls.php#16 $x->go\nF 5 node call:src/ParamCalls.php#19 $x->go\nF 6 node call:src/PropCalls.php#8 $this->dup->go\nD 1 rank=1 path=src/Types.php decl=23:385-414 body=23:412-414\nD 2 rank=2 path=src/Types.php decl=27:434-463 body=27:461-463\nR call_candidate 3 2 c cs=cand-69c3cf4f2fef38cd rule=php.call.typed_receiver_method_candidate\nR call_candidate 4 1 c cs=cand-57bf5697c1b9fcec rule=php.call.typed_receiver_method_candidate\nR call_candidate 5 1 c cs=cand-26b7cee75f24bd67 rule=php.call.typed_receiver_method_candidate\nR call_candidate 6 1 c cs=cand-400bddabaab3a368 rule=php.call.typed_receiver_method_cand"
+  },
+  {
+   "query": "Who calls m?",
+   "new_typed_edges": true,
+   "t1_head": "#RDX1 adaptive v2\nQ Who\\ calls\\ m?\nI callers\nF 1 file file:src/ParamCalls.php src/ParamCalls.php\nF 2 file file:src/PropCalls.php src/PropCalls.php\nF 3 declaration decl:src/Dup/A.php#2 m\nF 4 node call:src/ParamCalls.php#24 $t->m\nD 1 rank=1 path=src/ParamCalls.php\nD 2 rank=2 path=src/PropCalls.php\nD 3 rank=3 path=src/Dup/A.php decl=5:47-90 body=5:75-90\nR call_candidate 4 3 c cs=cand-06ebf7810861476d rule=php.call.typed_receiver_method_candidate\nG RESULT_LIMIT shown=3 eligible=4\nS seeds=3 eligible=4 related=1 rel_eligible=1 candidates=1 intent=callers bytes=576 complete=1\n"
+  }
+ ]
+}

@@ -1,0 +1,458 @@
+[
+ {
+  "id": "rx-orders-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In OrderController::index, which class's `handle` method does `$this->orders->handle()` invoke? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "OrderService",
+    "id": "o1",
+    "source_path": "src/Service/OrderService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Service/OrderService.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-repo-save",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In OrderController::store, which class's `save` method does `$this->repo->save()` reach? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "OrderRepo",
+    "id": "o1",
+    "source_path": "src/Repo/OrderRepo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Repo/OrderRepo.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-cache-get",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In OrderController::warm, which class's `get` method does `$this->cache->get('landing')` reach? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "Cache",
+    "id": "o1",
+    "source_path": "src/Cache/Cache.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Cache/Cache.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-pages-home",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In OrderController::index, which class's `renderHome` does `$this->pages->renderHome()` reach? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "PageRenderer",
+    "id": "o1",
+    "source_path": "src/Page/PageRenderer.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Page/PageRenderer.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-users-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In UserController::list, which class's `handle` does `$this->users->handle()` invoke? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "UserService",
+    "id": "o1",
+    "source_path": "src/Service/UserService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Service/UserService.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-audit-save",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In UserController::list, which class's `save` does `$this->audit->save('listed')` reach? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "LogRepo",
+    "id": "o1",
+    "source_path": "src/Repo/LogRepo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Repo/LogRepo.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-job-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In Runner::run, which class's `handle` does `$job->handle()` invoke? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "JobService",
+    "id": "o1",
+    "source_path": "src/Service/JobService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Service/JobService.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "rx-report-gen",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "rx",
+  "task": "In Runner::report, which class's `generate` does `$r->generate()` invoke? Give class and file path.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "ReportService",
+    "id": "o1",
+    "source_path": "src/Service/ReportService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "src/Service/ReportService.php",
+    "id": "o2",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "bx-index-flow",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "List every method OrderController::index can reach through its receiver calls, with file paths.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "handle",
+    "id": "o1",
+    "source_path": "src/Service/OrderService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "renderHome",
+    "id": "o1",
+    "source_path": "src/Page/PageRenderer.php"
+   }
+  ]
+ },
+ {
+  "id": "bx-warm-flow",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "Trace OrderController::warm: which `get` implementation(s) can it reach, and on which class?",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "get",
+    "id": "o1",
+    "source_path": "src/Cache/Cache.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "Cache",
+    "id": "o1",
+    "source_path": "src/Cache/Cache.php"
+   }
+  ]
+ },
+ {
+  "id": "bx-list-flow",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "List every method UserController::list can reach through its receiver calls, with file paths.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "handle",
+    "id": "o1",
+    "source_path": "src/Service/UserService.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "save",
+    "id": "o1",
+    "source_path": "src/Repo/LogRepo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "get",
+    "id": "o1",
+    "source_path": "src/Cache/Cache.php"
+   }
+  ]
+ },
+ {
+  "id": "bx-sync-find",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "SyncWorker::run assigns a repo inside a branch then calls `find`. Which classes' `find` methods can that call reach? List all of them.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "OrderRepo",
+    "id": "o1",
+    "source_path": "src/Repo/OrderRepo.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "UserRepo",
+    "id": "o1",
+    "source_path": "src/Repo/UserRepo.php"
+   }
+  ]
+ },
+ {
+  "id": "rx-who-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "Which methods in this codebase call a method named `handle` on a receiver? List the calling method names.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "index",
+    "id": "o1",
+    "source_path": "src/Controller/OrderController.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "list",
+    "id": "o1",
+    "source_path": "src/Controller/UserController.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "run",
+    "id": "o1",
+    "source_path": "src/Worker/Runner.php"
+   }
+  ]
+ },
+ {
+  "id": "bx-who-save",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "bx",
+  "task": "Which methods in this codebase call a method named `save` on a receiver? List the calling method names.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "store",
+    "id": "o1",
+    "source_path": "src/Controller/OrderController.php"
+   },
+   {
+    "kind": "contains_text",
+    "value": "list",
+    "id": "o1",
+    "source_path": "src/Controller/UserController.php"
+   }
+  ]
+ },
+ {
+  "id": "cx-store-find",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In OrderController::store, change the repository call from `save($id)` to `find($id)` and return its result.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Controller/OrderController.php",
+    "value": "find",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "cx-warm-put",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In OrderController::warm, after reading the cache, also write `$this->cache->put('landing', 'w')`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Controller/OrderController.php",
+    "value": "put",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "cx-users-save",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In UserController::list, after the `handle` call, also call `$this->users->save(1)`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Controller/UserController.php",
+    "value": "save",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "cx-report-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In Runner::report, call `$r->handle()` before returning generate's result.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Worker/Runner.php",
+    "value": "handle",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "cx-pages-title",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In OrderController::index, change the render call to `$this->pages->render('home')`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Controller/OrderController.php",
+    "value": "render",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "cx-audit-write",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "cx",
+  "task": "In UserController::list, replace the audit `save` call with `$this->audit->write('listed')`.",
+  "obligations": [
+   {
+    "kind": "mutation_marker",
+    "path": "src/Controller/UserController.php",
+    "value": "write",
+    "id": "o1"
+   }
+  ]
+ },
+ {
+  "id": "nc-legacy-handle",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "nc",
+  "task": "Identify the class whose `handle` method `LegacyWorker::run` calls via `$job->handle()`. If no source-level type evidence determines it, answer INDETERMINATE.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "INDETERMINATE",
+    "id": "o1",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "nc-conn-chain",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "nc",
+  "task": "In OrderController::warm the call is `$this->cache->get('landing')`. What method does the returned value's hypothetical `->then()` call reach? If a chained call's return type is not modeled, answer INDETERMINATE.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "INDETERMINATE",
+    "id": "o1",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "nc-dyn-member",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "nc",
+  "task": "In LegacyWorker::dispatch, which class's method does `$job->{$name}()` reach? If the member name is dynamic and the receiver untyped so it cannot be determined from source evidence, answer INDETERMINATE.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "INDETERMINATE",
+    "id": "o1",
+    "factual": false
+   }
+  ]
+ },
+ {
+  "id": "nc-ghost",
+  "root": "tools/eval/fixtures/php-rx",
+  "pristine_root": "tools/eval/fixtures/php-rx",
+  "cohort": "nc",
+  "task": "Does OrderController call any method on a property `$this->ghost`? If there is no such evidence, answer INDETERMINATE.",
+  "obligations": [
+   {
+    "kind": "contains_text",
+    "value": "INDETERMINATE",
+    "id": "o1",
+    "factual": false
+   }
+  ]
+ }
+]

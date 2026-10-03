@@ -1,0 +1,19 @@
+{
+ "tools/eval/fixtures/php-rx/src/Cache/Cache.php": "59066fb28e9ec58781b7d87dc43339c040fc71815eca1ef1ea7208c64f1ec300",
+ "tools/eval/fixtures/php-rx/src/Cache/NullCache.php": "da03c05e3f1ac537309005a750e6a8309cf874034833bfddc107e9b512bb00f1",
+ "tools/eval/fixtures/php-rx/src/Controller/OrderController.php": "5ae4370e86178e171c4ffc28fe053494647f3fc116ab7611b650b661f85cb733",
+ "tools/eval/fixtures/php-rx/src/Controller/UserController.php": "59f8ebed70351e5b429c9f1dcba2a8f09c755bc8060e45c2cc930a828cc400ce",
+ "tools/eval/fixtures/php-rx/src/Page/PageRenderer.php": "25475c5f812194839733940c621cb87e83ad4a0179c2dd3646e6f6ee268c4680",
+ "tools/eval/fixtures/php-rx/src/Repo/LogRepo.php": "d3ce341d65663deee93bffa6e0b5f60f7350134dd1628c737e52dd756e6b7c76",
+ "tools/eval/fixtures/php-rx/src/Repo/OrderRepo.php": "b2e2dee02ddabd8f01fe867502d61fc029b3f01aec801e89981903a48ac0c9ae",
+ "tools/eval/fixtures/php-rx/src/Repo/UserRepo.php": "7641bce660f6fde81547502929a8a85c1271e46353f5e8536f156279c6929670",
+ "tools/eval/fixtures/php-rx/src/Service/JobService.php": "e33150616a6129e68f260a80a74b4f1cd07d15bbd465a8242bbd7dec3dbfcaf1",
+ "tools/eval/fixtures/php-rx/src/Service/OrderService.php": "068f492a8583834a3217ecb17d0137316243651adda70b82fab11e0c37277461",
+ "tools/eval/fixtures/php-rx/src/Service/ReportService.php": "2f6aaf45fd759d6f57faa77d26c3feb555994345f2a30328494b7a3278ae9eb5",
+ "tools/eval/fixtures/php-rx/src/Service/UserService.php": "5c24fd08869309e5e1b82660a5c997a79c5101db063793671f39c65eb6179759",
+ "tools/eval/fixtures/php-rx/src/Util/Str.php": "610586f9587136a3b00803b9a925afd28ca09923912570dcb8cece13eba2421b",
+ "tools/eval/fixtures/php-rx/src/Util/helpers.php": "3a960930edf75ef9a4228555708f3bc577ec06b72408220ea7abc0646c972253",
+ "tools/eval/fixtures/php-rx/src/Worker/LegacyWorker.php": "6374f8696cc26b9d533569b07cc66dae8db4cb3715cc0aac8c080513773d270b",
+ "tools/eval/fixtures/php-rx/src/Worker/Runner.php": "4971d6ea4fe93af3c440aa4ea00504520d3326c363fe7ec38faa062387bc2e0f",
+ "tools/eval/fixtures/php-rx/src/Worker/SyncWorker.php": "bf16d212a1bbcc9f46668c5ed6f309396c14b7e9218d66926d878a531866b54e"
+}

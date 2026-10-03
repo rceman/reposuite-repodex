@@ -1,0 +1,69 @@
+{
+ "rx-orders-handle": {
+  "evidence": "property_type_hint OrderService $orders",
+  "call": "$this->orders->handle()",
+  "class": "App\\Service\\OrderService",
+  "method": "handle",
+  "cardinality": 1,
+  "proof": "src/Controller/OrderController.php:8 + src/Service/OrderService.php:5"
+ },
+ "rx-repo-save": {
+  "evidence": "property_literal_new $this->repo = new OrderRepo()",
+  "call": "$this->repo->save($id)",
+  "class": "App\\Repo\\OrderRepo",
+  "method": "save",
+  "cardinality": 1,
+  "proof": "OrderController.php:14 + Repo/OrderRepo.php:5"
+ },
+ "rx-cache-get": {
+  "evidence": "property_type_hint promoted private Cache $cache",
+  "call": "$this->cache->get",
+  "class": "App\\Cache\\Cache",
+  "method": "get",
+  "cardinality": 1
+ },
+ "rx-pages-home": {
+  "evidence": "property_literal_new $this->pages = new PageRenderer()",
+  "call": "$this->pages->renderHome()",
+  "class": "App\\Page\\PageRenderer",
+  "method": "renderHome",
+  "cardinality": 1
+ },
+ "rx-users-handle": {
+  "evidence": "promoted param+prop UserService $users",
+  "call": "$this->users->handle()",
+  "class": "App\\Service\\UserService",
+  "cardinality": 1
+ },
+ "rx-audit-save": {
+  "evidence": "property_literal_new $this->audit = new LogRepo()",
+  "call": "$this->audit->save",
+  "class": "App\\Repo\\LogRepo",
+  "cardinality": 1
+ },
+ "rx-job-handle": {
+  "evidence": "parameter_type_hint JobService $job",
+  "call": "$job->handle()",
+  "class": "App\\Service\\JobService",
+  "cardinality": 1
+ },
+ "rx-report-gen": {
+  "evidence": "local_literal_new $r = new ReportService()",
+  "call": "$r->generate()",
+  "class": "App\\Service\\ReportService",
+  "cardinality": 1
+ },
+ "bx-sync-find": {
+  "evidence": "two branch literal-new writes $p",
+  "call": "$p->find(1)",
+  "classes": [
+   "App\\Repo\\OrderRepo",
+   "App\\Repo\\UserRepo"
+  ],
+  "cardinality": 2
+ },
+ "nc-*": {
+  "evidence": "untyped/dynamic/missing receivers",
+  "expected": "OutOfScope receiver_type_unavailable \u2014 INDETERMINATE"
+ }
+}

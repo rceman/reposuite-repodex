@@ -1,0 +1,15 @@
+{
+ "corpus": "fixtures/phprx",
+ "records": 44,
+ "outcomes": {
+  "out_of_scope": 7,
+  "no_candidate": 8,
+  "single_candidate": 25,
+  "multiple_candidates": 4
+ },
+ "typed_rule_records": 29,
+ "candidate_p50": 0,
+ "candidate_p95": 2,
+ "candidate_max": 2,
+ "notes": "max=2 from unioned/duplicated/branch evidence \u2014 bounded, manual-inspected"
+}

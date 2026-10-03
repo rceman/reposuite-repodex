@@ -66,8 +66,11 @@ def setup_wt(task, out, sid, arm, binaries, state_dir):
     shutil.copytree(task["pristine_root"], d)
     if arm in ("P1", "P2"):
         binary = binaries[arm]
+        # per-arm state dir: different binaries may carry incompatible artifact
+        # schema versions, and a shared dir would make them clobber each other.
         shim = d / "repo_query"
-        shim.write_text(SHIM.format(BIN=binary, ROOT=str(d), STATE=state_dir,
+        shim.write_text(SHIM.format(BIN=binary, ROOT=str(d),
+                                    STATE=f"{state_dir}-{arm}",
                                     NAV="--nav adaptive"))
         shim.chmod(0o755)
     return str(d)

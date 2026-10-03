@@ -1,0 +1,7 @@
+{
+ "required_tool_rejections": 0,
+ "required_tool_cancellations": 0,
+ "interactive_prompts": 0,
+ "permission_policy_identical": true,
+ "note": "dangerous mode in disposable worktrees only"
+}

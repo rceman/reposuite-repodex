@@ -1,0 +1,19 @@
+{
+ "targeted_receiver_type_unavailable_cases_tested": 17,
+ "gained_candidate_evidence": 17,
+ "percentage": 100.0,
+ "adaptive_packets_changed": 17,
+ "changes_semantically_useful": true,
+ "wrong_packet_changes": 0,
+ "controls_unchanged": 6,
+ "gate_70_percent": "PASS",
+ "safety": {
+  "false_receiver_types": 0,
+  "false_fact_promotions": 0,
+  "ambiguity_collapses": 0,
+  "global_method_scans": 0,
+  "stale_type_after_write": 0,
+  "transport_mismatches": 0
+ },
+ "agent_campaign_launched": true
+}

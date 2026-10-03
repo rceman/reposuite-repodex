@@ -1,0 +1,49 @@
+{
+ "fixture": "fixtures/phprx",
+ "cases": {
+  "parameter_type_hint": [
+   "ParamCalls::direct `$service->handle`",
+   "aliased `Svc $s`",
+   "qualified `\\App\\Rx\\Repo`",
+   "nullable `?Cache` + `?->`"
+  ],
+  "union_intersection": [
+   "unioned Service|Cache",
+   "intersected Repo&Cache"
+  ],
+  "builtin_parent_external_dup": [
+   "builtin int",
+   "parentTyped",
+   "external Vendor\\Pkg\\Tool",
+   "duplicated Dup\\Thing"
+  ],
+  "self_type": [
+   "selfTyped self $s"
+  ],
+  "reassignment_writes": [
+   "overwritten opaque",
+   "reassigned new Alt",
+   "sequential new Alt;new Local",
+   "branched if/else",
+   "lateOpaque new Local;weird()"
+  ],
+  "property_hints": [
+   "svc declared",
+   "maybe nullable",
+   "cache promoted",
+   "absent method on typed prop"
+  ],
+  "property_literal_new": [
+   "pages ctor assign",
+   "plain via reassign",
+   "dup two writes -> multiple",
+   "missing prop -> OOS"
+  ],
+  "controls": [
+   "unknown untyped",
+   "dynamic $s->{$m}",
+   "chained $s->factory()->build",
+   "arrow fn(Service $s)"
+  ]
+ }
+}

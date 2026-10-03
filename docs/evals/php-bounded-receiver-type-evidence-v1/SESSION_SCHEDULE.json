@@ -1,0 +1,12 @@
+{
+ "sessions": 144,
+ "arms": [
+  "N0",
+  "P1(=T0 ad83425)",
+  "P2(=T1 receiver types)"
+ ],
+ "tasks": 24,
+ "reps": 2,
+ "executor": "devin --permission-mode dangerous",
+ "budget_max": 160
+}

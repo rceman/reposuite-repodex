@@ -1,0 +1,6 @@
+{
+ "note": "repodex CLI only; no model inside RepoDex. Agent model: Devin default",
+ "candidate_rule_abi": 9,
+ "policy_php": 2,
+ "schema": 4
+}

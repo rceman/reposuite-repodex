@@ -1,0 +1,12 @@
+{
+ "gates": [
+  "fmt",
+  "check",
+  "test",
+  "clippy -D warnings",
+  "release",
+  "bench",
+  "repodex-bench php"
+ ],
+ "status": "green"
+}
