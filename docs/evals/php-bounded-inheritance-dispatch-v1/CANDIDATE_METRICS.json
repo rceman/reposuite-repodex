@@ -1,0 +1,7 @@
+{
+ "p50": 1,
+ "p95": 2,
+ "max": 2,
+ "corpus": "phpinh+phpnav+phprx",
+ "note": "nearest-level + ambiguity preserved; max=2 from duplicate parent declaration arms"
+}

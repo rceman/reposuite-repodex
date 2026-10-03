@@ -1,0 +1,10 @@
+{
+ "CANDIDATE_RULE_ABI_VERSION": "9 -> 10",
+ "POLICY_VERSION_PHP_CALL": "2 -> 3",
+ "new_rules": [
+  "php.call.inherited_method_candidate",
+  "php.call.parent_method_candidate",
+  "php.call.parent_construction_candidate"
+ ],
+ "reason": "unchanged PHP source may now produce ancestor/parent-scope method candidates"
+}

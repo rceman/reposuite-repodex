@@ -1,0 +1,38 @@
+{
+ "N0": {
+  "n": 12,
+  "success": 12,
+  "wall_median_ms": 12120,
+  "repodex_calls": 0,
+  "native_search": 23,
+  "source_reads": 39,
+  "tool_calls": 90,
+  "model_calls": 52,
+  "input_tokens": 673979,
+  "output_tokens": 8569
+ },
+ "P1": {
+  "n": 12,
+  "success": 12,
+  "wall_median_ms": 17606,
+  "repodex_calls": 28,
+  "native_search": 12,
+  "source_reads": 36,
+  "tool_calls": 101,
+  "model_calls": 58,
+  "input_tokens": 785736,
+  "output_tokens": 12694
+ },
+ "P2": {
+  "n": 12,
+  "success": 12,
+  "wall_median_ms": 20659,
+  "repodex_calls": 22,
+  "native_search": 8,
+  "source_reads": 36,
+  "tool_calls": 96,
+  "model_calls": 55,
+  "input_tokens": 732793,
+  "output_tokens": 11268
+ }
+}

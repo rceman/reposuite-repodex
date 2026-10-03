@@ -1,0 +1,4 @@
+{
+ "direct==service==auto": "byte-identical on callers method save|handle, related class OrderService|UserRepo",
+ "transport_mismatches": 0
+}

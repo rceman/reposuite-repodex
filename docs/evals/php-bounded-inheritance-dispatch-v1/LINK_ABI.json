@@ -1,0 +1,10 @@
+{
+ "LINK_RULE_ABI_VERSION": "3 -> 4",
+ "POLICY_VERSION_PHP": "1 -> 2",
+ "new_rules": [
+  "php.class.extends",
+  "php.class.implements",
+  "php.class.uses_trait"
+ ],
+ "reason": "unchanged PHP source now produces additional structural hierarchy links"
+}

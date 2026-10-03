@@ -1,0 +1,219 @@
+[
+ {
+  "path": "src/Aliased.php",
+  "written": "$this->only_b",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::B::only_b"
+ },
+ {
+  "path": "src/Contracts.php",
+  "written": "$this->contract",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::Impl::contract"
+ },
+ {
+  "path": "src/Contracts.php",
+  "written": "$this->logline",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Contracts.php",
+  "written": "$this->concrete",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::AbsBase::concrete"
+ },
+ {
+  "path": "src/Contracts.php",
+  "written": "$p->mark",
+  "rule": "php.call.typed_receiver_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::ParentHint::mark"
+ },
+ {
+  "path": "src/Cycle.php",
+  "written": "$this->never_found",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Cycle.php",
+  "written": "$this->c2m",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::Cyc2::c2m"
+ },
+ {
+  "path": "src/DupChild.php",
+  "written": "$this->shared_one",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::SharedBase::shared_one"
+ },
+ {
+  "path": "src/DupChild.php",
+  "written": "$this->shared_two",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::SharedBase::shared_two"
+ },
+ {
+  "path": "src/DupChild.php",
+  "written": "$this->anything",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->base",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::base"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->over",
+  "rule": "php.call.lexical_this_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::D::over"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->only_b",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::B::only_b"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->prot",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::prot"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->hidden",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->deep",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::deep"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->missing",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "self::prot",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::prot"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "parent::over",
+  "rule": "php.call.parent_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::B::over"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "parent",
+  "rule": "php.call.parent_construction_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::C"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "static::later",
+  "rule": "php.call.static_method_candidate",
+  "outcome": "out_of_scope",
+  "reason": "late_static_binding"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "static",
+  "rule": "php.call.construction_class_candidate",
+  "outcome": "out_of_scope",
+  "reason": "late_static_binding"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "written": "$this->only_b",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::B::only_b"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$a->base",
+  "rule": "php.call.typed_receiver_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::base"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$b->base",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::base"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$d->over",
+  "rule": "php.call.typed_receiver_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::D::over"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$d->deep",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::deep"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$a->hidden",
+  "rule": "php.call.typed_receiver_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$b->missing",
+  "rule": "php.call.typed_receiver_method_candidate",
+  "outcome": "no_candidate",
+  "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "\\App\\Inh\\B",
+  "rule": "php.call.construction_class_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::B"
+ },
+ {
+  "path": "src/Typed.php",
+  "written": "$x->base",
+  "rule": "php.call.inherited_method_candidate",
+  "outcome": "single_candidate",
+  "target": "(file)::App\\Inh::A::base"
+ }
+]

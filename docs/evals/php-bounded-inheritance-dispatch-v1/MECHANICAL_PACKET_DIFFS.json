@@ -1,0 +1,422 @@
+[
+ {
+  "fixture": "phpinh",
+  "call": "src/Aliased.php#0 $this->only_b",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "only_b",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Contracts.php#0 $this->contract",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "contract",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Contracts.php#1 $this->logline",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Contracts.php#2 $this->concrete",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "concrete",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Contracts.php#3 $p->mark",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_indexed_class_for_receiver_type",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "mark",
+   "rule": "php.call.typed_receiver_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Cycle.php#0 $this->never_found",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Cycle.php#1 $this->c2m",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "c2m",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/DupChild.php#0 $this->shared_one",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "shared_one",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/DupChild.php#1 $this->shared_two",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "shared_two",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/DupChild.php#2 $this->anything",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#0 $this->base",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "base",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#12 $this->only_b",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "only_b",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#2 $this->only_b",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "only_b",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#3 $this->prot",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "prot",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#4 $this->hidden",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#5 $this->deep",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "deep",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#6 $this->missing",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#7 self::prot",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_candidate_class",
+   "rule": "php.call.lexical_self_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "prot",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#8 parent::over",
+  "h0": {
+   "outcome": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1",
+   "rule": "php.call.static_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "over",
+   "rule": "php.call.parent_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Hierarchy.php#9 parent",
+  "h0": {
+   "outcome": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1",
+   "rule": "php.call.construction_class_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "C",
+   "rule": "php.call.parent_construction_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Typed.php#1 $b->base",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "base",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Typed.php#3 $d->deep",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "deep",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Typed.php#4 $a->hidden",
+  "h0": {
+   "outcome": "single_candidate",
+   "target": "hidden",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Typed.php#5 $b->missing",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpinh",
+  "call": "src/Typed.php#7 $x->base",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "base",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpnav",
+  "call": "src/Service/Repo.php#15 parent",
+  "h0": {
+   "outcome": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1",
+   "rule": "php.call.construction_class_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_indexed_parent_for_lexical_class",
+   "rule": "php.call.parent_construction_candidate"
+  }
+ },
+ {
+  "fixture": "phpnav",
+  "call": "src/Service/Repo.php#16 parent::save",
+  "h0": {
+   "outcome": "out_of_scope",
+   "reason": "parent_scope_not_modeled_in_v1",
+   "rule": "php.call.static_method_candidate"
+  },
+  "h1": {
+   "outcome": "single_candidate",
+   "target": "save",
+   "rule": "php.call.parent_method_candidate"
+  }
+ },
+ {
+  "fixture": "phpnav",
+  "call": "src/Service/Repo.php#5 $this->missing",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+   "rule": "php.call.lexical_this_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.inherited_method_candidate"
+  }
+ },
+ {
+  "fixture": "phprx",
+  "call": "src/Controls.php#2 $s->factory",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  }
+ },
+ {
+  "fixture": "phprx",
+  "call": "src/PropCalls.php#11 $this->svc->absent",
+  "h0": {
+   "outcome": "no_candidate",
+   "reason": "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  },
+  "h1": {
+   "outcome": "no_candidate",
+   "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
+   "rule": "php.call.typed_receiver_method_candidate"
+  }
+ }
+]

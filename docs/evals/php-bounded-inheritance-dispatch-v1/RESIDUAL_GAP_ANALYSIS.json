@@ -1,0 +1,14 @@
+{
+ "LATE_STATIC_BINDING": "unchanged unsupported (static::, new static)",
+ "TRAIT_DISPATCH": "trait methods excluded; php.class.uses_trait is structural only",
+ "TRAIT_ADAPTATION": "insteadof/as not parsed into normalized facts",
+ "INTERFACE_RUNTIME_IMPLEMENTATION": "implements links structural; receiver calls never enumerate implementers",
+ "RETURN_TYPE_PROPAGATION": "unchanged unsupported (chained calls)",
+ "COMPOSER_TOPOLOGY": "unchanged unsupported (vendor parents -> Unresolved links)",
+ "DYNAMIC_MEMBER_NAME": "unchanged unsupported",
+ "MAGIC_FRAMEWORK_DISPATCH": "unchanged unsupported (__call/__callStatic)",
+ "VISIBILITY_LIMITATION": "private reachable only same-class level0; abstract methods remain candidates (contract declarations)",
+ "AGENT_BEHAVIOR": "12/12 ceiling on all arms - native grep reaches the same small corpus",
+ "largest_measured_static_class": "trait/interface dispatch and composer topology - all deliberately unsupported",
+ "recommendation_basis": "three consecutive mechanically-correct PHP expansions show no agent-side gain; no further static expansion justified without production telemetry"
+}

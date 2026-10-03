@@ -1,0 +1,19 @@
+{
+ "bench": "repodex-bench --language php --size all, release binaries h0=af928b9 vs h1=6d919fc",
+ "php_4MiB": {
+  "h0_full_ms": 1384.8,
+  "h1_full_ms": 1458.6,
+  "delta_pct": 7.4,
+  "h0_extract_ms": 697.1,
+  "h1_extract_ms": 703.4,
+  "h0_scan_ms": 1421.2,
+  "h1_scan_ms": 1525.9
+ },
+ "php_8MiB": {
+  "h0_full_ms": 2801.6,
+  "h1_full_ms": 2840.7,
+  "delta_pct": 1.4
+ },
+ "note": "single-pass hierarchy link build + bounded BFS per unresolved method; no per-call repo scans; all deltas under the 20% flag threshold",
+ "gate": "PASS"
+}

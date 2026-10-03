@@ -1,0 +1,136 @@
+[
+ {
+  "id": "inh-orders-save",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In OrderService::handle, `$this->orders->save($job)` runs. Which class supplies the `save` method it reaches? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "BaseRepo", "id": "o1", "source_path": "src/Core/BaseRepo.php"},
+   {"kind": "contains_text", "value": "src/Core/BaseRepo.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-users-save",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In AdminController::index, which class's `save` method does `$users->save(...)` reach — the override or the base? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "UserRepo", "id": "o1", "source_path": "src/Repo/UserRepo.php"},
+   {"kind": "contains_text", "value": "src/Repo/UserRepo.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-orders-process",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In Jobs::run, `$orders->process([])` runs on an OrderService instance. Which class supplies the `process` method body? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "BaseService", "id": "o1", "source_path": "src/Core/BaseService.php"},
+   {"kind": "contains_text", "value": "src/Core/BaseService.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-svc-handle",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In OrderController::store, which class's `handle` method does `$svc->handle($job)` reach? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "OrderService", "id": "o1", "source_path": "src/Service/OrderService.php"},
+   {"kind": "contains_text", "value": "src/Service/OrderService.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-audit-handle",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In AuditService::trail, `$this->handle($job)` runs. Which class's `handle` method wins under override precedence — OrderService or BaseService? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "OrderService", "id": "o1", "source_path": "src/Service/OrderService.php"},
+   {"kind": "contains_text", "value": "src/Service/OrderService.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-parent-handle",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "Inside OrderService::handle, `parent::handle($job)` is called. Which class's `handle` does that parent-scope call reach? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "BaseService", "id": "o1", "source_path": "src/Core/BaseService.php"},
+   {"kind": "contains_text", "value": "src/Core/BaseService.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-parent-save",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "Inside UserRepo::save, `parent::save($row)` is called. Which class's `save` does that parent-scope call reach? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "BaseRepo", "id": "o1", "source_path": "src/Core/BaseRepo.php"},
+   {"kind": "contains_text", "value": "src/Core/BaseRepo.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-purge-edit",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "mutating": true,
+  "task": "Add a `public function purge(): bool` method that returns true to the class that supplies `delete` for OrderRepo instances. Do not change any other file.",
+  "allowed_changed_paths": ["src/Core/BaseRepo.php"],
+  "obligations": [
+   {"kind": "mutation_marker", "path": "src/Core/BaseRepo.php", "value": "function purge", "id": "o1"}
+  ]
+ },
+ {
+  "id": "inh-auth-edit",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "mutating": true,
+  "task": "OrderController::gate relies on an `authenticate` method. Add a first line `// hardened` to the body of the `authenticate` method that OrderController inherits. Do not change any other file.",
+  "allowed_changed_paths": ["src/Core/Controller.php"],
+  "obligations": [
+   {"kind": "mutation_marker", "path": "src/Core/Controller.php", "value": "// hardened", "id": "o1"}
+  ]
+ },
+ {
+  "id": "inh-render",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "ih",
+  "task": "In OrderController::store, which class supplies the `render` method used by `$this->render('order', ...)`? Give the declaring class and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "Controller", "id": "o1", "source_path": "src/Core/Controller.php"},
+   {"kind": "contains_text", "value": "src/Core/Controller.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-audited-trait",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "nc",
+  "task": "Gate instances call methods composed from a trait. Which trait declares the `audited` method usable on Gate objects? Give the trait name and file path.",
+  "obligations": [
+   {"kind": "contains_text", "value": "Auditable", "id": "o1", "source_path": "src/Auth/Contracts.php"},
+   {"kind": "contains_text", "value": "src/Auth/Contracts.php", "id": "o2", "factual": false}
+  ]
+ },
+ {
+  "id": "inh-static-boot",
+  "root": "tools/eval/fixtures/php-inh",
+  "pristine_root": "tools/eval/fixtures/php-inh",
+  "cohort": "nc",
+  "task": "Jobs::run contains `static::boot()`. Which method does a `static::` scope refer to lexically inside Jobs, and why can this still be wrong at runtime? Give the method's declaring class.",
+  "obligations": [
+   {"kind": "contains_text", "value": "Jobs", "id": "o1", "source_path": "src/Worker/Jobs.php"},
+   {"kind": "contains_text", "value": "late static binding", "id": "o2", "factual": false}
+  ]
+ }
+]

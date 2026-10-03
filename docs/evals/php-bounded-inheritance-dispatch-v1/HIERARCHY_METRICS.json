@@ -1,0 +1,19 @@
+{
+ "extends_links": 15,
+ "implements_links": 1,
+ "trait_links": 1,
+ "extends_outcomes": {
+  "exact": 12,
+  "unresolved": 2,
+  "ambiguous": 1
+ },
+ "ambiguous_parent_chains": 1,
+ "inherited_method_candidate_records": 20,
+ "parent_method_records": 1,
+ "parent_construction_records": 1,
+ "ancestor_depth_max": 18446744073709551615,
+ "cycle_detected_bounded": true,
+ "static_late_binding_records": 2,
+ "trait_dispatch_records": 0,
+ "interface_dispatch_records": 0
+}

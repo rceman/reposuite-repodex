@@ -1,0 +1,157 @@
+[
+ {
+  "path": "src/Aliased.php",
+  "fact_id": 0,
+  "written": "$this->only_b"
+ },
+ {
+  "path": "src/Contracts.php",
+  "fact_id": 0,
+  "written": "$this->contract"
+ },
+ {
+  "path": "src/Contracts.php",
+  "fact_id": 1,
+  "written": "$this->logline"
+ },
+ {
+  "path": "src/Contracts.php",
+  "fact_id": 2,
+  "written": "$this->concrete"
+ },
+ {
+  "path": "src/Contracts.php",
+  "fact_id": 3,
+  "written": "$p->mark"
+ },
+ {
+  "path": "src/Cycle.php",
+  "fact_id": 0,
+  "written": "$this->never_found"
+ },
+ {
+  "path": "src/Cycle.php",
+  "fact_id": 1,
+  "written": "$this->c2m"
+ },
+ {
+  "path": "src/DupChild.php",
+  "fact_id": 0,
+  "written": "$this->shared_one"
+ },
+ {
+  "path": "src/DupChild.php",
+  "fact_id": 1,
+  "written": "$this->shared_two"
+ },
+ {
+  "path": "src/DupChild.php",
+  "fact_id": 2,
+  "written": "$this->anything"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 0,
+  "written": "$this->base"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 1,
+  "written": "$this->over"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 2,
+  "written": "$this->only_b"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 3,
+  "written": "$this->prot"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 4,
+  "written": "$this->hidden"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 5,
+  "written": "$this->deep"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 6,
+  "written": "$this->missing"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 7,
+  "written": "self::prot"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 8,
+  "written": "parent::over"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 9,
+  "written": "parent"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 10,
+  "written": "static::later"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 11,
+  "written": "static"
+ },
+ {
+  "path": "src/Hierarchy.php",
+  "fact_id": 12,
+  "written": "$this->only_b"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 0,
+  "written": "$a->base"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 1,
+  "written": "$b->base"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 2,
+  "written": "$d->over"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 3,
+  "written": "$d->deep"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 4,
+  "written": "$a->hidden"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 5,
+  "written": "$b->missing"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 6,
+  "written": "\\App\\Inh\\B"
+ },
+ {
+  "path": "src/Typed.php",
+  "fact_id": 7,
+  "written": "$x->base"
+ }
+]

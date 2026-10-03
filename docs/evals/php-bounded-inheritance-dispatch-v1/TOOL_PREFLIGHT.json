@@ -1,0 +1,5 @@
+{
+ "devin": "/home/therceman/.local/bin/devin",
+ "harness": "tools/eval/run_php_campaign.py",
+ "manifest_digest": "PHP_INH_FIXTURE_MANIFEST.json - all files matched at launch"
+}

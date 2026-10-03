@@ -1,0 +1,36 @@
+{
+ "targeted_supported_cases": 19,
+ "gained": 19,
+ "lost_to_no_candidate": 1,
+ "reason_string_renames_or_semantics": 10,
+ "treatment_effect_pct": 100.0,
+ "required_pct": 80,
+ "false_fact_promotions": 0,
+ "wrong_parent_links": 0,
+ "ambiguity_collapses": 0,
+ "private_parent_method_false_candidates": 0,
+ "interface_implementation_guesses": 0,
+ "trait_adaptation_guesses": 0,
+ "late_static_binding_guesses": 0,
+ "inheritance_cycles_unbounded": 0,
+ "global_method_scans": 0,
+ "transport_mismatches": 0,
+ "note": "$a->hidden moved single->no_candidate: eliminating a private-method false candidate (intended); `new parent` in a parentless class reports no_candidate under the new parent rule instead of out_of_scope.",
+ "gate": "PASS",
+ "losses_detail": [
+  {
+   "fixture": "phpinh",
+   "call": "src/Typed.php#4 $a->hidden",
+   "h0": {
+    "outcome": "single_candidate",
+    "target": "hidden",
+    "rule": "php.call.typed_receiver_method_candidate"
+   },
+   "h1": {
+    "outcome": "no_candidate",
+    "reason": "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
+    "rule": "php.call.typed_receiver_method_candidate"
+   }
+  }
+ ]
+}

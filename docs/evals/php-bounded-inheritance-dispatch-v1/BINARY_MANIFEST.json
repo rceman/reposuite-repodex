@@ -1,0 +1,6 @@
+{
+ "h0_baseline": "af928b9 @ /tmp/inh-base-wt/target/release/reposuite-repodex",
+ "h1_treatment": "6d919fc @ target/release/reposuite-repodex",
+ "h1_sha256": "ac3923eb07fcfe0d8f11f3f3e8b9c11b3b340e8a5e0de628eadcad8b232fc9b8",
+ "h0_sha256": "005c7ad2851a0c3f89b6e6f1a4329e1fedd40b2e8708a9b47faaf3f2b0a3b5f8"
+}

@@ -1,0 +1,11 @@
+{
+ "extends": "source `extends P` written -> php.class.extends link resolved by shared PHP name rules; single-parent syntax preserved, duplicate declaration FQN stays Ambiguous",
+ "implements": "php.class.implements: structural contract only; never a method-implementation target (INTERFACE_RELATION_USED_AS_METHOD_IMPLEMENTATION=false)",
+ "uses_trait": "php.class.uses_trait: structural composition only; adaptations not modeled; trait methods excluded from dispatch (TRAIT_METHOD_DISPATCH=unsupported)",
+ "lookup": "nearest-level BFS over extends links; level0 = direct methods; first level with candidates wins and stops; visited-set + depth bound 64 (cycles terminate, no panic)",
+ "private": "DeclarationFlag::Private/Protected added (SCHEMA_VERSION 5); private reachable only when call scope is the same class at level 0",
+ "parent_colon": "parent::m -> parents of lexical class, nearest-level walk from each; new parent -> parent decl candidates (no __construct claim); `parent` type hint binds through the same link",
+ "static": "static:: / new static -> OutOfScope late_static_binding (unchanged)",
+ "self": "self -> lexical class; $this -> lexical class; same hierarchy walk",
+ "typed": "receiver-type class candidates -> same hierarchy walk; typed rule kept at depth 0, inherited rule above"
+}

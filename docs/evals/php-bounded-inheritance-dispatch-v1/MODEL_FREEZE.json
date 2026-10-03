@@ -1,0 +1,4 @@
+{
+ "model": "devin CLI",
+ "model_freeze": "same prompt template + permission-mode dangerous across all arms; no model pinning beyond CLI default"
+}

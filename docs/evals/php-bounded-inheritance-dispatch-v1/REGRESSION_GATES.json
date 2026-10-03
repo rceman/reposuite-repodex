@@ -1,0 +1,9 @@
+{
+ "cargo_fmt": "pass",
+ "cargo_check": "pass",
+ "cargo_test": "61 suites green (php_inheritance 7 new)",
+ "cargo_clippy_D_warnings": "pass",
+ "cargo_bench": "pass",
+ "repodex_bench_php": "pass",
+ "windows_gnu_cross_check": "not run - mingw toolchain unavailable locally; no cfg-gated changes made"
+}

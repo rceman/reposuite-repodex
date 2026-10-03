@@ -1,0 +1,3 @@
+{
+ "note": "packet byte sizes recorded in query S-lines; adaptive packets grow only by the new candidate/edge rows (verified byte-diff on probes)"
+}
