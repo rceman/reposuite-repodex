@@ -1,4 +1,4 @@
-file schema=4 path=phpnav/src/Util/strings.php lang=php bytes=380 lines=11 final_newline=true status=clean snapshot=snap-dcff8c50d82bc7f5
+file schema=5 path=phpnav/src/Util/strings.php lang=php bytes=380 lines=11 final_newline=true status=clean snapshot=snap-dcff8c50d82bc7f5
 scope 0 kind=file parent=- name=- range=0..380 (0:0..11:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Util range=6..25 (1:0..1:19) header=- lang=php
 scope 2 kind=function parent=1 name=slugify range=27..89 (3:0..3:62) header=- lang=php

@@ -1,4 +1,4 @@
-file schema=4 path=phpnav/src/Vendor/External.php lang=php bytes=274 lines=11 final_newline=true status=clean snapshot=snap-e8e817c26972d6b1
+file schema=5 path=phpnav/src/Vendor/External.php lang=php bytes=274 lines=11 final_newline=true status=clean snapshot=snap-e8e817c26972d6b1
 scope 0 kind=file parent=- name=- range=0..274 (0:0..11:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Vendor range=6..27 (1:0..1:21) header=- lang=php
 scope 2 kind=class parent=1 name=External range=51..273 (5:0..10:1) header=51..66 (5:0..5:15) lang=php

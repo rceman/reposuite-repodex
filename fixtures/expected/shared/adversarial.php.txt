@@ -1,4 +1,4 @@
-file schema=4 path=shared/adversarial.php lang=php bytes=1220 lines=81 final_newline=true status=clean snapshot=snap-2268b3be3e314d29
+file schema=5 path=shared/adversarial.php lang=php bytes=1220 lines=81 final_newline=true status=clean snapshot=snap-2268b3be3e314d29
 scope 0 kind=file parent=- name=- range=0..1220 (0:0..81:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Adversarial range=148..174 (6:0..6:26) header=- lang=php
 scope 2 kind=class parent=1 name=Duplicate range=219..310 (10:0..16:1) header=219..235 (10:0..11:0) lang=php

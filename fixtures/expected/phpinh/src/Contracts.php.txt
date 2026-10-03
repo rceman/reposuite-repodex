@@ -1,0 +1,48 @@
+file schema=5 path=phpinh/src/Contracts.php lang=php bytes=925 lines=44 final_newline=true status=clean snapshot=snap-4674a5e328e97164
+scope 0 kind=file parent=- name=- range=0..925 (0:0..44:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=interface parent=1 name=ServiceContract range=27..88 (4:0..6:1) header=27..53 (4:0..4:26) lang=php
+scope 3 kind=class parent=1 name=Impl range=90..165 (8:0..10:1) header=90..128 (8:0..8:38) lang=php
+scope 4 kind=method parent=3 name=contract range=134..163 (9:4..9:33) header=- lang=php
+scope 5 kind=trait parent=1 name=TLogger range=167..217 (12:0..14:1) header=167..181 (12:0..12:14) lang=php
+scope 6 kind=method parent=5 name=logline range=187..215 (13:4..13:32) header=- lang=php
+scope 7 kind=class parent=1 name=WithTrait range=219..448 (16:0..22:1) header=219..248 (16:0..16:29) lang=php
+scope 8 kind=method parent=7 name=g range=271..446 (18:4..21:5) header=- lang=php
+scope 9 kind=class parent=1 name=AbsBase range=450..552 (24:0..27:1) header=450..473 (24:0..24:23) lang=php
+scope 10 kind=method parent=9 name=concrete range=521..550 (26:4..26:33) header=- lang=php
+scope 11 kind=class parent=1 name=AbsChild range=554..713 (29:0..34:1) header=554..585 (29:0..29:31) lang=php
+scope 12 kind=method parent=11 name=must_impl range=591..621 (30:4..30:34) header=- lang=php
+scope 13 kind=method parent=11 name=h range=626..711 (31:4..33:5) header=- lang=php
+scope 14 kind=class parent=1 name=ParentHint range=715..765 (36:0..38:1) header=715..732 (36:0..36:17) lang=php
+scope 15 kind=method parent=14 name=mark range=738..763 (37:4..37:29) header=- lang=php
+scope 16 kind=class parent=1 name=ParentHintChild range=766..924 (39:0..43:1) header=766..807 (39:0..39:41) lang=php
+scope 17 kind=method parent=16 name=f range=813..922 (40:4..42:5) header=- lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 1 kind=interface name=ServiceContract scope=1 flags=[] range=27..88 (4:0..6:1) name_range=37..52 (4:10..4:25) body=53..88 (4:26..6:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 2 kind=method name=contract scope=2 flags=[] range=59..86 (5:4..5:31) name_range=75..83 (5:20..5:28) body=- lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 3 kind=class name=Impl scope=1 flags=[] range=90..165 (8:0..10:1) name_range=96..100 (8:6..8:10) body=128..165 (8:38..10:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 4 kind=method name=contract scope=3 flags=[] range=134..163 (9:4..9:33) name_range=150..158 (9:20..9:28) body=161..163 (9:31..9:33) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 5 kind=trait name=TLogger scope=1 flags=[] range=167..217 (12:0..14:1) name_range=173..180 (12:6..12:13) body=181..217 (12:14..14:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 6 kind=method name=logline scope=5 flags=[] range=187..215 (13:4..13:32) name_range=203..210 (13:20..13:27) body=213..215 (13:30..13:32) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 7 kind=class name=WithTrait scope=1 flags=[] range=219..448 (16:0..22:1) name_range=225..234 (16:6..16:15) body=248..448 (16:29..22:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 8 kind=method name=g scope=7 flags=[] range=271..446 (18:4..21:5) name_range=287..288 (18:20..18:21) body=291..446 (18:24..21:5) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 9 kind=class name=AbsBase scope=1 flags=[abstract] range=450..552 (24:0..27:1) name_range=465..472 (24:15..24:22) body=473..552 (24:23..27:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 10 kind=method name=must_impl scope=9 flags=[abstract] range=479..516 (25:4..25:41) name_range=504..513 (25:29..25:38) body=- lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 11 kind=method name=concrete scope=9 flags=[] range=521..550 (26:4..26:33) name_range=537..545 (26:20..26:28) body=548..550 (26:31..26:33) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 12 kind=class name=AbsChild scope=1 flags=[] range=554..713 (29:0..34:1) name_range=560..568 (29:6..29:14) body=585..713 (29:31..34:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 13 kind=method name=must_impl scope=11 flags=[] range=591..621 (30:4..30:34) name_range=607..616 (30:20..30:29) body=619..621 (30:32..30:34) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 14 kind=method name=h scope=11 flags=[] range=626..711 (31:4..33:5) name_range=642..643 (31:20..31:21) body=646..711 (31:24..33:5) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 15 kind=class name=ParentHint scope=1 flags=[] range=715..765 (36:0..38:1) name_range=721..731 (36:6..36:16) body=732..765 (36:17..38:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 16 kind=method name=mark scope=14 flags=[] range=738..763 (37:4..37:29) name_range=754..758 (37:20..37:24) body=761..763 (37:27..37:29) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 17 kind=class name=ParentHintChild scope=1 flags=[] range=766..924 (39:0..43:1) name_range=772..787 (39:6..39:21) body=807..924 (39:41..43:1) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+decl 18 kind=method name=f scope=16 flags=[] range=813..922 (40:4..42:5) name_range=829..830 (40:20..40:21) body=842..922 (40:33..42:5) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164 tests=[]
+ref 0 kind=implemented_interface written=ServiceContract scope=1 decl=3 range=112..127 (8:22..8:37)
+ref 1 kind=base_class written=Impl scope=1 decl=7 range=243..247 (16:24..16:28)
+ref 2 kind=trait_composition written=TLogger scope=7 decl=- range=258..265 (17:8..17:15)
+ref 3 kind=base_class written=AbsBase scope=1 decl=12 range=577..584 (29:23..29:30)
+ref 4 kind=base_class written=ParentHint scope=1 decl=17 range=796..806 (39:30..39:40)
+call 0 form=member_selector callee=$this->contract scope=8 expr=301..318 (19:8..19:25) callee_range=301..316 (19:8..19:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$this->logline scope=8 expr=380..396 (20:8..20:24) callee_range=380..394 (20:8..20:22) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=member_selector callee=$this->concrete scope=13 expr=656..673 (32:8..32:25) callee_range=656..671 (32:8..32:23) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=member_selector callee=$p->mark scope=17 expr=852..862 (41:8..41:18) callee_range=852..860 (41:8..41:16) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$p scope=17 receiver_range=838..840 (40:29..40:31)                  written=parent written_range=831..837 (40:22..40:28) evidence_range=831..840 (40:22..40:31) lang=php path=phpinh/src/Contracts.php snapshot=snap-4674a5e328e97164

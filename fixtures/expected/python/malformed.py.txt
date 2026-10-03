@@ -1,4 +1,4 @@
-file schema=4 path=python/malformed.py lang=python bytes=181 lines=16 final_newline=true status=recovered snapshot=snap-f9627feb05f71e76
+file schema=5 path=python/malformed.py lang=python bytes=181 lines=16 final_newline=true status=recovered snapshot=snap-f9627feb05f71e76
 scope 0 kind=file parent=- name=- range=0..181 (0:0..16:0) header=- lang=python
 scope 1 kind=function parent=0 name=valid_before range=78..106 (3:0..4:8) header=- lang=python
 scope 2 kind=function parent=0 name=broken range=109..130 (7:0..8:8) header=- lang=python

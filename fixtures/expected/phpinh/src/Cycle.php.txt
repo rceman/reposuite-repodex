@@ -1,0 +1,21 @@
+file schema=5 path=phpinh/src/Cycle.php lang=php bytes=375 lines=17 final_newline=true status=clean snapshot=snap-8fb3012a6cec7d41
+scope 0 kind=file parent=- name=- range=0..375 (0:0..17:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=class parent=1 name=Cyc1 range=67..123 (5:0..7:1) header=67..91 (5:0..5:24) lang=php
+scope 3 kind=method parent=2 name=c1m range=97..121 (6:4..6:28) header=- lang=php
+scope 4 kind=class parent=1 name=Cyc2 range=124..180 (8:0..10:1) header=124..148 (8:0..8:24) lang=php
+scope 5 kind=method parent=4 name=c2m range=154..178 (9:4..9:28) header=- lang=php
+scope 6 kind=class parent=1 name=CycUser range=181..374 (11:0..16:1) header=181..208 (11:0..11:27) lang=php
+scope 7 kind=method parent=6 name=f range=214..372 (12:4..15:5) header=- lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 1 kind=class name=Cyc1 scope=1 flags=[] range=67..123 (5:0..7:1) name_range=73..77 (5:6..5:10) body=91..123 (5:24..7:1) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 2 kind=method name=c1m scope=2 flags=[] range=97..121 (6:4..6:28) name_range=113..116 (6:20..6:23) body=119..121 (6:26..6:28) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 3 kind=class name=Cyc2 scope=1 flags=[] range=124..180 (8:0..10:1) name_range=130..134 (8:6..8:10) body=148..180 (8:24..10:1) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 4 kind=method name=c2m scope=4 flags=[] range=154..178 (9:4..9:28) name_range=170..173 (9:20..9:23) body=176..178 (9:26..9:28) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 5 kind=class name=CycUser scope=1 flags=[] range=181..374 (11:0..16:1) name_range=187..194 (11:6..11:13) body=208..374 (11:27..16:1) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+decl 6 kind=method name=f scope=6 flags=[] range=214..372 (12:4..15:5) name_range=230..231 (12:20..12:21) body=234..372 (12:24..15:5) lang=php path=phpinh/src/Cycle.php snapshot=snap-8fb3012a6cec7d41 tests=[]
+ref 0 kind=base_class written=Cyc2 scope=1 decl=1 range=86..90 (5:19..5:23)
+ref 1 kind=base_class written=Cyc1 scope=1 decl=3 range=143..147 (8:19..8:23)
+ref 2 kind=base_class written=Cyc1 scope=1 decl=5 range=203..207 (11:22..11:26)
+call 0 form=member_selector callee=$this->never_found scope=7 expr=244..264 (13:8..13:28) callee_range=244..262 (13:8..13:26) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$this->c2m scope=7 expr=301..313 (14:8..14:20) callee_range=301..311 (14:8..14:18) type_args=- type_args_range=- dyn=false nullsafe=false

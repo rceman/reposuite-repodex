@@ -1,0 +1,14 @@
+file schema=5 path=phpinh/src/Aliased.php lang=php bytes=262 lines=14 final_newline=true status=clean snapshot=snap-15ace60bf819bf91
+scope 0 kind=file parent=- name=- range=0..262 (0:0..14:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=class parent=1 name=ViaAlias range=52..187 (6:0..10:1) header=52..81 (6:0..6:29) lang=php
+scope 3 kind=method parent=2 name=go range=87..185 (7:4..9:5) header=- lang=php
+scope 4 kind=class parent=1 name=ViaRel range=189..261 (12:0..13:1) header=189..216 (12:0..12:27) lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/Aliased.php snapshot=snap-15ace60bf819bf91 tests=[]
+decl 1 kind=class name=ViaAlias scope=1 flags=[] range=52..187 (6:0..10:1) name_range=58..66 (6:6..6:14) body=81..187 (6:29..10:1) lang=php path=phpinh/src/Aliased.php snapshot=snap-15ace60bf819bf91 tests=[]
+decl 2 kind=method name=go scope=2 flags=[] range=87..185 (7:4..9:5) name_range=103..105 (7:20..7:22) body=108..185 (7:25..9:5) lang=php path=phpinh/src/Aliased.php snapshot=snap-15ace60bf819bf91 tests=[]
+decl 3 kind=class name=ViaRel scope=1 flags=[] range=189..261 (12:0..13:1) name_range=195..201 (12:6..12:12) body=216..261 (12:27..13:1) lang=php path=phpinh/src/Aliased.php snapshot=snap-15ace60bf819bf91 tests=[]
+import 0 form=single module=- module_range=- relative=- scope=1 range=27..50 (4:0..4:23) lang=php path=phpinh/src/Aliased.php snapshot=snap-15ace60bf819bf91 text=use App\\Inh\\B as BBase; items=[{target=App\\Inh\\B target_range=31..40 (4:4..4:13) alias=BBase alias_range=44..49 (4:17..4:22) wildcard=false cat=normal range=31..49 (4:4..4:22)}]
+ref 0 kind=base_class written=BBase scope=1 decl=1 range=75..80 (6:23..6:28)
+ref 1 kind=base_class written=Inh\\A scope=1 decl=3 range=210..215 (12:21..12:26)
+call 0 form=member_selector callee=$this->only_b scope=3 expr=118..133 (8:8..8:23) callee_range=118..131 (8:8..8:21) type_args=- type_args_range=- dyn=false nullsafe=false

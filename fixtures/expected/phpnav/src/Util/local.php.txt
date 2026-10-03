@@ -1,4 +1,4 @@
-file schema=4 path=phpnav/src/Util/local.php lang=php bytes=153 lines=7 final_newline=true status=clean snapshot=snap-bb760b4a35f3e0c5
+file schema=5 path=phpnav/src/Util/local.php lang=php bytes=153 lines=7 final_newline=true status=clean snapshot=snap-bb760b4a35f3e0c5
 scope 0 kind=file parent=- name=- range=0..153 (0:0..7:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Util range=6..25 (1:0..1:19) header=- lang=php
 scope 2 kind=function parent=1 name=localfn range=27..64 (3:0..3:37) header=- lang=php

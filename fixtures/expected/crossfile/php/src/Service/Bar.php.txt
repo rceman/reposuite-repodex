@@ -1,4 +1,4 @@
-file schema=4 path=crossfile/php/src/Service/Bar.php lang=php bytes=287 lines=14 final_newline=true status=clean snapshot=snap-f5f837519c067be9
+file schema=5 path=crossfile/php/src/Service/Bar.php lang=php bytes=287 lines=14 final_newline=true status=clean snapshot=snap-f5f837519c067be9
 scope 0 kind=file parent=- name=- range=0..287 (0:0..14:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
 scope 2 kind=class parent=1 name=Bar range=274..286 (13:0..13:12) header=274..284 (13:0..13:10) lang=php

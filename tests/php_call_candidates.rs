@@ -199,18 +199,21 @@ fn construction_candidates() {
 fn construction_out_of_scope() {
     let temp = TempDir::new("php-cand");
     let index = candidates_index(&temp);
-    for (written, reason) in [
-        ("static", "late_static_binding"),
-        ("parent", "parent_scope_not_modeled_in_v1"),
-    ] {
-        let r = record_by(&index, REPO, written);
-        assert_eq!(r.outcome.as_str(), "out_of_scope");
-        assert!(
-            matches!(&r.outcome, CandidateOutcome::OutOfScope { reason: r } if r == reason),
-            "{written}: {:?}",
-            r.outcome
-        );
-    }
+    let r = record_by(&index, REPO, "static");
+    assert_eq!(r.outcome.as_str(), "out_of_scope");
+    assert!(
+        matches!(&r.outcome, CandidateOutcome::OutOfScope { reason: r } if r == "late_static_binding"),
+        "static: {:?}",
+        r.outcome
+    );
+    // `new parent()` inside Repo (which declares no parent) -> parent
+    // construction rule, no indexed parent.
+    let r = record_by(&index, REPO, "parent");
+    assert_eq!(
+        r.rule_id,
+        candidate_rule::PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE
+    );
+    assert_eq!(r.outcome.as_str(), "no_candidate");
     // `new $cls()` — dynamic class expression.
     let r = record_by(&index, NEG, "$cls");
     assert_eq!(r.outcome.as_str(), "out_of_scope");
@@ -247,9 +250,15 @@ fn static_scoped_methods() {
     // static::m() -> late static binding, out of scope.
     let r = record_by(&index, REPO, "static::create");
     assert_eq!(r.outcome.as_str(), "out_of_scope");
-    // parent::m() -> unmodeled in V1.
-    let r = record_by(&index, REPO, "parent::save");
-    assert_eq!(r.outcome.as_str(), "out_of_scope");
+    // parent::save() -> bounded parent-scope dispatch to Repo::save.
+    assert_call(
+        &index,
+        "src/Service/Repo.php",
+        "parent::save",
+        candidate_rule::PHP_CALL_PARENT_METHOD_CANDIDATE,
+        "single_candidate",
+        &["src/Service/Repo.php#6:method:save"],
+    );
     // External dependency: `Tool::work()` -> Vendor\Pkg\Tool not indexed.
     let r = record_by(&index, "src/Vendor/External.php", "Tool::work");
     assert_eq!(r.outcome.as_str(), "no_candidate");
@@ -272,7 +281,7 @@ fn this_method_boundary() {
     assert_eq!(r.outcome.as_str(), "no_candidate");
     assert!(
         matches!(&r.outcome, CandidateOutcome::NoCandidate { reason }
-        if reason.contains("no_direct_method_in_lexical_class"))
+        if reason.contains("no_method_on_lexical_class_or_declared_ancestors"))
     );
     // same-name method on another class must NOT be swept in.
     assert_call(
@@ -467,8 +476,8 @@ fn candidate_abi_and_policy_versioned() {
     // §40: PHP rules participate in artifact identity — an artifact built
     // without them cannot be silently reused.
     use repodex::candidates::model::{CANDIDATE_RULE_ABI_VERSION, POLICY_VERSION_PHP_CALL};
-    assert_eq!(CANDIDATE_RULE_ABI_VERSION, 9);
-    assert_eq!(POLICY_VERSION_PHP_CALL, 2);
+    assert_eq!(CANDIDATE_RULE_ABI_VERSION, 10);
+    assert_eq!(POLICY_VERSION_PHP_CALL, 3);
     let fp = repodex::candidates::model::CandidateFingerprint::current();
-    assert!(fp.text.contains("php=2"), "fingerprint: {}", fp.text);
+    assert!(fp.text.contains("php=3"), "fingerprint: {}", fp.text);
 }

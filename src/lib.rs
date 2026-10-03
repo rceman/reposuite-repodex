@@ -41,6 +41,7 @@ pub mod memory;
 pub mod model;
 pub mod parser;
 pub mod paths;
+pub mod php_resolve;
 pub mod query;
 pub mod rdx1;
 pub mod recipe;

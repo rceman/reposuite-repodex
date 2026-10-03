@@ -72,7 +72,14 @@ pub const CANDIDATE_MANIFEST_VERSION: u32 = 1;
 ///   (PHP_BOUNDED_RECEIVER_TYPE_EVIDENCE_V1): bounded parameter/property type
 ///   hints and literal `new` writes produce receiver class candidates; direct
 ///   methods only. Consumes the normalized `receiver_type_evidence` fact.
-pub const CANDIDATE_RULE_ABI_VERSION: u32 = 9;
+/// * `10` — PHP bounded inheritance dispatch: `php.class.extends` links feed a
+///   cycle-safe nearest-level ancestor method walk; ancestor hits carry
+///   `php.call.inherited_method_candidate`, explicit `parent::` /
+///   `new parent()` carry `php.call.parent_method_candidate` /
+///   `php.call.parent_construction_candidate`. Ancestor-private methods are
+///   never callable; trait/interface dispatch and late static binding stay
+///   out of scope.
+pub const CANDIDATE_RULE_ABI_VERSION: u32 = 10;
 
 /// Per-language candidate-policy versions.
 ///
@@ -121,7 +128,10 @@ pub const POLICY_VERSION_GO_CALL: u32 = 2;
 ///   applies only while no write to the receiver precedes the call; literal
 ///   `new` writes union conservatively, and a nearest opaque write leaves the
 ///   type unknown. Still `CANDIDATE`, never resolved dispatch.
-pub const POLICY_VERSION_PHP_CALL: u32 = 2;
+/// * `3` — bounded inheritance dispatch: nearest-level ancestor method
+///   lookup behind `extends` links, `parent::`/`new parent()` rules, private
+///   visibility filtering on ancestors, `parent` type-hint binding.
+pub const POLICY_VERSION_PHP_CALL: u32 = 3;
 
 /// Stable, machine-readable candidate rule identifiers.
 ///
@@ -198,6 +208,19 @@ pub mod candidate_rule {
     /// opaquely-overwritten receivers stay `OutOfScope`.
     pub const PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE: &str =
         "php.call.typed_receiver_method_candidate";
+    /// A method candidate found on a declared ancestor (never at depth 0).
+    /// The receiver kind that started the lookup (`$this`, `self::`, scoped
+    /// class, typed receiver) stays in provenance. Nearest-level semantics:
+    /// the first ancestor level with a match wins; an override suppresses
+    /// deeper ancestor candidates.
+    pub const PHP_CALL_INHERITED_METHOD_CANDIDATE: &str = "php.call.inherited_method_candidate";
+    /// `parent::m()` — bounded lookup starting at the lexical class's
+    /// declared parent candidate(s).
+    pub const PHP_CALL_PARENT_METHOD_CANDIDATE: &str = "php.call.parent_method_candidate";
+    /// `new parent()` — the lexical class's declared parent as a class
+    /// candidate. Does NOT claim `__construct` resolution.
+    pub const PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE: &str =
+        "php.call.parent_construction_candidate";
 
     pub const ALL: &[&str] = &[
         RUST_CALL_LOCAL_FUNCTION_CANDIDATE,
@@ -212,6 +235,9 @@ pub mod candidate_rule {
         PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE,
         PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE,
         PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
+        PHP_CALL_INHERITED_METHOD_CANDIDATE,
+        PHP_CALL_PARENT_METHOD_CANDIDATE,
+        PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE,
     ];
 }
 
@@ -920,6 +946,92 @@ pub fn candidate_rule_registry() -> Vec<CandidateRuleDocumentation> {
                 "inherited/trait-adapted/magic methods".to_string(),
                 "return-type propagation through chained calls".to_string(),
             ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_INHERITED_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "a call whose receiver resolves to a class with no direct `m` \
+                      gains the first declared-ancestor level's `m` candidates"
+                .to_string(),
+            in_scope_calls: "$x->m(), $this->m(), self::m() or Foo::m() where the \
+                             bounded class has no direct method of that name but a \
+                             declared ancestor (php.class.extends) does."
+                .to_string(),
+            candidate_declarations: "`method` declarations on the FIRST ancestor \
+                                     level that declares a case-insensitive name \
+                                     match — override precedence, never an \
+                                     all-ancestor dump."
+                .to_string(),
+            selection_rule: "cycle-safe walk of `php.class.extends` links; level 0 \
+                             is the receiver class itself, each subsequent level is \
+                             its declared parent candidates (Ambiguous parents are \
+                             all followed); the first level with candidates wins \
+                             and traversal stops. Private methods are never \
+                             callable from an ancestor level."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — evidence the declared \
+                                       type hierarchy MAY supply this method, not a \
+                                       dispatch proof."
+                .to_string(),
+            no_candidate_meaning: "the declared hierarchy contains no method of \
+                                   that name — never 'no runtime target'."
+                .to_string(),
+            known_exclusions: vec![
+                "trait method dispatch".to_string(),
+                "interface methods as runtime implementations".to_string(),
+                "late static binding (static:: / new static)".to_string(),
+                "magic __call / __callStatic".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_PARENT_METHOD_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "`parent::m()` resolves through the lexical class's declared \
+                      parent candidate(s)"
+                .to_string(),
+            in_scope_calls: "a `StaticScoped` `parent::` call inside a class body \
+                             with a literal member name."
+                .to_string(),
+            candidate_declarations: "`method` declarations on the first matching \
+                                     level starting at each declared parent \
+                                     candidate (private unreachable at every level)."
+                .to_string(),
+            selection_rule: "lexical class -> `php.class.extends` link targets -> \
+                             nearest-level walk beginning at the parent; all \
+                             Ambiguous parent candidates are followed."
+                .to_string(),
+            single_candidate_meaning: "one method candidate — the written parent \
+                                       scope MAY supply it, not a dispatch proof."
+                .to_string(),
+            no_candidate_meaning: "the declared parent chain has no method of that \
+                                   name."
+                .to_string(),
+            known_exclusions: vec![
+                "late static binding".to_string(),
+                "trait method dispatch".to_string(),
+            ],
+        },
+        CandidateRuleDocumentation {
+            rule_id: candidate_rule::PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE.to_string(),
+            language: "php".to_string(),
+            summary: "`new parent()` produces the lexical class's declared parent \
+                      candidate(s) as a class candidate"
+                .to_string(),
+            in_scope_calls: "`new parent(...)` inside a class body.".to_string(),
+            candidate_declarations: "`class` declarations referenced by the lexical \
+                                     class's `php.class.extends` link."
+                .to_string(),
+            selection_rule: "lexical class -> `php.class.extends` link targets. \
+                             A class candidate only — `__construct` dispatch is \
+                             not resolved."
+                .to_string(),
+            single_candidate_meaning: "one class candidate for the written parent \
+                                       scope."
+                .to_string(),
+            no_candidate_meaning: "the lexical class has no indexed parent \
+                                   declaration."
+                .to_string(),
+            known_exclusions: vec!["constructor dispatch".to_string()],
         },
     ]
 }

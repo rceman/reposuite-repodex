@@ -191,6 +191,10 @@ pub enum DeclarationFlag {
     Unsafe,
     /// Variadic parameter list.
     Variadic,
+    /// PHP `private`.
+    Private,
+    /// PHP `protected`.
+    Protected,
 }
 
 impl DeclarationFlag {
@@ -209,6 +213,8 @@ impl DeclarationFlag {
             DeclarationFlag::Mutable => "mutable",
             DeclarationFlag::Unsafe => "unsafe",
             DeclarationFlag::Variadic => "variadic",
+            DeclarationFlag::Private => "private",
+            DeclarationFlag::Protected => "protected",
         }
     }
 }

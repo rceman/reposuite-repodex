@@ -1,4 +1,4 @@
-file schema=4 path=phprx/src/PropCalls.php lang=php bytes=746 lines=35 final_newline=true status=clean snapshot=snap-b75396b87db4fc7d
+file schema=5 path=phprx/src/PropCalls.php lang=php bytes=746 lines=35 final_newline=true status=clean snapshot=snap-b75396b87db4fc7d
 scope 0 kind=file parent=- name=- range=0..746 (0:0..35:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Rx range=6..23 (1:0..1:17) header=- lang=php
 scope 2 kind=class parent=1 name=PropCaller range=25..745 (3:0..34:1) header=25..42 (3:0..3:17) lang=php
@@ -9,9 +9,9 @@ scope 6 kind=method parent=2 name=read range=451..635 (22:4..28:5) header=- lang
 scope 7 kind=method parent=2 name=untouched range=641..743 (30:4..33:5) header=- lang=php
 decl 0 kind=namespace name=App\\Rx scope=0 flags=[] range=6..23 (1:0..1:17) name_range=16..22 (1:10..1:16) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
 decl 1 kind=class name=PropCaller scope=1 flags=[] range=25..745 (3:0..34:1) name_range=31..41 (3:6..3:16) body=42..745 (3:17..34:1) lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
-decl 2 kind=property name=svc scope=2 flags=[] range=64..68 (4:20..4:24) name_range=65..68 (4:21..4:24) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
-decl 3 kind=property name=maybe scope=2 flags=[] range=88..94 (5:18..5:24) name_range=89..94 (5:19..5:24) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
-decl 4 kind=property name=plain scope=2 flags=[] range=108..114 (6:12..6:18) name_range=109..114 (6:13..6:18) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
+decl 2 kind=property name=svc scope=2 flags=[private] range=64..68 (4:20..4:24) name_range=65..68 (4:21..4:24) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
+decl 3 kind=property name=maybe scope=2 flags=[private] range=88..94 (5:18..5:24) name_range=89..94 (5:19..5:24) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
+decl 4 kind=property name=plain scope=2 flags=[private] range=108..114 (6:12..6:18) name_range=109..114 (6:13..6:18) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
 decl 5 kind=method name=__construct scope=2 flags=[constructor] range=121..246 (8:4..11:5) name_range=137..148 (8:20..8:31) body=171..246 (8:54..11:5) lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
 decl 6 kind=property name=cache scope=2 flags=[promoted] range=149..169 (8:32..8:52) name_range=164..169 (8:47..8:52) body=- lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]
 decl 7 kind=method name=reassign scope=2 flags=[] range=252..362 (13:4..16:5) name_range=268..276 (13:20..13:28) body=285..362 (13:37..16:5) lang=php path=phprx/src/PropCalls.php snapshot=snap-b75396b87db4fc7d tests=[]

@@ -1,4 +1,4 @@
-file schema=4 path=crossfile/python/pkg/helper.py lang=python bytes=26 lines=2 final_newline=true status=clean snapshot=snap-607f5dc46947672b
+file schema=5 path=crossfile/python/pkg/helper.py lang=python bytes=26 lines=2 final_newline=true status=clean snapshot=snap-607f5dc46947672b
 scope 0 kind=file parent=- name=- range=0..26 (0:0..2:0) header=- lang=python
 scope 1 kind=function parent=0 name=helper_fn range=0..25 (0:0..1:8) header=- lang=python
 decl 0 kind=function name=helper_fn scope=0 flags=[] range=0..25 (0:0..1:8) name_range=4..13 (0:4..0:13) body=21..25 (1:4..1:8) lang=python path=crossfile/python/pkg/helper.py snapshot=snap-607f5dc46947672b tests=[]

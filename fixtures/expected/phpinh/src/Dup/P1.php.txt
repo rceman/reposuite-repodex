@@ -1,0 +1,8 @@
+file schema=5 path=phpinh/src/Dup/P1.php lang=php bytes=84 lines=7 final_newline=true status=clean snapshot=snap-5ea9f5d89d93f8e2
+scope 0 kind=file parent=- name=- range=0..84 (0:0..7:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=class parent=1 name=SharedBase range=27..83 (4:0..6:1) header=27..44 (4:0..4:17) lang=php
+scope 3 kind=method parent=2 name=shared_one range=50..81 (5:4..5:35) header=- lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/Dup/P1.php snapshot=snap-5ea9f5d89d93f8e2 tests=[]
+decl 1 kind=class name=SharedBase scope=1 flags=[] range=27..83 (4:0..6:1) name_range=33..43 (4:6..4:16) body=44..83 (4:17..6:1) lang=php path=phpinh/src/Dup/P1.php snapshot=snap-5ea9f5d89d93f8e2 tests=[]
+decl 2 kind=method name=shared_one scope=2 flags=[] range=50..81 (5:4..5:35) name_range=66..76 (5:20..5:30) body=79..81 (5:33..5:35) lang=php path=phpinh/src/Dup/P1.php snapshot=snap-5ea9f5d89d93f8e2 tests=[]

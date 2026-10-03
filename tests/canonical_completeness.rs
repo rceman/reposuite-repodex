@@ -204,7 +204,7 @@ const DIAGNOSTIC_SEVERITIES: [DiagnosticSeverity; 3] = [
     DiagnosticSeverity::Error,
 ];
 
-const DECLARATION_FLAGS: [DeclarationFlag; 13] = [
+const DECLARATION_FLAGS: [DeclarationFlag; 15] = [
     DeclarationFlag::Async,
     DeclarationFlag::Static,
     DeclarationFlag::Abstract,
@@ -218,6 +218,8 @@ const DECLARATION_FLAGS: [DeclarationFlag; 13] = [
     DeclarationFlag::Mutable,
     DeclarationFlag::Unsafe,
     DeclarationFlag::Variadic,
+    DeclarationFlag::Private,
+    DeclarationFlag::Protected,
 ];
 
 /// Every mutation applied to one analysis, with a label.

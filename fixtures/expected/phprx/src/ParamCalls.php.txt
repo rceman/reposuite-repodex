@@ -1,4 +1,4 @@
-file schema=4 path=phprx/src/ParamCalls.php lang=php bytes=1621 lines=85 final_newline=true status=clean snapshot=snap-3462b42981cdc116
+file schema=5 path=phprx/src/ParamCalls.php lang=php bytes=1621 lines=85 final_newline=true status=clean snapshot=snap-3462b42981cdc116
 scope 0 kind=file parent=- name=- range=0..1621 (0:0..85:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Rx range=6..23 (1:0..1:17) header=- lang=php
 scope 2 kind=class parent=1 name=ParamCaller range=74..1620 (6:0..84:1) header=74..92 (6:0..6:18) lang=php
@@ -37,7 +37,7 @@ decl 14 kind=method name=branched scope=2 flags=[] range=1140..1314 (60:4..67:5)
 decl 15 kind=method name=lateOpaque scope=2 flags=[] range=1320..1428 (69:4..73:5) name_range=1336..1346 (69:20..69:30) body=1355..1428 (69:39..73:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
 decl 16 kind=method name=external scope=2 flags=[] range=1434..1501 (75:4..77:5) name_range=1450..1458 (75:20..75:28) body=1474..1501 (75:44..77:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
 decl 17 kind=method name=duplicated scope=2 flags=[] range=1507..1578 (79:4..81:5) name_range=1523..1533 (79:20..79:30) body=1554..1578 (79:51..81:5) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
-decl 18 kind=method name=helper scope=2 flags=[] range=1584..1618 (83:4..83:38) name_range=1601..1607 (83:21..83:27) body=1616..1618 (83:36..83:38) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
+decl 18 kind=method name=helper scope=2 flags=[private] range=1584..1618 (83:4..83:38) name_range=1601..1607 (83:21..83:27) body=1616..1618 (83:36..83:38) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 tests=[]
 import 0 form=single module=- module_range=- relative=- scope=1 range=25..51 (3:0..3:26) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 text=use App\\Rx\\Service as Svc; items=[{target=App\\Rx\\Service target_range=29..43 (3:4..3:18) alias=Svc alias_range=47..50 (3:22..3:25) wildcard=false cat=normal range=29..50 (3:4..3:25)}]
 import 1 form=single module=- module_range=- relative=- scope=1 range=52..72 (4:0..4:20) lang=php path=phprx/src/ParamCalls.php snapshot=snap-3462b42981cdc116 text=use Vendor\\Pkg\\Tool; items=[{target=Vendor\\Pkg\\Tool target_range=56..71 (4:4..4:19) alias=- alias_range=- wildcard=false cat=normal range=56..71 (4:4..4:19)}]
 call 0 form=member_selector callee=$service->handle scope=3 expr=155..173 (8:8..8:26) callee_range=155..171 (8:8..8:24) type_args=- type_args_range=- dyn=false nullsafe=false

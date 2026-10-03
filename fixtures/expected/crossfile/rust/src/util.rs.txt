@@ -1,4 +1,4 @@
-file schema=4 path=crossfile/rust/src/util.rs lang=rust bytes=57 lines=5 final_newline=true status=clean snapshot=snap-f825b2852c78b93a
+file schema=5 path=crossfile/rust/src/util.rs lang=rust bytes=57 lines=5 final_newline=true status=clean snapshot=snap-f825b2852c78b93a
 scope 0 kind=file parent=- name=- range=0..57 (0:0..5:0) header=- lang=rust
 scope 1 kind=function parent=0 name=helper range=0..18 (0:0..0:18) header=- lang=rust
 scope 2 kind=function parent=0 name=other range=39..56 (4:0..4:17) header=- lang=rust

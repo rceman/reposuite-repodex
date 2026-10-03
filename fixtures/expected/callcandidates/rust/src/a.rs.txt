@@ -1,4 +1,4 @@
-file schema=4 path=callcandidates/rust/src/a.rs lang=rust bytes=42 lines=4 final_newline=true status=clean snapshot=snap-df697f05a61c9f4c
+file schema=5 path=callcandidates/rust/src/a.rs lang=rust bytes=42 lines=4 final_newline=true status=clean snapshot=snap-df697f05a61c9f4c
 scope 0 kind=file parent=- name=- range=0..42 (0:0..4:0) header=- lang=rust
 scope 1 kind=function parent=0 name=helper range=0..14 (0:0..0:14) header=- lang=rust
 scope 2 kind=function parent=0 name=run range=15..41 (1:0..3:1) header=- lang=rust

@@ -27,6 +27,145 @@ pub fn links(structure: &Structure, analyses: &[FileAnalysis]) -> Vec<LinkRecord
     let mut records = Vec::new();
     records.extend(namespace_links(structure, analyses));
     records.extend(use_links(structure, analyses));
+    records.extend(hierarchy_links(structure, analyses));
+    records
+}
+
+// ---------------------------------------------------------------------------
+// php.class.extends / php.class.implements / php.class.uses_trait
+// ---------------------------------------------------------------------------
+
+/// Written base-class / interface / trait clauses resolved through the same
+/// PHP class-name semantics the candidate layer uses (`class_fqn`). Single
+/// parent syntax is preserved, but a duplicate declaration of the resolved
+/// FQN still produces `Ambiguous` — language single-inheritance is not
+/// unique repository identity. These links are *structural*: an
+/// `extends`/`implements`/`use trait` edge never claims runtime dispatch.
+fn hierarchy_links(structure: &Structure, analyses: &[FileAnalysis]) -> Vec<LinkRecord> {
+    use crate::model::ReferenceKind;
+    use std::collections::HashMap;
+
+    let mut records = Vec::new();
+    for analysis in analyses {
+        if analysis.file.language != LanguageId::Php {
+            continue;
+        }
+        // Case-insensitive FQN -> declarations (PHP class names are
+        // case-insensitive).
+        let mut qualified: HashMap<String, Vec<&crate::links::structure::PhpQualifiedDecl>> =
+            HashMap::new();
+        for (name, decls) in &structure.php_qualified {
+            for d in decls {
+                if d.is_namespace {
+                    continue;
+                }
+                qualified.entry(name.to_lowercase()).or_default().push(d);
+            }
+        }
+        let aliases = crate::php_resolve::name_aliases(analysis);
+        // class-body scope -> owning class-like declaration.
+        let mut class_of_scope: HashMap<u32, &crate::model::Declaration> = HashMap::new();
+        for scope in &analysis.scopes {
+            if !matches!(
+                scope.kind,
+                ScopeKind::Class | ScopeKind::Interface | ScopeKind::Trait | ScopeKind::Enum
+            ) {
+                continue;
+            }
+            let Some(name) = &scope.name else { continue };
+            if let Some(decl) = analysis.declarations.iter().find(|d| {
+                matches!(
+                    d.kind,
+                    DeclarationKind::Class
+                        | DeclarationKind::Interface
+                        | DeclarationKind::Trait
+                        | DeclarationKind::Enum
+                ) && d.name.eq_ignore_ascii_case(name)
+                    && Some(d.scope_id) == scope.parent_scope_id
+            }) {
+                class_of_scope.insert(scope.scope_id, decl);
+            }
+        }
+
+        let mut emit = |decl: &crate::model::Declaration,
+                        reference: &crate::model::ReferenceOccurrence,
+                        kind: &'static str,
+                        rule_id: &'static str| {
+            let namespace = crate::php_resolve::enclosing_namespace(analysis, reference.scope_id);
+            let fqn =
+                crate::php_resolve::class_fqn(&reference.written, namespace.as_deref(), &aliases);
+            let source =
+                FactLocator::declaration(&analysis.file.relative_path, decl.declaration_id);
+            let mut candidates: Vec<LinkTarget> = qualified
+                .get(&fqn.to_lowercase())
+                .map(|ds| ds.iter().map(|d| d.target(&reference.written)).collect())
+                .unwrap_or_default();
+            super::model::sort_candidates(&mut candidates);
+            let outcome = if candidates.is_empty() {
+                LinkOutcome::unresolved(format!(
+                    "no indexed declaration has the resolved name `{fqn}` (external or pruned)"
+                ))
+            } else if candidates.len() == 1 {
+                LinkOutcome::exact(candidates.remove(0))
+            } else {
+                LinkOutcome::Ambiguous { candidates }
+            };
+            let provenance = LinkProvenance {
+                language: "php".to_string(),
+                rule_id: rule_id.to_string(),
+                source: source.clone(),
+                written: reference.written.clone(),
+                evidence: vec![format!("resolved_fqn={fqn}")],
+                metadata: Vec::new(),
+            };
+            records.push(LinkRecord::new(
+                kind,
+                source,
+                reference.written.clone(),
+                outcome,
+                provenance,
+            ));
+        };
+
+        for reference in &analysis.references {
+            match reference.kind {
+                ReferenceKind::BaseClass => {
+                    if let Some(decl) = analysis
+                        .declarations
+                        .iter()
+                        .find(|d| Some(d.declaration_id) == reference.declaration_id)
+                    {
+                        emit(decl, reference, "class_extends", rule::PHP_CLASS_EXTENDS);
+                    }
+                }
+                ReferenceKind::ImplementedInterface => {
+                    if let Some(decl) = analysis
+                        .declarations
+                        .iter()
+                        .find(|d| Some(d.declaration_id) == reference.declaration_id)
+                    {
+                        emit(
+                            decl,
+                            reference,
+                            "class_implements",
+                            rule::PHP_CLASS_IMPLEMENTS,
+                        );
+                    }
+                }
+                ReferenceKind::TraitComposition => {
+                    if let Some(decl) = class_of_scope.get(&reference.scope_id) {
+                        emit(
+                            decl,
+                            reference,
+                            "class_uses_trait",
+                            rule::PHP_CLASS_USES_TRAIT,
+                        );
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
     records
 }
 

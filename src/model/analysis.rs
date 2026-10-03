@@ -21,7 +21,10 @@ use super::{
 /// * `4` — added `receiver_type_evidence` (`ReceiverTypeEvidence`), the PHP
 ///   receiver-type facts (parameter/property type hints, literal `new`
 ///   writes, opaque writes) consumed by the typed-receiver candidate rule.
-pub const SCHEMA_VERSION: u32 = 4;
+/// * `5` — `DeclarationFlag` gained `Private`/`Protected` (PHP visibility
+///   modifiers on declarations), which changes the serialized `flags`
+///   vocabulary.
+pub const SCHEMA_VERSION: u32 = 5;
 
 /// The analyzed source snapshot.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

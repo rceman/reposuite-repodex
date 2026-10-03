@@ -1,0 +1,24 @@
+file schema=5 path=phpinh/src/Typed.php lang=php bytes=638 lines=21 final_newline=true status=clean snapshot=snap-b3183a364be142b6
+scope 0 kind=file parent=- name=- range=0..638 (0:0..21:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=class parent=1 name=TypedCalls range=27..469 (4:0..13:1) header=27..44 (4:0..4:17) lang=php
+scope 3 kind=method parent=2 name=f range=50..467 (5:4..12:5) header=- lang=php
+scope 4 kind=class parent=1 name=NewParentCtor range=471..637 (15:0..20:1) header=471..491 (15:0..15:20) lang=php
+scope 5 kind=method parent=4 name=mk range=497..635 (16:4..19:5) header=- lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6 tests=[]
+decl 1 kind=class name=TypedCalls scope=1 flags=[] range=27..469 (4:0..13:1) name_range=33..43 (4:6..4:16) body=44..469 (4:17..13:1) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6 tests=[]
+decl 2 kind=method name=f scope=2 flags=[] range=50..467 (5:4..12:5) name_range=66..67 (5:20..5:21) body=86..467 (5:40..12:5) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6 tests=[]
+decl 3 kind=class name=NewParentCtor scope=1 flags=[] range=471..637 (15:0..20:1) name_range=477..490 (15:6..15:19) body=491..637 (15:20..20:1) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6 tests=[]
+decl 4 kind=method name=mk scope=4 flags=[] range=497..635 (16:4..19:5) name_range=513..515 (16:20..16:22) body=518..635 (16:25..19:5) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6 tests=[]
+call 0 form=member_selector callee=$a->base scope=3 expr=96..106 (6:8..6:18) callee_range=96..104 (6:8..6:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$b->base scope=3 expr=147..157 (7:8..7:18) callee_range=147..155 (7:8..7:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=member_selector callee=$d->over scope=3 expr=212..222 (8:8..8:18) callee_range=212..220 (8:8..8:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 3 form=member_selector callee=$d->deep scope=3 expr=292..302 (9:8..9:18) callee_range=292..300 (9:8..9:16) type_args=- type_args_range=- dyn=false nullsafe=false
+call 4 form=member_selector callee=$a->hidden scope=3 expr=345..357 (10:8..10:20) callee_range=345..355 (10:8..10:18) type_args=- type_args_range=- dyn=false nullsafe=false
+call 5 form=member_selector callee=$b->missing scope=3 expr=420..433 (11:8..11:21) callee_range=420..431 (11:8..11:19) type_args=- type_args_range=- dyn=false nullsafe=false
+call 6 form=explicit_construction callee=\\App\\Inh\\B scope=5 expr=533..549 (17:13..17:29) callee_range=537..547 (17:17..17:27) type_args=- type_args_range=- dyn=false nullsafe=false
+call 7 form=member_selector callee=$x->base scope=5 expr=559..569 (18:8..18:18) callee_range=559..567 (18:8..18:16) type_args=- type_args_range=- dyn=false nullsafe=false
+recv_evidence 0 kind=parameter_type_hint receiver=$a scope=3 receiver_range=70..72 (5:24..5:26)                  written=A written_range=68..69 (5:22..5:23) evidence_range=68..72 (5:22..5:26) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6
+recv_evidence 1 kind=parameter_type_hint receiver=$b scope=3 receiver_range=76..78 (5:30..5:32)                  written=B written_range=74..75 (5:28..5:29) evidence_range=74..78 (5:28..5:32) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6
+recv_evidence 2 kind=parameter_type_hint receiver=$d scope=3 receiver_range=82..84 (5:36..5:38)                  written=D written_range=80..81 (5:34..5:35) evidence_range=80..84 (5:34..5:38) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6
+recv_evidence 3 kind=local_literal_new receiver=$x scope=5 receiver_range=528..530 (17:8..17:10)                  written=\\App\\Inh\\B written_range=537..547 (17:17..17:27) evidence_range=528..549 (17:8..17:29) lang=php path=phpinh/src/Typed.php snapshot=snap-b3183a364be142b6

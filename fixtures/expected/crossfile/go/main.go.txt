@@ -1,4 +1,4 @@
-file schema=4 path=crossfile/go/main.go lang=go bytes=303 lines=17 final_newline=true status=clean snapshot=snap-7466e3a79a6fe32e
+file schema=5 path=crossfile/go/main.go lang=go bytes=303 lines=17 final_newline=true status=clean snapshot=snap-7466e3a79a6fe32e
 scope 0 kind=file parent=- name=- range=0..303 (0:0..17:0) header=- lang=go
 scope 1 kind=function parent=0 name=main range=262..302 (13:0..16:1) header=- lang=go
 decl 0 kind=package name=main scope=0 flags=[] range=0..12 (0:0..0:12) name_range=8..12 (0:8..0:12) body=- lang=go path=crossfile/go/main.go snapshot=snap-7466e3a79a6fe32e tests=[]

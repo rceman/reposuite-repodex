@@ -678,6 +678,11 @@ fn apply_modifiers(
     for child in node.children(&mut cursor) {
         match child.kind() {
             "static_modifier" => draft = draft.with_flag(DeclarationFlag::Static),
+            "visibility_modifier" => match builder.text(child) {
+                "private" => draft = draft.with_flag(DeclarationFlag::Private),
+                "protected" => draft = draft.with_flag(DeclarationFlag::Protected),
+                _ => {}
+            },
             "abstract_modifier" => draft = draft.with_flag(DeclarationFlag::Abstract),
             "final_modifier" => draft = draft.with_flag(DeclarationFlag::Final),
             "readonly_modifier" => draft = draft.with_flag(DeclarationFlag::Readonly),

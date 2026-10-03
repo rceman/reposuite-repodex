@@ -34,7 +34,7 @@ pub const LINK_MANIFEST_VERSION: u32 = 1;
 ///
 /// This version participates in [`LinkFingerprint`], so bumping it invalidates
 /// previously derived link artifacts without touching the TASK 3A snapshot.
-pub const LINK_RULE_ABI_VERSION: u32 = 3;
+pub const LINK_RULE_ABI_VERSION: u32 = 4;
 
 /// Per-language resolution-policy versions.
 ///
@@ -53,7 +53,11 @@ pub const POLICY_VERSION_RUST: u32 = 2;
 /// repository-local module path rather than only the repo-root one.
 pub const POLICY_VERSION_GO: u32 = 2;
 pub const POLICY_VERSION_PYTHON: u32 = 1;
-pub const POLICY_VERSION_PHP: u32 = 1;
+/// `POLICY_VERSION_PHP` 2 adds class-hierarchy relations:
+/// `php.class.extends`, `php.class.implements`, `php.class.uses_trait` —
+/// written base/interface/trait clauses resolved through the shared PHP
+/// class-name resolution (same semantics as the call-candidate layer).
+pub const POLICY_VERSION_PHP: u32 = 2;
 
 /// Stable, machine-readable link rule identifiers.
 ///
@@ -78,6 +82,19 @@ pub mod rule {
     pub const PHP_USE_EXTERNAL: &str = "php.use.external";
     pub const PHP_USE_NON_CLASS_IMPORT: &str = "php.use.non_class_import";
 
+    /// `class C extends P` — written base clause resolved to class-like
+    /// declarations under PHP name rules. Single-parent syntax, but a
+    /// duplicate parent FQN still yields `Ambiguous`.
+    pub const PHP_CLASS_EXTENDS: &str = "php.class.extends";
+    /// `class C implements I, J` / `enum E implements I` — written interface
+    /// clause resolved to declarations. Structural contract only; never a
+    /// runtime implementation body.
+    pub const PHP_CLASS_IMPLEMENTS: &str = "php.class.implements";
+    /// `use T;` inside a class body — trait composition resolved to trait
+    /// declarations. Structural only; adaptation/conflict semantics are not
+    /// modeled.
+    pub const PHP_CLASS_USES_TRAIT: &str = "php.class.uses_trait";
+
     /// Every rule this build can emit, in canonical order.
     pub const ALL: &[&str] = &[
         RUST_MOD_STANDARD_FILE,
@@ -93,6 +110,9 @@ pub mod rule {
         PHP_USE_QUALIFIED_NAME,
         PHP_USE_EXTERNAL,
         PHP_USE_NON_CLASS_IMPORT,
+        PHP_CLASS_EXTENDS,
+        PHP_CLASS_IMPLEMENTS,
+        PHP_CLASS_USES_TRAIT,
     ];
 }
 
@@ -1139,6 +1159,73 @@ pub fn rule_registry() -> Vec<RuleDocumentation> {
             known_exclusions: vec![
                 "function imports".to_string(),
                 "constant imports".to_string(),
+            ],
+        },
+        RuleDocumentation {
+            rule_id: PHP_CLASS_EXTENDS.to_string(),
+            kind: "class_extends".to_string(),
+            language: "php".to_string(),
+            summary: "`class C extends P` — the written base clause resolved to class-like declarations."
+                .to_string(),
+            input_syntax: "class C extends P / extends \\A\\P / extends Alias"
+                .to_string(),
+            repository_assumptions: vec![
+                "only repository declarations are in scope".to_string(),
+                "PHP class names are case-insensitive; lookups lowercase keys".to_string(),
+            ],
+            metadata_dependency: vec![],
+            exact_condition: "exactly one declaration carries the resolved syntactic FQN".to_string(),
+            ambiguous_condition: "the resolved FQN maps to more than one declaration (duplicates)"
+                .to_string(),
+            unresolved_condition: "the resolved FQN has no indexed declaration".to_string(),
+            out_of_scope_condition: "the base clause names no resolvable class (not exercised in V1)"
+                .to_string(),
+            candidate_rule: "written base name -> shared PHP class-name resolution -> indexed                              class-like declarations; PHP classes are single-parent in syntax,                              but a duplicate declaration still yields Ambiguous".to_string(),
+            known_exclusions: vec![
+                "runtime dispatch".to_string(),
+                "vendor/external parent declarations".to_string(),
+            ],
+        },
+        RuleDocumentation {
+            rule_id: PHP_CLASS_IMPLEMENTS.to_string(),
+            kind: "class_implements".to_string(),
+            language: "php".to_string(),
+            summary: "`class C implements I, J` — written interface clause resolved to declarations."
+                .to_string(),
+            input_syntax: "class C implements I, J / implements \\A\\I / enum E implements I"
+                .to_string(),
+            repository_assumptions: vec![
+                "only repository declarations are in scope".to_string(),
+            ],
+            metadata_dependency: vec![],
+            exact_condition: "exactly one declaration per written interface".to_string(),
+            ambiguous_condition: "an interface name maps to more than one declaration".to_string(),
+            unresolved_condition: "the resolved FQN has no indexed declaration".to_string(),
+            out_of_scope_condition: "none in V1".to_string(),
+            candidate_rule: "written interface name -> shared PHP class-name resolution -> indexed                              declarations; structural contract evidence only".to_string(),
+            known_exclusions: vec![
+                "interface used as a runtime implementation body".to_string(),
+            ],
+        },
+        RuleDocumentation {
+            rule_id: PHP_CLASS_USES_TRAIT.to_string(),
+            kind: "class_uses_trait".to_string(),
+            language: "php".to_string(),
+            summary: "`use T;` inside a class body — trait composition resolved to trait declarations."
+                .to_string(),
+            input_syntax: "use T; / use A\\B\\T; / use T1, T2;".to_string(),
+            repository_assumptions: vec![
+                "only repository declarations are in scope".to_string(),
+            ],
+            metadata_dependency: vec![],
+            exact_condition: "exactly one trait declaration per written name".to_string(),
+            ambiguous_condition: "a trait name maps to more than one declaration".to_string(),
+            unresolved_condition: "the resolved FQN has no indexed declaration".to_string(),
+            out_of_scope_condition: "none in V1".to_string(),
+            candidate_rule: "written trait name -> shared PHP class-name resolution -> indexed                              declarations; adaptation (`insteadof`/`as`) is not modeled".to_string(),
+            known_exclusions: vec![
+                "trait adaptation / conflict resolution semantics".to_string(),
+                "trait methods as call dispatch targets".to_string(),
             ],
         },
     ]

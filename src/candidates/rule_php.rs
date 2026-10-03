@@ -22,15 +22,15 @@
 //! php.call.lexical_this_method_candidate    $this->m -> lexical class direct
 //! ```
 //!
-//! OutOfScope by design: `static::`, `new static`, `parent::`, `$obj->m()`
+//! OutOfScope by design: `static::`, `new static`, `$obj->m()`
 //! (receiver type unavailable), dynamic member names, `$callable()`,
 //! first-class callables (recorded as references, never calls).
 
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 
-use crate::links::model::{FactKind, FactLocator};
+use crate::links::model::{FactKind, FactLocator, LinkTarget};
 use crate::model::{
-    CallLikeForm, DeclarationKind, FileAnalysis, ImportCategory, LanguageId, ScopeKind,
+    CallLikeForm, DeclarationFlag, DeclarationKind, FileAnalysis, LanguageId, ScopeKind,
 };
 
 use super::model::{
@@ -41,9 +41,10 @@ use super::model::{
 /// per PHP call-like occurrence, the complete disposition of every PHP call.
 pub fn candidates(
     analyses: &[FileAnalysis],
-    _links: &[crate::links::model::LinkRecord],
+    links: &[crate::links::model::LinkRecord],
     _entities: &[crate::links::model::StructuralEntity],
 ) -> Vec<CallCandidateRecord> {
+    let hier = Hier::build(analyses, links);
     // ---- repository-wide bounded indexes (§39) ----
     // fqn (lowercase `ns\name` or `name`) -> declarations.
     let mut functions: HashMap<String, Vec<(&FileAnalysis, &crate::model::Declaration)>> =
@@ -55,7 +56,7 @@ pub fn candidates(
             continue;
         }
         for d in &a.declarations {
-            let ns = enclosing_namespace(a, d.scope_id).unwrap_or_default();
+            let ns = crate::php_resolve::enclosing_namespace(a, d.scope_id).unwrap_or_default();
             let fqn = if ns.is_empty() {
                 d.name.clone()
             } else {
@@ -107,32 +108,10 @@ pub fn candidates(
                 class_of_scope.insert(scope.scope_id, decl);
             }
         }
-        // import alias tables (§13/§14): function imports feed the function
-        // rules; normal uses feed qualified-prefix/class resolution. local
-        // name -> written qualified target (case-insensitive keys).
-        let mut function_aliases: HashMap<String, String> = HashMap::new();
-        let mut name_aliases: HashMap<String, String> = HashMap::new();
-        for import in &a.imports {
-            for item in &import.items {
-                let written = match &import.module {
-                    Some(module) => format!("{module}\\{}", item.target),
-                    None => item.target.clone(),
-                };
-                let local = item
-                    .alias
-                    .clone()
-                    .unwrap_or_else(|| last_segment(&written).to_string());
-                match item.category {
-                    ImportCategory::Function => {
-                        function_aliases.insert(local.to_lowercase(), written);
-                    }
-                    ImportCategory::Normal => {
-                        name_aliases.insert(local.to_lowercase(), written);
-                    }
-                    _ => {}
-                }
-            }
-        }
+        // import alias tables from the shared resolver (§7 — one resolver for
+        // construction, scoped calls, receiver types and hierarchy links).
+        let function_aliases = crate::php_resolve::function_aliases(a);
+        let name_aliases = crate::php_resolve::name_aliases(a);
         let lex = Lexical { a, class_of_scope };
 
         for call in &a.calls {
@@ -158,15 +137,21 @@ pub fn candidates(
                         qualified_function(call, &lex, &name_aliases, &functions, &provenance);
                     (o, p, candidate_rule::PHP_CALL_NAMESPACE_FUNCTION_CANDIDATE)
                 }
-                CallLikeForm::MemberSelector => {
-                    member_call(call, &lex, &name_aliases, &classes, &provenance)
-                }
+                CallLikeForm::MemberSelector => member_call(
+                    call,
+                    &lex,
+                    &Rcx {
+                        name_aliases: &name_aliases,
+                        classes: &classes,
+                        hier: &hier,
+                    },
+                    &provenance,
+                ),
                 CallLikeForm::StaticScoped => {
-                    scoped(call, &lex, &name_aliases, &classes, &provenance)
+                    scoped(call, &lex, &name_aliases, &classes, &hier, &provenance)
                 }
                 CallLikeForm::ExplicitConstruction => {
-                    let (o, p) = construction(call, &lex, &name_aliases, &classes, &provenance);
-                    (o, p, candidate_rule::PHP_CALL_CONSTRUCTION_CLASS_CANDIDATE)
+                    construction(call, &lex, &name_aliases, &classes, &hier, &provenance)
                 }
                 CallLikeForm::Indirect => (
                     CandidateOutcome::out_of_scope("indirect_or_variable_callable"),
@@ -192,9 +177,12 @@ pub fn candidates(
     records
 }
 
-/// Last `\`-separated segment.
-fn last_segment(qualified: &str) -> &str {
-    qualified.rsplit('\\').next().unwrap_or(qualified)
+/// Bounded name-resolution context shared by the PHP rules: import aliases,
+/// the FQN class index and the extends-hierarchy index.
+struct Rcx<'a> {
+    name_aliases: &'a HashMap<String, String>,
+    classes: &'a HashMap<String, Vec<(&'a FileAnalysis, &'a crate::model::Declaration)>>,
+    hier: &'a Hier<'a>,
 }
 
 /// Per-file lexical context.
@@ -207,20 +195,7 @@ struct Lexical<'a> {
 impl Lexical<'_> {
     /// Written namespace enclosing `scope_id` (may be multi-segment `A\B`).
     fn namespace_of(&self, scope_id: u32) -> Option<String> {
-        let mut parts = Vec::new();
-        for id in self.a.scope_chain(scope_id) {
-            let s = &self.a.scopes[id as usize];
-            if s.kind == ScopeKind::Namespace {
-                if let Some(n) = &s.name {
-                    parts.push(n.clone());
-                }
-            }
-        }
-        if parts.is_empty() {
-            None
-        } else {
-            Some(parts.join("\\"))
-        }
+        crate::php_resolve::enclosing_namespace(self.a, scope_id)
     }
 
     /// The nearest enclosing class-like declaration for `$this`/`self`.
@@ -381,8 +356,7 @@ fn qualified_function(
 fn member_call(
     call: &crate::model::CallLikeOccurrence,
     lex: &Lexical,
-    name_aliases: &HashMap<String, String>,
-    classes: &HashMap<String, Vec<(&FileAnalysis, &crate::model::Declaration)>>,
+    rcx: &Rcx,
     provenance: &dyn Fn(Vec<String>) -> CandidateProvenance,
 ) -> (CandidateOutcome, CandidateProvenance, &'static str) {
     if call.dynamic_callee {
@@ -405,37 +379,55 @@ fn member_call(
     };
     let object = raw_object.trim_end_matches('?');
     if object == "$this" {
-        let (o, p) = lexical_this(call, lex, name, provenance);
-        return (o, p, candidate_rule::PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE);
+        return lexical_this(call, lex, rcx.hier, name, provenance);
     }
-    let (o, p) = typed_receiver(call, lex, name_aliases, classes, object, name, provenance);
-    (
-        o,
-        p,
-        candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
-    )
+    typed_receiver(call, lex, rcx, object, name, provenance)
 }
 
-/// `$this->m()` — lexical-class direct methods only.
+/// `$this->m()` — lexical-class direct method, else the nearest declared
+/// ancestor level. A level-0 hit keeps the lexical-this rule id; an
+/// ancestor hit carries `php.call.inherited_method_candidate` and the depth
+/// in provenance. A class may call its own private methods; ancestor-private
+/// methods are never callable.
 fn lexical_this(
     call: &crate::model::CallLikeOccurrence,
     lex: &Lexical,
+    hier: &Hier,
     name: &str,
     provenance: &dyn Fn(Vec<String>) -> CandidateProvenance,
-) -> (CandidateOutcome, CandidateProvenance) {
+) -> (CandidateOutcome, CandidateProvenance, &'static str) {
     let Some(class) = lex.class_decl(call.scope_id) else {
         return (
             CandidateOutcome::out_of_scope("no_lexical_class_scope"),
             provenance(Vec::new()),
+            candidate_rule::PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE,
         );
     };
-    let cands = direct_methods(lex.a, class, name);
+    let (depth, cands) = hier.methods_from(&(lex.a, class), name, true);
+    let (rule, mut prov) = if depth == 0 {
+        (
+            candidate_rule::PHP_CALL_LEXICAL_THIS_METHOD_CANDIDATE,
+            vec![format!("class={}", class.name)],
+        )
+    } else {
+        (
+            candidate_rule::PHP_CALL_INHERITED_METHOD_CANDIDATE,
+            vec![
+                format!("class={}", class.name),
+                format!("ancestor_depth={depth}"),
+            ],
+        )
+    };
+    if depth == usize::MAX {
+        prov.push("walk=exhausted".to_string());
+    }
     (
         CandidateOutcome::from_candidates(
             cands,
-            "no_direct_method_in_lexical_class(inherited/trait/magic dispatch not modeled in V1)",
+            "no_method_on_lexical_class_or_declared_ancestors(trait/magic dispatch not modeled)",
         ),
-        provenance(vec![format!("class={}", class.name)]),
+        provenance(prov),
+        rule,
     )
 }
 
@@ -458,12 +450,11 @@ fn lexical_this(
 fn typed_receiver(
     call: &crate::model::CallLikeOccurrence,
     lex: &Lexical,
-    name_aliases: &HashMap<String, String>,
-    classes: &HashMap<String, Vec<(&FileAnalysis, &crate::model::Declaration)>>,
+    rcx: &Rcx,
     object: &str,
     name: &str,
     provenance: &dyn Fn(Vec<String>) -> CandidateProvenance,
-) -> (CandidateOutcome, CandidateProvenance) {
+) -> (CandidateOutcome, CandidateProvenance, &'static str) {
     let call_at = call.expression_range.byte_start;
     let mut evidence: Vec<String> = Vec::new();
     let mut type_texts: Vec<(String, &'static str)> = Vec::new();
@@ -472,12 +463,14 @@ fn typed_receiver(
             return (
                 CandidateOutcome::out_of_scope("receiver_type_unavailable"),
                 provenance(vec![format!("receiver={object}")]),
+                candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
             );
         }
         let Some(class_scope) = lex.class_scope(call.scope_id) else {
             return (
                 CandidateOutcome::out_of_scope("no_lexical_class_scope"),
                 provenance(Vec::new()),
+                candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
             );
         };
         let receiver = object.to_string();
@@ -503,6 +496,7 @@ fn typed_receiver(
             return (
                 CandidateOutcome::out_of_scope("receiver_type_unavailable"),
                 provenance(vec![format!("receiver={object}")]),
+                candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
             );
         }
     } else if is_simple_variable(object) {
@@ -510,6 +504,7 @@ fn typed_receiver(
             return (
                 CandidateOutcome::out_of_scope("receiver_type_unavailable"),
                 provenance(vec![format!("receiver={object}")]),
+                candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
             );
         };
         let mut writes: Vec<&crate::model::ReceiverTypeEvidence> = lex
@@ -543,6 +538,7 @@ fn typed_receiver(
                 return (
                     CandidateOutcome::out_of_scope("receiver_type_unavailable"),
                     provenance(vec![format!("receiver={object}")]),
+                    candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
                 );
             }
         } else {
@@ -559,6 +555,7 @@ fn typed_receiver(
                         format!("receiver={object}"),
                         "overwritten_by_opaque_write".to_string(),
                     ]),
+                    candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
                 );
             }
             let last_opaque = writes
@@ -577,14 +574,14 @@ fn typed_receiver(
         return (
             CandidateOutcome::out_of_scope("receiver_type_unavailable"),
             provenance(vec![format!("receiver={object}")]),
+            candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
         );
     }
     // Resolve each written type text into bounded class candidates.
     let mut class_decls: Vec<(&FileAnalysis, &crate::model::Declaration)> = Vec::new();
     let mut seen: std::collections::BTreeSet<(String, u32)> = std::collections::BTreeSet::new();
     for (text, kind) in &type_texts {
-        let (resolved, mut notes) =
-            type_text_classes(text, lex, name_aliases, classes, call.scope_id);
+        let (resolved, mut notes) = type_text_classes(text, lex, rcx, call.scope_id);
         evidence.push(format!("evidence={kind}"));
         evidence.push(format!("type={text}"));
         evidence.append(&mut notes);
@@ -602,23 +599,44 @@ fn typed_receiver(
                 e.extend(evidence);
                 e
             }),
+            candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE,
         );
     }
+    // direct method on each receiver class, else nearest ancestor level. PHP
+    // visibility is class-scoped: a receiver typed as the LEXICAL class may
+    // reach its private members at level 0; any other class's private members
+    // are unreachable at every level.
+    let lexical_key = lex.class_decl(call.scope_id).map(|d| Hier::key(lex.a, d));
     let mut cands = Vec::new();
+    let mut max_depth = 0usize;
     for (a, class) in &class_decls {
-        cands.extend(direct_methods(a, class, name));
+        let same_class = lexical_key.as_ref() == Some(&Hier::key(a, class));
+        let (depth, hits) = rcx.hier.methods_from(&(*a, class), name, same_class);
+        if depth != usize::MAX {
+            max_depth = max_depth.max(depth);
+            cands.extend(hits);
+        }
     }
+    let rule = if max_depth == 0 {
+        candidate_rule::PHP_CALL_TYPED_RECEIVER_METHOD_CANDIDATE
+    } else {
+        candidate_rule::PHP_CALL_INHERITED_METHOD_CANDIDATE
+    };
     let mut prov = vec![
         format!("receiver={object}"),
         format!("classes={}", class_decls.len()),
     ];
     prov.extend(evidence);
+    if max_depth > 0 {
+        prov.push(format!("ancestor_depth={max_depth}"));
+    }
     (
         CandidateOutcome::from_candidates(
             cands,
-            "no_direct_method_on_typed_receiver_class(inherited/trait/magic dispatch not modeled)",
+            "no_method_on_typed_receiver_class_or_ancestors(trait/magic dispatch not modeled)",
         ),
         provenance(prov),
+        rule,
     )
 }
 
@@ -645,8 +663,7 @@ const PHP_BUILTIN_TYPES: &[&str] = &[
 fn type_text_classes<'a>(
     written: &str,
     lex: &'a Lexical<'a>,
-    name_aliases: &HashMap<String, String>,
-    classes: &'a HashMap<String, Vec<(&'a FileAnalysis, &'a crate::model::Declaration)>>,
+    rcx: &'a Rcx<'a>,
     scope_id: u32,
 ) -> (
     Vec<(&'a FileAnalysis, &'a crate::model::Declaration)>,
@@ -663,8 +680,24 @@ fn type_text_classes<'a>(
         if arm.is_empty() || PHP_BUILTIN_TYPES.contains(&arm.to_lowercase().as_str()) {
             continue;
         }
-        if arm.eq_ignore_ascii_case("static") || arm.eq_ignore_ascii_case("parent") {
+        if arm.eq_ignore_ascii_case("static") {
             notes.push(format!("unsupported_arm={arm}"));
+            continue;
+        }
+        if arm.eq_ignore_ascii_case("parent") {
+            // `parent` binds through the lexical class's declared `extends`
+            // link — same machinery as `parent::`. Still bounded evidence.
+            if let Some(d) = lex.class_decl(scope_id) {
+                let key = Hier::key(lex.a, d);
+                let parents = rcx.hier.parent_decls(&key);
+                if parents.is_empty() {
+                    notes.push("parent_no_indexed_declaration".to_string());
+                } else {
+                    out.extend(parents);
+                }
+            } else {
+                notes.push("parent_no_lexical_class".to_string());
+            }
             continue;
         }
         if arm.eq_ignore_ascii_case("self") {
@@ -673,7 +706,13 @@ fn type_text_classes<'a>(
             }
             continue;
         }
-        out.extend(resolve_class(arm, lex, name_aliases, classes, scope_id));
+        out.extend(resolve_class(
+            arm,
+            lex,
+            rcx.name_aliases,
+            rcx.classes,
+            scope_id,
+        ));
     }
     (out, notes)
 }
@@ -686,17 +725,19 @@ fn scoped(
     lex: &Lexical,
     name_aliases: &HashMap<String, String>,
     classes: &HashMap<String, Vec<(&FileAnalysis, &crate::model::Declaration)>>,
+    hier: &Hier,
     provenance: &dyn Fn(Vec<String>) -> CandidateProvenance,
 ) -> (CandidateOutcome, CandidateProvenance, &'static str) {
-    // `self::m()` carries its own durable rule id (§9); named scopes carry the
-    // static-method rule.
-    let rule = if call
+    let scope_head = call
         .callee_written
         .split("::")
         .next()
-        .is_some_and(|s| s.eq_ignore_ascii_case("self"))
-    {
+        .unwrap_or("")
+        .to_lowercase();
+    let rule = if scope_head == "self" {
         candidate_rule::PHP_CALL_LEXICAL_SELF_METHOD_CANDIDATE
+    } else if scope_head == "parent" {
+        candidate_rule::PHP_CALL_PARENT_METHOD_CANDIDATE
     } else {
         candidate_rule::PHP_CALL_STATIC_METHOD_CANDIDATE
     };
@@ -724,11 +765,48 @@ fn scoped(
             )
         }
         "parent" => {
+            // `parent::m()` — the lexical class's declared parent
+            // candidate(s), then bounded nearest-level lookup starting at
+            // that parent. Private members are unreachable at every level.
+            let Some(class) = lex.class_decl(call.scope_id) else {
+                return (
+                    CandidateOutcome::out_of_scope("no_lexical_class_scope"),
+                    provenance(Vec::new()),
+                    rule,
+                );
+            };
+            let parents = hier.parent_decls(&Hier::key(lex.a, class));
+            if parents.is_empty() {
+                return (
+                    CandidateOutcome::no_candidate("no_indexed_parent_for_lexical_class"),
+                    provenance(vec![format!("class={}", class.name)]),
+                    rule,
+                );
+            }
+            let mut cands = Vec::new();
+            let mut min_depth = usize::MAX;
+            for (a, p) in &parents {
+                let (depth, hits) = hier.methods_from(&(*a, p), name, false);
+                if depth != usize::MAX && depth < min_depth {
+                    min_depth = depth;
+                }
+                cands.extend(hits);
+            }
+            let mut prov = vec![
+                format!("class={}", class.name),
+                format!("parents={}", parents.len()),
+            ];
+            if min_depth != usize::MAX {
+                prov.push(format!("ancestor_depth={min_depth}"));
+            }
             return (
-                CandidateOutcome::out_of_scope("parent_scope_not_modeled_in_v1"),
-                provenance(Vec::new()),
+                CandidateOutcome::from_candidates(
+                    cands,
+                    "no_method_on_parent_or_ancestors(trait/magic dispatch not modeled)",
+                ),
+                provenance(prov),
                 rule,
-            )
+            );
         }
         _ => {}
     }
@@ -755,18 +833,38 @@ fn scoped(
             rule,
         );
     }
-    // every bounded class contributes its DIRECTLY declared methods only.
+    // direct method on each bounded class, else nearest ancestor level —
+    // `self::` can reach its own private method at level 0; a named external
+    // scope cannot. An ancestor hit reports the inherited-method rule.
+    let self_scope = scope.eq_ignore_ascii_case("self");
     let mut cands = Vec::new();
+    let mut max_depth = 0usize;
     for (a, class) in &class_decls {
-        cands.extend(direct_methods(a, class, name));
+        let (depth, hits) = hier.methods_from(&(*a, class), name, self_scope);
+        if depth != usize::MAX {
+            max_depth = max_depth.max(depth);
+            cands.extend(hits);
+        }
+    }
+    let out_rule = if max_depth > 0 {
+        candidate_rule::PHP_CALL_INHERITED_METHOD_CANDIDATE
+    } else {
+        rule
+    };
+    let mut prov = vec![
+        format!("scope={scope}"),
+        format!("classes={}", class_decls.len()),
+    ];
+    if max_depth > 0 {
+        prov.push(format!("ancestor_depth={max_depth}"));
     }
     (
-        CandidateOutcome::from_candidates(cands, "no_direct_method_in_candidate_class"),
-        provenance(vec![
-            format!("scope={scope}"),
-            format!("classes={}", class_decls.len()),
-        ]),
-        rule,
+        CandidateOutcome::from_candidates(
+            cands,
+            "no_method_in_candidate_class_or_ancestors(trait/magic dispatch not modeled)",
+        ),
+        provenance(prov),
+        out_rule,
     )
 }
 
@@ -778,12 +876,15 @@ fn construction(
     lex: &Lexical,
     name_aliases: &HashMap<String, String>,
     classes: &HashMap<String, Vec<(&FileAnalysis, &crate::model::Declaration)>>,
+    hier: &Hier,
     provenance: &dyn Fn(Vec<String>) -> CandidateProvenance,
-) -> (CandidateOutcome, CandidateProvenance) {
+) -> (CandidateOutcome, CandidateProvenance, &'static str) {
+    let rule = candidate_rule::PHP_CALL_CONSTRUCTION_CLASS_CANDIDATE;
     if call.dynamic_callee {
         return (
             CandidateOutcome::out_of_scope("dynamic_class_expression"),
             provenance(Vec::new()),
+            rule,
         );
     }
     let w = call.callee_written.as_str();
@@ -792,13 +893,30 @@ fn construction(
             return (
                 CandidateOutcome::out_of_scope("late_static_binding"),
                 provenance(Vec::new()),
+                rule,
             )
         }
         "parent" => {
+            // `new parent()` — the lexical class's declared parent candidate(s)
+            // as construction targets. This is a class candidate only; it does
+            // NOT claim `__construct` dispatch resolution.
+            let Some(class) = lex.class_decl(call.scope_id) else {
+                return (
+                    CandidateOutcome::out_of_scope("no_lexical_class_scope"),
+                    provenance(Vec::new()),
+                    candidate_rule::PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE,
+                );
+            };
+            let parents = hier.parent_decls(&Hier::key(lex.a, class));
+            let cands = parents.iter().map(|(a, d)| target(a, d)).collect();
             return (
-                CandidateOutcome::out_of_scope("parent_scope_not_modeled_in_v1"),
-                provenance(Vec::new()),
-            )
+                CandidateOutcome::from_candidates(cands, "no_indexed_parent_for_lexical_class"),
+                provenance(vec![
+                    format!("class={}", class.name),
+                    format!("parents={}", parents.len()),
+                ]),
+                candidate_rule::PHP_CALL_PARENT_CONSTRUCTION_CANDIDATE,
+            );
         }
         _ => {}
     }
@@ -809,6 +927,7 @@ fn construction(
                 return (
                     CandidateOutcome::out_of_scope("no_lexical_class_scope"),
                     provenance(Vec::new()),
+                    rule,
                 )
             }
         }
@@ -819,17 +938,154 @@ fn construction(
     (
         CandidateOutcome::from_candidates(cands, "no_indexed_class"),
         provenance(vec![format!("written={w}")]),
+        rule,
     )
 }
 
-/// Directly declared methods of `class` named `name` (case-insensitive, §10)
-/// in `a` — the file the class is declared in. Parent/trait/magic members are
-/// deliberately out of reach here.
-fn direct_methods(
-    a: &FileAnalysis,
+/// Bounded class-hierarchy index derived from `php.class.extends` link
+/// records. `parents` maps a declaring class to ALL declaration candidates of
+/// its written parent (Ambiguous preserved). Cycles are guarded by a visited
+/// set plus a hard depth bound — valid PHP cannot contain one, malformed
+/// source still must not loop.
+struct Hier<'a> {
+    decls: HashMap<(String, u32), (&'a FileAnalysis, &'a crate::model::Declaration)>,
+    parents: HashMap<(String, u32), Vec<(String, u32)>>,
+}
+
+/// Defensive traversal bound; real hierarchies are far shorter.
+const HIER_DEPTH_BOUND: usize = 64;
+
+impl<'a> Hier<'a> {
+    fn build(analyses: &'a [FileAnalysis], links: &[crate::links::model::LinkRecord]) -> Self {
+        let mut decls = HashMap::new();
+        for a in analyses {
+            if a.file.language != LanguageId::Php {
+                continue;
+            }
+            for d in &a.declarations {
+                if matches!(
+                    d.kind,
+                    DeclarationKind::Class
+                        | DeclarationKind::Interface
+                        | DeclarationKind::Trait
+                        | DeclarationKind::Enum
+                ) {
+                    decls.insert((a.file.relative_path.clone(), d.declaration_id), (a, d));
+                }
+            }
+        }
+        let mut parents: HashMap<(String, u32), Vec<(String, u32)>> = HashMap::new();
+        for link in links {
+            if link.rule_id != crate::links::model::rule::PHP_CLASS_EXTENDS
+                || link.source.fact_kind != FactKind::Declaration
+            {
+                continue;
+            }
+            let child = (link.source.relative_path.clone(), link.source.fact_id);
+            let mut targets = Vec::new();
+            for t in link.outcome.all_targets() {
+                if let LinkTarget::Declaration {
+                    relative_path,
+                    declaration_id,
+                    ..
+                } = t
+                {
+                    targets.push((relative_path.clone(), *declaration_id));
+                }
+            }
+            parents.entry(child).or_default().extend(targets);
+        }
+        Self { decls, parents }
+    }
+
+    fn key(a: &FileAnalysis, d: &crate::model::Declaration) -> (String, u32) {
+        (a.file.relative_path.clone(), d.declaration_id)
+    }
+
+    /// Direct parents of `key` that resolve to indexed declarations.
+    fn parent_decls(
+        &self,
+        key: &(String, u32),
+    ) -> Vec<(&'a FileAnalysis, &'a crate::model::Declaration)> {
+        self.parents
+            .get(key)
+            .map(|ps| {
+                ps.iter()
+                    .filter_map(|p| self.decls.get(p).copied())
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+
+    /// Nearest-level method lookup from `start`: direct methods first, then
+    /// each ancestor level in turn. The FIRST level with any candidate wins
+    /// (override precedence) and traversal stops — no all-ancestor dump.
+    /// `include_private` holds only at level 0 (a class may call its own
+    /// private methods); ancestor-private methods are never callable.
+    /// Returns (depth, targets); depth == usize::MAX when nothing matched.
+    fn methods_from(
+        &self,
+        start: &(&'a FileAnalysis, &'a crate::model::Declaration),
+        name: &str,
+        include_private_at_level0: bool,
+    ) -> (usize, Vec<CandidateTarget>) {
+        let (a, class) = *start;
+        let mut visited: BTreeSet<(String, u32)> = BTreeSet::new();
+        visited.insert(Self::key(a, class));
+        let first: Vec<_> = methods_named(a, class, name)
+            .into_iter()
+            .filter(|(_, m)| {
+                include_private_at_level0 || !m.flags.contains(&DeclarationFlag::Private)
+            })
+            .collect();
+        if !first.is_empty() {
+            return (0, first.into_iter().map(|(fa, m)| target(fa, m)).collect());
+        }
+        let mut frontier: Vec<(String, u32)> = self
+            .parents
+            .get(&Self::key(a, class))
+            .cloned()
+            .unwrap_or_default();
+        for depth in 1..=HIER_DEPTH_BOUND {
+            let mut hits = Vec::new();
+            let mut next = Vec::new();
+            for key in &frontier {
+                if !visited.insert(key.clone()) {
+                    continue;
+                }
+                let Some((fa, fd)) = self.decls.get(key).copied() else {
+                    continue;
+                };
+                hits.extend(
+                    methods_named(fa, fd, name)
+                        .into_iter()
+                        .filter(|(_, m)| !m.flags.contains(&DeclarationFlag::Private))
+                        .map(|(fa2, m)| target(fa2, m)),
+                );
+                if let Some(ps) = self.parents.get(key) {
+                    next.extend(ps.iter().cloned());
+                }
+            }
+            if !hits.is_empty() {
+                return (depth, hits);
+            }
+            if next.is_empty() {
+                break;
+            }
+            frontier = next;
+        }
+        (usize::MAX, Vec::new())
+    }
+}
+
+/// Directly declared methods of `class` named `name` (case-insensitive) —
+/// the raw declaration list used by the hierarchy walk; private methods are
+/// NOT filtered here (callers decide per level).
+fn methods_named<'a>(
+    a: &'a FileAnalysis,
     class: &crate::model::Declaration,
     name: &str,
-) -> Vec<CandidateTarget> {
+) -> Vec<(&'a FileAnalysis, &'a crate::model::Declaration)> {
     let Some(body_scope) = a
         .scopes
         .iter()
@@ -852,14 +1108,14 @@ fn direct_methods(
                 && d.scope_id == body_scope
                 && d.name.eq_ignore_ascii_case(name)
         })
-        .map(|m| target(a, m))
+        .map(|m| (a, m))
         .collect()
 }
 
-/// Class-name resolution per PHP semantics: `\A\B` FQN; `namespace\X`
-/// current-namespace-relative; `A\B` first-segment import alias else
-/// current-ns prefix; unqualified `X` alias else `ns\X` (NO global fallback
-/// for classes).
+/// Class-name resolution: the shared [`crate::php_resolve::class_fqn`]
+/// semantics (`\A\B` FQN; `namespace\X` current-namespace; `A\B` alias or
+/// current-ns; `X` alias or `ns\X`, NO global fallback) applied to the
+/// bounded class index.
 fn resolve_class<'a>(
     written: &str,
     lex: &Lexical<'a>,
@@ -867,24 +1123,8 @@ fn resolve_class<'a>(
     classes: &'a HashMap<String, Vec<(&'a FileAnalysis, &'a crate::model::Declaration)>>,
     scope_id: u32,
 ) -> Vec<(&'a FileAnalysis, &'a crate::model::Declaration)> {
-    let fqn = if let Some(rest) = written.strip_prefix('\\') {
-        rest.to_string()
-    } else if let Some(rest) = written.strip_prefix("namespace\\") {
-        match lex.namespace_of(scope_id) {
-            Some(ns) if !ns.is_empty() => format!("{ns}\\{rest}"),
-            _ => rest.to_string(),
-        }
-    } else {
-        let first = written.split('\\').next().unwrap_or(written);
-        let tail = &written[first.len()..];
-        match name_aliases.get(&first.to_lowercase()) {
-            Some(prefix) => format!("{prefix}{tail}"),
-            None => match lex.namespace_of(scope_id) {
-                Some(ns) if !ns.is_empty() => format!("{ns}\\{written}"),
-                _ => written.to_string(),
-            },
-        }
-    };
+    let fqn =
+        crate::php_resolve::class_fqn(written, lex.namespace_of(scope_id).as_deref(), name_aliases);
     lookup(classes, &fqn)
 }
 
@@ -905,24 +1145,4 @@ fn target(a: &FileAnalysis, d: &crate::model::Declaration) -> CandidateTarget {
         d.name.clone(),
         a.scope_path(d.scope_id),
     )
-}
-
-/// The written namespace enclosing `scope_id` — shared shape with the link
-/// layer's `enclosing_namespace`, kept local to avoid coupling the candidate
-/// rule to link internals.
-fn enclosing_namespace(a: &FileAnalysis, scope_id: u32) -> Option<String> {
-    let mut parts: Vec<String> = Vec::new();
-    for id in a.scope_chain(scope_id) {
-        let scope = &a.scopes[id as usize];
-        if scope.kind == ScopeKind::Namespace {
-            if let Some(name) = &scope.name {
-                parts.push(name.clone());
-            }
-        }
-    }
-    if parts.is_empty() {
-        None
-    } else {
-        Some(parts.join("\\"))
-    }
 }

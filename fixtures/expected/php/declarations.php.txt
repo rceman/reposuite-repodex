@@ -1,4 +1,4 @@
-file schema=4 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
+file schema=5 path=php/declarations.php lang=php bytes=1195 lines=67 final_newline=true status=clean snapshot=snap-474573b5eba1f478
 scope 0 kind=file parent=- name=- range=0..1195 (0:0..67:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=7..29 (2:0..2:22) header=- lang=php
 scope 2 kind=interface parent=1 name=HandlerInterface range=191..305 (10:0..15:1) header=191..218 (10:0..11:0) lang=php
@@ -20,7 +20,7 @@ decl 4 kind=trait name=Loggable scope=1 flags=[] range=307..384 (17:0..22:1) nam
 decl 5 kind=method name=log scope=3 flags=[] range=328..382 (19:4..21:5) name_range=344..347 (19:20..19:23) body=375..382 (20:4..21:5) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
 decl 6 kind=class name=BaseService scope=1 flags=[abstract] range=386..767 (24:0..38:1) name_range=401..412 (24:15..24:26) body=441..767 (25:0..38:1) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
 decl 7 kind=constant name=DEFAULT_NAME scope=5 flags=[] range=479..500 (28:17..28:38) name_range=479..491 (28:17..28:29) body=- lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
-decl 8 kind=property name=cacheKey scope=5 flags=[static] range=531..547 (29:29..29:45) name_range=532..540 (29:30..29:38) body=- lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
+decl 8 kind=property name=cacheKey scope=5 flags=[protected,static] range=531..547 (29:29..29:45) name_range=532..540 (29:30..29:38) body=- lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
 decl 9 kind=property name=version scope=5 flags=[readonly] range=573..581 (30:24..30:32) name_range=574..581 (30:25..30:32) body=- lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
 decl 10 kind=method name=__construct scope=5 flags=[constructor] range=588..704 (32:4..35:5) name_range=604..615 (32:20..32:31) body=669..704 (33:4..35:5) lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]
 decl 11 kind=property name=name scope=5 flags=[promoted] range=616..636 (32:32..32:52) name_range=632..636 (32:48..32:52) body=- lang=php path=php/declarations.php snapshot=snap-474573b5eba1f478 tests=[]

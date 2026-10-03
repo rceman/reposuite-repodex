@@ -26,7 +26,7 @@ fn declarations_cover_required_constructs() {
             "method log (file)::App\\Service::Loggable",
             "class BaseService (file)::App\\Service abstract",
             "constant DEFAULT_NAME (file)::App\\Service::BaseService",
-            "property cacheKey (file)::App\\Service::BaseService static",
+            "property cacheKey (file)::App\\Service::BaseService protected|static",
             "property version (file)::App\\Service::BaseService readonly",
             "method __construct (file)::App\\Service::BaseService constructor",
             "property name (file)::App\\Service::BaseService promoted",

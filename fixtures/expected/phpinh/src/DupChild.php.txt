@@ -1,0 +1,17 @@
+file schema=5 path=phpinh/src/DupChild.php lang=php bytes=374 lines=16 final_newline=true status=clean snapshot=snap-eac31529f2a928d9
+scope 0 kind=file parent=- name=- range=0..374 (0:0..16:0) header=- lang=php
+scope 1 kind=namespace parent=0 name=App\\Inh range=7..25 (2:0..2:18) header=- lang=php
+scope 2 kind=class parent=1 name=DupChild range=27..230 (4:0..9:1) header=27..61 (4:0..4:34) lang=php
+scope 3 kind=method parent=2 name=f range=67..228 (5:4..8:5) header=- lang=php
+scope 4 kind=class parent=1 name=ExtChild range=232..373 (11:0..15:1) header=232..270 (11:0..11:38) lang=php
+scope 5 kind=method parent=4 name=f range=276..371 (12:4..14:5) header=- lang=php
+decl 0 kind=namespace name=App\\Inh scope=0 flags=[] range=7..25 (2:0..2:18) name_range=17..24 (2:10..2:17) body=- lang=php path=phpinh/src/DupChild.php snapshot=snap-eac31529f2a928d9 tests=[]
+decl 1 kind=class name=DupChild scope=1 flags=[] range=27..230 (4:0..9:1) name_range=33..41 (4:6..4:14) body=61..230 (4:34..9:1) lang=php path=phpinh/src/DupChild.php snapshot=snap-eac31529f2a928d9 tests=[]
+decl 2 kind=method name=f scope=2 flags=[] range=67..228 (5:4..8:5) name_range=83..84 (5:20..5:21) body=87..228 (5:24..8:5) lang=php path=phpinh/src/DupChild.php snapshot=snap-eac31529f2a928d9 tests=[]
+decl 3 kind=class name=ExtChild scope=1 flags=[] range=232..373 (11:0..15:1) name_range=238..246 (11:6..11:14) body=270..373 (11:38..15:1) lang=php path=phpinh/src/DupChild.php snapshot=snap-eac31529f2a928d9 tests=[]
+decl 4 kind=method name=f scope=4 flags=[] range=276..371 (12:4..14:5) name_range=292..293 (12:20..12:21) body=296..371 (12:24..14:5) lang=php path=phpinh/src/DupChild.php snapshot=snap-eac31529f2a928d9 tests=[]
+ref 0 kind=base_class written=SharedBase scope=1 decl=1 range=50..60 (4:23..4:33)
+ref 1 kind=base_class written=Vendor\\Missing scope=1 decl=3 range=255..269 (11:23..11:37)
+call 0 form=member_selector callee=$this->shared_one scope=3 expr=97..116 (6:8..6:27) callee_range=97..114 (6:8..6:25) type_args=- type_args_range=- dyn=false nullsafe=false
+call 1 form=member_selector callee=$this->shared_two scope=3 expr=168..187 (7:8..7:27) callee_range=168..185 (7:8..7:25) type_args=- type_args_range=- dyn=false nullsafe=false
+call 2 form=member_selector callee=$this->anything scope=5 expr=306..323 (13:8..13:25) callee_range=306..321 (13:8..13:23) type_args=- type_args_range=- dyn=false nullsafe=false

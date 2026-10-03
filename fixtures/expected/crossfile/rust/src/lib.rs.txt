@@ -1,4 +1,4 @@
-file schema=4 path=crossfile/rust/src/lib.rs lang=rust bytes=613 lines=26 final_newline=true status=clean snapshot=snap-4d6a8ac92afceae6
+file schema=5 path=crossfile/rust/src/lib.rs lang=rust bytes=613 lines=26 final_newline=true status=clean snapshot=snap-4d6a8ac92afceae6
 scope 0 kind=file parent=- name=- range=0..613 (0:0..26:0) header=- lang=rust
 scope 1 kind=module parent=0 name=outer range=297..325 (12:0..14:1) header=297..307 (12:0..12:10) lang=rust
 decl 0 kind=module name=api scope=0 flags=[] range=243..251 (6:0..6:8) name_range=247..250 (6:4..6:7) body=- lang=rust path=crossfile/rust/src/lib.rs snapshot=snap-4d6a8ac92afceae6 tests=[]

@@ -1,4 +1,4 @@
-file schema=4 path=phprx/src/Dup/A.php lang=php bytes=93 lines=6 final_newline=true status=clean snapshot=snap-949d2e13d573b228
+file schema=5 path=phprx/src/Dup/A.php lang=php bytes=93 lines=6 final_newline=true status=clean snapshot=snap-949d2e13d573b228
 scope 0 kind=file parent=- name=- range=0..93 (0:0..6:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Rx\\Dup range=6..27 (1:0..1:21) header=- lang=php
 scope 2 kind=class parent=1 name=Thing range=29..92 (3:0..5:1) header=29..41 (3:0..3:12) lang=php

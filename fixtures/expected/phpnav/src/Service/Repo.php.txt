@@ -1,4 +1,4 @@
-file schema=4 path=phpnav/src/Service/Repo.php lang=php bytes=1577 lines=42 final_newline=true status=clean snapshot=snap-008b9c12ceb22a85
+file schema=5 path=phpnav/src/Service/Repo.php lang=php bytes=1577 lines=42 final_newline=true status=clean snapshot=snap-008b9c12ceb22a85
 scope 0 kind=file parent=- name=- range=0..1577 (0:0..42:0) header=- lang=php
 scope 1 kind=namespace parent=0 name=App\\Service range=6..28 (1:0..1:22) header=- lang=php
 scope 2 kind=class parent=1 name=Helper range=146..214 (8:0..10:1) header=146..159 (8:0..8:13) lang=php
@@ -13,10 +13,10 @@ decl 0 kind=namespace name=App\\Service scope=0 flags=[] range=6..28 (1:0..1:22)
 decl 1 kind=class name=Helper scope=1 flags=[] range=146..214 (8:0..10:1) name_range=152..158 (8:6..8:12) body=159..214 (8:13..10:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 2 kind=method name=run scope=2 flags=[static] range=165..212 (9:4..9:51) name_range=188..191 (9:27..9:30) body=199..212 (9:38..9:51) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 3 kind=class name=Repo scope=1 flags=[] range=216..1492 (12:0..37:1) name_range=222..226 (12:6..12:10) body=227..1492 (12:11..37:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
-decl 4 kind=property name=name scope=4 flags=[] range=248..258 (13:19..13:29) name_range=249..253 (13:20..13:24) body=- lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 4 kind=property name=name scope=4 flags=[private] range=248..258 (13:19..13:29) name_range=249..253 (13:20..13:24) body=- lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 5 kind=method name=create scope=4 flags=[static] range=265..325 (15:4..15:64) name_range=288..294 (15:27..15:33) body=303..325 (15:42..15:64) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 6 kind=method name=save scope=4 flags=[] range=331..1440 (17:4..34:5) name_range=347..351 (17:20..17:24) body=370..1440 (17:43..34:5) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
-decl 7 kind=method name=persist scope=4 flags=[] range=1446..1490 (36:4..36:48) name_range=1463..1470 (36:21..36:28) body=1488..1490 (36:46..36:48) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
+decl 7 kind=method name=persist scope=4 flags=[private] range=1446..1490 (36:4..36:48) name_range=1463..1470 (36:21..36:28) body=1488..1490 (36:46..36:48) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 8 kind=class name=Child scope=1 flags=[] range=1494..1576 (39:0..41:1) name_range=1500..1505 (39:6..39:11) body=1519..1576 (39:25..41:1) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 decl 9 kind=method name=go scope=8 flags=[] range=1525..1574 (40:4..40:53) name_range=1541..1543 (40:20..40:22) body=1552..1574 (40:31..40:53) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 tests=[]
 import 0 form=single module=- module_range=- relative=- scope=1 range=30..43 (3:0..3:13) lang=php path=phpnav/src/Service/Repo.php snapshot=snap-008b9c12ceb22a85 text=use App\\Util; items=[{target=App\\Util target_range=34..42 (3:4..3:12) alias=- alias_range=- wildcard=false cat=normal range=34..42 (3:4..3:12)}]
