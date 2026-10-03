@@ -1,0 +1,142 @@
+{
+ "rx": {
+  "N0": {
+   "sessions": 18,
+   "valid": 18,
+   "success": 18,
+   "native_discovery": 62,
+   "source_reads": 41,
+   "repodex_calls": 0,
+   "tool_calls": 111,
+   "agent_wall_median_ms": 18798,
+   "rejected": 0
+  },
+  "P1": {
+   "sessions": 18,
+   "valid": 18,
+   "success": 18,
+   "native_discovery": 5,
+   "source_reads": 41,
+   "repodex_calls": 49,
+   "tool_calls": 106,
+   "agent_wall_median_ms": 23096,
+   "rejected": 0
+  },
+  "P2": {
+   "sessions": 18,
+   "valid": 18,
+   "success": 18,
+   "native_discovery": 7,
+   "source_reads": 42,
+   "repodex_calls": 49,
+   "tool_calls": 100,
+   "agent_wall_median_ms": 23830,
+   "rejected": 0
+  }
+ },
+ "bx": {
+  "N0": {
+   "sessions": 10,
+   "valid": 10,
+   "success": 10,
+   "native_discovery": 41,
+   "source_reads": 32,
+   "repodex_calls": 0,
+   "tool_calls": 103,
+   "agent_wall_median_ms": 21646,
+   "rejected": 0
+  },
+  "P1": {
+   "sessions": 10,
+   "valid": 10,
+   "success": 10,
+   "native_discovery": 5,
+   "source_reads": 30,
+   "repodex_calls": 51,
+   "tool_calls": 115,
+   "agent_wall_median_ms": 46680,
+   "rejected": 0
+  },
+  "P2": {
+   "sessions": 10,
+   "valid": 10,
+   "success": 10,
+   "native_discovery": 8,
+   "source_reads": 30,
+   "repodex_calls": 50,
+   "tool_calls": 119,
+   "agent_wall_median_ms": 48266,
+   "rejected": 0
+  }
+ },
+ "cx": {
+  "N0": {
+   "sessions": 12,
+   "valid": 12,
+   "success": 12,
+   "native_discovery": 47,
+   "source_reads": 46,
+   "repodex_calls": 0,
+   "tool_calls": 151,
+   "agent_wall_median_ms": 53181,
+   "rejected": 0
+  },
+  "P1": {
+   "sessions": 12,
+   "valid": 12,
+   "success": 12,
+   "native_discovery": 11,
+   "source_reads": 55,
+   "repodex_calls": 36,
+   "tool_calls": 162,
+   "agent_wall_median_ms": 80448,
+   "rejected": 0
+  },
+  "P2": {
+   "sessions": 12,
+   "valid": 12,
+   "success": 12,
+   "native_discovery": 11,
+   "source_reads": 53,
+   "repodex_calls": 31,
+   "tool_calls": 165,
+   "agent_wall_median_ms": 85554,
+   "rejected": 0
+  }
+ },
+ "nc": {
+  "N0": {
+   "sessions": 8,
+   "valid": 8,
+   "success": 8,
+   "native_discovery": 29,
+   "source_reads": 18,
+   "repodex_calls": 0,
+   "tool_calls": 52,
+   "agent_wall_median_ms": 17589,
+   "rejected": 0
+  },
+  "P1": {
+   "sessions": 8,
+   "valid": 8,
+   "success": 8,
+   "native_discovery": 8,
+   "source_reads": 17,
+   "repodex_calls": 29,
+   "tool_calls": 59,
+   "agent_wall_median_ms": 22894,
+   "rejected": 0
+  },
+  "P2": {
+   "sessions": 8,
+   "valid": 8,
+   "success": 8,
+   "native_discovery": 3,
+   "source_reads": 13,
+   "repodex_calls": 24,
+   "tool_calls": 41,
+   "agent_wall_median_ms": 23534,
+   "rejected": 0
+  }
+ }
+}

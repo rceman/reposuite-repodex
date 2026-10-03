@@ -1,0 +1,15 @@
+{
+ "status": "REPODEX_PHP_BOUNDED_RECEIVER_TYPE_EVIDENCE_V1_COMPLETE",
+ "type_verdict": "PHP_RECEIVER_TYPE_EVIDENCE_MECHANICALLY_USEFUL_BUT_NO_AGENT_GAIN",
+ "nav_verdict": "PHP_REPODEX_NAVIGATION_CORRECT_BUT_EFFICIENCY_GAIN_NOT_MEASURED",
+ "next_gap": "PHP_INHERITANCE_DISPATCH_NOW_HIGHEST_VALUE",
+ "mechanical_gate": "17/17 targeted gained evidence (100%, >=70% required)",
+ "campaign": "144 sessions, 0 infra-invalid, 48/48 x3 success, no efficiency target passed",
+ "safety": {
+  "false_receiver_types": 0,
+  "false_fact_promotions": 0,
+  "ambiguity_collapses": 0,
+  "global_method_scans": 0,
+  "transport_mismatches": 0
+ }
+}

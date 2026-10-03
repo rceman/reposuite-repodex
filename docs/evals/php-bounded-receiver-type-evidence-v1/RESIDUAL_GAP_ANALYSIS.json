@@ -1,0 +1,9 @@
+{
+ "residual_gaps": {
+  "dynamic_member_name": "largest remaining class \u2014 deliberately unsupported",
+  "inherited_lsb": "5-class residual from V1 corpus \u2014 now highest implementable",
+  "composer_topology": "1 \u2014 unindexed vendor",
+  "return_type_propagation": "chained `()->` stays OOS",
+  "intersection_types": "A&B unsupported"
+ }
+}

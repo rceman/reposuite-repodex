@@ -1,0 +1,24 @@
+{
+ "first_discovery_op_by_arm": {
+  "N0": {
+   "native_search": 24,
+   "enumeration": 24
+  },
+  "P1": {
+   "repodex": 48
+  },
+  "P2": {
+   "repodex": 48
+  }
+ },
+ "first_was_repodex": {
+  "N0": 0,
+  "P1": 48,
+  "P2": 48
+ },
+ "totals": {
+  "N0": 48,
+  "P1": 48,
+  "P2": 48
+ }
+}

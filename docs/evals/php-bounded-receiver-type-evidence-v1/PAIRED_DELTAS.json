@@ -1,0 +1,146 @@
+[
+ {
+  "task": "bx-index-flow",
+  "wall_delta_ms": 3991,
+  "native_delta": 1,
+  "reads_delta": 0
+ },
+ {
+  "task": "bx-list-flow",
+  "wall_delta_ms": -6911,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "bx-sync-find",
+  "wall_delta_ms": -2429,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "bx-warm-flow",
+  "wall_delta_ms": 15005,
+  "native_delta": 1,
+  "reads_delta": 0
+ },
+ {
+  "task": "bx-who-save",
+  "wall_delta_ms": 1952,
+  "native_delta": 1,
+  "reads_delta": 0
+ },
+ {
+  "task": "cx-audit-write",
+  "wall_delta_ms": 44832,
+  "native_delta": 0,
+  "reads_delta": 2
+ },
+ {
+  "task": "cx-pages-title",
+  "wall_delta_ms": -1520,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "cx-report-handle",
+  "wall_delta_ms": -23584,
+  "native_delta": 0,
+  "reads_delta": -6
+ },
+ {
+  "task": "cx-store-find",
+  "wall_delta_ms": -50208,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "cx-users-save",
+  "wall_delta_ms": 33215,
+  "native_delta": 1,
+  "reads_delta": -2
+ },
+ {
+  "task": "cx-warm-put",
+  "wall_delta_ms": 15397,
+  "native_delta": 0,
+  "reads_delta": 4
+ },
+ {
+  "task": "nc-conn-chain",
+  "wall_delta_ms": 7409,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "nc-dyn-member",
+  "wall_delta_ms": -2088,
+  "native_delta": -1,
+  "reads_delta": 0
+ },
+ {
+  "task": "nc-ghost",
+  "wall_delta_ms": -3963,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "nc-legacy-handle",
+  "wall_delta_ms": -2880,
+  "native_delta": -2,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-audit-save",
+  "wall_delta_ms": 2561,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-cache-get",
+  "wall_delta_ms": -6325,
+  "native_delta": -1,
+  "reads_delta": 1
+ },
+ {
+  "task": "rx-job-handle",
+  "wall_delta_ms": 3144,
+  "native_delta": 1,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-orders-handle",
+  "wall_delta_ms": 2572,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-pages-home",
+  "wall_delta_ms": 3284,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-repo-save",
+  "wall_delta_ms": -2148,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-report-gen",
+  "wall_delta_ms": 3043,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-users-handle",
+  "wall_delta_ms": -4812,
+  "native_delta": 0,
+  "reads_delta": 0
+ },
+ {
+  "task": "rx-who-handle",
+  "wall_delta_ms": -14115,
+  "native_delta": 0,
+  "reads_delta": 0
+ }
+]

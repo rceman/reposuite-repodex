@@ -1,0 +1,7 @@
+{
+ "parameter_type_hint_used": true,
+ "property_type_hint_used": true,
+ "local_literal_new_used": true,
+ "property_literal_new_used": true,
+ "note": "all four kinds produced candidates in the static corpus; packet surfaced typed edges on 17/17 probes"
+}

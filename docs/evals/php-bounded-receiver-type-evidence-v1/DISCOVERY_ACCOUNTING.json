@@ -1,0 +1,36 @@
+{
+ "note": "tool-category classification per observable exec/read events",
+ "N0": {
+  "sessions": 48,
+  "valid": 48,
+  "success": 48,
+  "native_discovery": 179,
+  "source_reads": 137,
+  "repodex_calls": 0,
+  "tool_calls": 417,
+  "agent_wall_median_ms": 20273,
+  "rejected": 0
+ },
+ "T0": {
+  "sessions": 48,
+  "valid": 48,
+  "success": 48,
+  "native_discovery": 29,
+  "source_reads": 143,
+  "repodex_calls": 165,
+  "tool_calls": 442,
+  "agent_wall_median_ms": 31378,
+  "rejected": 0
+ },
+ "T1": {
+  "sessions": 48,
+  "valid": 48,
+  "success": 48,
+  "native_discovery": 29,
+  "source_reads": 138,
+  "repodex_calls": 154,
+  "tool_calls": 425,
+  "agent_wall_median_ms": 26565,
+  "rejected": 0
+ }
+}
