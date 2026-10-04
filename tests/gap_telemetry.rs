@@ -6,6 +6,8 @@
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 
+mod support;
+
 use repodex::agent_event::fallback::{analyze_session, report, FollowupDisposition};
 use repodex::agent_event::ingest::{validate_event, StoreSink};
 use repodex::agent_event::model::*;
@@ -184,13 +186,107 @@ fn second_representation_is_another_artifact() {
 
 #[test]
 fn task_action_ends_window() {
+    // normalized `test` op on a shell call ends the window as task action
     let s = vec![
         artifact(0, "tc-a", serde_json::json!([])),
-        tool(1, "e1", "exec", "shell"),
+        ev(
+            "s",
+            1,
+            "tool_call_started",
+            serde_json::json!({"tool_call_id":"e1","tool_name":"exec","category":"shell","repository_operation":"test"}),
+        ),
         tool(2, "g1", "grep", "search"), // after window close: must not count
     ];
     let a = analyze_session(&s);
     assert_eq!(a[0].disposition, FollowupDisposition::TaskActionStarted);
+}
+
+#[test]
+fn legacy_shell_is_unclassified_not_task_action() {
+    let s = vec![
+        artifact(0, "tc-a", serde_json::json!([])),
+        tool(1, "e1", "exec", "shell"),
+    ];
+    let a = analyze_session(&s);
+    assert_eq!(
+        a[0].disposition,
+        FollowupDisposition::UnclassifiedRepositoryActivity
+    );
+}
+
+#[test]
+fn shell_discovery_op_is_native_fallback() {
+    let s = vec![
+        artifact(0, "tc-a", serde_json::json!([])),
+        ev(
+            "s",
+            1,
+            "tool_call_started",
+            serde_json::json!({"tool_call_id":"e1","tool_name":"exec","category":"shell","repository_operation":"discovery_search"}),
+        ),
+    ];
+    let a = analyze_session(&s);
+    assert_eq!(
+        a[0].disposition,
+        FollowupDisposition::NativeDiscoveryAfterArtifact
+    );
+}
+
+#[test]
+fn other_repository_tool_with_discovery_op_is_fallback() {
+    let s = vec![
+        artifact(0, "tc-a", serde_json::json!([])),
+        ev(
+            "s",
+            1,
+            "tool_call_started",
+            serde_json::json!({"tool_call_id":"t1","tool_name":"repo_search","category":"other_repository_tool","repository_operation":"discovery_search"}),
+        ),
+    ];
+    let a = analyze_session(&s);
+    assert_eq!(
+        a[0].disposition,
+        FollowupDisposition::NativeDiscoveryAfterArtifact
+    );
+}
+
+#[test]
+fn source_read_op_is_verification() {
+    let s = vec![
+        artifact(0, "tc-a", serde_json::json!([])),
+        ev(
+            "s",
+            1,
+            "tool_call_started",
+            serde_json::json!({"tool_call_id":"t1","tool_name":"open","category":"file_read","repository_operation":"source_read"}),
+        ),
+    ];
+    let a = analyze_session(&s);
+    assert_eq!(
+        a[0].disposition,
+        FollowupDisposition::SourceVerificationOnly
+    );
+}
+
+#[test]
+fn report_counts_reconcile() {
+    let s = vec![
+        artifact(
+            0,
+            "tc-a",
+            serde_json::json!([{"family":"out_of_scope","reason_code":"late_static_binding"},{"family":"no_candidate","reason_code":"receiver_type_unavailable"}]),
+        ),
+        artifact(1, "tc-b", serde_json::json!([])),
+    ];
+    let r = report(&[("s".into(), s)]);
+    assert_eq!(
+        r.presentations_with_gap + r.presentations_without_gap,
+        r.artifact_presentations
+    );
+    // overlapping families: sum(by_gap_family) > presentations is expected
+    assert_eq!(r.by_gap_family["out_of_scope"].presentations, 1);
+    assert_eq!(r.by_gap_family["no_candidate"].presentations, 1);
+    assert_eq!(r.presentations_with_gap, 1);
 }
 
 #[test]
@@ -279,4 +375,125 @@ fn report_buckets_have_denominators() {
     assert_eq!(bucket.presentations, 1);
     assert_eq!(bucket.native_discovery_after, 1);
     assert_eq!(r.by_intent["callers"].native_discovery_after, 1);
+}
+
+// ---------------------------------------------------------------------------
+// Production-path tests (CORRECTION-V1 §28-§30): gap signatures must be
+// GENERATED from real fixture query execution — candidate artifact -> graph
+// structured disposition -> EvidenceProjection -> RepoQueryObservation.
+// ---------------------------------------------------------------------------
+
+fn build_phpnav_observation(question: &str) -> repodex::query::observation::RepoQueryObservation {
+    let temp = support::TempDir::new("gpt-phpnav");
+    let root = support::fixture("phpnav");
+    let snap = temp.path().join("snap");
+    repodex::repository::build_snapshot(
+        &support::analyzer(),
+        &root,
+        &snap,
+        repodex::repository::BuildOptions::default(),
+    )
+    .expect("snapshot");
+    let links = temp.path().join("links");
+    repodex::links::build_links(&snap, Some(&root), &links).expect("links");
+    let cand = temp.path().join("cand");
+    repodex::candidates::build_candidates(&snap, &links, &cand).expect("candidates");
+    let gdir = temp.path().join("graph");
+    repodex::graph::build_graph(&snap, &links, &cand, &gdir).expect("graph");
+    let index = repodex::graph::GraphIndex::load(&gdir).expect("graph index");
+    let p = repodex::query::adaptive::plan(question, None, None, None);
+    let plan = repodex::query::QueryPlan::parse(
+        question,
+        repodex::query::QueryMode::Exhaustive,
+        Some(p.query_intent),
+        p.target.clone(),
+        p.to.clone(),
+        50,
+        None,
+    );
+    let engine = repodex::query::QueryEngine::new(&index);
+    let result = engine.run(&plan);
+    let proj = repodex::query::projection::build(&result, Some(&gdir));
+    let (packet, rendered) = repodex::query::adaptive::adaptive_rdx_observed(&proj, p.nav, None);
+    repodex::query::observation::observe(&proj, p.nav, "adaptive", &packet, Some(&rendered), None)
+}
+
+fn gap_set(
+    obs: &repodex::query::observation::RepoQueryObservation,
+) -> Vec<(String, Option<String>)> {
+    obs.gap_signatures
+        .iter()
+        .map(|g| (g.family.clone(), g.reason_code.clone()))
+        .collect()
+}
+
+#[test]
+fn production_query_generates_out_of_scope_reason_codes() {
+    // `callers method run` on phpnav: real out_of_scope dispositions
+    // (receiver_type_unavailable, dynamic_member_name, ...) reach the
+    // observation as normalized reason codes — never by hand.
+    let obs = build_phpnav_observation("callers method run");
+    let gaps = gap_set(&obs);
+    assert!(
+        gaps.contains(&(
+            "out_of_scope".into(),
+            Some("receiver_type_unavailable".into())
+        )),
+        "receiver_type_unavailable missing: {gaps:?}"
+    );
+    assert!(
+        gaps.iter().any(|(f, _)| f == "out_of_scope"
+            && gaps.contains(&(f.clone(), Some("dynamic_member_name".into())))),
+        "dynamic_member_name missing: {gaps:?}"
+    );
+}
+
+#[test]
+fn production_query_generates_no_candidate_and_late_static() {
+    let obs = build_phpnav_observation("callers method save");
+    let gaps = gap_set(&obs);
+    assert!(
+        gaps.contains(&("out_of_scope".into(), Some("late_static_binding".into()))),
+        "late_static_binding missing: {gaps:?}"
+    );
+    assert!(
+        gaps.iter().any(|(f, _)| f == "no_candidate"),
+        "no_candidate family missing: {gaps:?}"
+    );
+}
+
+#[test]
+fn generated_metadata_flows_into_artifact_and_report() {
+    // End-to-end: real observation -> context_artifact_presented.metadata
+    // -> fallback report bucket.
+    let obs = build_phpnav_observation("callers method save");
+    let meta = obs.event_metadata();
+    let s = vec![
+        tool(0, "tc-a", "exec", "shell"),
+        ev(
+            "s",
+            1,
+            "context_artifact_presented",
+            serde_json::json!({
+                "artifact_id": "a-1", "artifact_kind": "rdx1_packet",
+                "producer": "repodex", "tool_call_id": "tc-a",
+                "presentation": "adaptive", "metadata": meta,
+            }),
+        ),
+        ev(
+            "s",
+            2,
+            "tool_call_started",
+            serde_json::json!({"tool_call_id":"g1","tool_name":"exec","category":"shell","repository_operation":"discovery_search"}),
+        ),
+    ];
+    let r = report(&[("s".into(), s)]);
+    let bucket = &r.by_gap_reason_code["out_of_scope:late_static_binding"];
+    assert_eq!(bucket.presentations, 1);
+    assert_eq!(bucket.native_discovery_after, 1);
+    assert_eq!(r.presentations_with_gap, 1);
+    assert_eq!(
+        r.presentations_with_gap + r.presentations_without_gap,
+        r.artifact_presentations
+    );
 }

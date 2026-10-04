@@ -164,6 +164,15 @@ pub struct ToolCallStarted {
     /// Native runtime tool name (e.g. `read`, `grep`, `find_file_by_name`).
     pub tool_name: String,
     pub category: ToolCategory,
+    /// Producer-normalized repository operation (GAP-TELEMETRY-CORRECTION-V1).
+    /// Optional, additive, observation not judgment. The EMITTER (Relay /
+    /// runtime adapter) normalizes the action it observed — e.g. a shell exec
+    /// of `rg foo` is `discovery_search`, `cargo test` is `test`. Bounded
+    /// vocabulary: `discovery_search`, `discovery_list`, `source_read`,
+    /// `edit`, `build`, `test`, `runtime`, `git_inspection`, `other`.
+    /// Absent in old streams — consumers must classify conservatively.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository_operation: Option<String>,
     /// Safe structured arguments (redacted); never raw secrets (§24).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arguments: Option<serde_json::Value>,

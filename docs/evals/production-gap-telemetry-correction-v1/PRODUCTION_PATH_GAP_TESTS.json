@@ -1,0 +1,20 @@
+{
+ "method": "real query --emit-observation + in-process observe() over fixtures",
+ "assertions": {
+  "no_candidate_family_from_real_query": true,
+  "out_of_scope_family_from_real_query": true,
+  "receiver_type_unavailable_generated": true,
+  "late_static_binding_generated": true,
+  "dynamic_member_name_generated": true,
+  "no_indexed_parent_for_lexical_class_generated": true
+ },
+ "tests": [
+  "production_query_generates_out_of_scope_reason_codes",
+  "production_query_generates_no_candidate_and_late_static",
+  "generated_metadata_flows_into_artifact_and_report"
+ ],
+ "queries": [
+  "callers method run (phpnav)",
+  "callers method save (phpnav)"
+ ]
+}

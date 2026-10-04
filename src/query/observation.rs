@@ -90,20 +90,42 @@ fn reason_head(reason: &str) -> String {
         .to_string()
 }
 
-/// Map a candidate-level `out_of_scope` / `no_candidate` reason into a gap
-/// signature. PHP-specific codes stay inside `reason_code` as opaque stable
-/// values — the core model is language-neutral (§18).
-fn disposition_gap(disposition: &str, reason: Option<&str>) -> GapSignature {
-    let code = reason.map(reason_head);
-    let family = match disposition {
-        "no_candidate" => "no_candidate",
+/// Map a candidate-level `out_of_scope` / `no_candidate` disposition into a
+/// gap signature. PHP-specific codes stay inside `reason_code` as opaque
+/// stable values — the core model is language-neutral (§18).
+///
+/// `kind`/`reason` come from the structured graph-schema-3 fields. The
+/// legacy compact `disposition` string is used ONLY when the structured
+/// fields are absent (pre-schema-3 graphs): splitting at the first `:` is
+/// recovery of our own normalized producer vocabulary, NOT RDX parsing.
+fn disposition_gap(kind: &str, reason: Option<&str>) -> GapSignature {
+    let family = match kind {
+        "no_candidate" | "no_candidate_rule" => "no_candidate",
         "out_of_scope" => "out_of_scope",
         _ => "unsupported_evidence_class",
     };
     GapSignature {
         family: family.to_string(),
-        reason_code: code,
+        reason_code: reason.map(reason_head),
     }
+}
+
+/// The structured (kind, reason) pair of a disposition — schema-3 fields
+/// first, legacy `kind:reason` compact string only as the fallback.
+fn disposition_parts(
+    disposition: Option<&str>,
+    kind: Option<&str>,
+    reason: Option<&str>,
+) -> Option<(String, Option<String>)> {
+    if let Some(k) = kind {
+        return Some((k.to_string(), reason.map(String::from)));
+    }
+    let d = disposition?;
+    let (k, r) = match d.split_once(':') {
+        Some((k, r)) => (k.to_string(), Some(r.to_string())),
+        None => (d.to_string(), None),
+    };
+    Some((k, r))
 }
 
 /// Derive gap signatures from the projection's structured state (§16):
@@ -161,23 +183,33 @@ fn gap_signatures(
         }
     }
     let mut seen = std::collections::BTreeSet::new();
-    let mut push = |d: &str, reason: Option<&str>| {
-        let g = disposition_gap(d, reason);
+    let mut push = |kind: &str, reason: Option<&str>| {
+        let g = disposition_gap(kind, reason);
         if seen.insert((g.family.clone(), g.reason_code.clone())) {
             out.push(g);
         }
     };
+    let candidate_family =
+        |kind: &str| matches!(kind, "no_candidate" | "no_candidate_rule" | "out_of_scope");
     for s in &proj.seeds {
-        if let Some(d) = s.disposition.as_deref() {
-            if matches!(d, "no_candidate" | "out_of_scope") {
-                push(d, None);
+        if let Some((k, r)) = disposition_parts(
+            s.disposition.as_deref(),
+            s.disposition_kind.as_deref(),
+            s.disposition_reason.as_deref(),
+        ) {
+            if candidate_family(&k) {
+                push(&k, r.as_deref());
             }
         }
     }
     for r in &proj.related {
-        if let Some(d) = r.disposition.as_deref() {
-            if matches!(d, "no_candidate" | "out_of_scope") {
-                push(d, None);
+        if let Some((k, rsn)) = disposition_parts(
+            r.disposition.as_deref(),
+            r.disposition_kind.as_deref(),
+            r.disposition_reason.as_deref(),
+        ) {
+            if candidate_family(&k) {
+                push(&k, rsn.as_deref());
             }
         }
     }
@@ -198,14 +230,22 @@ pub fn observe(
         std::collections::BTreeMap::new();
     let mut candidate_count = 0u64;
     for s in &proj.seeds {
-        if let Some(d) = &s.disposition {
-            *dispositions.entry(d.clone()).or_default() += 1;
+        if let Some((k, _)) = disposition_parts(
+            s.disposition.as_deref(),
+            s.disposition_kind.as_deref(),
+            s.disposition_reason.as_deref(),
+        ) {
+            *dispositions.entry(k).or_default() += 1;
             candidate_count += 1;
         }
     }
     for r in &proj.related {
-        if let Some(d) = &r.disposition {
-            *dispositions.entry(d.clone()).or_default() += 1;
+        if let Some((k, _)) = disposition_parts(
+            r.disposition.as_deref(),
+            r.disposition_kind.as_deref(),
+            r.disposition_reason.as_deref(),
+        ) {
+            *dispositions.entry(k).or_default() += 1;
             candidate_count += 1;
         }
     }

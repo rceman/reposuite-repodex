@@ -96,3 +96,14 @@ Relay copies the allowlisted keys into `metadata`; no other derivation needed.
     TELEMETRY_UPDATES_ROUTE_PRIORITY        = false
     TELEMETRY_UPDATES_JEV                   = false
     TELEMETRY_UPDATES_ADAPTIVE_SELECTION    = false
+
+## repository_operation on tool_call_started (CORRECTION-V1)
+
+Relay SHOULD normalize the observed Agent action into the optional
+`repository_operation` field (bounded vocabulary: `discovery_search`,
+`discovery_list`, `source_read`, `edit`, `build`, `test`, `runtime`,
+`git_inspection`, `other`) — e.g. a shell `rg`/`find` is `discovery_search`,
+a test runner is `test`. When Relay cannot normalize, it OMITS the field;
+RepoDex then classifies `shell`/`other_repository_tool` conservatively as
+`unclassified_repository_activity`, never as task action. This is an
+observation, not a judgment.

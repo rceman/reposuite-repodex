@@ -1,4 +1,5 @@
-//! Native-fallback association analysis (PRODUCTION-GAP-TELEMETRY-V1 §21-§25).
+//! Native-fallback association analysis (PRODUCTION-GAP-TELEMETRY-V1 §21-§25,
+//! corrected in GAP-TELEMETRY-CORRECTION-V1 §11-§20).
 //!
 //! For every `context_artifact_presented` event, observe the bounded sequence
 //! window that follows it and classify what happened next. This is an
@@ -6,8 +7,14 @@
 //! broad repository discovery occurred inside the window — it never asserts
 //! the artifact caused it.
 //!
-//! Ordering authority is `sequence` (§40). Sessions are analyzed independently
-//! (§42) and `repository_id`/`repo_head` are carried, never merged (§43).
+//! Ordering authority is `sequence`. Sessions are analyzed independently and
+//! `repository_id`/`repo_head` are carried, never merged.
+//!
+//! Classification is operation-aware: the producer-normalized optional
+//! `repository_operation` on `tool_call_started` decides first; streams
+//! without it fall back to conservative category rules, where ambiguous
+//! activity (`shell`, `other_repository_tool`) is `unclassified` — never
+//! silently task action.
 
 use std::collections::BTreeMap;
 
@@ -18,7 +25,7 @@ use super::model::{AgentEvent, ContextArtifactPresented, ToolCategory};
 /// Hard bound on events examined after one artifact presentation (§22).
 pub const FALLBACK_WINDOW_MAX_EVENTS: usize = 64;
 
-/// Follow-up classification for one presented artifact (§24).
+/// Follow-up classification for one presented artifact (§24, corrected §18).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FollowupDisposition {
@@ -26,14 +33,15 @@ pub enum FollowupDisposition {
     NoFollowupDiscovery,
     /// Only exact source reads / source-observation events followed.
     SourceVerificationOnly,
-    /// Broad native repository discovery (search/directory/uncorrelated
-    /// repository tool) followed the artifact.
+    /// Broad native repository discovery followed the artifact.
     NativeDiscoveryAfterArtifact,
-    /// The next observable context action was another artifact presentation
-    /// (e.g. a follow-up RepoDex query).
+    /// The next observable context action was another artifact presentation.
     AnotherContextArtifact,
-    /// An edit/write/build/test/runtime action ended the window.
+    /// A definite edit/build/test/runtime action ended the window.
     TaskActionStarted,
+    /// Repository activity was observed but its purpose is not known —
+    /// legacy unclassified shell/other activity (§18). Never a guess.
+    UnclassifiedRepositoryActivity,
 }
 
 impl FollowupDisposition {
@@ -44,7 +52,47 @@ impl FollowupDisposition {
             Self::NativeDiscoveryAfterArtifact => "native_discovery_after_artifact",
             Self::AnotherContextArtifact => "another_context_artifact",
             Self::TaskActionStarted => "task_action_started",
+            Self::UnclassifiedRepositoryActivity => "unclassified_repository_activity",
         }
+    }
+}
+
+/// The activity class one event contributes inside a window.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Activity {
+    Discovery,
+    Verification,
+    /// Definite task action — ends the window.
+    TaskAction,
+    /// Observed repository activity of unknown purpose — continues the
+    /// window and, if nothing else resolves it, yields `unclassified`.
+    Unclassified,
+}
+
+/// Normalize a producer-supplied `repository_operation` value.
+/// Unknown future codes are conservative: `unclassified`, never guessed.
+fn operation_class(op: &str) -> Activity {
+    match op {
+        "discovery_search" | "discovery_list" => Activity::Discovery,
+        "source_read" => Activity::Verification,
+        "edit" | "build" | "test" | "runtime" => Activity::TaskAction,
+        // git_inspection is repository history work, neither broad source
+        // discovery nor a task action — honest `unclassified`.
+        _ => Activity::Unclassified,
+    }
+}
+
+/// Legacy classification for events with no `repository_operation` —
+/// conservative by construction (§17): only unambiguous categories get a
+/// definite class; everything else is `Unclassified`, NOT task action.
+fn legacy_class(cat: ToolCategory) -> Activity {
+    match cat {
+        ToolCategory::Search | ToolCategory::DirectoryList => Activity::Discovery,
+        ToolCategory::FileRead => Activity::Verification,
+        ToolCategory::Shell
+        | ToolCategory::OtherRepositoryTool
+        | ToolCategory::GitInspection
+        | ToolCategory::NonRepositoryTool => Activity::Unclassified,
     }
 }
 
@@ -88,19 +136,30 @@ fn ca(e: &AgentEvent) -> Option<ContextArtifactPresented> {
     serde_json::from_value::<ContextArtifactPresented>(e.data.clone()).ok()
 }
 
-fn is_native_discovery(cat: ToolCategory, correlated: bool) -> bool {
-    !correlated && matches!(cat, ToolCategory::Search | ToolCategory::DirectoryList)
-}
-
-fn is_task_action(e: &AgentEvent) -> bool {
-    if e.event_type == "tool_call_started" {
-        let cat = e.data["category"].as_str().unwrap_or_default();
-        return matches!(
-            cat,
-            "shell" | "non_repository_tool" | "other_repository_tool"
-        );
+/// Classify one window event; `None` = not an observable activity
+/// (artifacts are handled by the window loop itself).
+fn activity_of(
+    e: &AgentEvent,
+    producer_calls: &std::collections::BTreeSet<String>,
+) -> Option<Activity> {
+    match e.event_type.as_str() {
+        "tool_call_started" => {
+            let id = e.data["tool_call_id"].as_str().unwrap_or_default();
+            // The producer-correlated call (e.g. the RepoDex query exec) is
+            // never native discovery — correlation beats category.
+            if producer_calls.contains(id) {
+                return None;
+            }
+            if let Some(op) = e.data["repository_operation"].as_str() {
+                return Some(operation_class(op));
+            }
+            let cat = serde_json::from_value::<ToolCategory>(e.data["category"].clone())
+                .unwrap_or_default();
+            Some(legacy_class(cat))
+        }
+        "source_observed" => Some(Activity::Verification),
+        _ => None,
     }
-    false
 }
 
 /// Analyze ONE session's events (must already be this session's events only).
@@ -123,38 +182,30 @@ pub fn analyze_session(events: &[AgentEvent]) -> Vec<FallbackAssociation> {
         };
         let mut saw_native = false;
         let mut saw_verify = false;
+        let mut saw_unclassified = false;
         let mut other_artifact = false;
         let mut task_action = false;
         let mut scanned = 0usize;
         for n in evs.iter().skip(i + 1).take(FALLBACK_WINDOW_MAX_EVENTS) {
             scanned += 1;
-            match n.event_type.as_str() {
-                "context_artifact_presented" => {
-                    other_artifact = true;
+            if n.event_type == "context_artifact_presented" {
+                other_artifact = true;
+                break;
+            }
+            match activity_of(n, &producer_calls) {
+                Some(Activity::Discovery) => saw_native = true,
+                Some(Activity::Verification) => saw_verify = true,
+                Some(Activity::TaskAction) => {
+                    task_action = true;
                     break;
                 }
-                "tool_call_started" => {
-                    let id = n.data["tool_call_id"].as_str().unwrap_or_default();
-                    if producer_calls.contains(id) {
-                        continue;
-                    }
-                    let cat = serde_json::from_value::<ToolCategory>(n.data["category"].clone())
-                        .unwrap_or_default();
-                    if is_native_discovery(cat, false) {
-                        saw_native = true;
-                    } else if cat == ToolCategory::FileRead {
-                        saw_verify = true;
-                    } else if is_task_action(n) {
-                        task_action = true;
-                        break;
-                    }
-                }
-                "source_observed" => {
-                    saw_verify = true;
-                }
-                _ => {}
+                Some(Activity::Unclassified) => saw_unclassified = true,
+                None => {}
             }
         }
+        // Precedence (§20): discovery > another artifact > verification >
+        // task action > unclassified > none. `verified_before` keeps the
+        // read-before detail that precedence would otherwise hide.
         let disposition = if saw_native {
             FollowupDisposition::NativeDiscoveryAfterArtifact
         } else if other_artifact {
@@ -163,6 +214,8 @@ pub fn analyze_session(events: &[AgentEvent]) -> Vec<FallbackAssociation> {
             FollowupDisposition::SourceVerificationOnly
         } else if task_action {
             FollowupDisposition::TaskActionStarted
+        } else if saw_unclassified {
+            FollowupDisposition::UnclassifiedRepositoryActivity
         } else {
             FollowupDisposition::NoFollowupDiscovery
         };
@@ -190,7 +243,7 @@ pub fn analyze_session(events: &[AgentEvent]) -> Vec<FallbackAssociation> {
     out
 }
 
-/// Buckets keyed by one dimension value; counts keep denominators (§29).
+/// Buckets keyed by one dimension value; counts keep denominators (§29/§33).
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct DispositionCounts {
     pub presentations: u64,
@@ -198,6 +251,7 @@ pub struct DispositionCounts {
     pub source_verification_only: u64,
     pub another_context_artifact: u64,
     pub task_action_started: u64,
+    pub unclassified_repository_activity: u64,
     pub no_followup_discovery: u64,
 }
 
@@ -209,13 +263,21 @@ impl DispositionCounts {
             FollowupDisposition::SourceVerificationOnly => self.source_verification_only += 1,
             FollowupDisposition::AnotherContextArtifact => self.another_context_artifact += 1,
             FollowupDisposition::TaskActionStarted => self.task_action_started += 1,
+            FollowupDisposition::UnclassifiedRepositoryActivity => {
+                self.unclassified_repository_activity += 1
+            }
             FollowupDisposition::NoFollowupDiscovery => self.no_followup_discovery += 1,
         }
     }
 }
 
-/// The deterministic offline report (§28). JSON is appropriate here — this
-/// output is machine telemetry, never Agent-facing RDX.
+/// The deterministic offline report (§28/§32). JSON is appropriate here —
+/// this output is machine telemetry, never Agent-facing RDX. Top-level
+/// disposition counts reconcile:
+/// `presentations_with_gap + presentations_without_gap == artifact_presentations`.
+/// `sum(disposition_*) == artifact_presentations`.
+/// `sum(by_gap_family.*)` may exceed presentations — families overlap on
+/// multi-gap artifacts.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct FallbackReport {
     pub schema: String,
@@ -224,17 +286,15 @@ pub struct FallbackReport {
     pub sessions_without_artifacts: u64,
     pub artifact_presentations: u64,
     pub repodex_presentations: u64,
+    /// Reconciled top-level split (§32).
+    pub presentations_with_gap: u64,
+    pub presentations_without_gap: u64,
     /// Breakdowns — every bucket keeps `presentations` as denominator.
     pub by_disposition: DispositionCounts,
     pub by_gap_family: BTreeMap<String, DispositionCounts>,
     pub by_gap_reason_code: BTreeMap<String, DispositionCounts>,
     pub by_intent: BTreeMap<String, DispositionCounts>,
     pub by_producer: BTreeMap<String, DispositionCounts>,
-    /// Artifacts that carried no gap signature at all.
-    pub no_gap: DispositionCounts,
-    /// Presentations in sessions that also presented RepoDex artifacts but for
-    /// a different repository — never merged (§43); counted for audit.
-    pub cross_repository_associations: u64,
     /// Impossible by construction — assertions must keep this zero (§39).
     pub false_repodex_associations: u64,
     pub window_max_events: usize,
@@ -262,22 +322,17 @@ pub fn report(sessions: &[(String, Vec<AgentEvent>)]) -> FallbackReport {
             if a.producer == "repodex" {
                 r.repodex_presentations += 1;
             }
-            r.by_disposition.add(a.disposition);
-            let dims = [a
-                .gap_signatures
-                .iter()
-                .map(|g| g.family.clone())
-                .collect::<Vec<_>>()];
             if a.gap_signatures.is_empty() {
-                r.no_gap.add(a.disposition);
+                r.presentations_without_gap += 1;
+            } else {
+                r.presentations_with_gap += 1;
             }
-            for fam in &dims[0] {
+            r.by_disposition.add(a.disposition);
+            for g in &a.gap_signatures {
                 r.by_gap_family
-                    .entry(fam.clone())
+                    .entry(g.family.clone())
                     .or_default()
                     .add(a.disposition);
-            }
-            for g in &a.gap_signatures {
                 if let Some(rc) = &g.reason_code {
                     r.by_gap_reason_code
                         .entry(format!("{}:{}", g.family, rc))

@@ -149,6 +149,8 @@ pub fn build_graph(
                 path: path.clone(),
                 label: path.clone(),
                 disposition: None,
+                disposition_kind: None,
+                disposition_reason: None,
             },
         );
         // Containment: file -> declaration/import/call.
@@ -166,6 +168,8 @@ pub fn build_graph(
                     path: path.clone(),
                     label: d.name.clone(),
                     disposition: None,
+                    disposition_kind: None,
+                    disposition_reason: None,
                 },
             );
             push_edge(
@@ -195,6 +199,8 @@ pub fn build_graph(
                     path: path.clone(),
                     label: i.statement_text.clone(),
                     disposition: None,
+                    disposition_kind: None,
+                    disposition_reason: None,
                 },
             );
             push_edge(
@@ -218,6 +224,8 @@ pub fn build_graph(
                     path: path.clone(),
                     label: c.callee_written.clone(),
                     disposition: None,
+                    disposition_kind: None,
+                    disposition_reason: None,
                 },
             );
             push_edge(
@@ -263,6 +271,8 @@ pub fn build_graph(
                 path: String::new(),
                 label: entity.key.clone(),
                 disposition: None,
+                disposition_kind: None,
+                disposition_reason: None,
             },
         );
         for file in &entity.files {
@@ -400,15 +410,35 @@ pub fn build_graph(
             }
             _ => {}
         }
-        // Record the disposition on the call node.
-        let disp = match &record.outcome {
-            CandidateOutcome::SingleCandidate { .. } => "single_candidate".to_string(),
-            CandidateOutcome::MultipleCandidates { .. } => "multiple_candidates".to_string(),
-            CandidateOutcome::NoCandidate { reason } => format!("no_candidate:{reason}"),
-            CandidateOutcome::OutOfScope { reason } => format!("out_of_scope:{reason}"),
+        // Record the disposition on the call node — compact string kept for
+        // RDX compatibility; structured kind/reason is the telemetry source
+        // of truth (never re-split downstream).
+        let (disp, kind, reason) = match &record.outcome {
+            CandidateOutcome::SingleCandidate { .. } => (
+                "single_candidate".to_string(),
+                "single_candidate".to_string(),
+                None,
+            ),
+            CandidateOutcome::MultipleCandidates { .. } => (
+                "multiple_candidates".to_string(),
+                "multiple_candidates".to_string(),
+                None,
+            ),
+            CandidateOutcome::NoCandidate { reason } => (
+                format!("no_candidate:{reason}"),
+                "no_candidate".to_string(),
+                Some(reason.clone()),
+            ),
+            CandidateOutcome::OutOfScope { reason } => (
+                format!("out_of_scope:{reason}"),
+                "out_of_scope".to_string(),
+                Some(reason.clone()),
+            ),
         };
         if let Some(node) = nodes.get_mut(&call_key) {
             node.disposition = Some(disp);
+            node.disposition_kind = Some(kind);
+            node.disposition_reason = reason;
         }
     }
     // Calls with no candidate record get an explicit uncovered disposition.
@@ -418,6 +448,7 @@ pub fn build_graph(
             if let Some(node) = nodes.get_mut(&k) {
                 if node.disposition.is_none() {
                     node.disposition = Some("no_candidate_rule".to_string());
+                    node.disposition_kind = Some("no_candidate_rule".to_string());
                 }
             }
         }
@@ -628,6 +659,8 @@ struct NodeSpec {
     path: String,
     label: String,
     disposition: Option<String>,
+    disposition_kind: Option<String>,
+    disposition_reason: Option<String>,
 }
 
 /// Insert-or-get a node, returning its stable id.
@@ -646,6 +679,8 @@ fn add_node(
         path: spec.path,
         label: spec.label,
         disposition: spec.disposition,
+        disposition_kind: spec.disposition_kind,
+        disposition_reason: spec.disposition_reason,
     });
     id
 }

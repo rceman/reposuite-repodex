@@ -1,0 +1,17 @@
+{
+ "artifact_presentations": 415,
+ "presentations_with_gap": 330,
+ "presentations_without_gap": 85,
+ "reconcile_gap": true,
+ "disposition_sum": 415,
+ "dispositions": {
+  "another_context_artifact": 60,
+  "native_discovery_after": 41,
+  "no_followup_discovery": 11,
+  "source_verification_only": 66,
+  "task_action_started": 237,
+  "unclassified_repository_activity": 0
+ },
+ "overlap_note": "sum(by_gap_family.presentations)=541 > 330 because one artifact can carry multiple families",
+ "correction": "V1 wrongly implied 415 gap-bearing; corrected to 330"
+}

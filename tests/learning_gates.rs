@@ -41,6 +41,8 @@ fn node(key: &str, label: &str) -> GraphNode {
             .into(),
         label: label.into(),
         disposition: None,
+        disposition_kind: None,
+        disposition_reason: None,
     }
 }
 

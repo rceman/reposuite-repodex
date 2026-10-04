@@ -185,6 +185,8 @@ fn byte_budget_enforced_no_midline() {
             path: format!("long/path/component/segment{i}/file.go"),
             language: "go".into(),
             disposition: None,
+            disposition_kind: None,
+            disposition_reason: None,
             score: 1,
             factors: vec![],
             declaration_range: None,
@@ -273,6 +275,8 @@ fn rel(
         rule_id: None,
         candidate_set: None,
         disposition: None,
+        disposition_kind: None,
+        disposition_reason: None,
     }
 }
 
@@ -292,6 +296,8 @@ fn fixture() -> EvidenceProjection {
         path: "a.go".into(),
         language: "go".into(),
         disposition: None,
+        disposition_kind: None,
+        disposition_reason: None,
         score: 1,
         factors: vec![],
         declaration_range: None,
@@ -322,6 +328,8 @@ fn mrel(kind: &str, from: &str, to: &str, ev: &str) -> RelOut {
         rule_id: None,
         candidate_set: None,
         disposition: None,
+        disposition_kind: None,
+        disposition_reason: None,
     }
 }
 
@@ -334,6 +342,8 @@ fn mseed(key: &str, label: &str) -> SeedOut {
         path: "a.go".into(),
         language: "go".into(),
         disposition: None,
+        disposition_kind: None,
+        disposition_reason: None,
         score: 1,
         factors: vec![],
         declaration_range: None,

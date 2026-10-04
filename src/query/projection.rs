@@ -41,8 +41,16 @@ pub struct SeedOut {
     pub path: String,
     pub language: String,
     /// Call/import disposition where present (`single_candidate`, ...).
+    /// Legacy compact string — kept for RDX rendering compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disposition: Option<String>,
+    /// Structured disposition family (graph schema 3+). Telemetry must prefer
+    /// this over splitting `disposition`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_kind: Option<String>,
+    /// Structured disposition reason (graph schema 3+) — stable producer code.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_reason: Option<String>,
     /// Integer relevance score — ordering metadata only, not certainty.
     pub score: i64,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -85,8 +93,15 @@ pub struct RelOut {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub candidate_set: Option<String>,
     /// Neighbor disposition (candidate resolution state), when present.
+    /// Legacy compact string — kept for RDX rendering compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disposition: Option<String>,
+    /// Structured disposition family (graph schema 3+).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_kind: Option<String>,
+    /// Structured disposition reason (graph schema 3+) — stable producer code.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_reason: Option<String>,
 }
 
 /// One connector step: from -[relation]-> to with evidence + provenance (§26).
@@ -305,6 +320,8 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
                 path: s.node.path.clone(),
                 language: s.node.language.clone(),
                 disposition: s.node.disposition.clone(),
+                disposition_kind: s.node.disposition_kind.clone(),
+                disposition_reason: s.node.disposition_reason.clone(),
                 score: s.score,
                 factors: s.factors.clone(),
                 declaration_range: dr,
@@ -354,6 +371,8 @@ pub fn build(result: &QueryResult, index_dir: Option<&Path>) -> EvidenceProjecti
                 rule_id: r.rule_id.clone(),
                 candidate_set: r.candidate_set.clone(),
                 disposition: r.node.disposition.clone(),
+                disposition_kind: r.node.disposition_kind.clone(),
+                disposition_reason: r.node.disposition_reason.clone(),
             }
         })
         .collect();

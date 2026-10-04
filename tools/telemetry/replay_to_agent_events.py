@@ -25,6 +25,20 @@ CAT_MAP = {  # harness category -> AgentEvent ToolCategory
     "todo_write": "non_repository_tool",
 }
 
+# normalized repository_operation for streams that carry it (correction V1):
+# the converter plays the future Relay role — it observed the action class.
+OP_MAP = {
+    "repodex": None,             # correlated producer call; left absent
+    "native_search": "discovery_search",
+    "enumeration": "discovery_list",
+    "source_read": "source_read",
+    "edit": "edit",
+    "test_build": "test",
+    "other_exec": "runtime",
+    "git": "git_inspection",
+    "todo_write": "other",
+}
+
 G_MAP = {  # RDX G-line -> gap signature family (replay fixture construction)
     "NO_RESULT": ("no_result", None),
     "RESULT_LIMIT": ("result_limit", "seed_bound"),
@@ -90,9 +104,13 @@ def convert(path):
             cid = e["id"]; cats = e.get("categories") or [e.get("category", "other_exec")]
             cat = cats[0] if cats else "other_exec"
             calls[cid] = cat
-            events.append(ev(sid, seq, ts, "tool_call_started", {
+            data = {
                 "tool_call_id": cid, "tool_name": e.get("tool", "exec"),
-                "category": CAT_MAP.get(cat, "non_repository_tool")}, repo)); seq += 1
+                "category": CAT_MAP.get(cat, "non_repository_tool")}
+            op = OP_MAP.get(cat, "other")
+            if op is not None:
+                data["repository_operation"] = op
+            events.append(ev(sid, seq, ts, "tool_call_started", data, repo)); seq += 1
         elif e.get("ev") == "TOOL_RESULT":
             cid = e["id"]; cat = calls.get(cid, "other_exec")
             content = e.get("content", "")

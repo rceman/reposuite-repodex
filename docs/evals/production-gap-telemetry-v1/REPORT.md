@@ -60,9 +60,12 @@ REPORT_DATE_TIME: 2026-10-04 13:00:00 Europe/Riga
 
 1. 929 sessions replayed (all committed eval suites, 11924 events).
 2. 415 artifact presentations (all producer=repodex).
-3. with gaps: 415 had >=1 signature family recorded where gaps existed
+3. with gaps (corrected, CORRECTION-V1): 330 presentations had >=1 gap
+   signature; 85 had none. Family buckets overlap — a multi-gap artifact
+   counts once per family, so sum(by_gap_family.presentations) != 330
    (304 ambiguous_result, 156 evidence_truncated, 43 result_limit,
-   32 no_result, 6 bounded_no_route — overlapping families).
+   32 no_result, 6 bounded_no_route). The earlier "415 had >=1 signature"
+   wording was wrong.
 4. native fallback associations: 40.
 5. verification-only: 66. 6. no-followup: 11; another_artifact: 59;
    task_action: 239.

@@ -26,7 +26,11 @@ use crate::repository::digest;
 /// * `1` — initial artifact.
 /// * `2` — the canonical graph digest also covers node `path`/`label` and edge
 ///   `rule_id`/`upstream_id`/`candidate_set_id` so tampering is detected.
-pub const GRAPH_SCHEMA_VERSION: u32 = 2;
+/// * `3` — call-node dispositions carry structured `disposition_kind` /
+///   `disposition_reason` in addition to the legacy compact string, so
+///   telemetry never reparses a colon-delimited value (gap-telemetry
+///   correction V1). Old graphs do not silently satisfy the new schema.
+pub const GRAPH_SCHEMA_VERSION: u32 = 3;
 /// Graph artifact manifest format version.
 pub const GRAPH_MANIFEST_VERSION: u32 = 1;
 /// Graph *policy* version — the projection rules that map upstream artifacts to
@@ -107,6 +111,16 @@ pub struct GraphNode {
     /// Absent for node kinds with no disposition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disposition: Option<String>,
+    /// Structured disposition family (schema 3+): `single_candidate`,
+    /// `multiple_candidates`, `no_candidate`, `out_of_scope`,
+    /// `no_candidate_rule`. Consumers should prefer this over splitting
+    /// `disposition`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_kind: Option<String>,
+    /// Structured disposition reason (schema 3+): the producer's stable
+    /// reason code, e.g. `receiver_type_unavailable`, `late_static_binding`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disposition_reason: Option<String>,
 }
 
 /// Derive a stable node id from the canonical key.

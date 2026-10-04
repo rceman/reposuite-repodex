@@ -1,0 +1,18 @@
+{
+ "note": "observation construction unchanged in cost shape (same field count +2 string clones); emit is post-render, off stdout path",
+ "scale_rerun": {
+  "100": {
+   "ingest_ms": 14,
+   "analysis_ms": 5
+  },
+  "1000": {
+   "ingest_ms": 103,
+   "analysis_ms": 33
+  },
+  "10000": {
+   "ingest_ms": 889,
+   "analysis_ms": 221
+  }
+ },
+ "flagged_regression": false
+}

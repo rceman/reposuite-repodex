@@ -1,0 +1,23 @@
+{
+ "label": "REPLAY/SYNTHETIC",
+ "sessions": {
+  "100": {
+   "events": 330,
+   "ingest_ms": 14,
+   "analysis_ms": 5
+  },
+  "1000": {
+   "events": 3300,
+   "ingest_ms": 103,
+   "analysis_ms": 33
+  },
+  "10000": {
+   "events": 33000,
+   "ingest_ms": 889,
+   "analysis_ms": 221
+  }
+ },
+ "complexity": "O(sessions + events*window); no regression vs V1",
+ "database_added": false,
+ "query_scans_telemetry": false
+}

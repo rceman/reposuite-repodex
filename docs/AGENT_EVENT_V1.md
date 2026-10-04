@@ -190,3 +190,12 @@ Typed, producer-neutral event for evidence delivered to the Agent:
 - Gap `reason_code` values are stable producer codes (e.g.
   `late_static_binding`), opaque to the core model — language-specific
   reasons are values, not fields.
+
+## repository_operation (GAP-TELEMETRY-CORRECTION-V1)
+
+`tool_call_started` gains optional `repository_operation` — a producer-
+normalized classification of the observed action (`discovery_search`,
+`discovery_list`, `source_read`, `edit`, `build`, `test`, `runtime`,
+`git_inspection`, `other`). The emitter normalizes; consumers must treat an
+absent field conservatively (unclassified, never task action). Additive —
+no AgentEvent v2; old streams stay valid.

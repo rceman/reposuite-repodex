@@ -1,0 +1,8 @@
+{
+ "repository_operation": "optional additive field on tool_call_started; absent in old streams -> conservative legacy rules",
+ "agentevent_v2_created": false,
+ "graph_schema_version": "2 -> 3 (structured disposition fields)",
+ "observation_schema": "v1 unchanged (additive gap content)",
+ "old_v1_streams_valid": true,
+ "unknown_events_roundtrip": true
+}

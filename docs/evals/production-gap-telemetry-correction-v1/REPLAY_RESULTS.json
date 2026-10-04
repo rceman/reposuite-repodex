@@ -204,6 +204,5 @@
  "schema": "reposuite.repodex.gap-fallback-report.v1",
  "sessions_scanned": 929,
  "sessions_without_artifacts": 615,
- "window_max_events": 64,
- "note": "REPLAY/SYNTHETIC \u2014 regenerated under CORRECTION-V1 (operation-aware classifier + reconciled counts); validates contract only"
+ "window_max_events": 64
 }
