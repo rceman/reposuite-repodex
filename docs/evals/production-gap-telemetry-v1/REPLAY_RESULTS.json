@@ -1,0 +1,195 @@
+{
+ "artifact_presentations": 415,
+ "by_disposition": {
+  "another_context_artifact": 59,
+  "native_discovery_after": 40,
+  "no_followup_discovery": 11,
+  "presentations": 415,
+  "source_verification_only": 66,
+  "task_action_started": 239
+ },
+ "by_gap_family": {
+  "ambiguous_result": {
+   "another_context_artifact": 22,
+   "native_discovery_after": 20,
+   "no_followup_discovery": 10,
+   "presentations": 304,
+   "source_verification_only": 46,
+   "task_action_started": 206
+  },
+  "bounded_no_route": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 6,
+   "source_verification_only": 0,
+   "task_action_started": 0
+  },
+  "evidence_truncated": {
+   "another_context_artifact": 12,
+   "native_discovery_after": 11,
+   "no_followup_discovery": 3,
+   "presentations": 156,
+   "source_verification_only": 27,
+   "task_action_started": 103
+  },
+  "no_result": {
+   "another_context_artifact": 21,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 1,
+   "presentations": 32,
+   "source_verification_only": 1,
+   "task_action_started": 3
+  },
+  "result_limit": {
+   "another_context_artifact": 14,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 2,
+   "presentations": 43,
+   "source_verification_only": 21,
+   "task_action_started": 0
+  }
+ },
+ "by_gap_reason_code": {
+  "ambiguous_result:no_confident_intent": {
+   "another_context_artifact": 22,
+   "native_discovery_after": 20,
+   "no_followup_discovery": 10,
+   "presentations": 304,
+   "source_verification_only": 46,
+   "task_action_started": 206
+  },
+  "bounded_no_route:no_route": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 6,
+   "source_verification_only": 0,
+   "task_action_started": 0
+  },
+  "evidence_truncated:truncated_continuation": {
+   "another_context_artifact": 12,
+   "native_discovery_after": 11,
+   "no_followup_discovery": 3,
+   "presentations": 156,
+   "source_verification_only": 27,
+   "task_action_started": 103
+  },
+  "result_limit:seed_bound": {
+   "another_context_artifact": 14,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 2,
+   "presentations": 43,
+   "source_verification_only": 21,
+   "task_action_started": 0
+  }
+ },
+ "by_intent": {
+  "ambiguous": {
+   "another_context_artifact": 11,
+   "native_discovery_after": 7,
+   "no_followup_discovery": 3,
+   "presentations": 63,
+   "source_verification_only": 13,
+   "task_action_started": 29
+  },
+  "callees": {
+   "another_context_artifact": 19,
+   "native_discovery_after": 4,
+   "no_followup_discovery": 0,
+   "presentations": 51,
+   "source_verification_only": 6,
+   "task_action_started": 22
+  },
+  "callers": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 10,
+   "no_followup_discovery": 6,
+   "presentations": 45,
+   "source_verification_only": 4,
+   "task_action_started": 19
+  },
+  "definition": {
+   "another_context_artifact": 4,
+   "native_discovery_after": 5,
+   "no_followup_discovery": 0,
+   "presentations": 38,
+   "source_verification_only": 8,
+   "task_action_started": 21
+  },
+  "locate": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 7,
+   "no_followup_discovery": 0,
+   "presentations": 104,
+   "source_verification_only": 19,
+   "task_action_started": 72
+  },
+  "manifest_or_config": {
+   "another_context_artifact": 1,
+   "native_discovery_after": 4,
+   "no_followup_discovery": 2,
+   "presentations": 53,
+   "source_verification_only": 10,
+   "task_action_started": 36
+  },
+  "path_or_flow": {
+   "another_context_artifact": 11,
+   "native_discovery_after": 2,
+   "no_followup_discovery": 0,
+   "presentations": 32,
+   "source_verification_only": 2,
+   "task_action_started": 17
+  },
+  "relationship": {
+   "another_context_artifact": 1,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 2,
+   "source_verification_only": 1,
+   "task_action_started": 0
+  },
+  "test_evidence": {
+   "another_context_artifact": 0,
+   "native_discovery_after": 1,
+   "no_followup_discovery": 0,
+   "presentations": 26,
+   "source_verification_only": 2,
+   "task_action_started": 23
+  },
+  "unknown": {
+   "another_context_artifact": 0,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 1,
+   "source_verification_only": 1,
+   "task_action_started": 0
+  }
+ },
+ "by_producer": {
+  "repodex": {
+   "another_context_artifact": 59,
+   "native_discovery_after": 40,
+   "no_followup_discovery": 11,
+   "presentations": 415,
+   "source_verification_only": 66,
+   "task_action_started": 239
+  }
+ },
+ "cross_repository_associations": 0,
+ "false_repodex_associations": 0,
+ "no_gap": {
+  "another_context_artifact": 8,
+  "native_discovery_after": 11,
+  "no_followup_discovery": 0,
+  "presentations": 85,
+  "source_verification_only": 11,
+  "task_action_started": 55
+ },
+ "repodex_presentations": 415,
+ "schema": "reposuite.repodex.gap-fallback-report.v1",
+ "sessions_scanned": 929,
+ "sessions_without_artifacts": 615,
+ "window_max_events": 64,
+ "note": "REPLAY/SYNTHETIC \u2014 committed harness traces converted to canonical AgentEvent v1; validates contract/correlation/classification only, NOT production distributions"
+}

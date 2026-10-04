@@ -282,6 +282,9 @@ pub struct ArtifactReference {
 /// to the Agent before/during investigation — RepoDex RDX packet, retrieval
 /// bundle, planner context. Harness-neutral; distinct from `source_observed`
 /// (tool-delivered) — a surfaced path is NOT an observed one (§7).
+///
+/// GAP-TELEMETRY-V1: correlation + bounded structured metadata are additive
+/// optional fields; old v1 streams without them remain valid.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ContextArtifactPresented {
     /// Stable artifact identity (e.g. packet digest).
@@ -290,6 +293,13 @@ pub struct ContextArtifactPresented {
     pub artifact_kind: String,
     /// Producing system, e.g. "repodex".
     pub producer: String,
+    /// The tool call that produced/presented this artifact (§19 correlation —
+    /// never timestamps alone).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
+    /// Presentation profile the producer used, e.g. "adaptive" | "full".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub presentation: Option<String>,
     /// Digest of the full artifact payload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_digest: Option<String>,
@@ -302,6 +312,32 @@ pub struct ContextArtifactPresented {
     /// Structured repository references (paths/entities, with rank).
     #[serde(default)]
     pub references: Vec<ArtifactReference>,
+    /// Bounded structured telemetry metadata supplied by the producer's own
+    /// query observation (never parsed back out of rendered artifact text).
+    /// Allowlisted keys: `query_intent`, `navigation_profile`,
+    /// `evidence_complete`, `gap_signatures` (array of
+    /// `{family, reason_code}`), `seed_count`, `candidate_count`,
+    /// `fact_count`, `relation_count`, `packet_bytes`. Producers MUST NOT
+    /// place secrets, auth headers, env values or raw query dumps here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<serde_json::Value>,
+}
+
+/// A normalized, machine-stable gap signature (GAP-TELEMETRY-V1 §16-§17).
+/// `family` is a small closed set; `reason_code` is the producer's stable
+/// reason head (e.g. `receiver_type_unavailable`, `late_static_binding`) —
+/// never free-form prose. Unknown future reason codes pass through
+/// unchanged.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct GapSignature {
+    /// Bounded family: `no_result` | `ambiguous_result` | `result_limit` |
+    /// `evidence_truncated` | `unsupported_evidence_class` | `no_candidate` |
+    /// `out_of_scope` | `bounded_no_route` | `missing_anchor` |
+    /// `ambiguous_anchor`.
+    pub family: String,
+    /// Stable producer reason code (bounded identifier head, no prose).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason_code: Option<String>,
 }
 
 /// `agent_message` (§20).

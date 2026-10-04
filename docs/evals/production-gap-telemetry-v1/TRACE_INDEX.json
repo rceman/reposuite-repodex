@@ -1,0 +1,30 @@
+{
+ "committed_fixture": "replay_fixtures/replay-events.jsonl",
+ "replay_sources": {
+  "cc-calls.S0.r0.json": "replay_fixtures/../traces(uncommitted)/cc-calls.S0.r0.json",
+  "cc-calls.S0.r1.json": "replay_fixtures/../traces(uncommitted)/cc-calls.S0.r1.json",
+  "h-callees.B0.c0.r0.json": "replay_fixtures/../traces(uncommitted)/h-callees.B0.c0.r0.json",
+  "h-callees.B0.c0.r1.json": "replay_fixtures/../traces(uncommitted)/h-callees.B0.c0.r1.json",
+  "cc-arch.D0.r0.json": "replay_fixtures/../traces(uncommitted)/cc-arch.D0.r0.json",
+  "cc-arch.D0.r1.json": "replay_fixtures/../traces(uncommitted)/cc-arch.D0.r1.json",
+  "cc-reach.N0.r0.json": "replay_fixtures/../traces(uncommitted)/cc-reach.N0.r0.json",
+  "cc-reach.P1.r0.json": "replay_fixtures/../traces(uncommitted)/cc-reach.P1.r0.json",
+  "cc-reach.P1.r1.json": "replay_fixtures/../traces(uncommitted)/cc-reach.P1.r1.json",
+  "cc-what-call.N0.r1.json": "replay_fixtures/../traces(uncommitted)/cc-what-call.N0.r1.json",
+  "cc-reach.A2.r1.json": "replay_fixtures/../traces(uncommitted)/cc-reach.A2.r1.json",
+  "cc-what-call.A2.r1.json": "replay_fixtures/../traces(uncommitted)/cc-what-call.A2.r1.json",
+  "inh-audit-handle.N0.r1.json": "replay_fixtures/../traces(uncommitted)/inh-audit-handle.N0.r1.json",
+  "inh-audit-handle.P1.r1.json": "replay_fixtures/../traces(uncommitted)/inh-audit-handle.P1.r1.json",
+  "inh-audit-handle.P2.r1.json": "replay_fixtures/../traces(uncommitted)/inh-audit-handle.P2.r1.json",
+  "nc-legacy-handle.N0.r1.json": "replay_fixtures/../traces(uncommitted)/nc-legacy-handle.N0.r1.json",
+  "nc-legacy-handle.P1.r1.json": "replay_fixtures/../traces(uncommitted)/nc-legacy-handle.P1.r1.json",
+  "nc-legacy-handle.P2.r1.json": "replay_fixtures/../traces(uncommitted)/nc-legacy-handle.P2.r1.json",
+  "cc-put.N0.r1.json": "replay_fixtures/../traces(uncommitted)/cc-put.N0.r1.json",
+  "cc-find.P2.r1.json": "replay_fixtures/../traces(uncommitted)/cc-find.P2.r1.json",
+  "cc-put.P1.r1.json": "replay_fixtures/../traces(uncommitted)/cc-put.P1.r1.json",
+  "cc-cache-main.N0.r0.json": "replay_fixtures/../traces(uncommitted)/cc-cache-main.N0.r0.json",
+  "cc-cache-main.A2.r0.json": "replay_fixtures/../traces(uncommitted)/cc-cache-main.A2.r0.json",
+  "cc-cache-main.A2.r1.json": "replay_fixtures/../traces(uncommitted)/cc-cache-main.A2.r1.json"
+ },
+ "full_replay": "11924 events from docs/evals/*/traces/*.json via tools/telemetry/replay_to_agent_events.py"
+}

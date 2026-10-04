@@ -1,0 +1,8 @@
+{
+ "p95_bytes": 565,
+ "max_bytes": 658,
+ "sample": 5,
+ "target": "<=2048",
+ "embeds_full_rdx": false,
+ "gate": "PASS"
+}

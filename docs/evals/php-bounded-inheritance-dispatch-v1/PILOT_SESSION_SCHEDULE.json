@@ -1,0 +1,10 @@
+{
+ "arms": 3,
+ "tasks": 12,
+ "reps": 1,
+ "total_sessions": 36,
+ "infra_invalid": 0,
+ "executor": "dangerous",
+ "state_dirs": "per-arm",
+ "schedule": "12 tasks x N0/P1/P2 x 1 rep; 3 parallel harness workers on disjoint 4-task chunks"
+}

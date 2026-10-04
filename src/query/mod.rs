@@ -4,6 +4,7 @@
 pub mod adaptive;
 pub mod engine;
 pub mod normalize;
+pub mod observation;
 pub mod projection;
 
 pub use engine::{

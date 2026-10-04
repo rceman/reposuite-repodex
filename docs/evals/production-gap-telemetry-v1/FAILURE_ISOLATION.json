@@ -1,0 +1,5 @@
+{
+ "observation_emit_failure": "emit failure writes stderr warning, query still returns packet; serde failure path returns early without touching stdout",
+ "telemetry_caused_query_failures": 0,
+ "gate": "PASS"
+}

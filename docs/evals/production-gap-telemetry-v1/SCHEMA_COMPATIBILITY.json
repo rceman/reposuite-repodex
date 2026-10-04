@@ -1,0 +1,7 @@
+{
+ "new_event_accepted": true,
+ "unknown_future_event_preserved": true,
+ "old_v1_fixtures_valid": true,
+ "malformed_rejected": true,
+ "tests": "tests/gap_telemetry.rs (14) + tests/agent_event.rs"
+}

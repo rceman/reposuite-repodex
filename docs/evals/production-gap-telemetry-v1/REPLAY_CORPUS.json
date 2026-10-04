@@ -1,0 +1,14 @@
+{
+ "converter": "tools/telemetry/replay_to_agent_events.py (replay-only; parses RDX for fixture construction \u2014 production Relay never does)",
+ "sources": [
+  "navigation-contract-consolidation-v1",
+  "php-call-candidates-v1",
+  "php-bounded-receiver-type-evidence-v1",
+  "php-bounded-inheritance-dispatch-v1",
+  "+7 additional committed eval suites"
+ ],
+ "sessions": 929,
+ "events": 11924,
+ "fixture_subset": "replay_fixtures/replay-events.jsonl (28 sessions: RepoDex treatment + N0 controls)",
+ "controls": "N0 sessions present no artifacts -> no associations possible"
+}

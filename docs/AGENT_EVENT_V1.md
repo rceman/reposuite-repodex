@@ -166,3 +166,27 @@ be attached via investigation/session metadata or a generic `context_artifact`
 event (chosen over RepoDex-specific ToolCall fields). Outcome events
 (`review accepted`, `tests passed`, `integrated`) attach late via
 `investigation_id`/`session_id`.
+
+## context_artifact_presented (GAP-TELEMETRY-V1)
+
+Typed, producer-neutral event for evidence delivered to the Agent:
+
+```json
+{"artifact_id":"sha256:…","artifact_kind":"rdx1_packet","producer":"repodex",
+ "tool_call_id":"tc-1","presentation":"adaptive",
+ "content_digest":"sha256:…","content_bytes":720,"references":[],
+ "metadata":{"query_intent":"callers","navigation_profile":"adaptive",
+   "evidence_complete":true,
+   "gap_signatures":[{"family":"no_candidate","reason_code":"late_static_binding"}],
+   "seed_count":2,"candidate_count":1,"fact_count":4,"relation_count":5,
+   "packet_bytes":720,"query_digest":"sha256:…"}}
+```
+
+- `metadata` is a bounded allowlist: `query_intent`, `navigation_profile`,
+  `evidence_complete`, `gap_signatures`, `seed_count`, `candidate_count`,
+  `fact_count`, `relation_count`, `packet_bytes`, `query_digest`. Secrets,
+  auth headers, env values and raw query/task text are forbidden.
+- Full artifact payloads are never embedded — digest/bytes only.
+- Gap `reason_code` values are stable producer codes (e.g.
+  `late_static_binding`), opaque to the core model — language-specific
+  reasons are values, not fields.

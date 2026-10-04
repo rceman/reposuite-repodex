@@ -1,0 +1,17 @@
+{
+ "a_pilot_results_json": {
+  "defect": "CLAIM_TO_EVIDENCE.md referenced PILOT_RESULTS.json but the file was never committed",
+  "fix": "reconstructed deterministically from committed SESSION_METRICS.csv + PER_ARM.json + PAIRED_DELTAS.json (no rerun); PILOT_SESSION_SCHEDULE.json also restored",
+  "now_committed": [
+   "docs/evals/php-bounded-inheritance-dispatch-v1/PILOT_RESULTS.json",
+   "docs/evals/php-bounded-inheritance-dispatch-v1/PILOT_SESSION_SCHEDULE.json"
+  ]
+ },
+ "b_performance_delta": {
+  "defect": "PERFORMANCE.json php_4MiB `delta_pct` said 7.4 \u2014 that was the SCAN stage delta; full-parse delta is +5.3% as REPORT.md prose stated",
+  "fix": "raw ms unchanged; fields relabeled per-stage: full_delta_pct=5.3, extract_delta_pct=0.9, scan_delta_pct=7.4",
+  "correct_metric": "discovery+read+parse+extract (full) \u2014 +5.3% is the headline"
+ },
+ "integrity": "REVIEW_EVIDENCE_SHA256.txt regenerated over all evidence files",
+ "raw_traces": "untouched \u2014 no historical trace rewritten"
+}

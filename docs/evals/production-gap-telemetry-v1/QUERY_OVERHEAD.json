@@ -1,0 +1,8 @@
+{
+ "method": "10 query iterations x {callers,related,callees,path} on fixtures/phpinh, release build, adaptive nav",
+ "baseline_ms_per_10q": 296,
+ "with_observation_ms_per_10q": 287,
+ "regression_pct": "none (noise-dominated; observation build is a handful of map iterations over already-computed projection state)",
+ "flag_threshold_pct": 5,
+ "gate": "PASS"
+}

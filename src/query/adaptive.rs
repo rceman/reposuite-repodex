@@ -527,6 +527,20 @@ pub fn adaptive_rdx(proj: &EvidenceProjection, intent: NavIntent) -> String {
     adaptive_rdx_biased(proj, intent, None)
 }
 
+/// Emitted-shape accounting captured while rendering the adaptive packet —
+/// structured evidence for telemetry so no consumer reparses the RDX text.
+#[derive(Debug, Clone, Default)]
+pub struct AdaptiveRendered {
+    /// Seeds actually emitted after bounds.
+    pub emitted_seeds: usize,
+    /// Related edges actually emitted.
+    pub emitted_related: usize,
+    /// Relevant related edges the selection wanted before the byte budget.
+    pub relevant_total: usize,
+    /// Lines dropped by the serialized byte budget.
+    pub budget_dropped: usize,
+}
+
 /// Adaptive RDX with an optional internal route bias from learned memory. The
 /// bias only *reorders* which current relations/seeds are surfaced first — it
 /// changes nothing about FACT/CANDIDATE, never adds Agent-visible text, and
@@ -536,6 +550,16 @@ pub fn adaptive_rdx_biased(
     intent: NavIntent,
     bias: Option<&crate::learning::RouteBias>,
 ) -> String {
+    adaptive_rdx_observed(proj, intent, bias).0
+}
+
+/// Same renderer as [`adaptive_rdx_biased`] but also returns the emitted-shape
+/// accounting used by the gap trailer — one execution, one truth (§13).
+pub fn adaptive_rdx_observed(
+    proj: &EvidenceProjection,
+    intent: NavIntent,
+    bias: Option<&crate::learning::RouteBias>,
+) -> (String, AdaptiveRendered) {
     let ob = obligation(intent);
     // Seed order: learned-preferred anchors surface first (internal reordering).
     let mut seed_order: Vec<&SeedOut> = proj.seeds.iter().collect();
@@ -802,7 +826,13 @@ pub fn adaptive_rdx_biased(
     if out.len() + s_line.len() <= budget {
         out.push_str(&s_line);
     }
-    out
+    let rendered = AdaptiveRendered {
+        emitted_seeds,
+        emitted_related,
+        relevant_total,
+        budget_dropped,
+    };
+    (out, rendered)
 }
 
 fn esc(s: &str) -> String {

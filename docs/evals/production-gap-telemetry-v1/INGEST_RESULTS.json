@@ -1,0 +1,4 @@
+{
+ "path": "POST /v1/events + /v1/events/batch unchanged; context_artifact_presented flows through the same durable ACK + event_id idempotency + non-atomic batch semantics",
+ "replay_ingest": "11924 events accepted, 0 rejected, 0 duplicates; double-ingest = 11924 duplicates, 0 accepted"
+}

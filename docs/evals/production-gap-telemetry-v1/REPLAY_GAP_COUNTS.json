@@ -1,0 +1,78 @@
+{
+ "by_gap_family": {
+  "ambiguous_result": {
+   "another_context_artifact": 22,
+   "native_discovery_after": 20,
+   "no_followup_discovery": 10,
+   "presentations": 304,
+   "source_verification_only": 46,
+   "task_action_started": 206
+  },
+  "bounded_no_route": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 6,
+   "source_verification_only": 0,
+   "task_action_started": 0
+  },
+  "evidence_truncated": {
+   "another_context_artifact": 12,
+   "native_discovery_after": 11,
+   "no_followup_discovery": 3,
+   "presentations": 156,
+   "source_verification_only": 27,
+   "task_action_started": 103
+  },
+  "no_result": {
+   "another_context_artifact": 21,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 1,
+   "presentations": 32,
+   "source_verification_only": 1,
+   "task_action_started": 3
+  },
+  "result_limit": {
+   "another_context_artifact": 14,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 2,
+   "presentations": 43,
+   "source_verification_only": 21,
+   "task_action_started": 0
+  }
+ },
+ "by_gap_reason_code": {
+  "ambiguous_result:no_confident_intent": {
+   "another_context_artifact": 22,
+   "native_discovery_after": 20,
+   "no_followup_discovery": 10,
+   "presentations": 304,
+   "source_verification_only": 46,
+   "task_action_started": 206
+  },
+  "bounded_no_route:no_route": {
+   "another_context_artifact": 6,
+   "native_discovery_after": 0,
+   "no_followup_discovery": 0,
+   "presentations": 6,
+   "source_verification_only": 0,
+   "task_action_started": 0
+  },
+  "evidence_truncated:truncated_continuation": {
+   "another_context_artifact": 12,
+   "native_discovery_after": 11,
+   "no_followup_discovery": 3,
+   "presentations": 156,
+   "source_verification_only": 27,
+   "task_action_started": 103
+  },
+  "result_limit:seed_bound": {
+   "another_context_artifact": 14,
+   "native_discovery_after": 6,
+   "no_followup_discovery": 2,
+   "presentations": 43,
+   "source_verification_only": 21,
+   "task_action_started": 0
+  }
+ }
+}

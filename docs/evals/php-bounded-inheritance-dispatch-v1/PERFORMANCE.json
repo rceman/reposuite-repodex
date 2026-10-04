@@ -3,17 +3,19 @@
  "php_4MiB": {
   "h0_full_ms": 1384.8,
   "h1_full_ms": 1458.6,
-  "delta_pct": 7.4,
+  "full_delta_pct": 5.3,
   "h0_extract_ms": 697.1,
   "h1_extract_ms": 703.4,
+  "extract_delta_pct": 0.9,
   "h0_scan_ms": 1421.2,
-  "h1_scan_ms": 1525.9
+  "h1_scan_ms": 1525.9,
+  "scan_delta_pct": 7.4
  },
  "php_8MiB": {
   "h0_full_ms": 2801.6,
   "h1_full_ms": 2840.7,
-  "delta_pct": 1.4
+  "full_delta_pct": 1.4
  },
- "note": "single-pass hierarchy link build + bounded BFS per unresolved method; no per-call repo scans; all deltas under the 20% flag threshold",
+ "note": "per-stage deltas labeled explicitly; raw ms unchanged (correction: prior `delta_pct` on php_4MiB mislabeled the scan delta as the full-parse delta; full delta is +5.3%, matching REPORT.md prose)",
  "gate": "PASS"
 }

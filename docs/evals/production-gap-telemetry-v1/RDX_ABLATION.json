@@ -1,0 +1,12 @@
+{
+ "method": "adaptive query with vs without --emit-observation, 5 probes over fixtures/phpinh, byte-compared",
+ "probes": [
+  "callers method base",
+  "related class D",
+  "path class D to class A",
+  "callees method over",
+  "related interface ServiceContract"
+ ],
+ "rdx_ablation_differences": 0,
+ "gate": "PASS"
+}

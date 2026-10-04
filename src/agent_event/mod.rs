@@ -9,6 +9,7 @@
 use std::path::PathBuf;
 
 pub mod context;
+pub mod fallback;
 pub mod ingest;
 pub mod model;
 pub mod store;

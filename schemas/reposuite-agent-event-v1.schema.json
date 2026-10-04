@@ -58,7 +58,7 @@
     "type": {
       "type": "string",
       "minLength": 1,
-      "description": "Event family. Known V1 families: session_started, session_completed, model_call_started, model_call_completed, tool_call_started, tool_call_completed, source_observed, agent_message, final_answer, task_outcome. Unknown future types are preserved verbatim (forward-compat)."
+      "description": "Event family. Known V1 families: session_started, session_completed, model_call_started, model_call_completed, tool_call_started, tool_call_completed, source_observed, context_artifact_presented, agent_message, final_answer, task_outcome. Unknown future types are preserved verbatim (forward-compat)."
     },
     "data": {
       "type": "object",

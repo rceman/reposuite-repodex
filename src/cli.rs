@@ -226,6 +226,10 @@ struct Options {
     views_roots: Vec<String>,
     /// `query`/`project` RepoDex state dir override (tests/isolation).
     state_dir: Option<String>,
+    /// `query --emit-observation <dir>` — write the structured
+    /// RepoQueryObservation JSON next to the Agent-facing packet
+    /// (machine telemetry; never part of RDX output).
+    emit_observation: Option<String>,
     /// `agent-events derive` source event-store directory.
     store: Option<String>,
     /// `memory build` SymbolExposure store for symbol-level evidence (§38).
@@ -303,6 +307,9 @@ fn parse_options(args: &[String]) -> Result<Options, String> {
             "--memory" => options.memory = Some(value_for(args, &mut index, name, inline_value)?),
             "--context" => options.context = Some(value_for(args, &mut index, name, inline_value)?),
             "--nav" => options.nav = Some(value_for(args, &mut index, name, inline_value)?),
+            "--emit-observation" | "--emit_observation" => {
+                options.emit_observation = Some(value_for(args, &mut index, name, inline_value)?)
+            }
             "--recipes" => options.recipes = Some(value_for(args, &mut index, name, inline_value)?),
             "--declaration" => {
                 options.declaration = Some(value_for(args, &mut index, name, inline_value)?)
@@ -2899,12 +2906,43 @@ fn command_query_view(options: &Options) -> Result<u8, String> {
     } else if let Some(p) = &planned {
         // RepoDex-first adaptive evidence packet (§6-§18): the nav intent comes
         // from the SAME plan that drove retrieval — never relabel generic Find.
-        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, p.nav));
+        print!("{}", render_adaptive_packet(&proj, p.nav, options));
     } else {
         // Default detailed/debug profile: RDX2 (faithful: rank/path/range/via, §39).
         print!("{}", proj.to_rdx());
     }
     Ok(EXIT_OK)
+}
+
+/// Render the adaptive Agent-facing packet and — only when `--emit-observation`
+/// was passed — write the structured RepoQueryObservation JSON to that
+/// directory. Observation emission is best-effort telemetry: a failure writes
+/// a warning to stderr and NEVER fails or alters the query evidence (§52).
+fn render_adaptive_packet(
+    proj: &crate::query::projection::EvidenceProjection,
+    nav: crate::query::adaptive::NavIntent,
+    options: &Options,
+) -> String {
+    let (packet, rendered) = crate::query::adaptive::adaptive_rdx_observed(proj, nav, None);
+    if let Some(dir) = &options.emit_observation {
+        let obs = crate::query::observation::observe(
+            proj,
+            nav,
+            "adaptive",
+            &packet,
+            Some(&rendered),
+            None,
+        );
+        let name = obs.packet_digest.trim_start_matches("sha256:");
+        let target = std::path::Path::new(dir).join(format!("obs-{name}.json"));
+        let write = std::fs::create_dir_all(dir)
+            .and_then(|()| serde_json::to_vec(&obs).map_err(std::io::Error::other))
+            .and_then(|bytes| std::fs::write(&target, bytes));
+        if let Err(e) = write {
+            eprintln!("telemetry: observation emit failed ({e})");
+        }
+    }
+    packet
 }
 
 /// Is a RepoDex service live for this state dir? (§20 auto-routing)
@@ -3036,7 +3074,7 @@ fn query_via_service(
         let proj: crate::query::projection::EvidenceProjection =
             serde_json::from_value(body["result"].clone())
                 .map_err(|e| format!("service projection decode: {e}"))?;
-        print!("{}", crate::query::adaptive::adaptive_rdx(&proj, p.nav));
+        print!("{}", render_adaptive_packet(&proj, p.nav, options));
     } else {
         print!("{}", render_projection_text(&body["result"], options.human));
     }
@@ -3637,6 +3675,7 @@ fn command_agent_events(args: &[String]) -> Result<u8, String> {
         "session" => command_agent_events_session(&args[1..]),
         "export" => command_agent_events_export(&args[1..]),
         "derive" => command_agent_events_derive(&args[1..]),
+        "repodex-fallbacks" | "fallbacks" => command_agent_events_fallbacks(&args[1..]),
         "derive-verify" | "derive_verify" => command_agent_events_derive_verify(&args[1..]),
         _ => Err(format!("unknown agent-events subcommand `{sub}`")),
     }
@@ -3716,6 +3755,24 @@ fn command_agent_events_ingest(args: &[String]) -> Result<u8, String> {
             println!("  error: {e}");
         }
     }
+    Ok(EXIT_OK)
+}
+
+fn command_agent_events_fallbacks(args: &[String]) -> Result<u8, String> {
+    let options = parse_options(args)?;
+    let dir = agent_events_store_dir(&options)?;
+    let store =
+        crate::agent_event::AgentEventStore::open(Path::new(&dir)).map_err(|e| e.to_string())?;
+    let sids = store.sessions().map_err(|e| e.to_string())?;
+    let mut sessions: Vec<(String, Vec<crate::agent_event::model::AgentEvent>)> = Vec::new();
+    for sid in &sids {
+        sessions.push((
+            sid.clone(),
+            store.session_events(sid).map_err(|e| e.to_string())?,
+        ));
+    }
+    let r = crate::agent_event::fallback::report(&sessions);
+    print_json(&serde_json::to_value(&r).map_err(|e| e.to_string())?)?;
     Ok(EXIT_OK)
 }
 

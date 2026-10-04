@@ -1,0 +1,26 @@
+{
+ "label": "REPLAY/SYNTHETIC",
+ "sessions": {
+  "100": {
+   "events": 330,
+   "bytes": 111180,
+   "ingest_ms": 11,
+   "analysis_ms": 27
+  },
+  "1000": {
+   "events": 3300,
+   "bytes": 1113375,
+   "ingest_ms": 74,
+   "analysis_ms": 25
+  },
+  "10000": {
+   "events": 33000,
+   "bytes": 11149725,
+   "ingest_ms": 868,
+   "analysis_ms": 175
+  }
+ },
+ "complexity": "O(sessions + events*window_bound); per-session files keep memory bounded",
+ "normal_query_scan_of_telemetry": false,
+ "database_added": false
+}

@@ -1,0 +1,5 @@
+{
+ "correlation": "context_artifact_presented.tool_call_id -> tool_call_started.tool_call_id (never timestamps)",
+ "producer_correlated_calls_excluded_from_native_discovery": true,
+ "tests": "producer_tool_call_is_not_native_discovery, context correlation suite in gap_telemetry.rs"
+}

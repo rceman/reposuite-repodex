@@ -1,0 +1,52 @@
+{
+ "pilot": "36 sessions, 12 tasks x N0/P1(=H0 af928b9)/P2(=H1 6d919fc) x 1 rep; reconstructed from committed SESSION_METRICS.csv + PER_ARM.json",
+ "total_sessions": 36,
+ "infra_invalid": 0,
+ "success": {
+  "N0": 12,
+  "P1": 12,
+  "P2": 12
+ },
+ "per_arm": {
+  "N0": {
+   "n": 12,
+   "success": 12,
+   "wall_median_ms": 12120,
+   "repodex_calls": 0,
+   "native_search": 23,
+   "source_reads": 39,
+   "tool_calls": 90,
+   "model_calls": 52,
+   "input_tokens": 673979,
+   "output_tokens": 8569
+  },
+  "P1": {
+   "n": 12,
+   "success": 12,
+   "wall_median_ms": 17606,
+   "repodex_calls": 28,
+   "native_search": 12,
+   "source_reads": 36,
+   "tool_calls": 101,
+   "model_calls": 58,
+   "input_tokens": 785736,
+   "output_tokens": 12694
+  },
+  "P2": {
+   "n": 12,
+   "success": 12,
+   "wall_median_ms": 20659,
+   "repodex_calls": 22,
+   "native_search": 8,
+   "source_reads": 36,
+   "tool_calls": 96,
+   "model_calls": 55,
+   "input_tokens": 732793,
+   "output_tokens": 11268
+  }
+ },
+ "headroom": "none - corpus ceilinged at 12/12 on all three arms (\u00a749)",
+ "native_delta_note": "h1 native_search 8 vs h0 12 over 12 sessions; paired walls/reads/tools show no gain and h1 wall median is +17% - noise, not a strong efficiency delta",
+ "decision": "PHP_INHERITANCE_AGENT_CAMPAIGN_STOPPED_AT_HEADROOM_GATE",
+ "full_campaign": "NOT LAUNCHED - \u00a749 requires headroom or a strong non-success delta"
+}
